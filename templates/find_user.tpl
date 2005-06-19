@@ -3,7 +3,7 @@
 <head>
 	<title>Find User</title>
 	<!--[if gte IE 5.5000]>
-	<script type="text/javascript" src="{$gBitLoc.THEMES_PKG_URL}pngfix.js"></script>
+		<script type="text/javascript" src="{$gBitLoc.THEMES_PKG_URL}js/pngfix.js"></script>
 	<![endif]-->
 
 	<script type="text/javascript" src="{$gBitLoc.KERNEL_PKG_URL}bitweaver.js"></script>
