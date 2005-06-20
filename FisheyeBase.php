@@ -174,9 +174,10 @@ class FisheyeBase extends LibertyAttachable
     * @return the fully specified path to file to be included
     */
 	function hasUserAccess( $pPermName ) {
+		global $gBitUser;
 		// assume true for now
 		$ret = FALSE;
-		if( $this->isValid() && !($ret = $this->isOwner()) ) {
+		if( $this->isValid() && !($ret = $this->isOwner())  && !($ret = $gBitUser->isAdmin()) ) {
 			if( !($ret = empty($this->mInfo['security_id'] ) ) ) {
 				// order matters here!
 				if( $this->mInfo['is_hidden'] == 'y' ) {
