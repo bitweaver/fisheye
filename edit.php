@@ -29,6 +29,8 @@ if( $gBitUser->hasPermission( 'bit_p_change_thumbnail_size' ) ) {
 
 if( !empty($_REQUEST['savegallery']) ) {
 	if( $gContent->store( $_REQUEST ) ) {
+		// make sure var is fully stuffed with current data
+		$gContent->load();
 		// set the mappings, or if nothing checked, nuke them all
 		$gContent->addToGalleries( !empty( $_REQUEST['galleryAdditions'] ) ? $_REQUEST['galleryAdditions'] : NULL );
 
