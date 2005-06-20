@@ -4,7 +4,7 @@
 	// example:
 	//		php -q thumbnailer.php 20
 	// suggested crontab entry runs the thumbnailer every minute:
-	//		* * * * * apache php -q /path/to/tikipro/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
+	//		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
 
 	global $gBitSystem, $_SERVER;
 
