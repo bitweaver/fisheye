@@ -383,10 +383,17 @@ class FisheyeImage extends FisheyeBase {
 			$mid .= " AND tc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
 		}
+
+		if( !empty( $pListHash['gallery_id'] ) && is_numeric( $pListHash['gallery_id'] )) {
+			$mid .= " AND tfg.`gallery_id` = ? ";
+			$bindVars[] = $pListHash['gallery_id'];
+		}
+
 		if( !empty( $pListHash['search'] ) ) {
 			$mid .= " AND UPPER(tc.`title`) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['search'] ).'%';
 		}
+
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			$select .= ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
 			$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs ON (tc.`content_id`=tcs.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON (ts.`security_id`=tcs.`security_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim ON (tfgim.`item_content_id`=tc.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs2 ON (tfgim.`gallery_content_id`=tcs2.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts2 ON (ts2.`security_id`=tcs2.`security_id` )";
@@ -399,12 +406,15 @@ class FisheyeImage extends FisheyeBase {
 			$mid .= " ORDER BY ".$this->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
-		$query = "SELECT tfi.`image_id` AS `hash_key`, tfi.*, tf.*, tc.*, uu.`login`, uu.`real_name` $select
+		$query = "SELECT tfi.`image_id` AS `hash_key`, tfi.*, tf.*, tc.*, tfg.gallery_id, uu.`login`, uu.`real_name` $select
 				FROM `".BIT_DB_PREFIX."tiki_fisheye_image` tfi
 					INNER JOIN `".BIT_DB_PREFIX."tiki_attachments` ta ON(ta.`content_id`=tfi.`content_id`)
 					INNER JOIN `".BIT_DB_PREFIX."tiki_files` tf ON(ta.`foreign_id`=tf.`file_id`)
-					, `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc  $join
+					, `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc $join
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim2 ON(tfgim2.`item_content_id`=tc.`content_id`)
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg ON(tfg.`content_id`=tfgim2.`gallery_content_id`)
 				WHERE tfi.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid";
+
 		if( $rs = $this->query( $query, $bindVars, $pListHash['max_records'],$pListHash['offset'] ) ) {
 			$ret = $rs->GetAssoc();
 			if( empty( $pListHash['no_thumbnails'] ) ) {
