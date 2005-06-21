@@ -79,8 +79,9 @@ $gBitInstaller->registerPreferences( FISHEYE_PKG_NAME, array(
 	array( FISHEYE_PKG_NAME, 'fisheye_gallery_default_rows_per_page','5'),
 	array( FISHEYE_PKG_NAME, 'fisheye_gallery_default_cols_per_page','3'),
 	array( FISHEYE_PKG_NAME, 'fisheye_gallery_default_thumbnail_size','small'),
-	array( FISHEYE_PKG_NAME, 'fisheye_image_list_description',''),
-	array( FISHEYE_PKG_NAME, 'fisheye_image_default_thumbnail_size',''),
+	array( FISHEYE_PKG_NAME, 'fisheye_image_list_title','y'),
+	array( FISHEYE_PKG_NAME, 'fisheye_image_list_description','y'),
+	array( FISHEYE_PKG_NAME, 'fisheye_image_default_thumbnail_size','medium'),
 	array( FISHEYE_PKG_NAME, 'fisheye_menu_text','Image Galleries'),
 	)
 );
