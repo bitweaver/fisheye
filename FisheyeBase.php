@@ -189,6 +189,8 @@ class FisheyeBase extends LibertyAttachable
 				if( !empty( $this->mInfo['access_answer'] ) ) {
 					$ret = $this->validateUserAccess();
 				}
+			} else {
+				$ret = $gBitUser->hasPermission( $pPermName );
 			}
 /*
 			if( $pPermName == 'bit_p_edit_fisheye' ) {
@@ -202,10 +204,6 @@ class FisheyeBase extends LibertyAttachable
 					}
 	vd( $ret );
 				}
-
-			} else {
-				$ret = LibertyContent::hasUserPermission( $pPermName );
-			}
 */
 		}
 		return( $ret );
