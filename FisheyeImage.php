@@ -75,12 +75,23 @@ class FisheyeImage extends FisheyeBase {
 //		}
 //		$ret = FisheyeBase::parseData( $pData );
 //		$ret .= '<img src="'.$this->mInfo['image_file']['source_url'].'" width="400" height="300" />';
-		$ret = array(	'type' => FISHEYEIMAGE_CONTENT_TYPE_GUID,
-						'landscape' => $this->isLandscape(),
-						'url' => $this->getDisplayUrl(),
-						'content_id' => $this->mContentId,
-						'bleed' => TRUE,
-					);
+		$ret = NULL;
+		// make sure we have a valid image file.
+		if( $this->isValid() && ($details = $this->getImageDetails( BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'] ) ) ) {
+			if( $this->mInfo['width'] != $details['width'] || $this->mInfo['height'] != $details['height']  ) {
+				// if our data got out of sync with the database, force an update
+				$query = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
+				$this->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );
+				$this->mInfo['width'] = $details['width'];
+				$this->mInfo['height'] = $details['height'];
+			}
+			$ret = array(	'type' => FISHEYEIMAGE_CONTENT_TYPE_GUID,
+							'landscape' => $this->isLandscape(),
+							'url' => $this->getDisplayUrl(),
+							'content_id' => $this->mContentId,
+							'bleed' => TRUE,
+						);
+		}
 		return $ret;
 	}
 
@@ -184,6 +195,7 @@ class FisheyeImage extends FisheyeBase {
 			$rotateFunc = ($gBitSystem->getPreference( 'image_processor' ) == 'imagick' ) ? 'liberty_imagick_rotate_image' : 'liberty_gd_rotate_image';
 			if( $rotateFunc( $fileHash ) ) {
 				liberty_clear_thumbnails( $fileHash );
+				$this->query( "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_image` SET `width`=`height`, `height`=`width` WHERE `content_id`=?", array( $this->mContentId ) );
 				$this->generateThumbnails();
 			} else {
 				$this->mErrors['rotate'] = $fileHash['error'];

@@ -31,9 +31,6 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 			$_REQUEST['upload']['process_storage'] = STORAGE_IMAGE;
 	}
 	$_REQUEST['purge_from_galleries'] = TRUE;
-	if( !empty( $_REQUEST['rotate_image'] ) ) {
-		$gContent->rotateImage( $_REQUEST['rotate_image'] );
-	}
 	if( $gContent->store($_REQUEST) ) {
 		$gContent->addToGalleries( $_REQUEST['galleryAdditions'] );
 		// maybe we need to resize the original and generate thumbnails
@@ -42,6 +39,10 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		}
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();
+		}
+		// This needs to happen after the store, else the image width/hieght are screwed for people using the background thumbnailer
+		if( !empty( $_REQUEST['rotate_image'] ) ) {
+			$gContent->rotateImage( $_REQUEST['rotate_image'] );
 		}
 		if ( $gBitSystem->isPackageActive('categories') ) {
 			$cat_desc = $gLibertySystem->mContentTypes[FISHEYEIMAGE_CONTENT_TYPE_GUID]['content_description'].' by '.$gBitUser->getDisplayName( FALSE, array( 'real_name' => $gContent->mInfo['creator_real_name'], 'user' => $gContent->mInfo['creator_user'], 'user_id'=>$gContent->mInfo['user_id'] ) );
