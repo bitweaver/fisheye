@@ -21,6 +21,7 @@ if (!empty($_REQUEST['user_id']) && is_numeric($_REQUEST['user_id'])) {
 	$template = 'list_galleries.tpl';
 }
 
+$_REQUEST['thumbnail_size'] = $gBitSystem->getPreference( 'fisheye_list_thumbnail_size', 'small' );
 $galleryList = $gFisheyeGallery->getList( $_REQUEST );
 $smarty->assign_by_ref('galleryList', $galleryList);
 

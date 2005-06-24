@@ -35,6 +35,15 @@
 						{/forminput}
 					</div>
 				{/foreach}
+				<div class="row">
+					{formlabel label="List Thumbnail Size"}
+					{forminput}
+						{html_radios values="avatar" output="Avatar (100x75)" name="list_thumbnail_size" checked=$gBitSystemPrefs.fisheye_list_thumbnail_size}<br />
+						{html_radios values="small" output="Small (160x120)" name="list_thumbnail_size" checked=$gBitSystemPrefs.fisheye_list_thumbnail_size}<br />
+						{html_radios values="medium" output="Medium (400x300)" name="list_thumbnail_size" checked=$gBitSystemPrefs.fisheye_list_thumbnail_size}<br />
+						{html_radios values="large" output="Large (800x600)" name="list_thumbnail_size" checked=$gBitSystemPrefs.fisheye_list_thumbnail_size}
+					{/forminput}
+				</div>
 			{/legend}
 		{/jstab}
 
@@ -81,10 +90,10 @@
 						{html_radios values="large" output="Large (800x600)" name="default_gallery_thumbnail_size" checked=$gBitSystemPrefs.fisheye_gallery_default_thumbnail_size}
 					{/forminput}
 				</div>
-				
+
 			{/legend}
 		{/jstab}
-		
+
 		{jstab title="Image Display Settings"}
 			{legend legend="Image Display Settings"}
 				{formhelp note="The options below determine what information is displayed on the image display page."}

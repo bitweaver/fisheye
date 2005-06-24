@@ -387,6 +387,7 @@ class FisheyeImage extends FisheyeBase {
 
 		$this->prepGetList( $pListHash );
 		$bindVars = array();
+		$distinct = '';
 		$select = '';
 		$mid = '';
 		$join = '';
@@ -394,7 +395,12 @@ class FisheyeImage extends FisheyeBase {
 		if( !empty( $pListHash['user_id'] ) && is_numeric( $pListHash['user_id'] )) {
 			$mid .= " AND tc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
+		} elseif( !empty( $pListHash['recent_users'] )) {
+			$distinct = " DISTINCT ON ( uu.`user_id` ) ";
+			$pListHash['sort_mode'] = 'uu.user_id_desc';
 		}
+
+
 
 		if( !empty( $pListHash['gallery_id'] ) && is_numeric( $pListHash['gallery_id'] )) {
 			$mid .= " AND tfg.`gallery_id` = ? ";
@@ -418,7 +424,7 @@ class FisheyeImage extends FisheyeBase {
 			$mid .= " ORDER BY ".$this->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
-		$query = "SELECT tfi.`image_id` AS `hash_key`, tfi.*, tf.*, tc.*, tfg.gallery_id, uu.`login`, uu.`real_name` $select
+		$query = "SELECT $distinct tfi.`image_id` AS `hash_key`, tfi.*, tf.*, tc.*, tfg.gallery_id, uu.`login`, uu.`real_name` $select
 				FROM `".BIT_DB_PREFIX."tiki_fisheye_image` tfi
 					INNER JOIN `".BIT_DB_PREFIX."tiki_attachments` ta ON(ta.`content_id`=tfi.`content_id`)
 					INNER JOIN `".BIT_DB_PREFIX."tiki_files` tf ON(ta.`foreign_id`=tf.`file_id`)

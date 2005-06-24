@@ -1,6 +1,6 @@
-{* $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.tpl,v 1.1 2005/06/21 10:24:40 squareing Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.tpl,v 1.1.2.1 2005/06/24 13:36:49 spiderr Exp $ *}
 {strip}
-{if $gBitSystem->isPackageActive( 'fisheye' )}
+{if $gBitSystem->isPackageActive( 'fisheye' ) && $modImages}
 	{bitmodule title="$moduleTitle" name="fisheye_images"}
 		<ul class="data">
 			{foreach from=$modImages item=modImg}

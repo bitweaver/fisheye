@@ -119,6 +119,7 @@ if (!empty($_REQUEST['fisheyeAdminSubmit'])) {
 	foreach ($formGalleryLists as $item => $data) {
 		simple_set_toggle($item);
 	}
+	$gBitSystem->storePreference('fisheye_list_thumbnail_size', $_REQUEST['list_thumbnail_size']);
 	$gBitSystem->storePreference('fisheye_gallery_default_thumbnail_size', $_REQUEST['default_gallery_thumbnail_size']);
 	$gBitSystem->storePreference('fisheye_gallery_default_rows_per_page', $_REQUEST['rows_per_page']);
 	$gBitSystem->storePreference('fisheye_gallery_default_cols_per_page', $_REQUEST['cols_per_page']);

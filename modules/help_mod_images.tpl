@@ -25,4 +25,9 @@
 		<td>( {tr}numeric{/tr} )</td>
 		<td>{tr}Truncate the description to the specified number of letters.{/tr}</td>
 	</tr>
+	<tr class="odd">
+		<td>recent_users</td>
+		<td>1</td>
+		<td>{tr}This will display the most recent image from the most recent users.{/tr}</td>
+	</tr>
 </table>
