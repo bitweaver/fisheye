@@ -1,4 +1,4 @@
-{tr}<strong>Summary</strong>: Display the most recently changed content.{/tr}<br />
+{tr}<strong>Summary</strong>: Display images from the fisheye gallery.{/tr}<br />
 <table class="data">
 	<tr>
 		<th style="width:20%;">{tr}Parameter{/tr}</th>
@@ -27,7 +27,7 @@
 	</tr>
 	<tr class="odd">
 		<td>recent_users</td>
-		<td>1</td>
+		<td>( {tr}boolean{/tr} )</td>
 		<td>{tr}This will display the most recent image from the most recent users.{/tr}</td>
 	</tr>
 </table>
