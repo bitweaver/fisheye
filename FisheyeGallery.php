@@ -345,7 +345,6 @@ class FisheyeGallery extends FisheyeBase {
 	}
 
 	function expunge( $pRecursiveDelete = FALSE ) {
-//$this->debug();
 		if( $this->isValid() ) {
 			$this->mDb->StartTrans();
 
@@ -380,7 +379,6 @@ class FisheyeGallery extends FisheyeBase {
 vd( $this->mErrors );
 			}
 		}
-//$this->debug(0);
 		return( count( $this->mErrors ) == 0 );
 	}
 

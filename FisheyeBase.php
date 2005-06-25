@@ -202,7 +202,6 @@ class FisheyeBase extends LibertyAttachable
 							$ret = isset( $userPerms[$pPermName]['user_id'] ) && ( $userPerms[$pPermName]['user_id'] == $gBitUser->mUserId );
 						}
 					}
-	vd( $ret );
 				}
 */
 		}
