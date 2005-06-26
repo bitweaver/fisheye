@@ -76,6 +76,12 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 
 }
 
+if ( $gBitSystem->isPackageActive('categories') ) {
+	$cat_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
+	$cat_objid = $gContent->mContentId;
+	include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
+}
+
 $errors = $gContent->mErrors;
 $smarty->assign_by_ref('errors', $errors);
 
