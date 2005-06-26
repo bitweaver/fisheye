@@ -207,10 +207,6 @@ class FisheyeGallery extends FisheyeBase {
 			$this->mErrors[] = "You must specify a title for this image gallery";
 		}
 
-		if (empty($pStorageHash['edit'])) {
-			$pStorageHash['edit'] = (!empty($this->mInfo['data']) ? $this->mInfo['data'] : '');
-		}
-
 		$pStorageHash['content_type_guid'] = FISHEYEGALLERY_CONTENT_TYPE_GUID;
 
 		return (count($this->mErrors) == 0);
