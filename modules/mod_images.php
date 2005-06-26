@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.2.2.4 2005/06/25 09:55:00 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.2.2.5 2005/06/26 10:28:12 spiderr Exp $
 global $gQueryUserId, $module_rows, $module_params, $gContent;
 
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php' );
@@ -48,10 +48,13 @@ if( $display ) {
 			} elseif( $module_params['sort_mode'] == 'hits' ) {
 				$moduleTitle = 'Popular';
 			}
-			$moduleTitle .= ' Images';
-			$moduleTitle = tra( $moduleTitle );
+		} else {
+			$moduleTitle = 'Recent';
 		}
 
+		$moduleTitle .= ' Images';
+		$moduleTitle = tra( $moduleTitle );
+		
 		if( !empty( $listHash['user_id'] ) ) {
 			$moduleTitle .= ' '.tra('by').' '.BitUser::getDisplayName( TRUE, current( $images ) );
 		} elseif( !empty( $listHash['recent_users'] ) ) {
