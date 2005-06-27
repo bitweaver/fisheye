@@ -1,4 +1,9 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.1.1.1.2.1 2005/06/27 10:55:45 lsces Exp $
+ * @package fisheye
+ * @subpackage functions
+ */
 
 if( !$gContent->hasUserAccess( 'bit_p_view_fisheye' ) ) {
 	if ( !empty($_REQUEST['submit_answer'])) {	// User is attempting to authenticate themseleves to view this gallery
@@ -16,7 +21,9 @@ if( !$gContent->hasUserAccess( 'bit_p_view_fisheye' ) ) {
 	}
 }
 
-
+/**
+ * categories setup
+ */
 if( $gBitSystem->isPackageActive( 'categories' ) ) {
 	$cat_obj_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
 	$cat_objid =$gContent->mContentId;

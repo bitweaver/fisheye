@@ -1,10 +1,21 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.3 2005/06/27 10:55:45 lsces Exp $
+ * @package fisheye
+ */
+
+/**
+ * required setup
+ */
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php' );		// A gallery is composed of FisheyeImages
 
 define('FISHEYEGALLERY_CONTENT_TYPE_GUID', 'fisheyegallery' );
 
-// FisheyeBase extends LibertyAttachable, which this class doesn't need, but we need a common base class
-
+/**
+ * FisheyeBase extends LibertyAttachable, which this class doesn't need, but we need a common base class
+ *
+ * @package FisheyeGallery
+ */
 class FisheyeGallery extends FisheyeBase {
 	var $mGalleryId;		// tiki_fisheye_gallery.gallery_id
 	var $mItems;			// Array of FisheyeImage class instances which belong to this gallery

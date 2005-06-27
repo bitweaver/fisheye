@@ -1,4 +1,13 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/find_user.php,v 1.1.1.1.2.1 2005/06/27 10:55:45 lsces Exp $
+ * @package fisheye
+ * @subpackage functions
+ */
+
+/**
+ * required setup
+ */
 include_once( "../bit_setup_inc.php" );
 
 if (empty($gBitLoc['styleSheet'])) {

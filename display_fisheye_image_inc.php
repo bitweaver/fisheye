@@ -1,4 +1,9 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.1.1.1.2.1 2005/06/27 10:55:45 lsces Exp $
+ * @package fisheye
+ * @subpackage functions
+ */
 
 if( !$gContent->isValid() ) {
 	$gBitSystem->fatalError( "No image exists with the given ID" );
@@ -20,6 +25,9 @@ if( !$gContent->hasUserAccess( 'bit_p_view_fisheye' ) ) {
 	}
 }
 
+/**
+ * categories setup
+ */
 if( $gBitSystem->isPackageActive( 'categories' ) ) {
 	$cat_obj_type = FISHEYEIMAGE_CONTENT_TYPE_GUID;
 	$cat_objid = $gContent->mContentId;

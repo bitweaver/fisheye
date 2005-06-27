@@ -1,8 +1,19 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.3 2005/06/27 10:55:45 lsces Exp $
+ * @package fisheye
+ */
+
+/**
+ * required setup
+ */
 require_once( FISHEYE_PKG_PATH.'FisheyeBase.php' );
 
 define('FISHEYEIMAGE_CONTENT_TYPE_GUID', 'fisheyeimage');
 
+/**
+ * @package FisheyeImage
+ */
 class FisheyeImage extends FisheyeBase {
 	var $mImageId;
 

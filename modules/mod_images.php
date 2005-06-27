@@ -1,7 +1,15 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.2.2.5 2005/06/26 10:28:12 spiderr Exp $
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.2.2.6 2005/06/27 10:55:45 lsces Exp $
+ * @package fisheye
+ * @subpackage modules
+ */
+
 global $gQueryUserId, $module_rows, $module_params, $gContent;
 
+/**
+ * required setup
+ */
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php' );
 
 $image = new FisheyeImage();

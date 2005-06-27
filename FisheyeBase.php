@@ -1,6 +1,17 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.2 2005/06/27 10:55:45 lsces Exp $
+ * @package fisheye
+ */
+
+/**
+ * required setup
+ */
 require_once( LIBERTY_PKG_PATH.'LibertyAttachable.php' );		// FisheyeGallery base class
 
+/**
+ * @package FisheyeBase
+ */
 class FisheyeBase extends LibertyAttachable
 {
 	// Path of gallery images to get breadcrumbs
