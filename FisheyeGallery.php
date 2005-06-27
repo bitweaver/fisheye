@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.3 2005/06/27 10:55:45 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.4 2005/06/27 12:49:51 lsces Exp $
  * @package fisheye
  */
 
@@ -14,7 +14,8 @@ define('FISHEYEGALLERY_CONTENT_TYPE_GUID', 'fisheyegallery' );
 /**
  * FisheyeBase extends LibertyAttachable, which this class doesn't need, but we need a common base class
  *
- * @package FisheyeGallery
+ * @package fisheye
+ * @subpackage FisheyeGallery
  */
 class FisheyeGallery extends FisheyeBase {
 	var $mGalleryId;		// tiki_fisheye_gallery.gallery_id
