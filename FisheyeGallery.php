@@ -1,10 +1,22 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @package fisheye
+ */
+
+/**
+ * required setup
+ */
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php' );		// A gallery is composed of FisheyeImages
 
 define('FISHEYEGALLERY_CONTENT_TYPE_GUID', 'fisheyegallery' );
 
-// FisheyeBase extends LibertyAttachable, which this class doesn't need, but we need a common base class
-
+/**
+ * FisheyeBase extends LibertyAttachable, which this class doesn't need, but we need a common base class
+ *
+ * @package fisheye
+ * @subpackage FisheyeGallery
+ */
 class FisheyeGallery extends FisheyeBase {
 	var $mGalleryId;		// tiki_fisheye_gallery.gallery_id
 	var $mItems;			// Array of FisheyeImage class instances which belong to this gallery
@@ -207,10 +219,6 @@ class FisheyeGallery extends FisheyeBase {
 			$this->mErrors[] = "You must specify a title for this image gallery";
 		}
 
-		if (empty($pStorageHash['edit'])) {
-			$pStorageHash['edit'] = (!empty($this->mInfo['data']) ? $this->mInfo['data'] : '');
-		}
-
 		$pStorageHash['content_type_guid'] = FISHEYEGALLERY_CONTENT_TYPE_GUID;
 
 		return (count($this->mErrors) == 0);
@@ -345,7 +353,6 @@ class FisheyeGallery extends FisheyeBase {
 	}
 
 	function expunge( $pRecursiveDelete = FALSE ) {
-//$this->debug();
 		if( $this->isValid() ) {
 			$this->mDb->StartTrans();
 
@@ -380,7 +387,6 @@ class FisheyeGallery extends FisheyeBase {
 vd( $this->mErrors );
 			}
 		}
-//$this->debug(0);
 		return( count( $this->mErrors ) == 0 );
 	}
 

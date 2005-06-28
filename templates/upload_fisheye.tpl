@@ -28,7 +28,7 @@
 			</div>
 
 			<div class="row">
-				{formlabel label="Add This Image to These Galleries"}
+				{formlabel label="Add Image(s) to these Galleries"}
 				{forminput}
 					{foreach from=$galleryList key=galId item=gal}
 							<input type="checkbox" name="galleryAdditions[]" value="{$galId}"

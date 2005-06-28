@@ -1,6 +1,8 @@
 {strip}
 <ul>
+	{if $gBitUser->hasPermission('bit_p_view_fisheye')}
 	<li><a class="item" href="{$gBitLoc.FISHEYE_PKG_URL}list_galleries.php">{biticon ipackage=liberty iname=list iexplain="list galleries" iforce="icon"} {tr}List Galleries{/tr}</a></li>
+	{/if}
 	{if $gBitUser->hasPermission('bit_p_create_fisheye')}
 		<li><a class="item" href="{$gBitLoc.FISHEYE_PKG_URL}list_galleries.php?user_id={$gBitUser->mUserId}">{biticon ipackage=liberty iname=spacer iexplain="my galleries" iforce="icon"} {tr}My Galleries{/tr}</a></li>
 		<li><a class="item" href="{$gBitLoc.FISHEYE_PKG_URL}edit.php">{biticon ipackage=liberty iname=new iexplain="create galleries" iforce="icon"} {tr}Create a Gallery{/tr}</a></li>

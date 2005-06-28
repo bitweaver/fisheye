@@ -1,5 +1,13 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @package fisheye
+ * @subpackage functions
+ */
 
+/**
+ * required setup
+ */
 require_once( '../bit_setup_inc.php' );
 
 require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
@@ -21,6 +29,7 @@ if (!empty($_REQUEST['user_id']) && is_numeric($_REQUEST['user_id'])) {
 	$template = 'list_galleries.tpl';
 }
 
+$_REQUEST['thumbnail_size'] = $gBitSystem->getPreference( 'fisheye_list_thumbnail_size', 'small' );
 $galleryList = $gFisheyeGallery->getList( $_REQUEST );
 $smarty->assign_by_ref('galleryList', $galleryList);
 

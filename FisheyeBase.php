@@ -1,6 +1,18 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.4 2005/06/28 07:45:42 spiderr Exp $
+ * @package fisheye
+ */
+
+/**
+ * required setup
+ */
 require_once( LIBERTY_PKG_PATH.'LibertyAttachable.php' );		// FisheyeGallery base class
 
+/**
+ * @package fisheye
+ * @subpackage FisheyeBase
+ */
 class FisheyeBase extends LibertyAttachable
 {
 	// Path of gallery images to get breadcrumbs
@@ -202,7 +214,6 @@ class FisheyeBase extends LibertyAttachable
 							$ret = isset( $userPerms[$pPermName]['user_id'] ) && ( $userPerms[$pPermName]['user_id'] == $gBitUser->mUserId );
 						}
 					}
-	vd( $ret );
 				}
 */
 		}

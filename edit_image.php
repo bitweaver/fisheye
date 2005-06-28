@@ -1,5 +1,13 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @package fisheye
+ * @subpackage functions
+ */
 
+/**
+ * required setup
+ */
 require_once( '../bit_setup_inc.php' );
 
 require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
@@ -31,9 +39,6 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 			$_REQUEST['upload']['process_storage'] = STORAGE_IMAGE;
 	}
 	$_REQUEST['purge_from_galleries'] = TRUE;
-	if( !empty( $_REQUEST['rotate_image'] ) ) {
-		$gContent->rotateImage( $_REQUEST['rotate_image'] );
-	}
 	if( $gContent->store($_REQUEST) ) {
 		$gContent->addToGalleries( $_REQUEST['galleryAdditions'] );
 		// maybe we need to resize the original and generate thumbnails
@@ -42,6 +47,10 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		}
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();
+		}
+		// This needs to happen after the store, else the image width/hieght are screwed for people using the background thumbnailer
+		if( !empty( $_REQUEST['rotate_image'] ) ) {
+			$gContent->rotateImage( $_REQUEST['rotate_image'] );
 		}
 		if ( $gBitSystem->isPackageActive('categories') ) {
 			$cat_desc = $gLibertySystem->mContentTypes[FISHEYEIMAGE_CONTENT_TYPE_GUID]['content_description'].' by '.$gBitUser->getDisplayName( FALSE, array( 'real_name' => $gContent->mInfo['creator_real_name'], 'user' => $gContent->mInfo['creator_user'], 'user_id'=>$gContent->mInfo['user_id'] ) );
@@ -73,6 +82,12 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		}
 	}
 
+}
+
+if ( $gBitSystem->isPackageActive('categories') ) {
+	$cat_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
+	$cat_objid = $gContent->mContentId;
+	include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
 }
 
 $errors = $gContent->mErrors;

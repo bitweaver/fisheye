@@ -1,10 +1,18 @@
 <?php
-	// usage is simple:
-	//		php -q thumbnailer.php [# of thumbnails]
-	// example:
-	//		php -q thumbnailer.php 20
-	// suggested crontab entry runs the thumbnailer every minute:
-	//		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
+/**
+ * Thumbnailer
+ *
+ * usage is simple:
+ *		php -q thumbnailer.php [# of thumbnails]
+ * example:
+ *		php -q thumbnailer.php 20
+ * suggested crontab entry runs the thumbnailer every minute:
+ *		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
+ *
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.3 2005/06/28 07:45:42 spiderr Exp $
+ * @package fisheye
+ * @subpackage functions
+ */
 
 	global $gBitSystem, $_SERVER;
 
@@ -14,6 +22,9 @@
 	$_SERVER['HTTP_HOST'] = '';
 	$_SERVER['SERVER_NAME'] = '';
 
+/**
+ * required setup
+ */
 	if( !empty( $argc ) ) {
 		// reduce feedback for command line to keep log noise way down
 		define( 'BIT_PHP_ERROR_REPORTING', E_ERROR | E_PARSE );

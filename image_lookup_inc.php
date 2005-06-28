@@ -1,4 +1,10 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_lookup_inc.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @package fisheye
+ * @subpackage functions
+ */
+
 global $gContent, $gGallery;
 
 if (!empty($_REQUEST['image_id']) && is_numeric($_REQUEST['image_id'])) {
