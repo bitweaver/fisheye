@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.4 2005/06/27 12:49:51 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.5 2005/06/30 20:34:00 lsces Exp $
  * @package fisheye
  */
 
@@ -436,7 +436,7 @@ class FisheyeImage extends FisheyeBase {
 			$mid .= " ORDER BY ".$this->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
-		$query = "SELECT $distinct tfi.`image_id` AS `hash_key`, tfi.*, tf.*, tc.*, tfg.gallery_id, uu.`login`, uu.`real_name` $select
+		$query = "SELECT $distinct tfi.`image_id` AS `hash_key`, tfi.*, tf.*, tc.*, tfg.`gallery_id`, uu.`login`, uu.`real_name` $select
 				FROM `".BIT_DB_PREFIX."tiki_fisheye_image` tfi
 					INNER JOIN `".BIT_DB_PREFIX."tiki_attachments` ta ON(ta.`content_id`=tfi.`content_id`)
 					INNER JOIN `".BIT_DB_PREFIX."tiki_files` tf ON(ta.`foreign_id`=tf.`file_id`)
