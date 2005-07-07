@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.1 2005/06/27 10:55:44 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.2 2005/07/07 16:02:49 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -77,6 +77,15 @@ if (!empty($_REQUEST['save_image'])) {
 	}
 }
 
+// settings that are useful to know about at upload time
+$postMax = str_replace( 'M', '', ini_get( 'post_max_size' ));
+$uploadMax = str_replace( 'M', '', ini_get( 'upload_max_filesize' ) );
+
+if( $postMax < $uploadMax ) {
+	$uploadMax = $postMax;
+}
+
+
 if( $gBitSystem->isPackageActive( 'quota' ) ) {
 	require_once( QUOTA_PKG_PATH.'LibertyQuota.php' );
 	$quota = new LibertyQuota();
@@ -88,6 +97,10 @@ if( $gBitSystem->isPackageActive( 'quota' ) ) {
 		$q = $quota->getUserQuota( $gBitUser->mUserId );
 		$u = $quota->getUserUsage( $gBitUser->mUserId );
 		$smarty->assign('quotaMessage', tra( 'Your remaining disk quota is' ).' '.round(($q-$u)/1000000, 2).' '.tra('Megabytes') );
+		$qMegs = round( $q / 1000000 );
+		if( $qMegs < $uploadMax ) {
+			$uploadMax = $qMegs;
+		}
 	}
 }
 
@@ -96,14 +109,6 @@ $gFisheyeGallery = new FisheyeGallery();
 $listHash = array( 'user_id' => $gBitUser->mUserId, 'show_empty' => true );
 $galleryList = $gFisheyeGallery->getList( $listHash );
 $smarty->assign_by_ref('galleryList', $galleryList);
-
-// settings that are useful to know about at upload time
-$postMax = str_replace( 'M', '', ini_get( 'post_max_size' ));
-$uploadMax = str_replace( 'M', '', ini_get( 'upload_max_filesize' ) );
-
-if( $postMax < $uploadMax ) {
-	$uploadMax = $postMax;
-}
 
 $smarty->assign( 'uploadMax', $uploadMax );
 
@@ -114,7 +119,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	$getHash = array( 'user_id' => $pUserId, 'max_records' => 1, 'sort_mode' => 'created_desc' );
 	if( $upList = $gal->getList( $getHash ) ) {
 		$ret = key( $upList );
-	} else { 
+	} else {
 		$galleryHash = array( 'title' => $pNewName );
 		if( $gal->store( $galleryHash ) ) {
 			$ret = $gal->mGalleryId;
@@ -154,8 +159,8 @@ function liberty_process_archive( &$pFileHash ) {
 			case 'x-tgz':
 			case 'x-tar':
 			case 'tar':
-				switch( $upExt ) { 
-					case 'gz': 
+				switch( $upExt ) {
+					case 'gz':
 					case 'tgz': $compressFlag = '-z'; break;
 					case 'bz2': $compressFlag = '-j'; break;
 					default: $compressFlag = ''; break;
