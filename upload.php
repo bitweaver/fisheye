@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.2 2005/07/07 16:02:49 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.3 2005/07/07 17:21:58 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -106,7 +106,7 @@ if( $gBitSystem->isPackageActive( 'quota' ) ) {
 
 // Get a list of all existing galleries
 $gFisheyeGallery = new FisheyeGallery();
-$listHash = array( 'user_id' => $gBitUser->mUserId, 'show_empty' => true );
+$listHash = array( 'user_id' => $gBitUser->mUserId, 'show_empty' => true, 'max_records'=>-1, 'no_thumbnails'=>TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gFisheyeGallery->getList( $listHash );
 $smarty->assign_by_ref('galleryList', $galleryList);
 
