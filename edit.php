@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.3 2005/07/07 16:47:04 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.4 2005/07/07 16:48:22 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -107,7 +107,7 @@ $errors = (!empty($gContent->mErrors) ? $gContent->mErrors : array());
 $smarty->assign_by_ref('errors', $errors);
 
 $smarty->assign_by_ref( 'parentGalleries', $gContent->getParentGalleries() );
-$getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->mContentId, 'max_records' => -1, 'no_thumbnails' => TRUE );
+$getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->mContentId, 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gContent->getList( $getHash );
 $smarty->assign_by_ref('galleryList', $galleryList);
 
