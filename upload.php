@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.3 2005/07/07 17:21:58 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.4 2005/07/08 18:56:11 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -137,7 +137,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 function liberty_process_archive( &$pFileHash ) {
 	$cwd = getcwd();
 	$dir = dirname( $pFileHash['tmp_name'] );
-	$upExt = substr( $pFileHash['name'], (strrpos( $pFileHash['name'], '.' ) + 1) );
+	$upExt = strtolower( substr( $pFileHash['name'], (strrpos( $pFileHash['name'], '.' ) + 1) ) );
 	$baseDir = $dir.'/';
 	if( is_uploaded_file( $pFileHash['tmp_name'] ) ) {
 		global $gBitUser;
@@ -149,6 +149,7 @@ function liberty_process_archive( &$pFileHash ) {
 		chdir( $destDir );
 		list( $mimeType, $mimeExt ) = split( '/', $pFileHash['type'] );
 		switch( $mimeExt ) {
+			case 'x-rar-compressed';
 			case 'x-rar';
 				$shellResult = shell_exec( "rar x -w\"$destDir\" $pFileHash[tmp_name] " );
 				break;
@@ -167,14 +168,21 @@ function liberty_process_archive( &$pFileHash ) {
 				}
 				$shellResult = shell_exec( "tar -x $compressFlag -f $pFileHash[tmp_name]  -C \"$destDir\"" );
 				break;
+			case 'x-zip-compressed':
 			case 'x-zip':
 			case 'zip':
 				$shellResult = shell_exec( "unzip $pFileHash[tmp_name] -d \"$destDir\"" );
 				break;
 			case 'x-stuffit':
 			case 'stuffit':
-			default:
 				$shellResult = shell_exec( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
+				break;
+			default:
+				if( $upExt == 'zip' ) {
+					$shellResult = shell_exec( "unzip $pFileHash[tmp_name] -d \"$destDir\"" );
+				} elseif( $upExt == 'rar' ) {
+					$shellResult = shell_exec( "rar x -w\"$destDir\" $pFileHash[tmp_name] " );
+				}
 				break;
 		}
 	}
@@ -237,7 +245,6 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 					if( empty( $scanFile['type'] ) ) {
 						$scanFile['type'] = ( "image/unknown" );
 					}
-
 					$newImage = new FisheyeImage();
 					$imageHash = array( 'upload' => $scanFile );
 					if( $newImage->store( $imageHash ) ) {
