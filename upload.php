@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.5 2005/07/08 20:01:34 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.6 2005/07/08 20:36:50 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -45,7 +45,7 @@ if (!empty($_REQUEST['save_image'])) {
 		$upErrors = fisheye_process_archive( $upArchives[$key], $gContent, TRUE );
 	}
 
-	$order = 10;
+	$order = 100;
 	foreach( array_keys( $upImages ) as $key ) {
 		if( ($upImages[$key]['size'] > 0) && is_uploaded_file( $upImages[$key]['tmp_name'] ) ) {
 			// make a copy for each image we need to store
@@ -209,7 +209,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 	}
 
 	if( $archiveDir = opendir( $destDir ) ) {
-		$order = 10;
+		$order = 100;
 		while( $fileName = readdir($archiveDir) ) {
 			$sortedNames[] = $fileName;
 		}
