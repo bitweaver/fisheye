@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.4 2005/06/27 12:49:51 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.5 2005/07/08 20:01:34 spiderr Exp $
  * @package fisheye
  */
 
@@ -342,11 +342,11 @@ class FisheyeGallery extends FisheyeBase {
 		return $ret;
 	}
 
-	function addItem( $pContentId ) {
+	function addItem( $pContentId, $pPosition=NULL ) {
 		$ret = FALSE;
 		if( $this->isValid() && is_numeric( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId ) ) {
-			$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`) VALUES (?,?)";
-			$rs = $this->query($query, array($pContentId, $this->mContentId ) );
+			$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`, `position`) VALUES (?,?,?)";
+			$rs = $this->query($query, array($pContentId, $this->mContentId, $pPosition ) );
 			$ret = TRUE;
 		}
 		return $ret;

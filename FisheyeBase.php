@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.3 2005/06/27 12:49:51 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.4 2005/07/08 20:01:33 spiderr Exp $
  * @package fisheye
  */
 
@@ -108,7 +108,7 @@ class FisheyeBase extends LibertyAttachable
 	}
 
 
-	function addToGalleries( $pGalleryArray ) {
+	function addToGalleries( $pGalleryArray, $pPosition=NULL ) {
 		if( $this->isValid() ) {
 			$inGalleries = $this->GetAssoc( "SELECT `gallery_id`,`gallery_content_id` FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg ON (tfgim.`gallery_content_id`=tfg.`content_id`) WHERE `item_content_id` = ?", array( $this->mContentId ) );
 			$galleries = array();
@@ -122,7 +122,7 @@ class FisheyeBase extends LibertyAttachable
 						}
 						if( $galleries[$galleryId]->isValid() ) {
 							if( $galleries[$galleryId]->hasUserPermission( 'bit_p_edit_fisheye' ) ) {
-								$galleries[$galleryId]->addItem( $this->mContentId );
+								$galleries[$galleryId]->addItem( $this->mContentId, $pPosition );
 							} else {
 								$this->mErrors[] = "You do not have permission to attach ".$this->getTitle()." to ".$galleries[$galleryId]->getTitle();
 							}

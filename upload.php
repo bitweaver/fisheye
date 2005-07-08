@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.4 2005/07/08 18:56:11 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.5 2005/07/08 20:01:34 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -45,6 +45,7 @@ if (!empty($_REQUEST['save_image'])) {
 		$upErrors = fisheye_process_archive( $upArchives[$key], $gContent, TRUE );
 	}
 
+	$order = 10;
 	foreach( array_keys( $upImages ) as $key ) {
 		if( ($upImages[$key]['size'] > 0) && is_uploaded_file( $upImages[$key]['tmp_name'] ) ) {
 			// make a copy for each image we need to store
@@ -60,7 +61,8 @@ if (!empty($_REQUEST['save_image'])) {
 				array_merge( $upErrors, array_values( $image->mErrors ) );
 			}
 
-			$image->addToGalleries( $_REQUEST['galleryAdditions'] );
+			$image->addToGalleries( $_REQUEST['galleryAdditions'], $order );
+			$order += 10;
 		}
 	}
 
@@ -207,7 +209,12 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 	}
 
 	if( $archiveDir = opendir( $destDir ) ) {
+		$order = 10;
 		while( $fileName = readdir($archiveDir) ) {
+			$sortedNames[] = $fileName;
+		}
+		sort( $sortedNames );
+		foreach( $sortedNames as $fileName ) {
 			if( !preg_match( '/^\./', $fileName ) ) {
 				$scanFile = array(
 					'name' => $fileName,
@@ -228,7 +235,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 							$newGallery->addToGalleries( $_REQUEST['galleryAdditions'] );
 						}
 						if( is_object( $pParentGallery ) ) {
-							$pParentGallery->addItem( $newGallery->mContentId );
+							$pParentGallery->addItem( $newGallery->mContentId, $order );
 						}
 						//recurse down in!
 						$errors = array_merge( $errors, fisheye_process_archive( $scanFile, $newGallery ) );
@@ -261,6 +268,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 						$errors = array_merge( $errors, array_values( $newImage->mErrors ) );
 					}
 				}
+				$order += 10;
 			}
 		}
 	}
