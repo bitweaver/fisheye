@@ -98,7 +98,7 @@
 						{/legend}
 					{/if}
 
-					{if $gBitSystemPrefs.package_nexus eq 'y'}
+					{if $gBitSystem->isPackageActive( 'nexus' )}
 						{legend legend="Insert Link in Menu"}
 							{include file="bitpackage:nexus/insert_menu_item_inc.tpl"}
 						{/legend}
