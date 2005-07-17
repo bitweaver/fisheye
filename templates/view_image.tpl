@@ -24,11 +24,11 @@
 		{box class="box image"}
 			<img src="{$gContent->mInfo.display_url}{$refresh}" alt="{$gContent->mInfo.title|default:$gContent->mInfo.image_file.filename}" title="{$gContent->mInfo.data|default:$gContent->mInfo.filename}" />
 
-			{if $gBitSystemPrefs.fisheye_image_list_title eq 'y'}
+			{if $gBitSystem->isFeatureActive( 'fisheye_image_list_title' )}
 				<h1>{$gContent->mInfo.title|default:$gContent->mInfo.image_file.filename}</h1>
 			{/if}
 
-			{if $gBitSystemPrefs.fisheye_image_list_description eq 'y' and $gContent->mInfo.data ne ''}
+			{if $gBitSystem->isFeatureActive( 'fisheye_image_list_description' ) and $gContent->mInfo.data ne ''}
 				<p>{$gContent->mInfo.data}</p>
 			{/if}
 		{/box}

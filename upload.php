@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.3 2005/07/17 17:36:02 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -45,6 +45,7 @@ if (!empty($_REQUEST['save_image'])) {
 		$upErrors = fisheye_process_archive( $upArchives[$key], $gContent, TRUE );
 	}
 
+	$order = 100;
 	foreach( array_keys( $upImages ) as $key ) {
 		if( ($upImages[$key]['size'] > 0) && is_uploaded_file( $upImages[$key]['tmp_name'] ) ) {
 			// make a copy for each image we need to store
@@ -60,7 +61,8 @@ if (!empty($_REQUEST['save_image'])) {
 				array_merge( $upErrors, array_values( $image->mErrors ) );
 			}
 
-			$image->addToGalleries( $_REQUEST['galleryAdditions'] );
+			$image->addToGalleries( $_REQUEST['galleryAdditions'], $order );
+			$order += 10;
 		}
 	}
 
@@ -77,6 +79,15 @@ if (!empty($_REQUEST['save_image'])) {
 	}
 }
 
+// settings that are useful to know about at upload time
+$postMax = str_replace( 'M', '', ini_get( 'post_max_size' ));
+$uploadMax = str_replace( 'M', '', ini_get( 'upload_max_filesize' ) );
+
+if( $postMax < $uploadMax ) {
+	$uploadMax = $postMax;
+}
+
+
 if( $gBitSystem->isPackageActive( 'quota' ) ) {
 	require_once( QUOTA_PKG_PATH.'LibertyQuota.php' );
 	$quota = new LibertyQuota();
@@ -88,22 +99,18 @@ if( $gBitSystem->isPackageActive( 'quota' ) ) {
 		$q = $quota->getUserQuota( $gBitUser->mUserId );
 		$u = $quota->getUserUsage( $gBitUser->mUserId );
 		$smarty->assign('quotaMessage', tra( 'Your remaining disk quota is' ).' '.round(($q-$u)/1000000, 2).' '.tra('Megabytes') );
+		$qMegs = round( $q / 1000000 );
+		if( $qMegs < $uploadMax ) {
+			$uploadMax = $qMegs;
+		}
 	}
 }
 
 // Get a list of all existing galleries
 $gFisheyeGallery = new FisheyeGallery();
-$listHash = array( 'user_id' => $gBitUser->mUserId, 'show_empty' => true );
+$listHash = array( 'user_id' => $gBitUser->mUserId, 'show_empty' => true, 'max_records'=>-1, 'no_thumbnails'=>TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gFisheyeGallery->getList( $listHash );
 $smarty->assign_by_ref('galleryList', $galleryList);
-
-// settings that are useful to know about at upload time
-$postMax = str_replace( 'M', '', ini_get( 'post_max_size' ));
-$uploadMax = str_replace( 'M', '', ini_get( 'upload_max_filesize' ) );
-
-if( $postMax < $uploadMax ) {
-	$uploadMax = $postMax;
-}
 
 $smarty->assign( 'uploadMax', $uploadMax );
 
@@ -114,7 +121,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	$getHash = array( 'user_id' => $pUserId, 'max_records' => 1, 'sort_mode' => 'created_desc' );
 	if( $upList = $gal->getList( $getHash ) ) {
 		$ret = key( $upList );
-	} else { 
+	} else {
 		$galleryHash = array( 'title' => $pNewName );
 		if( $gal->store( $galleryHash ) ) {
 			$ret = $gal->mGalleryId;
@@ -132,7 +139,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 function liberty_process_archive( &$pFileHash ) {
 	$cwd = getcwd();
 	$dir = dirname( $pFileHash['tmp_name'] );
-	$upExt = substr( $pFileHash['name'], (strrpos( $pFileHash['name'], '.' ) + 1) );
+	$upExt = strtolower( substr( $pFileHash['name'], (strrpos( $pFileHash['name'], '.' ) + 1) ) );
 	$baseDir = $dir.'/';
 	if( is_uploaded_file( $pFileHash['tmp_name'] ) ) {
 		global $gBitUser;
@@ -144,6 +151,7 @@ function liberty_process_archive( &$pFileHash ) {
 		chdir( $destDir );
 		list( $mimeType, $mimeExt ) = split( '/', $pFileHash['type'] );
 		switch( $mimeExt ) {
+			case 'x-rar-compressed';
 			case 'x-rar';
 				$shellResult = shell_exec( "rar x -w\"$destDir\" $pFileHash[tmp_name] " );
 				break;
@@ -154,22 +162,29 @@ function liberty_process_archive( &$pFileHash ) {
 			case 'x-tgz':
 			case 'x-tar':
 			case 'tar':
-				switch( $upExt ) { 
-					case 'gz': 
+				switch( $upExt ) {
+					case 'gz':
 					case 'tgz': $compressFlag = '-z'; break;
 					case 'bz2': $compressFlag = '-j'; break;
 					default: $compressFlag = ''; break;
 				}
 				$shellResult = shell_exec( "tar -x $compressFlag -f $pFileHash[tmp_name]  -C \"$destDir\"" );
 				break;
+			case 'x-zip-compressed':
 			case 'x-zip':
 			case 'zip':
 				$shellResult = shell_exec( "unzip $pFileHash[tmp_name] -d \"$destDir\"" );
 				break;
 			case 'x-stuffit':
 			case 'stuffit':
-			default:
 				$shellResult = shell_exec( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
+				break;
+			default:
+				if( $upExt == 'zip' ) {
+					$shellResult = shell_exec( "unzip $pFileHash[tmp_name] -d \"$destDir\"" );
+				} elseif( $upExt == 'rar' ) {
+					$shellResult = shell_exec( "rar x -w\"$destDir\" $pFileHash[tmp_name] " );
+				}
 				break;
 		}
 	}
@@ -194,7 +209,12 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 	}
 
 	if( $archiveDir = opendir( $destDir ) ) {
+		$order = 100;
 		while( $fileName = readdir($archiveDir) ) {
+			$sortedNames[] = $fileName;
+		}
+		sort( $sortedNames );
+		foreach( $sortedNames as $fileName ) {
 			if( !preg_match( '/^\./', $fileName ) ) {
 				$scanFile = array(
 					'name' => $fileName,
@@ -215,7 +235,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 							$newGallery->addToGalleries( $_REQUEST['galleryAdditions'] );
 						}
 						if( is_object( $pParentGallery ) ) {
-							$pParentGallery->addItem( $newGallery->mContentId );
+							$pParentGallery->addItem( $newGallery->mContentId, $order );
 						}
 						//recurse down in!
 						$errors = array_merge( $errors, fisheye_process_archive( $scanFile, $newGallery ) );
@@ -232,7 +252,6 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 					if( empty( $scanFile['type'] ) ) {
 						$scanFile['type'] = ( "image/unknown" );
 					}
-
 					$newImage = new FisheyeImage();
 					$imageHash = array( 'upload' => $scanFile );
 					if( $newImage->store( $imageHash ) ) {
@@ -249,6 +268,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 						$errors = array_merge( $errors, array_values( $newImage->mErrors ) );
 					}
 				}
+				$order += 10;
 			}
 		}
 	}

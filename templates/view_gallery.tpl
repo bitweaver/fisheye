@@ -48,10 +48,10 @@
 						<a href="{$gContent->mItems[ix]->getDisplayUrl()|escape}">
 							<img class="thumb" src="{$gContent->mItems[ix]->getThumbnailUrl()}" alt="{$gContent->mItems[ix]->mInfo.title|default:'image'}" />
 						</a>
-						{if $gBitSystemPrefs.fisheye_gallery_list_image_titles eq 'y'}
+						{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
 							<h2>{$gContent->mItems[ix]->mInfo.title}</h2>
 						{/if}
-						{if $gBitSystemPrefs.fisheye_gallery_list_image_descriptions eq 'y'}
+						{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_descriptions' )}
 							<p>{$gContent->mImages[ix]->mInfo.data}</p>
 						{/if}
 					{/box}

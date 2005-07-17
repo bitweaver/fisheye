@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.3 2005/07/17 17:36:02 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -97,7 +97,7 @@ $gContent->loadParentGalleries();
 
 // Get a list of all existing galleries
 $gFisheyeGallery = new FisheyeGallery();
-$listHash = array( 'user_id'=>$gContent->mInfo['user_id'], 'max_records' => -1 );
+$listHash = array( 'user_id'=>$gContent->mInfo['user_id'], 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gFisheyeGallery->getList( $listHash );
 $smarty->assign_by_ref('galleryList', $galleryList);
 
