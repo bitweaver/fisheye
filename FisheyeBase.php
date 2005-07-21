@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.5 2005/07/21 18:03:02 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.6 2005/07/21 19:13:25 spiderr Exp $
  * @package fisheye
  */
 
@@ -208,7 +208,9 @@ class FisheyeBase extends LibertyAttachable
 							$ret = FALSE;
 						}
 						if( !empty( $sec['access_answer'] ) ) {
-							$ret = $this->validateUserAccess( NULL, $sec );
+							if( !($ret = $this->validateUserAccess( NULL, $sec )) && empty( $this->mInfo['access_questions'] ) ) {
+								$this->mInfo = array_merge( $this->mInfo, $sec );
+							}
 						}
 					}
 				} else {

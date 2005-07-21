@@ -3,7 +3,7 @@
 	{formfeedback error=$failedLogin}
 	<h2>{$gContent->mInfo.title}</h2>
 	
-	This gallery has been password protected by the owner. "{$PHP_SELF}"
+	This gallery has been password protected by the owner.
 	
 	{form ifile="$PHP_SELF" legend="Authenticate"}
 	<input type="hidden" name="content_id" value="{$gContent->mContentId}" />
