@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.5 2005/06/30 20:34:00 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.6 2005/07/21 18:03:02 spiderr Exp $
  * @package fisheye
  */
 
@@ -45,8 +45,9 @@ class FisheyeImage extends FisheyeBase {
 				$bindVars = array($this->mContentId);
 			}
 			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-				$gateSql = ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer`  ';
-				$mid = " LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs ON ( tc.`content_id`=tcs.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON ( tcs.`security_id`=ts.`security_id` ) ".$mid;
+				$gateSql = ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
+				$mid = " LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs ON ( tc.`content_id`=tcs.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON ( tcs.`security_id`=ts.`security_id` )
+ 						".$mid;
 			}
 			$sql = "SELECT tfi.*, tc.* $gateSql
 						, uue.`login` AS `modifier_user`, uue.`real_name` AS `modifier_real_name`
@@ -63,6 +64,18 @@ class FisheyeImage extends FisheyeBase {
 
 				$this->mInfo['creator'] = (isset( $rs->fields['creator_real_name'] ) ? $rs->fields['creator_real_name'] : $rs->fields['creator_user'] );
 				$this->mInfo['editor'] = (isset( $rs->fields['modifier_real_name'] ) ? $rs->fields['modifier_real_name'] : $rs->fields['modifier_user'] );
+
+				if( $gBitSystem->isPackageActive( 'gatekeeper' ) && empty( $this->mInfo['security_id'] ) ) {
+					// check to see if this image is in a protected gallery
+					// this burns an extra select but avoids an big and gnarly LEFT JOIN sequence that may be hard to optimize on all DB's
+					$query = "SELECT ts.* FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim
+								INNER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tsm ON(tfgim.`gallery_content_id`=tsm.`content_id` )
+								INNER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON(tsm.`security_id`=ts.`security_id` )
+							  WHERE tfgim.`item_content_id`=?";
+					if( $grs = $this->query($query, array( $this->mContentId ) ) ) {
+						$this->mInfo = array_merge( $this->mInfo, $grs->fields );
+					}
+				}
 
 				LibertyAttachable::load();
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.4 2005/07/08 20:01:33 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.5 2005/07/21 18:03:02 spiderr Exp $
  * @package fisheye
  */
 
@@ -169,12 +169,16 @@ class FisheyeBase extends LibertyAttachable
 	}
 
 
-	function validateUserAccess( $pAnswer=NULL ) {
+	function validateUserAccess( $pAnswer=NULL, $pInfo=NULL ) {
+		if( empty( $pInfo ) ) {
+			$pInfo = $this->mInfo;
+		}
+
 		$ret = FALSE;
-		if( isset( $_SESSION['gatekeeper_security'][$this->mInfo['security_id']] ) && ($_SESSION['gatekeeper_security'][$this->mInfo['security_id']] == md5( $this->mInfo['access_answer'] )) ) {
+		if( isset( $_SESSION['gatekeeper_security'][$pInfo['security_id']] ) && ($_SESSION['gatekeeper_security'][$pInfo['security_id']] == md5( $pInfo['access_answer'] )) ) {
 			$ret = TRUE;
-		} elseif( strtoupper( trim( $pAnswer ) ) == strtoupper( trim($this->mInfo['access_answer']) ) ) {
-			$_SESSION['gatekeeper_security'][$this->mInfo['security_id']] = md5( $this->mInfo['access_answer'] );
+		} elseif( strtoupper( trim( $pAnswer ) ) == strtoupper( trim($pInfo['access_answer']) ) ) {
+			$_SESSION['gatekeeper_security'][$pInfo['security_id']] = md5( $pInfo['access_answer'] );
 			$ret = TRUE;
 		}
 		return $ret;
@@ -190,32 +194,55 @@ class FisheyeBase extends LibertyAttachable
 		// assume true for now
 		$ret = FALSE;
 		if( $this->isValid() && !($ret = $this->isOwner())  && !($ret = $gBitUser->isAdmin()) ) {
-			if( !($ret = empty($this->mInfo['security_id'] ) ) ) {
-				// order matters here!
-				if( $this->mInfo['is_hidden'] == 'y' ) {
+			if( defined( 'POSTGRESQL_CONTRIB' ) ) {
+				// This code makes use of the badass /usr/share/pgsql/contrib/tablefunc.sql
+				// contribution that you have to install like: psql foo < /usr/share/pgsql/contrib/tablefunc.sql
+				$query = "SELECT ts.`security_id` AS hash_key, ts.*, tcsm.*
+						FROM `".BIT_DB_PREFIX."tiki_content_security_map` tcsm INNER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON ( ts.`security_id`=tcsm.`security_id` )
+						WHERE content_id IN (SELECT item_content_id FROM connectby('tiki_fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', ?, 0, '~')  AS t(item_content_id int, gallery_content_id int, level int, branch text))";
+				if( $security = $this->GetAssoc( $query, array( $this->mContentId ) ) ) {
+					// we will assume true here since the prevention cases can repeatedly flag FALSE
 					$ret = TRUE;
-				}
-				if( $this->mInfo['is_private'] == 'y' ) {
-					$ret = $this->isOwner();
-				}
-				if( !empty( $this->mInfo['access_answer'] ) ) {
-					$ret = $this->validateUserAccess();
-				}
-			} else {
-				$ret = $gBitUser->hasPermission( $pPermName );
-			}
-/*
-			if( $pPermName == 'bit_p_edit_fisheye' ) {
-				if( !($ret = $this->isOwner()) ) {
-					global $gBitUser;
-					if( !($ret = $gBitUser->isAdmin()) ) {
-						if( $this->loadPermissions() ) {
-							$userPerms = $this->getUserPermissions( $gBitUser->mUserId );
-							$ret = isset( $userPerms[$pPermName]['user_id'] ) && ( $userPerms[$pPermName]['user_id'] == $gBitUser->mUserId );
+					foreach( $security AS $secId => $sec ) {
+						if( $sec['is_private'] ) {
+							$ret = FALSE;
+						}
+						if( !empty( $sec['access_answer'] ) ) {
+							$ret = $this->validateUserAccess( NULL, $sec );
 						}
 					}
+				} else {
+					$ret = $gBitUser->hasPermission( $pPermName );
 				}
+			} else {
+
+				if( !($ret = empty($this->mInfo['security_id'] ) ) ) {
+					// order matters here!
+					if( $this->mInfo['is_hidden'] == 'y' ) {
+						$ret = TRUE;
+					}
+					if( $this->mInfo['is_private'] == 'y' ) {
+						$ret = $this->isOwner();
+					}
+					if( !empty( $this->mInfo['access_answer'] ) ) {
+						$ret = $this->validateUserAccess();
+					}
+				} else {
+					$ret = $gBitUser->hasPermission( $pPermName );
+				}
+/*
+				if( $pPermName == 'bit_p_edit_fisheye' ) {
+					if( !($ret = $this->isOwner()) ) {
+						global $gBitUser;
+						if( !($ret = $gBitUser->isAdmin()) ) {
+							if( $this->loadPermissions() ) {
+								$userPerms = $this->getUserPermissions( $gBitUser->mUserId );
+								$ret = isset( $userPerms[$pPermName]['user_id'] ) && ( $userPerms[$pPermName]['user_id'] == $gBitUser->mUserId );
+							}
+						}
+					}
 */
+			}
 		}
 		return( $ret );
 	}

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.2.2.6 2005/06/27 10:55:45 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.2.2.7 2005/07/21 18:03:03 spiderr Exp $
  * @package fisheye
  * @subpackage modules
  */
@@ -20,7 +20,7 @@ $listHash = $module_params;
 if( !empty( $gContent ) && $gContent->mInfo['content_type_guid'] == FISHEYEGALLERY_CONTENT_TYPE_GUID ) {
 	$displayCount = empty( $gContent->mItems ) ? 0 : count( $gContent->mItems );
 	$thumbCount = $gContent->mInfo['rows_per_page'] * $gContent->mInfo["cols_per_page"];
-	$listHash['gallery_id'] = $_REQUEST['gallery_id'];
+	$listHash['gallery_id'] = $gContent->mGalleryId;
 	$display = $displayCount >= $thumbCount;
 }
 
@@ -62,7 +62,7 @@ if( $display ) {
 
 		$moduleTitle .= ' Images';
 		$moduleTitle = tra( $moduleTitle );
-		
+
 		if( !empty( $listHash['user_id'] ) ) {
 			$moduleTitle .= ' '.tra('by').' '.BitUser::getDisplayName( TRUE, current( $images ) );
 		} elseif( !empty( $listHash['recent_users'] ) ) {
