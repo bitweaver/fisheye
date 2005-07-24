@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.5 2005/07/08 20:01:34 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.6 2005/07/24 01:20:22 wolff_borg Exp $
  * @package fisheye
  */
 
@@ -500,7 +500,7 @@ vd( $this->mErrors );
 				foreach( array_keys( $ret ) as $galleryId ) {
 					$ret[$galleryId]['display_url'] = $this->getDisplayUrl( $galleryId );
 					if( $thumbImage = $this->getThumbnailImage( $ret[$galleryId]['content_id'], $ret[$galleryId]['preview_content_id'], $ret[$galleryId]['preview_content_type_guid'] ) ) {
-						$ret[$galleryId]['thumbnail_url'] = $thumbImage->getThumbnailUrl( $thumbsize );
+						$ret[$galleryId]['thumbnail_url'] = $this->getThumbnailUrl( $thumbsize );
 					} elseif( !empty( $pListHash['show_empty'] ) ) {
 						$ret[$galleryId]['thumbnail_url'] = FISHEYE_PKG_URL.'image/no_image.png';
 					} else {
