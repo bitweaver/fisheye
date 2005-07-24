@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.8 2005/07/24 20:32:53 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.9 2005/07/24 22:58:31 spiderr Exp $
  * @package fisheye
  */
 
@@ -262,10 +262,11 @@ class FisheyeGallery extends FisheyeBase {
 				$pThumbnailContentId = $this->mInfo['preview_content_id'];
 			} else {
 				if( $this->mDb->isAdvancedPostgresEnabled() ) {
-					$query = "SELECT tc.content_id
-							FROM connectby('`".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_gallery_content_id` int, `level` int, `branch` text)
+					$query = "SELECT COALESCE( tfg.`preview_content_id`, tc.`content_id` )
+							FROM connectby('`".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
 								INNER JOIN tiki_content tc ON(content_id=cb_item_content_id)
-							WHERE tc.`content_type_guid`='fisheyeimage' ORDER BY RANDOM()";
+								LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcsm ON (tcsm.`content_id`=tc.`content_id`), `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg
+							WHERE tc.`content_type_guid`='fisheyeimage' AND tcsm.`security_id` IS NULL AND `cb_parent_content_id`=tfg.`content_id` ORDER BY RANDOM()";
 					if( $pThumbnailContentId = $this->getOne( $query, array( $pContentId ) ) ) {
 						$pThumbnailContentType = 'fisheyeimage';
 					}
