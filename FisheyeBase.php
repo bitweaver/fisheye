@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.8 2005/07/24 20:32:53 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.9 2005/07/24 22:45:00 spiderr Exp $
  * @package fisheye
  */
 
@@ -239,6 +239,9 @@ $gBitDb->setFatalActive( TRUE );
 						}
 						if( $node['security_id'] ) {
 							$ret = FALSE;
+							if( $node['is_hidden'] ) {
+								$ret = TRUE;
+							}
 							if( $node['is_private'] ) {
 								$ret = $this->isOwner();
 							}
