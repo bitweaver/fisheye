@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.6 2005/07/21 19:13:25 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.7 2005/07/24 18:47:52 spiderr Exp $
  * @package fisheye
  */
 
@@ -148,13 +148,32 @@ class FisheyeBase extends LibertyAttachable
 			$pItemContentId = $this->mContentId;
 		}
 		$ret = FALSE;
-		if ($this->mGalleryId && $pGalleryContentId) {
-			$sql = "SELECT count(`item_content_id`) as `item_count`
-					FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`
-					WHERE `gallery_content_id` = ? AND `item_content_id` = ?";
-			$rs = $this->query($sql, array($pGalleryContentId, $pItemContentId));
-			if ($rs->fields['item_count'] > 0) {
-				$ret = TRUE;
+		if ( is_numeric( $this->mGalleryId ) && is_numeric( $pGalleryContentId ) ) {
+
+			if( defined( 'POSTGRESQL_CONTRIB' ) ) {
+				global $gBitDb, $gBitSmarty;
+				// This code makes use of the badass /usr/share/pgsql/contrib/tablefunc.sql
+				// contribution that you have to install like: psql foo < /usr/share/pgsql/contrib/tablefunc.sql
+
+				// This code pulls all branches for the current node and determines if there is a path from this content to the root
+				// without hitting a security_id. If there is clear path it returns TRUE. If there is a security_id, then
+				// it determines if the current user has permission
+				$query = "SELECT branch,level,cb_item_content_id,cb_gallery_content_id
+						  FROM connectby('`".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`', '`gallery_content_id`', '`item_content_id`', ?, 0, '/') AS t(`cb_gallery_content_id` int,`cb_item_content_id` int, `level` int, `branch` text)
+						  WHERE `cb_gallery_content_id`=?
+						  ORDER BY branch
+						";
+				if ( $this->GetOne($query, array( $pGalleryContentId, $pItemContentId ) ) ) {
+					$ret = TRUE;
+				}
+			} else {
+				$sql = "SELECT count(`item_content_id`) as `item_count`
+						FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`
+						WHERE `gallery_content_id` = ? AND `item_content_id` = ?";
+				$rs = $this->query($sql, array($pGalleryContentId, $pItemContentId));
+				if ($rs->fields['item_count'] > 0) {
+					$ret = TRUE;
+				}
 			}
 		}
 		return $ret;
@@ -195,24 +214,51 @@ class FisheyeBase extends LibertyAttachable
 		$ret = FALSE;
 		if( $this->isValid() && !($ret = $this->isOwner())  && !($ret = $gBitUser->isAdmin()) ) {
 			if( defined( 'POSTGRESQL_CONTRIB' ) ) {
+				global $gBitDb, $gBitSmarty;
 				// This code makes use of the badass /usr/share/pgsql/contrib/tablefunc.sql
 				// contribution that you have to install like: psql foo < /usr/share/pgsql/contrib/tablefunc.sql
-				$query = "SELECT ts.`security_id` AS hash_key, ts.*, tcsm.*
-						FROM `".BIT_DB_PREFIX."tiki_content_security_map` tcsm INNER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON ( ts.`security_id`=tcsm.`security_id` )
-						WHERE content_id IN (SELECT item_content_id FROM connectby('tiki_fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', ?, 0, '~')  AS t(item_content_id int, gallery_content_id int, level int, branch text))";
-				if( $security = $this->GetAssoc( $query, array( $this->mContentId ) ) ) {
+
+				// This code pulls all branches for the current node and determines if there is a path from this content to the root
+				// without hitting a security_id. If there is clear path it returns TRUE. If there is a security_id, then
+				// it determines if the current user has permission
+				$query = "SELECT branch,level,cb_item_content_id,cb_gallery_content_id,ts.*
+						  FROM connectby('`".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`', '`gallery_content_id`', '`item_content_id`', ?, 0, '/') AS t(`cb_gallery_content_id` int,`cb_item_content_id` int, `level` int, `branch` text)
+						  	LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcsm ON (`cb_gallery_content_id`=tcsm.`content_id`)
+						  	LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON (ts.`security_id`=tcsm.`security_id`)
+						  ORDER BY branch
+						";
+$gBitDb->setFatalActive( FALSE );
+				$tree = $this->GetAssoc( $query, array( $this->mContentId ) );
+$gBitDb->setFatalActive( TRUE );
+				if( $tree ) {
 					// we will assume true here since the prevention cases can repeatedly flag FALSE
 					$ret = TRUE;
-					foreach( $security AS $secId => $sec ) {
-						if( $sec['is_private'] ) {
-							$ret = FALSE;
+					$lastLevel = -1;
+					foreach( $tree AS $branch => $node ) {
+						if( $node['level'] < $lastLevel ) {
+							// we have moved followed a branch to the end and there is no security!
+							$ret = TRUE;
+							break;
 						}
-						if( !empty( $sec['access_answer'] ) ) {
-							if( !($ret = $this->validateUserAccess( NULL, $sec )) && empty( $this->mInfo['access_questions'] ) ) {
-								$this->mInfo = array_merge( $this->mInfo, $sec );
+						if( $node['security_id'] ) {
+							$ret = FALSE;
+							if( $node['is_private'] ) {
+								$ret = $this->isOwner();
+							}
+							if( !empty( $sec['access_answer'] ) ) {
+								if( !($ret = $this->validateUserAccess( NULL, $sec )) && empty( $this->mInfo['access_question'] ) ) {
+									$this->mInfo = array_merge( $this->mInfo, $sec );
+								}
 							}
 						}
+						$lastLevel = $node['level'];
 					}
+
+				} elseif( !empty( $gBitDb->mDb->_errorMsg ) ) {
+					if( $gBitUser->isOwner() ) {
+						$gBitSmarty->assign( 'feedback', array( 'warning' => $gBitDb->mDb->_errorMsg.'<br/>'.tra( 'Please check the galleries to which this item belongs' ) ) );
+					}
+					$ret = TRUE;
 				} else {
 					$ret = $gBitUser->hasPermission( $pPermName );
 				}
@@ -246,6 +292,7 @@ class FisheyeBase extends LibertyAttachable
 */
 			}
 		}
+$this->debug(0);
 		return( $ret );
 	}
 

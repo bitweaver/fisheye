@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.2.2.7 2005/07/21 18:03:03 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.2.2.8 2005/07/24 18:47:52 spiderr Exp $
  * @package fisheye
  * @subpackage modules
  */
@@ -30,6 +30,7 @@ if( $display ) {
 	if( $gQueryUserId ) {
 		$listHash['user_id'] = $gQueryUserId;
 	} elseif( !empty( $_REQUEST['user_id'] ) ) {
+		$smarty->assign( 'userGallery', $_REQUEST['user_id'] );
 		$listHash['user_id'] = $_REQUEST['user_id'];
 	} elseif( !empty( $module_params['recent_users'] ) ) {
 		$listHash['recent_users'] = TRUE;
