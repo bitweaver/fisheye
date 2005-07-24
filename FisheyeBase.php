@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.9 2005/07/24 22:45:00 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.10 2005/07/24 23:11:35 spiderr Exp $
  * @package fisheye
  */
 
@@ -232,7 +232,7 @@ $gBitDb->setFatalActive( TRUE );
 					$ret = TRUE;
 					$lastLevel = -1;
 					foreach( $tree AS $branch => $node ) {
-						if( $node['level'] < $lastLevel ) {
+						if( $node['level'] <= $lastLevel ) {
 							// we have moved followed a branch to the end and there is no security!
 							$ret = TRUE;
 							break;
