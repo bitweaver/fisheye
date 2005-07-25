@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.9 2005/07/24 22:45:00 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.10 2005/07/25 14:41:17 spiderr Exp $
  * @package fisheye
  */
 
@@ -441,7 +441,7 @@ class FisheyeImage extends FisheyeBase {
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			if( $this->mDb->isAdvancedPostgresEnabled() ) {
 				$mid .= " HAVING (SELECT ts.`security_id` FROM connectby('tiki_fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', tfi.`content_id`, 0, '/')  AS t(`cb_gallery_content_id` int, `cb_item_content_id` int, level int, branch text), `".BIT_DB_PREFIX."tiki_content_security_map` tcsm,  `".BIT_DB_PREFIX."tiki_security` ts
-						  WHERE ts.`security_id`=tcsm.`security_id` AND tcsm.`content_id`=`gallery_content_id` LIMIT 1) IS NULL";
+						  WHERE ts.`security_id`=tcsm.`security_id` AND tcsm.`content_id`=`cb_gallery_content_id` LIMIT 1) IS NULL";
 			} else {
 				$select .= ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
 				$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs ON (tc.`content_id`=tcs.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON (ts.`security_id`=tcs.`security_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim ON (tfgim.`item_content_id`=tc.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs2 ON (tfgim.`gallery_content_id`=tcs2.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts2 ON (ts2.`security_id`=tcs2.`security_id` )";
