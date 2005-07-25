@@ -46,7 +46,7 @@ function MoveDown(imageId) {
 						{/if}
 						{counter print=false}
 						<td class="{$galleryImages[ix]->mType.content_type_guid}">
-							<a href="{$galleryImages[ix]->getDisplayUrl()|escape}"><img class="thumb" src="{$galleryImages[ix]->getThumbnailUrl()|replace:"&":"&amp;"}" alt="{$galleryImages[ix]->mInfo.title}" /></a>
+							<a href="{$galleryImages[ix]->getDisplayUrl()|escape}"><img class="thumb" src="{$galleryImages[ix]->getThumbnailUrl()|replace:"&":"&amp;"}?{math equation="1 + rand(1,9999)"}" alt="{$galleryImages[ix]->mInfo.title}" /></a>
 						</td>
 						<td>
 							<div class="row">
@@ -106,6 +106,8 @@ function MoveDown(imageId) {
 							<option value=""></option>
 							<option value="delete">{tr}Delete{/tr}</option>
 							<option value="thumbnail">{tr}Regenerate Thumbnails{/tr}</option>
+							<option value="rotate:-90">&lt;&lt; {tr}Rotate Counter Clockwise{/tr}</option>
+							<option value="rotate:90">&gt;&gt; {tr}Rotate Clockwise{/tr}</option>
 							{if $gBitSystem->isPackageActive( 'gatekeeper' ) }
 								<option value="security:">{tr}Set Security to{/tr} ~~ {tr}Publically Visible{/tr} ~~</option>
 								{foreach from=$securities key=secId item=sec}

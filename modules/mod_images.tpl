@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.tpl,v 1.2 2005/06/28 07:45:43 spiderr Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.tpl,v 1.3 2005/07/25 20:02:05 squareing Exp $ *}
 {strip}
 {if $gBitSystem->isPackageActive( 'fisheye' ) && $modImages}
 	{bitmodule title="$moduleTitle" name="fisheye_images"}
@@ -31,6 +31,9 @@
 				<li></li>
 			{/foreach}
 		</ul>
+		{if $userGallery}
+		<a href="{$smarty.const.FISHEYE_PKG_URL}index.php?user_id={$userGallery}">{tr}See more...{/tr}</a>
+		{/if}
 	{/bitmodule}
 {/if}
 {/strip}

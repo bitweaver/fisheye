@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.3 2005/07/17 17:36:02 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.4 2005/07/25 20:02:04 squareing Exp $
  * @package fisheye
  */
 
@@ -255,23 +255,35 @@ class FisheyeGallery extends FisheyeBase {
 			$pContentId = $this->mContentId;
 		}
 
+
+
 		if( empty( $pThumbnailContentId ) ) {
 			if( !empty( $this->mInfo['preview_content_id'] ) ) {
 				$pThumbnailContentId = $this->mInfo['preview_content_id'];
 			} else {
-				$query = "SELECT tfgim.`item_content_id`, tc.`content_type_guid`
-						  FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tfgim.`item_content_id`=tc.`content_id` )
-						  WHERE tfgim.`gallery_content_id` = ?
-						  ORDER BY ".$this->convert_sortmode('random');
-				$rs = $this->query($query, array( $pContentId ), 1);
-				$pThumbnailContentId = $rs->fields['item_content_id'];
-				$pThumbnailContentType = $rs->fields['content_type_guid'];
+				if( $this->mDb->isAdvancedPostgresEnabled() ) {
+					$query = "SELECT COALESCE( tfg.`preview_content_id`, tc.`content_id` )
+							FROM connectby('`".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
+								INNER JOIN tiki_content tc ON(content_id=cb_item_content_id)
+								LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcsm ON (tcsm.`content_id`=tc.`content_id`), `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg
+							WHERE tc.`content_type_guid`='fisheyeimage' AND tcsm.`security_id` IS NULL AND `cb_parent_content_id`=tfg.`content_id` ORDER BY RANDOM()";
+					if( $pThumbnailContentId = $this->getOne( $query, array( $pContentId ) ) ) {
+						$pThumbnailContentType = 'fisheyeimage';
+					}
+				} else {
+					$query = "SELECT tfgim.`item_content_id`, tc.`content_type_guid`
+							FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tfgim.`item_content_id`=tc.`content_id` )
+							WHERE tfgim.`gallery_content_id` = ?
+							ORDER BY ".$this->convert_sortmode('random');
+					$rs = $this->query($query, array( $pContentId ), 1);
+					$pThumbnailContentId = $rs->fields['item_content_id'];
+					$pThumbnailContentType = $rs->fields['content_type_guid'];
+				}
 			}
 		}
 
 		if( !empty( $pThumbnailContentId ) ) {
 			$ret = $gLibertySystem->getLibertyObject( $pThumbnailContentId, $pThumbnailContentType );
-			$ret->load();
 			if( get_class( $ret ) == 'fisheyegallery' ) {
 				//recurse down in to find the first image
 				$ret = $ret->getThumbnailImage();

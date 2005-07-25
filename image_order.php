@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.3 2005/07/25 20:02:04 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -65,11 +65,15 @@ if (!empty($_REQUEST['updateImageOrder'])) {
 		if( $galleryItem->load() ) {
 			if( isset( $batchCon[$contentId] ) ) {
 				if( !empty( $_REQUEST['batch_command'] ) ) {
-					list( $batchCommand, $batchParam ) = split( ':', $_REQUEST['batch_command'] );
+					list( $batchCommand, $batchParam ) = @split( ':', $_REQUEST['batch_command'] );
 					switch( $batchCommand ) {
 						case 'delete':
 							$galleryItem->expunge();
 							$galleryItem = NULL;
+							break;
+						case 'rotate':
+							$galleryItem->rotateImage( $batchParam );
+							$feedback['success'] = tra( "Images rotated" );
 							break;
 						case 'thumbnail':
 							$galleryItem->generateThumbnails();

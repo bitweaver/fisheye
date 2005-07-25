@@ -16,6 +16,8 @@
 	{/if}
 	</div>
 
+	{formfeedback hash=$feedback}
+
 	<div class="header">
 		<h1>{$gGallery->mInfo.title}</h1>
 	</div>

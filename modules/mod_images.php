@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.3 2005/06/28 07:45:43 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.4 2005/07/25 20:02:04 squareing Exp $
  * @package fisheye
  * @subpackage modules
  */
@@ -20,7 +20,7 @@ $listHash = $module_params;
 if( !empty( $gContent ) && $gContent->mInfo['content_type_guid'] == FISHEYEGALLERY_CONTENT_TYPE_GUID ) {
 	$displayCount = empty( $gContent->mItems ) ? 0 : count( $gContent->mItems );
 	$thumbCount = $gContent->mInfo['rows_per_page'] * $gContent->mInfo["cols_per_page"];
-	$listHash['gallery_id'] = $_REQUEST['gallery_id'];
+	$listHash['gallery_id'] = $gContent->mGalleryId;
 	$display = $displayCount >= $thumbCount;
 }
 
@@ -30,6 +30,7 @@ if( $display ) {
 	if( $gQueryUserId ) {
 		$listHash['user_id'] = $gQueryUserId;
 	} elseif( !empty( $_REQUEST['user_id'] ) ) {
+		$smarty->assign( 'userGallery', $_REQUEST['user_id'] );
 		$listHash['user_id'] = $_REQUEST['user_id'];
 	} elseif( !empty( $module_params['recent_users'] ) ) {
 		$listHash['recent_users'] = TRUE;
@@ -62,7 +63,7 @@ if( $display ) {
 
 		$moduleTitle .= ' Images';
 		$moduleTitle = tra( $moduleTitle );
-		
+
 		if( !empty( $listHash['user_id'] ) ) {
 			$moduleTitle .= ' '.tra('by').' '.BitUser::getDisplayName( TRUE, current( $images ) );
 		} elseif( !empty( $listHash['recent_users'] ) ) {
