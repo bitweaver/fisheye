@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.10 2005/07/25 14:41:17 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.11 2005/07/25 16:59:13 spiderr Exp $
  * @package fisheye
  */
 
@@ -440,7 +440,7 @@ class FisheyeImage extends FisheyeBase {
 //  $this->debug();
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			if( $this->mDb->isAdvancedPostgresEnabled() ) {
-				$mid .= " HAVING (SELECT ts.`security_id` FROM connectby('tiki_fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', tfi.`content_id`, 0, '/')  AS t(`cb_gallery_content_id` int, `cb_item_content_id` int, level int, branch text), `".BIT_DB_PREFIX."tiki_content_security_map` tcsm,  `".BIT_DB_PREFIX."tiki_security` ts
+				$mid .= " AND (SELECT ts.`security_id` FROM connectby('tiki_fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', tfi.`content_id`, 0, '/')  AS t(`cb_gallery_content_id` int, `cb_item_content_id` int, level int, branch text), `".BIT_DB_PREFIX."tiki_content_security_map` tcsm,  `".BIT_DB_PREFIX."tiki_security` ts
 						  WHERE ts.`security_id`=tcsm.`security_id` AND tcsm.`content_id`=`cb_gallery_content_id` LIMIT 1) IS NULL";
 			} else {
 				$select .= ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
@@ -477,7 +477,7 @@ class FisheyeImage extends FisheyeBase {
 				}
 			}
 		}
- $this->debug(0);
+// $this->debug(0);
 		return $ret;
 	}
 }
