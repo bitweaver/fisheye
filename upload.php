@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.7 2005/07/25 16:59:13 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.8 2005/07/26 01:29:37 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -185,7 +185,9 @@ function liberty_process_archive( &$pFileHash ) {
 				} elseif( $upExt == 'rar' ) {
 					$shellResult = shell_exec( "rar x -w\"$destDir\" $pFileHash[tmp_name] " );
 				} elseif( $upExt == 'sit' || $upExt == 'sitx' ) {
-				$shellResult = shell_exec( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
+					print( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
+					$shellResult = shell_exec( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
+					vd( $shellResult );
 				}
 				break;
 		}
