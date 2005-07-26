@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.1.1.1.2.2 2005/06/27 10:55:45 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.1.1.1.2.3 2005/07/26 15:50:04 drewslater Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -12,7 +12,7 @@ require_once( '../bit_setup_inc.php' );
 
 require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
-global $gBitSystem, $smarty, $gFisheyeGallery;
+global $gBitSystem, $gBitSmarty, $gFisheyeGallery;
 
 $gFisheyeGallery = new FisheyeGallery();
 
@@ -23,7 +23,7 @@ if (!empty($_REQUEST['user_id']) && is_numeric($_REQUEST['user_id'])) {
 	if( $_REQUEST['user_id'] == $gBitUser->mUserId ) {
 		$_REQUEST['show_empty'] = TRUE;
 	}
-	$smarty->assign_by_ref('gQueryUserId', $_REQUEST['user_id']);
+	$gBitSmarty->assign_by_ref('gQueryUserId', $_REQUEST['user_id']);
 	$template = 'user_galleries.tpl';
 } else {
 	$template = 'list_galleries.tpl';
@@ -31,16 +31,16 @@ if (!empty($_REQUEST['user_id']) && is_numeric($_REQUEST['user_id'])) {
 
 $_REQUEST['thumbnail_size'] = $gBitSystem->getPreference( 'fisheye_list_thumbnail_size', 'small' );
 $galleryList = $gFisheyeGallery->getList( $_REQUEST );
-$smarty->assign_by_ref('galleryList', $galleryList);
+$gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
 if (!empty($_REQUEST['offset']) && is_numeric($_REQUEST['offset'])) {
-	$smarty->assign_by_ref('iMaxRows', $iMaxRows);
+	$gBitSmarty->assign_by_ref('iMaxRows', $iMaxRows);
 }
 if (!empty($_REQUEST['sort_mode'])) {
-	$smarty->assign_by_ref('iSortMode', $_REQUEST['sort_mode']);
+	$gBitSmarty->assign_by_ref('iSortMode', $_REQUEST['sort_mode']);
 }
 if (!empty($_REQUEST['search'])) {
-	$smarty->assign_by_ref('iSearchString', $iSearchtring);
+	$gBitSmarty->assign_by_ref('iSearchString', $iSearchtring);
 }
 
 $gBitSystem->display("bitpackage:fisheye/$template", "List Galleries" );

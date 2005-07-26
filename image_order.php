@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.2 2005/07/19 21:27:03 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.3 2005/07/26 15:50:04 drewslater Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -19,7 +19,7 @@ include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 
 if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 	global $gGatekeeper;
-	$smarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
+	$gBitSmarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
 }
 
 // Ensure the user has the permission to create new image galleries
@@ -131,11 +131,11 @@ if (!empty($_REQUEST['updateImageOrder'])) {
 // Get a list of all existing galleries
 $listHash = array( 'user_id'=>$gBitUser->mUserId );
 $galleryList = $gContent->getList( $listHash );
-$smarty->assign_by_ref('galleryList', $galleryList);
+$gBitSmarty->assign_by_ref('galleryList', $galleryList);
 $gContent->loadImages();
-$smarty->assign_by_ref('galleryImages', $gContent->mItems);
+$gBitSmarty->assign_by_ref('galleryImages', $gContent->mItems);
 
-$smarty->assign_by_ref('formfeedback', $feedback);
+$gBitSmarty->assign_by_ref('formfeedback', $feedback);
 
 $gBitSystem->display( 'bitpackage:fisheye/image_order.tpl', 'Edit Gallery Images: '.$gContent->getTitle() );
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.1.1.1.2.1 2005/06/27 10:55:45 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.1.1.1.2.2 2005/07/26 15:50:04 drewslater Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -8,7 +8,7 @@
 if( !$gContent->hasUserAccess( 'bit_p_view_fisheye' ) ) {
 	if ( !empty($_REQUEST['submit_answer'])) {	// User is attempting to authenticate themseleves to view this gallery
 		if( !$gContent->validateUserAccess( $_REQUEST['try_access_answer']) ) {
-			$smarty->assign("failedLogin", "Incorrect Answer");
+			$gBitSmarty->assign("failedLogin", "Incorrect Answer");
 			$gBitSystem->display("bitpackage:fisheye/authenticate.tpl", "Password Required to view: ".$gContent->getTitle() );
 			die;
 		}
@@ -46,11 +46,11 @@ if ($page > $gContent->mInfo['num_pages']) {
 $imagesPerPage = $gContent->mInfo['rows_per_page'] * $gContent->mInfo['cols_per_page'];
 $imageOffset = $imagesPerPage * ($page-1);
 
-$smarty->assign_by_ref('page', $page);
-$smarty->assign_by_ref('imagesPerPage', $imagesPerPage);
-$smarty->assign_by_ref('imageOffset', $imageOffset);
-$smarty->assign_by_ref('rows_per_page', $gContent->mInfo['rows_per_page']);
-$smarty->assign_by_ref('cols_per_page', $gContent->mInfo['cols_per_page']);
+$gBitSmarty->assign_by_ref('page', $page);
+$gBitSmarty->assign_by_ref('imagesPerPage', $imagesPerPage);
+$gBitSmarty->assign_by_ref('imageOffset', $imageOffset);
+$gBitSmarty->assign_by_ref('rows_per_page', $gContent->mInfo['rows_per_page']);
+$gBitSmarty->assign_by_ref('cols_per_page', $gContent->mInfo['cols_per_page']);
 
 $gContent->loadImages($imageOffset, $imagesPerPage);
 $gContent->addHit();

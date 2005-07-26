@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.4 2005/07/07 16:48:22 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.5 2005/07/26 15:50:04 drewslater Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -32,7 +32,7 @@ if( $gBitUser->hasPermission( 'bit_p_change_thumbnail_size' ) ) {
 		'medium' => 'Medium (400x300)',
 		'large' => 'Large (800x600)',
 	);
-	$smarty->assign( 'thumbnailSizes', $thumbnailSizes );
+	$gBitSmarty->assign( 'thumbnailSizes', $thumbnailSizes );
 }
 
 if( !empty($_REQUEST['savegallery']) ) {
@@ -104,16 +104,16 @@ if ( $gBitSystem->isPackageActive('categories') ) {
 
 // Initalize the errors list which contains any errors which occured during storage
 $errors = (!empty($gContent->mErrors) ? $gContent->mErrors : array());
-$smarty->assign_by_ref('errors', $errors);
+$gBitSmarty->assign_by_ref('errors', $errors);
 
-$smarty->assign_by_ref( 'parentGalleries', $gContent->getParentGalleries() );
+$gBitSmarty->assign_by_ref( 'parentGalleries', $gContent->getParentGalleries() );
 $getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->mContentId, 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gContent->getList( $getHash );
-$smarty->assign_by_ref('galleryList', $galleryList);
+$gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
 if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 	global $gGatekeeper;
-	$smarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
+	$gBitSmarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
 }
 
 $gBitSystem->display( 'bitpackage:fisheye/edit_gallery.tpl', 'Edit Gallery: '.$gContent->getTitle() );

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.8 2005/07/26 01:29:37 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.9 2005/07/26 15:50:05 drewslater Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -75,7 +75,7 @@ if (!empty($_REQUEST['save_image'])) {
 		header( 'Location: '.$gContent->getDisplayUrl() );
 		die;
 	} else {
-		$smarty->assign( 'errors', $upErrors );
+		$gBitSmarty->assign( 'errors', $upErrors );
 	}
 }
 
@@ -98,7 +98,7 @@ if( $gBitSystem->isPackageActive( 'quota' ) ) {
 		// Prevent people from uploading more than there quota
 		$q = $quota->getUserQuota( $gBitUser->mUserId );
 		$u = $quota->getUserUsage( $gBitUser->mUserId );
-		$smarty->assign('quotaMessage', tra( 'Your remaining disk quota is' ).' '.round(($q-$u)/1000000, 2).' '.tra('Megabytes') );
+		$gBitSmarty->assign('quotaMessage', tra( 'Your remaining disk quota is' ).' '.round(($q-$u)/1000000, 2).' '.tra('Megabytes') );
 		$qMegs = round( $q / 1000000 );
 		if( $qMegs < $uploadMax ) {
 			$uploadMax = $qMegs;
@@ -110,9 +110,9 @@ if( $gBitSystem->isPackageActive( 'quota' ) ) {
 $gFisheyeGallery = new FisheyeGallery();
 $listHash = array( 'user_id' => $gBitUser->mUserId, 'show_empty' => true, 'max_records'=>-1, 'no_thumbnails'=>TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gFisheyeGallery->getList( $listHash );
-$smarty->assign_by_ref('galleryList', $galleryList);
+$gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
-$smarty->assign( 'uploadMax', $uploadMax );
+$gBitSmarty->assign( 'uploadMax', $uploadMax );
 
 $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' );
 

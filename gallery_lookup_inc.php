@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/gallery_lookup_inc.php,v 1.1.1.1.2.1 2005/06/27 10:55:44 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/gallery_lookup_inc.php,v 1.1.1.1.2.2 2005/07/26 15:50:04 drewslater Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -24,7 +24,7 @@ if( !empty( $_REQUEST['gallery_path'] ) ) {
 	$gContent->setGalleryPath( $_REQUEST['gallery_path'] );
 }
 
-$smarty->assign_by_ref('gContent', $gContent);
-$smarty->assign_by_ref('galleryId', $gContent->mGalleryId);
+$gBitSmarty->assign_by_ref('gContent', $gContent);
+$gBitSmarty->assign_by_ref('galleryId', $gContent->mGalleryId);
 
 ?>
