@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.10 2005/07/24 23:11:35 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.11 2005/07/28 13:11:32 spiderr Exp $
  * @package fisheye
  */
 
@@ -160,7 +160,7 @@ class FisheyeBase extends LibertyAttachable
 						  WHERE `cb_gallery_content_id`=?
 						  ORDER BY branch
 						";
-				if ( $this->GetOne($query, array( $pGalleryContentId, $pItemContentId ) ) ) {
+				if ( $this->GetOne($query, array(  $pItemContentId, $pGalleryContentId ) ) ) {
 					$ret = TRUE;
 				}
 			} else {

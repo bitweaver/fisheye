@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.9 2005/07/24 22:58:31 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.10 2005/07/28 13:11:32 spiderr Exp $
  * @package fisheye
  */
 
@@ -354,9 +354,14 @@ class FisheyeGallery extends FisheyeBase {
 		return $ret;
 	}
 
+    /**
+    * Adds a new item (image or gallery) to this gallery. We check to make sure we are not a member
+	* of this gallery and this gallery is not a member of the new item to avoid infinite recursion scenarios
+    * @return boolean wheter or not the item was added
+    */
 	function addItem( $pContentId, $pPosition=NULL ) {
 		$ret = FALSE;
-		if( $this->isValid() && is_numeric( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId ) ) {
+		if( $this->isValid() && is_numeric( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId  )  && !$this->isInGallery( $pContentId, $this->mContentId ) ) {
 			$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`, `position`) VALUES (?,?,?)";
 			$rs = $this->query($query, array($pContentId, $this->mContentId, $pPosition ) );
 			$ret = TRUE;
@@ -493,8 +498,10 @@ vd( $this->mErrors );
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			$select .= ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
 			$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs ON (tc.`content_id`=tcs.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON (ts.`security_id`=tcs.`security_id` )";
-			$mid .= ' AND (tcs.`security_id` IS NULL OR tc.`user_id`=?) ';
-			$bindVars[] = $gBitUser->mUserId;
+			if( !$gBitUser->isAdmin() ) {
+				$mid .= ' AND (tcs.`security_id` IS NULL OR tc.`user_id`=?) ';
+				$bindVars[] = $gBitUser->mUserId;
+			}
 		}
 
 		if ( !empty( $pListHash['sort_mode'] ) ) {

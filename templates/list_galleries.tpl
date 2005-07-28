@@ -32,16 +32,19 @@
 			{foreach from=$galleryList key=galleryId item=gal}
 				<li class="item {cycle values='odd,even'} {$gal.content_type_guid}">
 					<div class="floaticon">
+						{if $gal.is_hidden=='y' || $gal.is_private=='y' || $gal.access_answer}
+							{biticon ipackage=gatekeeper iname="security" iexplain="Security" label=TRUE}
+						{/if}
 						{if $gal.is_hidden=='y'}
-							{biticon ipackage=liberty iname="hidden" iexplain="Hidden"}
+							{tr}Hidden{/tr}
 						{/if}
 						{if $gal.is_private=='y'}
-							{biticon ipackage=liberty iname="private" iexplain="Private"}
+							{tr}Private{/tr}
 						{/if}
-						{* if $gal.access_answer}
-							{biticon ipackage=liberty iname="protected" iexplain="Protected"}
+						{if $gal.access_answer}
+							{tr}Password{/tr}
 						{/if}
-						{if $galleryList[ix]->hasUserPermission('bit_p_edit_fisheye')}
+						{* if $galleryList[ix]->hasUserPermission('bit_p_edit_fisheye')}
 							<a title="{tr}Edit{/tr}" href="{$gBitLoc.FISHEYE_PKG_URL}edit.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="config" iexplain="Edit"}</a>
 						{/if}
 						{if $galleryList[ix]->hasUserPermission('bit_p_edit_fisheye')}

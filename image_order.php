@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.3 2005/07/26 15:50:04 drewslater Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.4 2005/07/28 13:11:32 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -28,7 +28,10 @@ if( !$gContent->hasUserPermission( 'bit_p_edit_fisheye' ) ) {
 	$gBitSystem->fatalError( tra( "You cannot edit this image gallery" ) );
 }
 
-if (!empty($_REQUEST['updateImageOrder'])) {
+if (!empty($_REQUEST['cancel'])) {
+	header( 'Location: '.$gContent->getDisplayUrl() );
+	die;
+} elseif (!empty($_REQUEST['updateImageOrder'])) {
 	if( !empty( $_REQUEST['batch'] ) ) {
 		// flip so we can do instant has lookup
 		$batchCon = array_flip( $_REQUEST['batch'] );

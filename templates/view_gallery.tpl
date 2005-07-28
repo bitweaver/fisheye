@@ -13,7 +13,7 @@
 			{/if}
 			{if $gContent->hasUserPermission( 'bit_p_edit_fisheye' )}
 				<a title="{tr}Edit{/tr}" href="{$gBitLoc.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=liberty iname="config" iexplain="Edit"}</a>
-				<a title="{tr}Image Order{/tr}" href="{$gBitLoc.FISHEYE_PKG_URL}image_order.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=liberty iname="current" iexplain="Image Order"}</a>
+				<a title="{tr}Image Order{/tr}" href="{$gBitLoc.FISHEYE_PKG_URL}image_order.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=fisheye iname="order" iexplain="Image Order"}</a>
 			{/if}
 			{if $gContent->hasUserPermission( 'bit_p_upload_fisheye' )}
 				<a title="{tr}Add Image{/tr}" href="{$gBitLoc.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=liberty iname="upload" iexplain="Add Image"}</a>
@@ -69,7 +69,7 @@
 			{if $imageCount % $cols_per_page != 0}</tr>{/if}
 		</table>
 	</div>	<!-- end .body -->
-	{libertypagination numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$page}
+	{libertypagination numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}
 	{if $gBitSystem->isPackageActive( 'categories' )}
 		{include file="bitpackage:categories/categories_objects.tpl"}
 	{/if}

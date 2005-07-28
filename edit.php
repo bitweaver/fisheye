@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.5 2005/07/26 15:50:04 drewslater Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.6 2005/07/28 13:11:32 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -78,15 +78,17 @@ if( !empty($_REQUEST['savegallery']) ) {
 			);
 		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the gallery '.$gContent->getTitle().'?', 'error' => 'This cannot be undone!' ) );
 	} else {
+		$userId = $gContent->mInfo['user_id'];
+
 		$recurseDelete = (!empty( $_REQUEST['recurse'] ) && ($_REQUEST['recurse'] == 'all') );
 
 		if( $gContent->expunge( $recurseDelete ) ) {
-			header( "Location: ".FISHEYE_PKG_URL );
+			header( "Location: ".FISHEYE_PKG_URL.'?user_id='.$userId );
 		}
 	}
 
 } elseif( !empty($_REQUEST['cancelgallery'] ) ) {
-	header("location:".FISHEYE_PKG_URL."view.php?gallery_id=".$gContent->mGalleryId);
+	header( 'Location: '.$gContent->getDisplayUrl() );
 	die();
 }
 
