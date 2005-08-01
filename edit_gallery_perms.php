@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_gallery_perms.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_gallery_perms.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -17,7 +17,7 @@ global $gBitSystem, $fisheyePermNameMap;
 
 // Make sure an gallery has been specified
 if (empty($_REQUEST['gallery_id'])) {
-	$smarty->assign('msg', tra("No gallery specified"));
+	$gBitSmarty->assign('msg', tra("No gallery specified"));
 	$gBitSystem->display( "error.tpl" );
 	die;
 }
@@ -25,12 +25,12 @@ if (empty($_REQUEST['gallery_id'])) {
 include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 
 if (empty($gContent->mContentId)) {
-	$smarty->assign( 'msg', tra( "The specified gallery does not exist" ));
+	$gBitSmarty->assign( 'msg', tra( "The specified gallery does not exist" ));
 	$gBitSystem->display("error.tpl");
 	die;
 } elseif ($gContent->mInfo['user_id'] != $gBitUser->mUserId && $gContent->mInfo['perm_level'] < FISHEYE_PERM_ADMIN) {
 	// This user does not own this gallery and they have not been granted the permission to edit user permissions for this gallery
-	$smarty->assign( 'msg', tra( "You cannot edit this image gallery" ) );
+	$gBitSmarty->assign( 'msg', tra( "You cannot edit this image gallery" ) );
 	$gBitSystem->display( "error.tpl" );
 	die;
 }
@@ -44,7 +44,7 @@ if (!empty($_REQUEST['submitNewPermissions'])) {
 }
 
 $userPerms = $gContent->getAllUserPermissions();
-$smarty->assign_by_ref('userPerms', $userPerms);
+$gBitSmarty->assign_by_ref('userPerms', $userPerms);
 
 if (!empty($_REQUEST['submitUpdatePerms'])) {
 	$existingPerms = $_REQUEST['existingPerms'];

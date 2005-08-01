@@ -143,7 +143,8 @@ function MoveDown(imageId) {
 			</table>
 
 			<div class="row submit">
-				<input type="submit" name="updateImageOrder" value="Save Changes"/>
+				<input type="submit" name="cancel" value="{tr}Back{/tr}"/>
+				<input type="submit" name="updateImageOrder" value="{tr}Save Changes{/tr}"/>
 			</div>
 
 			<div class="row">

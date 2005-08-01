@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -22,7 +22,7 @@ if( !empty( $_REQUEST['size'] ) ) {
 }
 
 if( !empty( $_REQUEST['refresh'] ) ) {
-	$smarty->assign( 'refresh', '?refresh='.time() );
+	$gBitSmarty->assign( 'refresh', '?refresh='.time() );
 }
 
 include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.4 2005/07/25 20:02:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.5 2005/08/01 18:40:08 squareing Exp $
  * @package fisheye
  * @subpackage modules
  */
@@ -30,7 +30,7 @@ if( $display ) {
 	if( $gQueryUserId ) {
 		$listHash['user_id'] = $gQueryUserId;
 	} elseif( !empty( $_REQUEST['user_id'] ) ) {
-		$smarty->assign( 'userGallery', $_REQUEST['user_id'] );
+		$gBitSmarty->assign( 'userGallery', $_REQUEST['user_id'] );
 		$listHash['user_id'] = $_REQUEST['user_id'];
 	} elseif( !empty( $module_params['recent_users'] ) ) {
 		$listHash['recent_users'] = TRUE;
@@ -71,13 +71,13 @@ if( $display ) {
 		}
 
 		$listHash['sort_mode'] = $sort_mode;
-		$smarty->assign( 'moduleTitle', $moduleTitle );
+		$gBitSmarty->assign( 'moduleTitle', $moduleTitle );
 	}
 
-	$smarty->assign( 'imageSort', $sort_mode );
-	$smarty->assign( 'modImages', $images );
-	$smarty->assign( 'module_params', $module_params );
-	$smarty->assign( 'maxlen', isset( $module_params["maxlen"] ) ? $module_params["maxlen"] : 0 );
-	$smarty->assign( 'maxlendesc', isset( $module_params["maxlendesc"] ) ? $module_params["maxlendesc"] : 0 );
+	$gBitSmarty->assign( 'imageSort', $sort_mode );
+	$gBitSmarty->assign( 'modImages', $images );
+	$gBitSmarty->assign( 'module_params', $module_params );
+	$gBitSmarty->assign( 'maxlen', isset( $module_params["maxlen"] ) ? $module_params["maxlen"] : 0 );
+	$gBitSmarty->assign( 'maxlendesc', isset( $module_params["maxlendesc"] ) ? $module_params["maxlendesc"] : 0 );
 }
 ?>

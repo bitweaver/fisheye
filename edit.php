@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.4 2005/07/17 17:36:02 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.5 2005/08/01 18:40:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -32,7 +32,7 @@ if( $gBitUser->hasPermission( 'bit_p_change_thumbnail_size' ) ) {
 		'medium' => 'Medium (400x300)',
 		'large' => 'Large (800x600)',
 	);
-	$smarty->assign( 'thumbnailSizes', $thumbnailSizes );
+	$gBitSmarty->assign( 'thumbnailSizes', $thumbnailSizes );
 }
 
 if( !empty($_REQUEST['savegallery']) ) {
@@ -78,15 +78,17 @@ if( !empty($_REQUEST['savegallery']) ) {
 			);
 		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the gallery '.$gContent->getTitle().'?', 'error' => 'This cannot be undone!' ) );
 	} else {
+		$userId = $gContent->mInfo['user_id'];
+
 		$recurseDelete = (!empty( $_REQUEST['recurse'] ) && ($_REQUEST['recurse'] == 'all') );
 
 		if( $gContent->expunge( $recurseDelete ) ) {
-			header( "Location: ".FISHEYE_PKG_URL );
+			header( "Location: ".FISHEYE_PKG_URL.'?user_id='.$userId );
 		}
 	}
 
 } elseif( !empty($_REQUEST['cancelgallery'] ) ) {
-	header("location:".FISHEYE_PKG_URL."view.php?gallery_id=".$gContent->mGalleryId);
+	header( 'Location: '.$gContent->getDisplayUrl() );
 	die();
 }
 
@@ -104,16 +106,16 @@ if ( $gBitSystem->isPackageActive('categories') ) {
 
 // Initalize the errors list which contains any errors which occured during storage
 $errors = (!empty($gContent->mErrors) ? $gContent->mErrors : array());
-$smarty->assign_by_ref('errors', $errors);
+$gBitSmarty->assign_by_ref('errors', $errors);
 
-$smarty->assign_by_ref( 'parentGalleries', $gContent->getParentGalleries() );
+$gBitSmarty->assign_by_ref( 'parentGalleries', $gContent->getParentGalleries() );
 $getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->mContentId, 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gContent->getList( $getHash );
-$smarty->assign_by_ref('galleryList', $galleryList);
+$gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
 if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 	global $gGatekeeper;
-	$smarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
+	$gBitSmarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
 }
 
 $gBitSystem->display( 'bitpackage:fisheye/edit_gallery.tpl', 'Edit Gallery: '.$gContent->getTitle() );

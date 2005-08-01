@@ -19,7 +19,7 @@ $formGalleryGeneral = array(
 		'type' => 'checkbox'
 	)
 );
-$smarty->assign('formGalleryGeneral', $formGalleryGeneral);
+$gBitSmarty->assign('formGalleryGeneral', $formGalleryGeneral);
 
 $formGalleryListLists = array(
 	"fisheye_list_title" => array(
@@ -51,7 +51,7 @@ $formGalleryListLists = array(
 		'note' => 'List date this gallery was last modified',
 	)
 );
-$smarty->assign('formGalleryListLists', $formGalleryListLists);
+$gBitSmarty->assign('formGalleryListLists', $formGalleryListLists);
 
 // This holds the checkbox options for what to display on a 'view gallery' page
 $formGalleryLists = array(
@@ -76,7 +76,7 @@ $formGalleryLists = array(
 		'note' => 'Show image descriptions underneath each thumbnail',
 	)
 );
-$smarty->assign( 'formGalleryLists',$formGalleryLists );
+$gBitSmarty->assign( 'formGalleryLists',$formGalleryLists );
 
 // This holds the checkbox options for what to display on an 'image details' page
 $formImageLists = array(
@@ -97,7 +97,7 @@ $formImageLists = array(
 		'note' => 'When viewing an image, show <strong>previous</strong> and <strong>next</strong> links as images instead of words',
 	),
 );
-$smarty->assign( 'formImageLists', $formImageLists);
+$gBitSmarty->assign( 'formImageLists', $formImageLists);
 
 //vd($_REQUEST);
 if (!empty($_REQUEST['fisheyeAdminSubmit'])) {

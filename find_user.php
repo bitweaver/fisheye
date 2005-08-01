@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/find_user.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/find_user.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -24,7 +24,7 @@ if (!empty($_REQUEST['submitUserSearch'])) {
 } else {
 	$foundUsers = NULL;
 }
-$smarty->assign_by_ref('foundUsers', $foundUsers);
+$gBitSmarty->assign_by_ref('foundUsers', $foundUsers);
 
-$smarty->display('bitpackage:fisheye/find_user.tpl');
+$gBitSmarty->display('bitpackage:fisheye/find_user.tpl');
 ?>

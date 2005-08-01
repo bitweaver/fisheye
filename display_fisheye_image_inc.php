@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -12,7 +12,7 @@ if( !$gContent->isValid() ) {
 if( !$gContent->hasUserAccess( 'bit_p_view_fisheye' ) ) {
 	if ( !empty($_REQUEST['submit_answer'])) {	// User is attempting to authenticate themseleves to view this gallery
 		if( !$gContent->validateUserAccess( $_REQUEST['try_access_answer']) ) {
-			$smarty->assign("failedLogin", "Incorrect Answer");
+			$gBitSmarty->assign("failedLogin", "Incorrect Answer");
 			$gBitSystem->display("bitpackage:fisheye/authenticate.tpl", "Password Required to view: ".$gContent->getTitle() );
 			die;
 		}

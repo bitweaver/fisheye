@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.3 2005/07/17 17:36:02 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.4 2005/08/01 18:40:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -20,7 +20,7 @@ include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
 
 if ( (!empty($gContent->mImageId)) && ($gContent->mInfo['user_id'] != $gBitUser->mUserId && !$gBitUser->isAdmin()) ) {
 	// This user does not own this image and they are not an Administrator
-	$smarty->assign( 'msg', tra( "You do not own this image!" ) );
+	$gBitSmarty->assign( 'msg', tra( "You do not own this image!" ) );
 	$gBitSystem->display( "error.tpl" );
 	die;
 }
@@ -28,7 +28,7 @@ if ( (!empty($gContent->mImageId)) && ($gContent->mInfo['user_id'] != $gBitUser-
 if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] ) ) {
 	if (empty($_REQUEST['gallery_id']) && empty($_REQUEST['image_id'])) {
 		// We have no way to know what gallery to add an image to or what image to edit!
-		$smarty->assign( 'msg', tra( "No gallery or image was specified" ) );
+		$gBitSmarty->assign( 'msg', tra( "No gallery or image was specified" ) );
 		$gBitSystem->display( "error.tpl" );
 		die;
 	}
@@ -91,7 +91,7 @@ if ( $gBitSystem->isPackageActive('categories') ) {
 }
 
 $errors = $gContent->mErrors;
-$smarty->assign_by_ref('errors', $errors);
+$gBitSmarty->assign_by_ref('errors', $errors);
 
 $gContent->loadParentGalleries();
 
@@ -99,13 +99,13 @@ $gContent->loadParentGalleries();
 $gFisheyeGallery = new FisheyeGallery();
 $listHash = array( 'user_id'=>$gContent->mInfo['user_id'], 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gFisheyeGallery->getList( $listHash );
-$smarty->assign_by_ref('galleryList', $galleryList);
+$gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
-$smarty->assign('requested_gallery', !empty($_REQUEST['gallery_id']) ? $_REQUEST['gallery_id'] : NULL);
+$gBitSmarty->assign('requested_gallery', !empty($_REQUEST['gallery_id']) ? $_REQUEST['gallery_id'] : NULL);
 
 if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 	global $gGatekeeper;
-	$smarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
+	$gBitSmarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
 }
 
 $gBitSystem->display( 'bitpackage:fisheye/edit_image.tpl', 'Edit Image: '.$gContent->getTitle() );

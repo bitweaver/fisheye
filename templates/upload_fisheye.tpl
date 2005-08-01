@@ -10,7 +10,9 @@
 			{formfeedback error=$errors}
 
 			{formhelp note="Here you can upload images. You can upload single image files, or you can upload archived files (.zip's, .sit's, .tar's, etc.) Archvied uploads will automatically be decompressed, and a gallery will created for every gallery in it. If you have nested folders, the hierarchy will be maintained for you with nested galleries." force=true}
-
+{if $browserInfo.platform=='mac'}
+			{formhelp note="Mac Users: The newer .sitx format is not supported currently because the makers of the StuffIt application have not released new versions of their software for servers. Please use DropZip or similar for best results." force=true}
+{/if}
 			<input type="hidden" name="gallery_id" value="{$galleryId|escape}"/>
 			<input type="hidden" name="image_id" value="{$imageId}"/>
 			<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />

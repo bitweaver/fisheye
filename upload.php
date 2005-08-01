@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.4 2005/07/25 20:02:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.5 2005/08/01 18:40:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -75,7 +75,7 @@ if (!empty($_REQUEST['save_image'])) {
 		header( 'Location: '.$gContent->getDisplayUrl() );
 		die;
 	} else {
-		$smarty->assign( 'errors', $upErrors );
+		$gBitSmarty->assign( 'errors', $upErrors );
 	}
 }
 
@@ -98,7 +98,7 @@ if( $gBitSystem->isPackageActive( 'quota' ) ) {
 		// Prevent people from uploading more than there quota
 		$q = $quota->getUserQuota( $gBitUser->mUserId );
 		$u = $quota->getUserUsage( $gBitUser->mUserId );
-		$smarty->assign('quotaMessage', tra( 'Your remaining disk quota is' ).' '.round(($q-$u)/1000000, 2).' '.tra('Megabytes') );
+		$gBitSmarty->assign('quotaMessage', tra( 'Your remaining disk quota is' ).' '.round(($q-$u)/1000000, 2).' '.tra('Megabytes') );
 		$qMegs = round( $q / 1000000 );
 		if( $qMegs < $uploadMax ) {
 			$uploadMax = $qMegs;
@@ -110,9 +110,9 @@ if( $gBitSystem->isPackageActive( 'quota' ) ) {
 $gFisheyeGallery = new FisheyeGallery();
 $listHash = array( 'user_id' => $gBitUser->mUserId, 'show_empty' => true, 'max_records'=>-1, 'no_thumbnails'=>TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gFisheyeGallery->getList( $listHash );
-$smarty->assign_by_ref('galleryList', $galleryList);
+$gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
-$smarty->assign( 'uploadMax', $uploadMax );
+$gBitSmarty->assign( 'uploadMax', $uploadMax );
 
 $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' );
 
@@ -185,7 +185,9 @@ function liberty_process_archive( &$pFileHash ) {
 				} elseif( $upExt == 'rar' ) {
 					$shellResult = shell_exec( "rar x -w\"$destDir\" $pFileHash[tmp_name] " );
 				} elseif( $upExt == 'sit' || $upExt == 'sitx' ) {
-				$shellResult = shell_exec( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
+					print( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
+					$shellResult = shell_exec( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
+					vd( $shellResult );
 				}
 				break;
 		}

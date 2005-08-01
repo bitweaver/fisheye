@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_lookup_inc.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_lookup_inc.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -37,12 +37,12 @@ if( empty( $_REQUEST['gallery_id'] ) ) {
 if( !empty($_REQUEST['gallery_id']) && is_numeric($_REQUEST['gallery_id']) ) {
 	$gGallery = new FisheyeGallery( $_REQUEST['gallery_id'], NULL, FALSE );
 	$gGallery->load( $gContent->mImageId );
-	$smarty->assign_by_ref('gGallery', $gGallery);
-	$smarty->assign_by_ref('galleryId', $_REQUEST['gallery_id']);
+	$gBitSmarty->assign_by_ref('gGallery', $gGallery);
+	$gBitSmarty->assign_by_ref('galleryId', $_REQUEST['gallery_id']);
 }
 
-$smarty->assign_by_ref('gContent', $gContent);
-$smarty->assign_by_ref('imageId', $gContent->mImageId );
+$gBitSmarty->assign_by_ref('gContent', $gContent);
+$gBitSmarty->assign_by_ref('imageId', $gContent->mImageId );
 
 
 ?>

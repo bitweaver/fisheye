@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/gallery_tree.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/gallery_tree.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -12,7 +12,7 @@ require_once( '../bit_setup_inc.php' );
 
 require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
-global $gBitSystem, $smarty;
+global $gBitSystem, $gBitSmarty;
 
 $gBitSystem->display("bitpackage:fisheye/gallery_tree.tpl");
 

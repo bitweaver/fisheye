@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.3 2005/07/25 20:02:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.4 2005/08/01 18:40:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -19,7 +19,7 @@ include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 
 if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 	global $gGatekeeper;
-	$smarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
+	$gBitSmarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
 }
 
 // Ensure the user has the permission to create new image galleries
@@ -28,7 +28,10 @@ if( !$gContent->hasUserPermission( 'bit_p_edit_fisheye' ) ) {
 	$gBitSystem->fatalError( tra( "You cannot edit this image gallery" ) );
 }
 
-if (!empty($_REQUEST['updateImageOrder'])) {
+if (!empty($_REQUEST['cancel'])) {
+	header( 'Location: '.$gContent->getDisplayUrl() );
+	die;
+} elseif (!empty($_REQUEST['updateImageOrder'])) {
 	if( !empty( $_REQUEST['batch'] ) ) {
 		// flip so we can do instant has lookup
 		$batchCon = array_flip( $_REQUEST['batch'] );
@@ -131,11 +134,11 @@ if (!empty($_REQUEST['updateImageOrder'])) {
 // Get a list of all existing galleries
 $listHash = array( 'user_id'=>$gBitUser->mUserId );
 $galleryList = $gContent->getList( $listHash );
-$smarty->assign_by_ref('galleryList', $galleryList);
+$gBitSmarty->assign_by_ref('galleryList', $galleryList);
 $gContent->loadImages();
-$smarty->assign_by_ref('galleryImages', $gContent->mItems);
+$gBitSmarty->assign_by_ref('galleryImages', $gContent->mItems);
 
-$smarty->assign_by_ref('formfeedback', $feedback);
+$gBitSmarty->assign_by_ref('formfeedback', $feedback);
 
 $gBitSystem->display( 'bitpackage:fisheye/image_order.tpl', 'Edit Gallery Images: '.$gContent->getTitle() );
 

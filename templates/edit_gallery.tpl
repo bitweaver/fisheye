@@ -57,6 +57,11 @@
 						</div>
 					{/if}
 					{/legend}
+					{if $gBitSystem->isPackageActive( 'gatekeeper' ) }
+						{legend legend="Security Settings"}
+							{include file="bitpackage:gatekeeper/choose_security.tpl"}
+						{/legend}
+					{/if}
 				{/jstab}
 
 				{if $gBitSystem->isPackageActive( 'categories' )}
@@ -69,6 +74,12 @@
 
 
 				{jstab title="Advanced Options"}
+					{if $gBitSystem->isPackageActive( 'nexus' )}
+						{legend legend="Insert Link in Menu"}
+							{include file="bitpackage:nexus/insert_menu_item_inc.tpl"}
+						{/legend}
+					{/if}
+
 					{if $galleryList}
 						{legend legend="Advanced Options"}
 							<div class="row">
@@ -91,23 +102,13 @@
 							</div>
 						{/legend}
 					{/if}
-
-					{if $gBitSystem->isPackageActive( 'gatekeeper' ) }
-						{legend legend="Security Settings"}
-							{include file="bitpackage:gatekeeper/choose_security.tpl"}
-						{/legend}
-					{/if}
-
-					{if $gBitSystem->isPackageActive( 'nexus' )}
-						{legend legend="Insert Link in Menu"}
-							{include file="bitpackage:nexus/insert_menu_item_inc.tpl"}
-						{/legend}
-					{/if}
 				{/jstab}
 			{/jstabs}
 
 			<div class="row submit">
+{if $gContent->isValid()}
 				<input type="submit" name="cancelgallery" value="Cancel"/>
+{/if}
 				<input type="submit" name="savegallery" value="Save Gallery"/>
 			</div>
 		{/form}
