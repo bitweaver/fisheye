@@ -26,9 +26,7 @@
 			</ul>
 		</div>
 
-		<div class="clear"></div>
-
-		<ul class="data">
+		<ul class="clear data">
 			{foreach from=$galleryList key=galleryId item=gal}
 				<li class="item {cycle values='odd,even'} {$gal.content_type_guid}">
 					<div class="floaticon">
