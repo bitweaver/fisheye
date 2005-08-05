@@ -15,7 +15,7 @@ function MoveDown(imageId) {
 	</div>
 
 	<div class="body">
-		{form id="batch_order" legend="Edit Image Order for <a href=\"`$gBitLoc.FISHEYE_PKG_URL`view.php?gallery_id=`$gContent->mGalleryId`\">`$gContent->mInfo.title`</a>"}
+		{form id="batch_order" legend="Edit Image Order for <a href=\"`$smarty.const.FISHEYE_PKG_URL`view.php?gallery_id=`$gContent->mGalleryId`\">`$gContent->mInfo.title`</a>"}
 {strip}
 			<input type="hidden" name="gallery_id" value="{$gContent->mGalleryId}"/>
 
@@ -54,7 +54,7 @@ function MoveDown(imageId) {
 								{forminput}
 									<input type="text" maxlength="160" size="20" name="imageTitle[{$galleryImages[ix]->mContentId}]" id="imageTitle-{$galleryImages[ix]->mContentId}" value="{$galleryImages[ix]->mInfo.title}"/>
 									{if $galleryImages[ix]->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
-										&nbsp;<a href="{$gBitLoc.FISHEYE_PKG_URL}edit_image.php?content_id={$gContent->mItems[ix]->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a>
+										&nbsp;<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$gContent->mItems[ix]->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a>
 									{/if}
 								{/forminput}
 							</div>

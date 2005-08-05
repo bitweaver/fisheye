@@ -43,16 +43,16 @@
 							{tr}Password{/tr}
 						{/if}
 						{* if $galleryList[ix]->hasUserPermission('bit_p_edit_fisheye')}
-							<a title="{tr}Edit{/tr}" href="{$gBitLoc.FISHEYE_PKG_URL}edit.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="config" iexplain="Edit"}</a>
+							<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="config" iexplain="Edit"}</a>
 						{/if}
 						{if $galleryList[ix]->hasUserPermission('bit_p_edit_fisheye')}
-						 	<a title="{tr}Image Order{/tr}" href="{$gBitLoc.FISHEYE_PKG_URL}image_order.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="current" iexplain="Item Order"}</a>
+						 	<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="current" iexplain="Item Order"}</a>
 						{/if}
 						{if $galleryList[ix]->hasUserPermission('bit_p_upload_fisheye')}
-							<a title="{tr}Add Image{/tr}" href="{$gBitLoc.FISHEYE_PKG_URL}upload.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="upload" iexplain="Add Image"}</a>
+							<a title="{tr}Add Image{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="upload" iexplain="Add Image"}</a>
 						{/if}
 						{if $galleryList[ix]->hasUserPermission('bit_p_admin_fisheye')}
-							<a title="{tr}User Permissions{/tr}" href="{$gBitLoc.FISHEYE_PKG_URL}edit_gallery_perms.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="permissions" iexplain="User Permissions"}</a>
+							<a title="{tr}User Permissions{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_gallery_perms.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="permissions" iexplain="User Permissions"}</a>
 						{/if *}
 					</div>
 
@@ -65,7 +65,7 @@
 					{/if}
 
 					{if $fisheye_list_user eq 'y'}
-						{displayname hash=$gal nolink=TRUE} &raquo; <a href="{$gBitLoc.FISHEYE_PKG_URL}list_galleries.php?user_id={$gal.user_id}">{tr}Galleries{/tr}</a>
+						{displayname hash=$gal nolink=TRUE} &raquo; <a href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gal.user_id}">{tr}Galleries{/tr}</a>
 					{/if}
 					{* if $galleryList[ix]->isProtected()}
 						{biticon ipackage="fisheye" iname="locked" iexplain="Protected"}

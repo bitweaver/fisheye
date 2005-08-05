@@ -92,7 +92,7 @@
 												checked="checked"
 											{/if}
 										/>
-										<a href="{$gBitLoc.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title}</a>
+										<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title}</a>
 										<br />
 										{/if}
 									{foreachelse}
