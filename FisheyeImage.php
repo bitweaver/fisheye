@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.11 2005/07/25 16:59:13 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.12 2005/08/06 18:31:09 lsces Exp $
  * @package fisheye
  */
 
@@ -188,7 +188,7 @@ class FisheyeImage extends FisheyeBase {
 							WHERE `image_id` = ?";
 					$bindVars = array($this->mContentId, $imageDetails['width'], $imageDetails['height'], $this->mImageId);
 				} else {
-					$this->mImageId = $this->mDb->GenID('tiki_fisheye_image_id_seq');
+					$this->mImageId = $this->GenID('tiki_fisheye_image_id_seq');
 					$this->mInfo['image_id'] = $this->mImageId;
 					$sql = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_image` (`image_id`, `content_id`, `width`, `height`) VALUES (?,?,?,?)";
 					$bindVars = array($this->mImageId, $this->mContentId, $imageDetails['width'], $imageDetails['height']);
@@ -373,7 +373,7 @@ class FisheyeImage extends FisheyeBase {
 
 	function expunge() {
 		if( $this->isValid() ) {
-			$this->mDb->StartTrans();
+			$this->StartTrans();
 			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` WHERE `item_content_id` = ?";
 			$rs = $this->query($query, array( $this->mContentId ));
 			$query = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_gallery` SET `preview_content_id`=NULL WHERE `preview_content_id` = ?";
@@ -381,9 +381,9 @@ class FisheyeImage extends FisheyeBase {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_image` WHERE `content_id` = ?";
 			$rs = $this->query($query, array( $this->mContentId ));
 			if( LibertyAttachable::expunge() ) {
-				$this->mDb->CompleteTrans();
+				$this->CompleteTrans();
 			} else {
-				$this->mDb->RollbackTrans();
+				$this->RollbackTrans();
 			}
 		}
 		return( count( $this->mErrors ) == 0 );
@@ -439,7 +439,7 @@ class FisheyeImage extends FisheyeBase {
 		}
 //  $this->debug();
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-			if( $this->mDb->isAdvancedPostgresEnabled() ) {
+			if( $this->isAdvancedPostgresEnabled() ) {
 				$mid .= " AND (SELECT ts.`security_id` FROM connectby('tiki_fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', tfi.`content_id`, 0, '/')  AS t(`cb_gallery_content_id` int, `cb_item_content_id` int, level int, branch text), `".BIT_DB_PREFIX."tiki_content_security_map` tcsm,  `".BIT_DB_PREFIX."tiki_security` ts
 						  WHERE ts.`security_id`=tcsm.`security_id` AND tcsm.`content_id`=`cb_gallery_content_id` LIMIT 1) IS NULL";
 			} else {

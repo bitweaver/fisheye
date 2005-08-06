@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.10 2005/07/28 13:11:32 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.11 2005/08/06 18:31:08 lsces Exp $
  * @package fisheye
  */
 
@@ -261,7 +261,7 @@ class FisheyeGallery extends FisheyeBase {
 			if( !empty( $this->mInfo['preview_content_id'] ) ) {
 				$pThumbnailContentId = $this->mInfo['preview_content_id'];
 			} else {
-				if( $this->mDb->isAdvancedPostgresEnabled() ) {
+				if( $this->isAdvancedPostgresEnabled() ) {
 					$query = "SELECT COALESCE( tfg.`preview_content_id`, tc.`content_id` )
 							FROM connectby('`".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
 								INNER JOIN tiki_content tc ON(content_id=cb_item_content_id)
@@ -315,7 +315,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	function store(&$pStorageHash) {
 		if ($this->verifyGalleryData($pStorageHash)) {
-			$this->mDb->StartTrans();
+			$this->StartTrans();
 			if( LibertyContent::store($pStorageHash)) {
 				$this->mContentId = $pStorageHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
@@ -325,15 +325,15 @@ class FisheyeGallery extends FisheyeBase {
 							WHERE `gallery_id` = ?";
 					$bindVars = array($pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size'], $this->mGalleryId);
 				} else {
-					$this->mGalleryId = $this->mDb->GenID('tiki_fisheye_gallery_id_seq');
+					$this->mGalleryId = $this->GenID('tiki_fisheye_gallery_id_seq');
 					$this->mInfo['gallery_id'] = $this->mGalleryId;
 					$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_gallery` (`gallery_id`, `content_id`, `rows_per_page`, `cols_per_page`, `thumbnail_size`) VALUES (?,?,?,?,?)";
 					$bindVars = array($this->mGalleryId, $this->mContentId, $pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size']);
 				}
 				$rs = $this->query($query, $bindVars);
-				$this->mDb->mDb->CompleteTrans();
+				$this->CompleteTrans();
 			} else {
-				$this->mDb->mDb->RollbackTrans();
+				$this->RollbackTrans();
 				$this->mErrors[] = "There were errors while attempting to save this gallery";
 			}
 		} else {
@@ -371,7 +371,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	function expunge( $pRecursiveDelete = FALSE ) {
 		if( $this->isValid() ) {
-			$this->mDb->StartTrans();
+			$this->StartTrans();
 
 
 			if( $this->loadImages() ) {
@@ -398,9 +398,9 @@ class FisheyeGallery extends FisheyeBase {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` WHERE `content_id`=?";
 			$rs = $this->query($query, array( $this->mContentId ) );
 			if( LibertyContent::expunge() ) {
-				$this->mDb->CompleteTrans();
+				$this->CompleteTrans();
 			} else {
-				$this->mDb->RollbackTrans();
+				$this->RollbackTrans();
 vd( $this->mErrors );
 			}
 		}
