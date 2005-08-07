@@ -3,16 +3,15 @@
 <head>
 	<title>Find User</title>
 	<!--[if gte IE 5.5000]>
-		<script type="text/javascript" src="{$gBitLoc.THEMES_PKG_URL}js/pngfix.js"></script>
+		<script type="text/javascript" src="{$smarty.const.THEMES_PKG_URL}js/pngfix.js"></script>
 	<![endif]-->
 
-	<script type="text/javascript" src="{$gBitLoc.KERNEL_PKG_URL}bitweaver.js"></script>
+	<script type="text/javascript" src="{$smarty.const.KERNEL_PKG_URL}bitweaver.js"></script>
 	<style type="text/css">
 	<!--
-	  @import url({$gBitLoc.THEMES_PKG_URL}base.css);
-	  {if $gBitLoc.styleSheet}@import url({$gBitLoc.styleSheet});{/if}
-	  {if $gBitLoc.browserStyleSheet}@import url({$gBitLoc.browserStyleSheet});{/if}
-	  {if $gBitLoc.customStyleSheet}@import url({$gBitLoc.customStyleSheet});{/if}
+	  {if $gBitSystem->mStyles.styleSheet}@import url({$gBitSystem->mStyles.styleSheet});{/if}
+	  {if $gBitSystem->mStyles.browserStyleSheet}@import url({$gBitSystem->mStyles.browserStyleSheet});{/if}
+	  {if $gBitSystem->mStyles.customStyleSheet}@import url({$gBitSystem->mStyles.customStyleSheet});{/if}
 	-->
 	</style>
 

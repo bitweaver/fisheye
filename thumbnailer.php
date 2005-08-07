@@ -9,7 +9,7 @@
  * suggested crontab entry runs the thumbnailer every minute:
  *		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
  *
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.3 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.4 2005/08/07 17:36:32 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -41,7 +41,7 @@
 
 	$thumbCount = ( !empty( $argv[1] ) ) ? $argv[1] : ( !empty( $_REQUEST['thumbnails'] ) ? $_REQUEST['thumbnails'] : 10);
 
-	$gBitSystem->mDb->StartTrans();
+	$gBitSystem->StartTrans();
 
 	$sql = "SELECT tq.content_id AS hash_key, tq.*
 			FROM `".BIT_DB_PREFIX."tiki_thumbnail_queue` tq
@@ -57,7 +57,7 @@
 		$rs->MoveNext();
 	}
 
-	$gBitSystem->mDb->CompleteTrans();
+	$gBitSystem->CompleteTrans();
 
 	$log = array();
 	$total = date( 'U' );

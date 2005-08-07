@@ -14,7 +14,7 @@
 			<input type="hidden" name="found_username" id="found_username_form_element" />
 			{tr}User{/tr}:
 			<span id="found_username"></span>
-			<a href="{$gBitLoc.FISHEYE_PKG_URL}find_user.php" title="{tr}Opens user search tool in a new window{/tr}" onkeypress="popUpWin(this.href,'standard',600,400);" onclick="popUpWin(this.href,'standard',600,400);return false;">{tr}User Browser{/tr}</a>
+			<a href="{$smarty.const.FISHEYE_PKG_URL}find_user.php" title="{tr}Opens user search tool in a new window{/tr}" onkeypress="popUpWin(this.href,'standard',600,400);" onclick="popUpWin(this.href,'standard',600,400);return false;">{tr}User Browser{/tr}</a>
 		</div>
 		<div class="row">
 			{tr}Permission Level:{/tr}
@@ -51,7 +51,7 @@
 				</select>
 			</td>		
 			<td>
-				<a href="{$gBitLoc.FISHEYE_PKG_URL}edit_gallery_perms.php?gallery_id={$gContent->mGalleryId}&remove_perm_user_id={$userPerms[ix].user_id}">{biticon ipackage=liberty iname="delete_small" iexplain="Remove Permission"}</a> 
+				<a href="{$smarty.const.FISHEYE_PKG_URL}edit_gallery_perms.php?gallery_id={$gContent->mGalleryId}&remove_perm_user_id={$userPerms[ix].user_id}">{biticon ipackage=liberty iname="delete_small" iexplain="Remove Permission"}</a> 
 			</td>	
 		</tr>
 		{sectionelse}

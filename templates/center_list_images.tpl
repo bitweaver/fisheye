@@ -17,7 +17,7 @@
 			{foreachelse}
 				{tr}No records found{/tr}
 			{/foreach}
-			<p><a href="{$gBitLoc.FISHEYE_PKG_URL}list_galleries.php?user_id={$gQueryUserId}">{tr}View More{/tr}...</a></p>
+			<p><a href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gQueryUserId}">{tr}View More{/tr}...</a></p>
 		</div><!-- end .body -->
 	</div><!-- end .fisheye -->
 {/if}

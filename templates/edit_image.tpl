@@ -1,6 +1,6 @@
 {strip}
 <div class="floaticon">
-	<a href="{$gBitLoc.FISHEYE_PKG_URL}edit_image.php">{biticon ipackage="liberty" iname="upload" iexplain="upload new image"}</a>
+	<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php">{biticon ipackage="liberty" iname="upload" iexplain="upload new image"}</a>
 </div>
 
 <div class="admin fisheye">
@@ -45,7 +45,7 @@
 				{formlabel label="Current Image"}
 				{forminput}
 					{if $gContent->mInfo.image_file.storage_path}
-						<a href="{$gBitLoc.FISHEYE_PKG_URL}view_image.php?image_id={$gContent->mImageId}"><img src="{$gContent->mInfo.image_file.thumbnail_url.medium}" alt="{$gContent->mInfo.title|escape}" /></a>
+						<a href="{$smarty.const.FISHEYE_PKG_URL}view_image.php?image_id={$gContent->mImageId}"><img src="{$gContent->mInfo.image_file.thumbnail_url.medium}" alt="{$gContent->mInfo.title|escape}" /></a>
 						<br />
 						<small>
 							{if $gContent->mInfo.width && $gContent->mInfo.height}
@@ -55,7 +55,7 @@
 							{/if}
 						</small>
 					{else}
-						<img src="{$gBitLoc.FISHEYE_PKG_URL}image/no_image.png" alt="{$gContent->mInfo.title|escape}" />
+						<img src="{$smarty.const.FISHEYE_PKG_URL}image/no_image.png" alt="{$gContent->mInfo.title|escape}" />
 					{/if}
 				{/forminput}
 			</div>
@@ -104,7 +104,7 @@
 									{/if}
 								{/if}
 							/>
-							<a href="{$gBitLoc.FISHEYE_PKG_URL}view.php?gallery_id={$galleryId}">{$gal.title}</a>
+							<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$galleryId}">{$gal.title}</a>
 							<br />
 					{foreachelse}
 						<div>{tr}No Galleries Found{/tr}</div>

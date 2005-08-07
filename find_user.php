@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/find_user.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/find_user.php,v 1.4 2005/08/07 17:36:32 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -10,12 +10,14 @@
  */
 include_once( "../bit_setup_inc.php" );
 
-if (empty($gBitLoc['styleSheet'])) {
-	$gBitLoc['styleSheet'] = $gBitSystem->getStyleCss();
+if (empty($gBitSystem->mStyles['styleSheet'])) {
+	$gBitSystem->mStyles['styleSheet'] = $gBitSystem->getStyleCss();
 }
-$gBitLoc['browserStyleSheet'] = $gBitSystem->getBrowserStyleCss();
-$gBitLoc['customStyleSheet'] = $gBitSystem->getCustomStyleCss();
-$gBitLoc['THEMES_STYLE_URL'] = $gBitSystem->getStyleUrl();
+$gBitSystem->mStyles['browserStyleSheet'] = $gBitSystem->getBrowserStyleCss();
+$gBitSystem->mStyles['customStyleSheet'] = $gBitSystem->getCustomStyleCss();
+if( !defined( 'THEMES_STYLE_URL' ) ) {
+	define( 'THEMES_STYLE_URL', $gBitSystem->getStyleUrl() );
+}
 
 if (!empty($_REQUEST['submitUserSearch'])) {
 	$searchParams = array('find' => $_REQUEST['find']);

@@ -44,7 +44,7 @@
 									{/section}
 								{/if}
 							/>
-							<a href="{$gBitLoc.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title}</a>
+							<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title}</a>
 							<br />
 					{foreachelse}
 						<div>{tr}No Galleries Found{/tr}. {tr}A gallery named <strong>{displayname hash=$gBitUser->mInfo nolink=1}'s Gallery</strong> will be created for you and images will be added to it.{/tr}</div>

@@ -9,7 +9,7 @@
 
 		<table class="data">
 			<tr>
-				<th><a href="{$gBitLoc.FISHEYE_PKG_URL}browse.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Gallery Name{/tr}</a></th>
+				<th><a href="{$smarty.const.FISHEYE_PKG_URL}browse.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Gallery Name{/tr}</a></th>
 			</tr>
 
 			{section name=ix loop=$galleryList}
