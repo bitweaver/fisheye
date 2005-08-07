@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.11 2005/08/06 18:31:08 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.12 2005/08/07 13:17:12 lsces Exp $
  * @package fisheye
  */
 
@@ -69,7 +69,7 @@ class FisheyeGallery extends FisheyeBase {
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = tc.`user_id`)
 					$mid AND fg.`content_id` = tc.`content_id`";
 
-			if( $rs = $this->query($query, $bindVars) ) {
+			if( $rs = $this->getDb()->query($query, $bindVars) ) {
 				$this->mInfo = $rs->fields;
 				$this->mContentId = $rs->fields['content_id'];
 				LibertyContent::load();
@@ -111,7 +111,7 @@ class FisheyeGallery extends FisheyeBase {
 								INNER JOIN `".BIT_DB_PREFIX."tiki_fisheye_image` tfi ON ( tfi.`content_id`=tfgim.`item_content_id` )
 							WHERE tfgim.`gallery_content_id` = ?
 							ORDER BY tfgim.`position`, tfi.`content_id` ";
-					if( $rs = $this->query($query, array( $this->mContentId ) ) ) {
+					if( $rs = $this->getDb()->query($query, array( $this->mContentId ) ) ) {
 						$rows = $rs->getRows();
 						for( $i = 0; $i < count( $rows ); $i++ ) {
 							if( $rows[$i]['image_id'] == $pCurrentImageId ) {
@@ -154,7 +154,7 @@ class FisheyeGallery extends FisheyeBase {
 				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id`=tfgim.`item_content_id` ) $join
 				WHERE tfgim.`gallery_content_id` = ? $where
 				ORDER BY tfgim.`position`, tfgim.`item_content_id` $mid";
-		$rs = $this->query($query, $bindVars, $pMaxRows, $pOffset);
+		$rs = $this->getDb()->query($query, $bindVars, $pMaxRows, $pOffset);
 
 		$rows = $rs->getRows();
 		foreach ($rows as $row) {
@@ -194,7 +194,7 @@ class FisheyeGallery extends FisheyeBase {
 			$query = "SELECT COUNT(*) AS `count`
 					FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`
 					WHERE `gallery_content_id` = ?";
-			$rs = $this->query($query, array($this->mContentId));
+			$rs = $this->getDb()->query($query, array($this->mContentId));
 			$ret = $rs->fields['count'];
 		}
 		return $ret;
@@ -261,21 +261,21 @@ class FisheyeGallery extends FisheyeBase {
 			if( !empty( $this->mInfo['preview_content_id'] ) ) {
 				$pThumbnailContentId = $this->mInfo['preview_content_id'];
 			} else {
-				if( $this->isAdvancedPostgresEnabled() ) {
+				if( $this->getDb()->isAdvancedPostgresEnabled() ) {
 					$query = "SELECT COALESCE( tfg.`preview_content_id`, tc.`content_id` )
 							FROM connectby('`".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
 								INNER JOIN tiki_content tc ON(content_id=cb_item_content_id)
 								LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcsm ON (tcsm.`content_id`=tc.`content_id`), `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg
 							WHERE tc.`content_type_guid`='fisheyeimage' AND tcsm.`security_id` IS NULL AND `cb_parent_content_id`=tfg.`content_id` ORDER BY RANDOM()";
-					if( $pThumbnailContentId = $this->getOne( $query, array( $pContentId ) ) ) {
+					if( $pThumbnailContentId = $this->getDb()->getOne( $query, array( $pContentId ) ) ) {
 						$pThumbnailContentType = 'fisheyeimage';
 					}
 				} else {
 					$query = "SELECT tfgim.`item_content_id`, tc.`content_type_guid`
 							FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tfgim.`item_content_id`=tc.`content_id` )
 							WHERE tfgim.`gallery_content_id` = ?
-							ORDER BY ".$this->convert_sortmode('random');
-					$rs = $this->query($query, array( $pContentId ), 1);
+							ORDER BY ".$this->getDb()->convert_sortmode('random');
+					$rs = $this->getDb()->query($query, array( $pContentId ), 1);
 					$pThumbnailContentId = $rs->fields['item_content_id'];
 					$pThumbnailContentType = $rs->fields['content_type_guid'];
 				}
@@ -307,7 +307,7 @@ class FisheyeGallery extends FisheyeBase {
 			if (!$pContentId)
 				$pContentId = NULL;
 			$query = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_gallery` SET `preview_content_id` = ? WHERE `gallery_id`= ?";
-			$rs = $this->query($query, array($pContentId, $this->mGalleryId));
+			$rs = $this->getDb()->query($query, array($pContentId, $this->mGalleryId));
 			$ret = TRUE;
 		}
 		return $ret;
@@ -315,7 +315,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	function store(&$pStorageHash) {
 		if ($this->verifyGalleryData($pStorageHash)) {
-			$this->StartTrans();
+			$this->getDb()->StartTrans();
 			if( LibertyContent::store($pStorageHash)) {
 				$this->mContentId = $pStorageHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
@@ -325,15 +325,15 @@ class FisheyeGallery extends FisheyeBase {
 							WHERE `gallery_id` = ?";
 					$bindVars = array($pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size'], $this->mGalleryId);
 				} else {
-					$this->mGalleryId = $this->GenID('tiki_fisheye_gallery_id_seq');
+					$this->mGalleryId = $this->getDb()->GenID('tiki_fisheye_gallery_id_seq');
 					$this->mInfo['gallery_id'] = $this->mGalleryId;
 					$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_gallery` (`gallery_id`, `content_id`, `rows_per_page`, `cols_per_page`, `thumbnail_size`) VALUES (?,?,?,?,?)";
 					$bindVars = array($this->mGalleryId, $this->mContentId, $pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size']);
 				}
-				$rs = $this->query($query, $bindVars);
-				$this->CompleteTrans();
+				$rs = $this->getDb()->query($query, $bindVars);
+				$this->getDb()->CompleteTrans();
 			} else {
-				$this->RollbackTrans();
+				$this->getDb()->RollbackTrans();
 				$this->mErrors[] = "There were errors while attempting to save this gallery";
 			}
 		} else {
@@ -348,7 +348,7 @@ class FisheyeGallery extends FisheyeBase {
 		if( $this->isValid() && is_numeric( $pContentId ) ) {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`
 					  WHERE `item_content_id`=? AND `gallery_content_id`=?";
-			$rs = $this->query($query, array($pContentId, $this->mContentId ) );
+			$rs = $this->getDb()->query($query, array($pContentId, $this->mContentId ) );
 			$ret = TRUE;
 		}
 		return $ret;
@@ -363,7 +363,7 @@ class FisheyeGallery extends FisheyeBase {
 		$ret = FALSE;
 		if( $this->isValid() && is_numeric( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId  )  && !$this->isInGallery( $pContentId, $this->mContentId ) ) {
 			$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`, `position`) VALUES (?,?,?)";
-			$rs = $this->query($query, array($pContentId, $this->mContentId, $pPosition ) );
+			$rs = $this->getDb()->query($query, array($pContentId, $this->mContentId, $pPosition ) );
 			$ret = TRUE;
 		}
 		return $ret;
@@ -371,7 +371,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	function expunge( $pRecursiveDelete = FALSE ) {
 		if( $this->isValid() ) {
-			$this->StartTrans();
+			$this->getDb()->StartTrans();
 
 
 			if( $this->loadImages() ) {
@@ -382,7 +382,7 @@ class FisheyeGallery extends FisheyeBase {
 						$query = "SELECT COUNT(`item_content_id`) AS `other_gallery`
 								  FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`
 								  WHERE `item_content_id`=? AND `gallery_content_id`!=?";
-						if( $rs = $this->query($query, array($this->mItems[$key]->mContentId, $this->mContentId ) ) ) {
+						if( $rs = $this->getDb()->query($query, array($this->mItems[$key]->mContentId, $this->mContentId ) ) ) {
 							if( empty( $rs->fields['other_gallery'] ) ) {
 								$this->mItems[$key]->expunge();
 							}
@@ -392,15 +392,15 @@ class FisheyeGallery extends FisheyeBase {
 			}
 
 			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` WHERE `gallery_content_id`=?";
-			$rs = $this->query($query, array( $this->mContentId ) );
+			$rs = $this->getDb()->query($query, array( $this->mContentId ) );
 			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` WHERE `item_content_id`=?";
-			$rs = $this->query($query, array( $this->mContentId ) );
+			$rs = $this->getDb()->query($query, array( $this->mContentId ) );
 			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` WHERE `content_id`=?";
-			$rs = $this->query($query, array( $this->mContentId ) );
+			$rs = $this->getDb()->query($query, array( $this->mContentId ) );
 			if( LibertyContent::expunge() ) {
-				$this->CompleteTrans();
+				$this->getDb()->CompleteTrans();
 			} else {
-				$this->RollbackTrans();
+				$this->getDb()->RollbackTrans();
 vd( $this->mErrors );
 			}
 		}
@@ -415,7 +415,7 @@ vd( $this->mErrors );
 			$query = "SELECT COUNT(`gallery_id`) AS `count`
 					FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery`
 					WHERE `gallery_id` = ?";
-			$rs = $this->query($query, array($this->mGalleryId));
+			$rs = $this->getDb()->query($query, array($this->mGalleryId));
 			if ($rs->fields['count'] > 0)
 				$ret = TRUE;
 		}
@@ -506,13 +506,13 @@ vd( $this->mErrors );
 
 		if ( !empty( $pListHash['sort_mode'] ) ) {
 			//converted in prepGetList()
-			$mid .= " ORDER BY ".$this->convert_sortmode( $pListHash['sort_mode'] )." ";
+			$mid .= " ORDER BY ".$this->getDb()->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
 		$query = "SELECT DISTINCT( tfg.`gallery_id` ) AS `hash_key`, tfg.*, tc.*, uu.`login`, uu.`real_name`, ptc.`content_type_guid` AS `preview_content_type_guid` $select
 				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( tfg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc $join
 				WHERE tfg.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid";
-		if( $rs = $this->query( $query, $bindVars, $pListHash['max_records'],$pListHash['offset'] ) ) {
+		if( $rs = $this->getDb()->query( $query, $bindVars, $pListHash['max_records'],$pListHash['offset'] ) ) {
 			$ret = $rs->GetAssoc();
 			if( empty( $pListHash['no_thumbnails'] ) ) {
 				$thumbsize = !empty( $pListHash['thumbnail_size'] ) ? $pListHash['thumbnail_size'] : 'small';
