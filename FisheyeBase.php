@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.13 2005/08/07 13:17:13 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.14 2005/08/07 16:23:22 lsces Exp $
  * @package fisheye
  */
 
@@ -43,7 +43,7 @@ class FisheyeBase extends LibertyAttachable
 			$sql = "SELECT tfg.`gallery_id` AS `hash_key`, tfg.*, tc.`title`
 					FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg, `".BIT_DB_PREFIX."tiki_content` tc, `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim
 					WHERE tfgim.`item_content_id` = ? AND tfgim.`gallery_content_id`=tfg.`content_id` AND tfg.`content_id`=tc.`content_id`";
-			$ret = $this->getDb()->getAssoc( $sql, array( $pContentId ) );
+			$ret = $this->mDb->getAssoc( $sql, array( $pContentId ) );
 		}
 		return $ret;
 	}
@@ -57,7 +57,7 @@ class FisheyeBase extends LibertyAttachable
 	function updatePosition($pGalleryContentId, $newPosition = NULL) {
 		if( $pGalleryContentId && $newPosition && !empty($this->mContentId) ) {
 			$sql = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` SET `position` = ? WHERE `item_content_id` = ? AND `gallery_content_id` = ?";
-			$rs = $this->getDb()->query($sql, array($newPosition, $this->mContentId, $pGalleryContentId));
+			$rs = $this->mDb->query($sql, array($newPosition, $this->mContentId, $pGalleryContentId));
 		}
 	}
 
@@ -94,7 +94,7 @@ class FisheyeBase extends LibertyAttachable
 				INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc$c ON(tfgim$c.`item_content_id`=tc$c.`content_id`) ";
 			$whereSql .= " tc$c.`content_id`=?  AND tfgim$c.`gallery_content_id`=tc$p.`content_id` ";
 			array_push( $bindVars, $this->mContentId );
-			$rs = $this->getDb()->query( "SELECT ".rtrim( $selectSql, ',')." FROM ".rtrim( $joinSql, ',')." WHERE $whereSql", $bindVars );
+			$rs = $this->mDb->query( "SELECT ".rtrim( $selectSql, ',')." FROM ".rtrim( $joinSql, ',')." WHERE $whereSql", $bindVars );
 			if( !empty( $rs->fields ) ) {
 				$path = '';
 				for( $i = 1; $i <= (count( $rs->fields ) / 2); $i++ ) {
@@ -110,7 +110,7 @@ class FisheyeBase extends LibertyAttachable
 
 	function addToGalleries( $pGalleryArray, $pPosition=NULL ) {
 		if( $this->isValid() ) {
-			$inGalleries = $this->getDb()->getAssoc( "SELECT `gallery_id`,`gallery_content_id` FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg ON (tfgim.`gallery_content_id`=tfg.`content_id`) WHERE `item_content_id` = ?", array( $this->mContentId ) );
+			$inGalleries = $this->mDb->getAssoc( "SELECT `gallery_id`,`gallery_content_id` FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg ON (tfgim.`gallery_content_id`=tfg.`content_id`) WHERE `item_content_id` = ?", array( $this->mContentId ) );
 			$galleries = array();
 			if( count( $pGalleryArray ) ) {
 				foreach( $pGalleryArray as $galleryId ) {
@@ -137,7 +137,7 @@ class FisheyeBase extends LibertyAttachable
 				// if we have any left over in the inGalleries array, we should delete them. these were the "unchecked" boxes
 				foreach( $inGalleries as $galleryId ) {
 					$sql = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` WHERE `gallery_content_id` = ? AND `item_content_id` = ?";
-					$rs = $this->getDb()->query($sql, array( $galleryId, $this->mContentId ) );
+					$rs = $this->mDb->query($sql, array( $galleryId, $this->mContentId ) );
 				}
 			}
 		}
@@ -150,7 +150,7 @@ class FisheyeBase extends LibertyAttachable
 		$ret = FALSE;
 		if ( is_numeric( $this->mGalleryId ) && is_numeric( $pGalleryContentId ) ) {
 
-			if( $this->getDb()->isAdvancedPostgresEnabled() ) {
+			if( $this->mDb->isAdvancedPostgresEnabled() ) {
 				global $gBitDb, $gBitSmarty;
 				// This code pulls all branches for the current node and determines if there is a path from this content to the root
 				// without hitting a security_id. If there is clear path it returns TRUE. If there is a security_id, then
@@ -167,7 +167,7 @@ class FisheyeBase extends LibertyAttachable
 				$sql = "SELECT count(`item_content_id`) as `item_count`
 						FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`
 						WHERE `gallery_content_id` = ? AND `item_content_id` = ?";
-				$rs = $this->getDb()->query($sql, array($pGalleryContentId, $pItemContentId));
+				$rs = $this->mDb->query($sql, array($pGalleryContentId, $pItemContentId));
 				if ($rs->fields['item_count'] > 0) {
 					$ret = TRUE;
 				}
@@ -210,7 +210,7 @@ class FisheyeBase extends LibertyAttachable
 		// assume true for now
 		$ret = FALSE;
 		if( $this->isValid() && !($ret = $this->isOwner())  && !($ret = $gBitUser->isAdmin()) ) {
-			if( $this->getDb()->isAdvancedPostgresEnabled() ) {
+			if( $this->mDb->isAdvancedPostgresEnabled() ) {
 				global $gBitDb, $gBitSmarty;
 				// This code makes use of the badass /usr/share/pgsql/contrib/tablefunc.sql
 				// contribution that you have to install like: psql foo < /usr/share/pgsql/contrib/tablefunc.sql
@@ -225,7 +225,7 @@ class FisheyeBase extends LibertyAttachable
 						  ORDER BY branch
 						";
 $gBitDb->setFatalActive( FALSE );
-				$tree = $this->getDb()->getAssoc( $query, array( $this->mContentId ) );
+				$tree = $this->mDb->getAssoc( $query, array( $this->mContentId ) );
 $gBitDb->setFatalActive( TRUE );
 				if( $tree ) {
 					// we will assume true here since the prevention cases can repeatedly flag FALSE
@@ -254,9 +254,9 @@ $gBitDb->setFatalActive( TRUE );
 						$lastLevel = $node['level'];
 					}
 
-				} elseif( !empty( $gBitDb->getDb()->_errorMsg ) ) {
+				} elseif( !empty( $gBitDb->mDb->_errorMsg ) ) {
 					if( $gBitUser->isOwner() ) {
-						$gBitSmarty->assign( 'feedback', array( 'warning' => $gBitDb->getDb()->_errorMsg.'<br/>'.tra( 'Please check the galleries to which this item belongs' ) ) );
+						$gBitSmarty->assign( 'feedback', array( 'warning' => $gBitDb->mDb->_errorMsg.'<br/>'.tra( 'Please check the galleries to which this item belongs' ) ) );
 					}
 					$ret = TRUE;
 				} else {
