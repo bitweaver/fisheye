@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.4 2005/07/28 13:11:32 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.5 2005/08/11 14:29:04 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -64,8 +64,7 @@ if (!empty($_REQUEST['cancel'])) {
 	}
 
 	foreach ($_REQUEST['imagePosition'] as $contentId=>$newPos) {
-		$galleryItem = $gLibertySystem->getLibertyObject( $contentId );
-		if( $galleryItem->load() ) {
+		if( $galleryItem = $gLibertySystem->getLibertyObject( $contentId ) ) {
 			if( isset( $batchCon[$contentId] ) ) {
 				if( !empty( $_REQUEST['batch_command'] ) ) {
 					list( $batchCommand, $batchParam ) = @split( ':', $_REQUEST['batch_command'] );
