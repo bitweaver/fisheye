@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.9 2005/07/26 15:50:05 drewslater Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.10 2005/08/11 14:20:44 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -151,8 +151,8 @@ function liberty_process_archive( &$pFileHash ) {
 		chdir( $destDir );
 		list( $mimeType, $mimeExt ) = split( '/', $pFileHash['type'] );
 		switch( $mimeExt ) {
-			case 'x-rar-compressed';
-			case 'x-rar';
+			case 'x-rar-compressed':
+			case 'x-rar':
 				$shellResult = shell_exec( "rar x -w\"$destDir\" $pFileHash[tmp_name] " );
 				break;
 			case 'x-bzip2':
