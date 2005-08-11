@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.15 2005/08/07 20:07:43 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.16 2005/08/11 18:26:59 spiderr Exp $
  * @package fisheye
  */
 
@@ -214,7 +214,6 @@ class FisheyeBase extends LibertyAttachable
 				global $gBitDb, $gBitSmarty;
 				// This code makes use of the badass /usr/share/pgsql/contrib/tablefunc.sql
 				// contribution that you have to install like: psql foo < /usr/share/pgsql/contrib/tablefunc.sql
-
 				// This code pulls all branches for the current node and determines if there is a path from this content to the root
 				// without hitting a security_id. If there is clear path it returns TRUE. If there is a security_id, then
 				// it determines if the current user has permission
