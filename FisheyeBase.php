@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.16 2005/08/11 18:26:59 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.17 2005/08/14 18:45:58 spiderr Exp $
  * @package fisheye
  */
 
@@ -244,9 +244,9 @@ $gBitDb->setFatalActive( TRUE );
 							if( $node['is_private'] ) {
 								$ret = $this->isOwner();
 							}
-							if( !empty( $sec['access_answer'] ) ) {
-								if( !($ret = $this->validateUserAccess( NULL, $sec )) && empty( $this->mInfo['access_question'] ) ) {
-									$this->mInfo = array_merge( $this->mInfo, $sec );
+							if( !empty( $node['access_answer'] ) ) {
+								if( !($ret = $this->validateUserAccess( NULL, $node )) && empty( $this->mInfo['access_question'] ) ) {
+									$this->mInfo = array_merge( $this->mInfo, $node );
 								}
 							}
 						}

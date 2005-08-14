@@ -1,25 +1,12 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.1.1.1.2.2 2005/07/26 15:50:04 drewslater Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.1.1.1.2.3 2005/08/14 18:45:58 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
 
-if( !$gContent->hasUserAccess( 'bit_p_view_fisheye' ) ) {
-	if ( !empty($_REQUEST['submit_answer'])) {	// User is attempting to authenticate themseleves to view this gallery
-		if( !$gContent->validateUserAccess( $_REQUEST['try_access_answer']) ) {
-			$gBitSmarty->assign("failedLogin", "Incorrect Answer");
-			$gBitSystem->display("bitpackage:fisheye/authenticate.tpl", "Password Required to view: ".$gContent->getTitle() );
-			die;
-		}
-	} else {
-		if( !empty( $gContent->mInfo['access_answer'] ) ) {
-			$gBitSystem->display("bitpackage:fisheye/authenticate.tpl", "Password Required to view: ".$gContent->getTitle() );
-			die;
-		}
-		$gBitSystem->fatalError( tra( "You cannot view this image gallery" ) );
-	}
-}
+$accessPermission = 'bit_p_view_fisheye';
+require_once( LIBERTY_PKG_PATH.'access_check_inc.php' );
 
 /**
  * categories setup
