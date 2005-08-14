@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.6 2005/07/28 13:11:32 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.7 2005/08/14 21:39:22 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -113,9 +113,8 @@ $getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->
 $galleryList = $gContent->getList( $getHash );
 $gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
-if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-	global $gGatekeeper;
-	$gBitSmarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
+if( $acChoosePhp = $gLibertySystem->getServiceValue( LIBERTY_SERVICE_ACCESS_CONTROL,'edit_choose_php' ) ) {
+	include( $acChoosePhp );
 }
 
 $gBitSystem->display( 'bitpackage:fisheye/edit_gallery.tpl', 'Edit Gallery: '.$gContent->getTitle() );
