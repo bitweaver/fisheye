@@ -57,9 +57,9 @@
 						</div>
 					{/if}
 					{/legend}
-					{if $gBitSystem->isPackageActive( 'gatekeeper' ) }
+					{if $gLibertySystem->hasService( $smarty.const.LIBERTY_SERVICE_ACCESS_CONTROL ) }
 						{legend legend="Security Settings"}
-							{include file="bitpackage:gatekeeper/choose_security.tpl"}
+							{include file=$gLibertySystem->getServiceValue($smarty.const.LIBERTY_SERVICE_ACCESS_CONTROL,'edit_choose_tpl')}
 						{/legend}
 					{/if}
 				{/jstab}
