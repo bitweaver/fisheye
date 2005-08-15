@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.18 2005/08/15 07:17:18 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.19 2005/08/15 08:52:03 spiderr Exp $
  * @package fisheye
  */
 
@@ -174,118 +174,6 @@ class FisheyeBase extends LibertyAttachable
 			}
 		}
 		return $ret;
-	}
-
-	function isProtected() {
-		$ret = FALSE;
-		if (!empty($this->mInfo['access_level']) && ($this->mInfo['access_level'] == GATEKEEPER_ACCESS_PROTECTED || $this->mInfo['access_level'] == GATEKEEPER_ACCESS_PROTECTED_HIDDEN)) {
-			$ret = TRUE;
-		}
-		return $ret;
-	}
-
-
-    /**
-	 * Function that determines if this content has view permission for the current gBitUser. This function needs to be merged with hasUserPermission. FishEye has tight integration with GateKeeper currently so there is a lot of mixed SQL which we hope to remove soon.
-	 *
-	 * @param string Name of the permission to check
-	 * @param bool Generate fatal message if permission denigned
-	 * @param string Message if permission denigned
-	 * @return bool true if user has permission to access file
-	 * @todo Fatal message still to be implemented
-	 */
-	function hasViewAccess( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL  ) {
-		global $gBitUser;
-		// assume true for now
-		$ret = FALSE;
-		if( $this->isValid() && !($ret = $this->isOwner())  && !($ret = $gBitUser->isAdmin()) ) {
-			if( $this->mDb->isAdvancedPostgresEnabled() ) {
-				global $gBitDb, $gBitSmarty;
-				// This code makes use of the badass /usr/share/pgsql/contrib/tablefunc.sql
-				// contribution that you have to install like: psql foo < /usr/share/pgsql/contrib/tablefunc.sql
-				// This code pulls all branches for the current node and determines if there is a path from this content to the root
-				// without hitting a security_id. If there is clear path it returns TRUE. If there is a security_id, then
-				// it determines if the current user has permission
-				$query = "SELECT branch,level,cb_item_content_id,cb_gallery_content_id,ts.*
-						  FROM connectby('`".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`', '`gallery_content_id`', '`item_content_id`', ?, 0, '/') AS t(`cb_gallery_content_id` int,`cb_item_content_id` int, `level` int, `branch` text)
-						  	LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcsm ON (`cb_gallery_content_id`=tcsm.`content_id`)
-						  	LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON (ts.`security_id`=tcsm.`security_id`)
-						  ORDER BY branch
-						";
-$gBitDb->setFatalActive( FALSE );
-				$tree = $this->mDb->getAssoc( $query, array( $this->mContentId ) );
-$gBitDb->setFatalActive( TRUE );
-				if( $tree ) {
-					// we will assume true here since the prevention cases can repeatedly flag FALSE
-					$ret = TRUE;
-					$lastLevel = -1;
-					foreach( $tree AS $branch => $node ) {
-						if( $node['level'] <= $lastLevel ) {
-							// we have moved followed a branch to the end and there is no security!
-							$ret = TRUE;
-							break;
-						}
-						if( $node['security_id'] ) {
-							$ret = FALSE;
-							if( $node['is_hidden'] ) {
-								$ret = TRUE;
-							}
-							if( $node['is_private'] ) {
-								$ret = $this->isOwner();
-							}
-							if( !empty( $node['access_answer'] ) ) {
-								if( !($ret = $this->validateUserAccess( NULL, $node )) && empty( $this->mInfo['access_question'] ) ) {
-									$this->mInfo = array_merge( $this->mInfo, $node );
-								}
-							}
-						}
-						$lastLevel = $node['level'];
-					}
-
-				} elseif( !empty( $gBitDb->mDb->_errorMsg ) ) {
-					if( $gBitUser->isOwner() ) {
-						$gBitSmarty->assign( 'feedback', array( 'warning' => $gBitDb->mDb->_errorMsg.'<br/>'.tra( 'Please check the galleries to which this item belongs' ) ) );
-					}
-					$ret = TRUE;
-				} else {
-					$ret = $gBitUser->hasPermission( $pPermName );
-				}
-			} else {
-				$this->verifyAccessControl();
-			}
-		}
-$this->debug(0);
-		return( $ret );
-	}
-
-
-    /**
-    * Overloaded function that determines if this content can be edited by the current gBitUser
-    * @return the fully specified path to file to be included
-    */
-	function hasUserPermission( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL ) {
-		$ret = FALSE;
-		if( $pPermName == 'bit_p_view_fisheye' ) {
-			$ret = $this->hasViewAccess( $pPermName );
-		} elseif( $pPermName == 'bit_p_edit_fisheye' ) {
-			if( !($ret = $this->isOwner()) ) {
-				global $gBitUser;
-				if( !($ret = $gBitUser->isAdmin()) ) {
-					if( $this->loadPermissions() ) {
-						$userPerms = $this->getUserPermissions( $gBitUser->mUserId );
-						$ret = isset( $userPerms[$pPermName]['user_id'] ) && ( $userPerms[$pPermName]['user_id'] == $gBitUser->mUserId );
-					}
-				}
-			}
-		} else {
-			$ret = LibertyContent::hasUserPermission( $pPermName, $pFatalMessage );
-		}
-		if( !$ret && $pFatalIfFalse ) {
-			global $gBitSystem;
-			$gBitSystem->fatalPermission( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL );
-		}
-
-		return( $ret );
 	}
 
 

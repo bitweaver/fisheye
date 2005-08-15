@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.13 2005/08/07 16:23:22 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.14 2005/08/15 08:52:03 spiderr Exp $
  * @package fisheye
  */
 
@@ -44,30 +44,27 @@ class FisheyeGallery extends FisheyeBase {
 
 	function load( $pCurrentImageId=NULL ) {
 		global $gBitSystem;
+		$bindVars = array(); $selectSql = ''; $joinSql = ''; $whereSql = '';
 		if(!empty($this->mGalleryId)) {
-			$mid = " WHERE fg.`gallery_id` = ?";
+			$whereSql = " WHERE fg.`gallery_id` = ?";
 			$bindVars = array($this->mGalleryId);
 		} elseif (!empty($this->mContentId)) {
-			$mid = " WHERE fg.`content_id` = ?";
+			$whereSql = " WHERE fg.`content_id` = ?";
 			$bindVars = array($this->mContentId);
 		} else {
-			$mid = $bindVars = NULL;
+			$whereSql = $bindVars = NULL;
 		}
 
-		if ($mid) {	// If we have some way to know what tiki_fisheye_gallery row to load...
-			$gateSql = NULL;
-			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-				$gateSql = ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer`  ';
-				$mid = " LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs ON ( tc.`content_id`=tcs.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON ( tcs.`security_id`=ts.`security_id` ) ".$mid;
-			}
+		if ($whereSql) {	// If we have some way to know what tiki_fisheye_gallery row to load...
+			$this->getServicesSql( 'content_load_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
-			$query = "SELECT fg.*, tc.* $gateSql
+			$query = "SELECT fg.*, tc.* $selectSql
 						, uue.`login` AS modifier_user, uue.`real_name` AS `modifier_real_name`
 						, uuc.`login` AS creator_user, uuc.`real_name` AS `creator_real_name`
-					FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` fg, `".BIT_DB_PREFIX."tiki_content` tc
+					FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` fg, `".BIT_DB_PREFIX."tiki_content` tc $joinSql
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = tc.`modifier_user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = tc.`user_id`)
-					$mid AND fg.`content_id` = tc.`content_id`";
+					$whereSql AND fg.`content_id` = tc.`content_id`";
 
 			if( $rs = $this->mDb->query($query, $bindVars) ) {
 				$this->mInfo = $rs->fields;
