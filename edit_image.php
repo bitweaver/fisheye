@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.1.1.1.2.7 2005/08/14 21:39:22 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.1.1.1.2.8 2005/08/15 00:29:45 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -82,12 +82,6 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		}
 	}
 
-}
-
-if ( $gBitSystem->isPackageActive('categories') ) {
-	$cat_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
-	$cat_objid = $gContent->mContentId;
-	include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
 }
 
 $errors = $gContent->mErrors;

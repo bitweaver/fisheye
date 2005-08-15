@@ -81,9 +81,9 @@
 				{include file="bitpackage:fisheye/resize_image_select.tpl"}
 			</div>
 
-			{if $gLibertySystem->hasService( $smarty.const.LIBERTY_SERVICE_ACCESS_CONTROL ) }
+			{* if $gLibertySystem->hasService( $smarty.const.LIBERTY_SERVICE_ACCESS_CONTROL ) }
 				{include file=$gLibertySystem->getServiceValue($smarty.const.LIBERTY_SERVICE_ACCESS_CONTROL,'edit_choose_tpl')}
-			{/if}
+			{/if *}
 
 			{if $gBitSystem->isPackageActive( 'categories' )}
 				{include file="bitpackage:categories/categorize.tpl"}

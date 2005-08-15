@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.7 2005/08/14 21:39:22 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.8 2005/08/15 00:29:45 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -97,13 +97,6 @@ if( $gBitSystem->isPackageActive( 'nexus' ) && $gBitUser->hasPermission( 'bit_p_
 	include_once( NEXUS_PKG_PATH.'insert_menu_item_inc.php' );
 }
 
-if ( $gBitSystem->isPackageActive('categories') ) {
-	$cat_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
-	$cat_objid = $gContent->mContentId;
-	include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
-}
-
-
 // Initalize the errors list which contains any errors which occured during storage
 $errors = (!empty($gContent->mErrors) ? $gContent->mErrors : array());
 $gBitSmarty->assign_by_ref('errors', $errors);
@@ -113,9 +106,26 @@ $getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->
 $galleryList = $gContent->getList( $getHash );
 $gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
-if( $acChoosePhp = $gLibertySystem->getServiceValue( LIBERTY_SERVICE_ACCESS_CONTROL,'edit_choose_php' ) ) {
-	include( $acChoosePhp );
+
+// Load up any services
+if( $serviceEditPhp = $gLibertySystem->getServiceValues( 'edit_php' ) ) {
+	foreach ( $serviceEditPhp as $serviceFile ) {
+		include( $serviceFile );
+	}
 }
+if( $serviceEditTpl = $gLibertySystem->getServiceValues( 'edit_tpl' ) ) {
+	$smarty->assign( 'serviceEditTpl', $serviceEditTpl );
+}
+/*
+if ( $gBitSystem->isPackageActive('categories') ) {
+	$cat_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
+	$cat_objid = $gContent->mContentId;
+	include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
+}
+*/
+
+
+
 
 $gBitSystem->display( 'bitpackage:fisheye/edit_gallery.tpl', 'Edit Gallery: '.$gContent->getTitle() );
 

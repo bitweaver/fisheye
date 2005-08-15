@@ -57,17 +57,17 @@
 						</div>
 					{/if}
 					{/legend}
-					{if $gLibertySystem->hasService( $smarty.const.LIBERTY_SERVICE_ACCESS_CONTROL ) }
+					{if $serviceEditTpl.access_control }
 						{legend legend="Security Settings"}
-							{include file=$gLibertySystem->getServiceValue($smarty.const.LIBERTY_SERVICE_ACCESS_CONTROL,'edit_choose_tpl')}
+							{include file=$serviceEditTpl.access_control"}
 						{/legend}
 					{/if}
 				{/jstab}
 
-				{if $gBitSystem->isPackageActive( 'categories' )}
+				{if $serviceEditTpl.categorization }
 					{jstab title="Categorize"}
 						{legend legend="Categorize"}
-							{include file="bitpackage:categories/categorize.tpl"}
+							{include file=$serviceEditTpl.categorization"}
 						{/legend}
 					{/jstab}
 				{/if}
