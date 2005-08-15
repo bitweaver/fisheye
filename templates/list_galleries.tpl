@@ -31,7 +31,7 @@
 				<li class="item {cycle values='odd,even'} {$gal.content_type_guid}">
 					<div class="floaticon">
 						{if $gal.is_hidden=='y' || $gal.is_private=='y' || $gal.access_answer}
-							{biticon ipackage=gatekeeper iname="security" iexplain="Security" label=TRUE}
+							{biticon ipackage=liberty iname="security" iexplain="Security" label=TRUE}
 						{/if}
 						{if $gal.is_hidden=='y'}
 							{tr}Hidden{/tr}

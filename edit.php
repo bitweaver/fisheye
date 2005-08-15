@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.8 2005/08/15 00:29:45 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.9 2005/08/15 07:17:18 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -52,15 +52,6 @@ if( !empty($_REQUEST['savegallery']) ) {
 			$nexusHash['hint'] = ( isset( $_REQUEST['edit'] ) ? $_REQUEST['edit'] : NULL );
 			include_once( NEXUS_PKG_PATH.'insert_menu_item_inc.php' );
 		}
-		if ( $gBitSystem->isPackageActive('categories') ) {
-			$cat_desc = $gLibertySystem->mContentTypes[FISHEYEGALLERY_CONTENT_TYPE_GUID]['content_description'].' by '.$gBitUser->getDisplayName( FALSE, array( 'real_name' => $gContent->mInfo['creator_real_name'], 'user' => $gContent->mInfo['creator_user'], 'user_id'=>$gContent->mInfo['user_id'] ) );
-			$cat_name = $gContent->getTitle();
-			$cat_href = $gContent->getDisplayUrl();
-			$cat_objid = $gContent->mContentId;
-			$cat_content_id = $gContent->mContentId;
-			$cat_obj_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
-			include_once( CATEGORIES_PKG_PATH.'categorize_inc.php' );
-		}
 		header("location: ".$gContent->getDisplayUrl() );
 		die();
 	}
@@ -106,26 +97,7 @@ $getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->
 $galleryList = $gContent->getList( $getHash );
 $gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
-
-// Load up any services
-if( $serviceEditPhp = $gLibertySystem->getServiceValues( 'edit_php' ) ) {
-	foreach ( $serviceEditPhp as $serviceFile ) {
-		include( $serviceFile );
-	}
-}
-if( $serviceEditTpl = $gLibertySystem->getServiceValues( 'edit_tpl' ) ) {
-	$smarty->assign( 'serviceEditTpl', $serviceEditTpl );
-}
-/*
-if ( $gBitSystem->isPackageActive('categories') ) {
-	$cat_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
-	$cat_objid = $gContent->mContentId;
-	include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
-}
-*/
-
-
-
+$gContent->invokeServices( 'content_edit_function' );
 
 $gBitSystem->display( 'bitpackage:fisheye/edit_gallery.tpl', 'Edit Gallery: '.$gContent->getTitle() );
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.1.1.1.2.8 2005/08/15 00:29:45 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.1.1.1.2.9 2005/08/15 07:17:18 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -52,14 +52,6 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		if( !empty( $_REQUEST['rotate_image'] ) ) {
 			$gContent->rotateImage( $_REQUEST['rotate_image'] );
 		}
-		if ( $gBitSystem->isPackageActive('categories') ) {
-			$cat_desc = $gLibertySystem->mContentTypes[FISHEYEIMAGE_CONTENT_TYPE_GUID]['content_description'].' by '.$gBitUser->getDisplayName( FALSE, array( 'real_name' => $gContent->mInfo['creator_real_name'], 'user' => $gContent->mInfo['creator_user'], 'user_id'=>$gContent->mInfo['user_id'] ) );
-			$cat_name = $gContent->getTitle();
-			$cat_href = $gContent->getDisplayUrl();
-			$cat_objid = $gContent->mContentId;
-			$cat_obj_type = FISHEYEIMAGE_CONTENT_TYPE_GUID;
-			include_once( CATEGORIES_PKG_PATH.'categorize_inc.php' );
-		}
 		if( empty( $gContent->mErrors ) ) {
 			// add a refresh parameter to the URL so the thumbnails will properly refresh first go reload
 			header( 'Location: '.$gContent->getDisplayUrl().($gBitSystem->isFeatureActive( 'pretty_urls' ) ? '?' : '&' ).'refresh=1' );
@@ -97,9 +89,7 @@ $gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
 $gBitSmarty->assign('requested_gallery', !empty($_REQUEST['gallery_id']) ? $_REQUEST['gallery_id'] : NULL);
 
-if( $acChoosePhp = $gLibertySystem->getServiceValue( LIBERTY_SERVICE_ACCESS_CONTROL,'edit_choose_php' ) ) {
-	include( $acChoosePhp );
-}
+$gContent->invokeServices( 'content_edit_function' );
 
 $gBitSystem->display( 'bitpackage:fisheye/edit_image.tpl', 'Edit Image: '.$gContent->getTitle() );
 

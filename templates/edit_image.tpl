@@ -81,15 +81,7 @@
 				{include file="bitpackage:fisheye/resize_image_select.tpl"}
 			</div>
 
-			{* if $gLibertySystem->hasService( $smarty.const.LIBERTY_SERVICE_ACCESS_CONTROL ) }
-				{include file=$gLibertySystem->getServiceValue($smarty.const.LIBERTY_SERVICE_ACCESS_CONTROL,'edit_choose_tpl')}
-			{/if *}
-
-			{if $gBitSystem->isPackageActive( 'categories' )}
-				{include file="bitpackage:categories/categorize.tpl"}
-			{/if}
-
-
+			{include file="bitpackage:liberty/services_edit_inc.tpl"}
 
 			<div class="row">
 				{formlabel label="Add This Image to These Galleries"}

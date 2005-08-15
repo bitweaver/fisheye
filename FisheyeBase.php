@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.17 2005/08/14 18:45:58 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.18 2005/08/15 07:17:18 spiderr Exp $
  * @package fisheye
  */
 
@@ -185,27 +185,16 @@ class FisheyeBase extends LibertyAttachable
 	}
 
 
-	function validateUserAccess( $pAnswer=NULL, $pInfo=NULL ) {
-		if( empty( $pInfo ) ) {
-			$pInfo = $this->mInfo;
-		}
-
-		$ret = FALSE;
-		if( isset( $_SESSION['gatekeeper_security'][$pInfo['security_id']] ) && ($_SESSION['gatekeeper_security'][$pInfo['security_id']] == md5( $pInfo['access_answer'] )) ) {
-			$ret = TRUE;
-		} elseif( strtoupper( trim( $pAnswer ) ) == strtoupper( trim($pInfo['access_answer']) ) ) {
-			$_SESSION['gatekeeper_security'][$pInfo['security_id']] = md5( $pInfo['access_answer'] );
-			$ret = TRUE;
-		}
-		return $ret;
-	}
-
-
     /**
-    * Overloaded function that determines if this content can be edited by the current gBitUser
-    * @return the fully specified path to file to be included
-    */
-	function hasUserAccess( $pPermName ) {
+	 * Function that determines if this content has view permission for the current gBitUser. This function needs to be merged with hasUserPermission. FishEye has tight integration with GateKeeper currently so there is a lot of mixed SQL which we hope to remove soon.
+	 *
+	 * @param string Name of the permission to check
+	 * @param bool Generate fatal message if permission denigned
+	 * @param string Message if permission denigned
+	 * @return bool true if user has permission to access file
+	 * @todo Fatal message still to be implemented
+	 */
+	function hasViewAccess( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL  ) {
 		global $gBitUser;
 		// assume true for now
 		$ret = FALSE;
@@ -262,33 +251,7 @@ $gBitDb->setFatalActive( TRUE );
 					$ret = $gBitUser->hasPermission( $pPermName );
 				}
 			} else {
-
-				if( !($ret = empty($this->mInfo['security_id'] ) ) ) {
-					// order matters here!
-					if( $this->mInfo['is_hidden'] == 'y' ) {
-						$ret = TRUE;
-					}
-					if( $this->mInfo['is_private'] == 'y' ) {
-						$ret = $this->isOwner();
-					}
-					if( !empty( $this->mInfo['access_answer'] ) ) {
-						$ret = $this->validateUserAccess();
-					}
-				} else {
-					$ret = $gBitUser->hasPermission( $pPermName );
-				}
-/*
-				if( $pPermName == 'bit_p_edit_fisheye' ) {
-					if( !($ret = $this->isOwner()) ) {
-						global $gBitUser;
-						if( !($ret = $gBitUser->isAdmin()) ) {
-							if( $this->loadPermissions() ) {
-								$userPerms = $this->getUserPermissions( $gBitUser->mUserId );
-								$ret = isset( $userPerms[$pPermName]['user_id'] ) && ( $userPerms[$pPermName]['user_id'] == $gBitUser->mUserId );
-							}
-						}
-					}
-*/
+				$this->verifyAccessControl();
 			}
 		}
 $this->debug(0);
@@ -302,7 +265,9 @@ $this->debug(0);
     */
 	function hasUserPermission( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL ) {
 		$ret = FALSE;
-		if( $pPermName == 'bit_p_edit_fisheye' ) {
+		if( $pPermName == 'bit_p_view_fisheye' ) {
+			$ret = $this->hasViewAccess( $pPermName );
+		} elseif( $pPermName == 'bit_p_edit_fisheye' ) {
 			if( !($ret = $this->isOwner()) ) {
 				global $gBitUser;
 				if( !($ret = $gBitUser->isAdmin()) ) {

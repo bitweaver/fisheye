@@ -1,22 +1,12 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.1.1.1.2.3 2005/08/14 18:45:58 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.1.1.1.2.4 2005/08/15 07:17:18 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
 
-$accessPermission = 'bit_p_view_fisheye';
-require_once( LIBERTY_PKG_PATH.'access_check_inc.php' );
-
-/**
- * categories setup
- */
-if( $gBitSystem->isPackageActive( 'categories' ) ) {
-	$cat_obj_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
-	$cat_objid =$gContent->mContentId;
-	include_once( CATEGORIES_PKG_PATH.'categories_display_inc.php' );
-}
-
+$displayHash = array( 'perm_name' => 'bit_p_view_fisheye' );
+$gContent->invokeServices( 'content_display_function', $displayHash );
 
 if (!empty($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {
 	$page = $_REQUEST['page'];

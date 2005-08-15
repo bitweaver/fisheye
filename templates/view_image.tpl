@@ -45,9 +45,9 @@
 			{/if}
 		</div>
 	</div>	<!-- end .body -->
-	{if $gBitSystem->isPackageActive( 'categories' )}
-		{include file="bitpackage:categories/categories_objects.tpl"}
-	{/if}
+
+	{include file="bitpackage:liberty/services_view_inc.tpl"}
+
 </div>	<!-- end .fisheye -->
 
 {/strip}

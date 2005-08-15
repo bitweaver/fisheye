@@ -4,6 +4,8 @@
 		<h1>{$tabTitle}</h1>
 	</div>
 
+	{assign var=serviceEditTpls value=$gLibertySystem->getServiceValues('content_edit_tpl')}
+
 	<div class="body">
 		{form id="editGalleryForm" ipackage="fisheye" ifile="edit.php"}
 			{jstabs}
@@ -57,17 +59,17 @@
 						</div>
 					{/if}
 					{/legend}
-					{if $serviceEditTpl.access_control }
+					{if $serviceEditTpls.access_control }
 						{legend legend="Security Settings"}
-							{include file=$serviceEditTpl.access_control"}
+							{include file=$serviceEditTpls.access_control"}
 						{/legend}
 					{/if}
 				{/jstab}
 
-				{if $serviceEditTpl.categorization }
+				{if $serviceEditTpls.categorization }
 					{jstab title="Categorize"}
 						{legend legend="Categorize"}
-							{include file=$serviceEditTpl.categorization"}
+							{include file=$serviceEditTpls.categorization"}
 						{/legend}
 					{/jstab}
 				{/if}

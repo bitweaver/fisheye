@@ -69,10 +69,10 @@
 			{if $imageCount % $cols_per_page != 0}</tr>{/if}
 		</table>
 	</div>	<!-- end .body -->
+
 	{libertypagination numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}
-	{if $gBitSystem->isPackageActive( 'categories' )}
-		{include file="bitpackage:categories/categories_objects.tpl"}
-	{/if}
+
+	{include file="bitpackage:liberty/services_view_inc.tpl"}
 
 </div>	<!-- end .fisheye -->
 
