@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.1.1.1.2.4 2005/08/15 07:17:18 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.1.1.1.2.5 2005/08/15 13:26:34 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -23,7 +23,7 @@ if ($page > $gContent->mInfo['num_pages']) {
 $imagesPerPage = $gContent->mInfo['rows_per_page'] * $gContent->mInfo['cols_per_page'];
 $imageOffset = $imagesPerPage * ($page-1);
 
-$gBitSmarty->assign_by_ref('page', $page);
+$gBitSmarty->assign_by_ref('pageCount', $page);
 $gBitSmarty->assign_by_ref('imagesPerPage', $imagesPerPage);
 $gBitSmarty->assign_by_ref('imageOffset', $imageOffset);
 $gBitSmarty->assign_by_ref('rows_per_page', $gContent->mInfo['rows_per_page']);
