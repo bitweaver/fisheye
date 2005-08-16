@@ -46,7 +46,7 @@
 		</div>
 	</div>	<!-- end .body -->
 
-	{include file="bitpackage:liberty/services_view_inc.tpl"}
+	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view'}
 
 </div>	<!-- end .fisheye -->
 

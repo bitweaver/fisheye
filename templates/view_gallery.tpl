@@ -4,13 +4,7 @@
 <div class="listing fisheye">
 	<div class="header">
 		<div class="floaticon">
-			{if $gBitSystem->isPackageActive( 'pdf' ) && $gContent->hasUserPermission( 'bit_p_pdf_generation' )}
-				{if $structureInfo.root_structure_id}
-					<a title="{tr}create PDF{/tr}" href="{$smarty.const.PDF_PKG_URL}?structure_id={$structureInfo.root_structure_id}">{biticon ipackage="pdf" iname="pdf" iexplain="PDF"}</a>
-				{else}
-					<a title="{tr}create PDF{/tr}" href="{$smarty.const.PDF_PKG_URL}?content_id={$gContent->mContentId}">{biticon ipackage="pdf" iname="pdf" iexplain="PDF"}</a>
-				{/if}
-			{/if}
+			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon'}
 			{if $gContent->hasUserPermission( 'bit_p_edit_fisheye' )}
 				<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=liberty iname="config" iexplain="Edit"}</a>
 				<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=fisheye iname="order" iexplain="Image Order"}</a>
@@ -27,7 +21,7 @@
 		<h1>{$gContent->mInfo.title}</h1>
 
 		{if $gContent->mInfo.data}
-			<h2>{$gContent->mInfo.data}</h2>
+			<p>{$gContent->mInfo.data}</p>
 		{/if}
 	</div>
 
@@ -72,7 +66,7 @@
 
 	{libertypagination numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}
 
-	{include file="bitpackage:liberty/services_view_inc.tpl"}
+	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view'}
 
 </div>	<!-- end .fisheye -->
 
