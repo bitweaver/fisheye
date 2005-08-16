@@ -5,7 +5,7 @@
 			{$gContent->getBreadcrumbLinks()}
 		</span>
 
-		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='nav'}
+		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='nav' serviceHash=$gContent->mInfo}
 
 		{if $gGallery}
 			<span class="navigation">
