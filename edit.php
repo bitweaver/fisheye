@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.9 2005/08/15 07:17:18 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.10 2005/08/17 23:42:53 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -46,12 +46,6 @@ if( !empty($_REQUEST['savegallery']) ) {
 			$gContent->generateThumbnails();
 		}
 
-		// nexus menu item storage
-		if( $gBitSystem->isPackageActive( 'nexus' ) && $gBitUser->hasPermission( 'bit_p_insert_nexus_item' ) ) {
-			$nexusHash['title'] = ( isset( $_REQUEST['title'] ) ? $_REQUEST['title'] : NULL );
-			$nexusHash['hint'] = ( isset( $_REQUEST['edit'] ) ? $_REQUEST['edit'] : NULL );
-			include_once( NEXUS_PKG_PATH.'insert_menu_item_inc.php' );
-		}
 		header("location: ".$gContent->getDisplayUrl() );
 		die();
 	}
@@ -81,11 +75,6 @@ if( !empty($_REQUEST['savegallery']) ) {
 } elseif( !empty($_REQUEST['cancelgallery'] ) ) {
 	header( 'Location: '.$gContent->getDisplayUrl() );
 	die();
-}
-
-// Nexus menus
-if( $gBitSystem->isPackageActive( 'nexus' ) && $gBitUser->hasPermission( 'bit_p_insert_nexus_item' ) ) {
-	include_once( NEXUS_PKG_PATH.'insert_menu_item_inc.php' );
 }
 
 // Initalize the errors list which contains any errors which occured during storage

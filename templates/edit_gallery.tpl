@@ -1,7 +1,13 @@
+{strip}
 <div class="edit fisheye">
-	{if $gContent->mInfo.title}{assign var=tabTitle value="{tr}Edit Gallery{/tr} `$gContent->mInfo.title`"}{else}{assign var=tabTitle value="{tr}Create Image Gallery{/tr}"}{/if}</h4>
 	<div class="header">
-		<h1>{$tabTitle}</h1>
+		<h1>
+			{if $gContent->mInfo.title}
+				{tr}Edit Gallery {$gContent->mInfo.title}{/tr}
+			{else}
+				{tr}Create Image Gallery{/tr}
+			{/if}
+		</h1>
 	</div>
 
 	{assign var=serviceEditTpls value=$gLibertySystem->getServiceValues('content_edit_tpl')}
@@ -45,25 +51,24 @@
 							{/forminput}
 						</div>
 
-					{if $thumbnailSizes}
-						<div class="row">
-							{formlabel label="Thumbnail Size"}
-							{forminput}
-								{if $gContent->mInfo.thumbnail_size}
-									{assign var=thumb_size value=$gContent->mInfo.thumbnail_size}
-								{else}
-									{assign var=thumb_size value=$gBitSystemPrefs.fisheye_gallery_default_thumbnail_size}
-								{/if}
-								{html_radios options=$thumbnailSizes name="thumbnail_size" checked=$thumb_size separator="<br />"}
-							{/forminput}
-						</div>
-					{/if}
-					{/legend}
-					{if $serviceEditTpls.access_control }
-						{legend legend="Security Settings"}
+						{if $thumbnailSizes}
+							<div class="row">
+								{formlabel label="Thumbnail Size"}
+								{forminput}
+									{if $gContent->mInfo.thumbnail_size}
+										{assign var=thumb_size value=$gContent->mInfo.thumbnail_size}
+									{else}
+										{assign var=thumb_size value=$gBitSystemPrefs.fisheye_gallery_default_thumbnail_size}
+									{/if}
+									{html_radios options=$thumbnailSizes name="thumbnail_size" checked=$thumb_size separator="<br />"}
+								{/forminput}
+							</div>
+						{/if}
+
+						{if $serviceEditTpls.access_control }
 							{include file=$serviceEditTpls.access_control"}
-						{/legend}
-					{/if}
+						{/if}
+					{/legend}
 				{/jstab}
 
 				{if $serviceEditTpls.categorization }
@@ -76,9 +81,9 @@
 
 
 				{jstab title="Advanced Options"}
-					{if $gBitSystem->isPackageActive( 'nexus' )}
+					{if $serviceEditTpls.menu }
 						{legend legend="Insert Link in Menu"}
-							{include file="bitpackage:nexus/insert_menu_item_inc.tpl"}
+							{include file=$serviceEditTpls.menu"}
 						{/legend}
 					{/if}
 
@@ -108,12 +113,13 @@
 			{/jstabs}
 
 			<div class="row submit">
-{if $gContent->isValid()}
-				<input type="submit" name="cancelgallery" value="Cancel"/>
-{/if}
+				{if $gContent->isValid()}
+					<input type="submit" name="cancelgallery" value="Cancel"/>
+				{/if}
 				<input type="submit" name="savegallery" value="Save Gallery"/>
 			</div>
 		{/form}
 
 	</div>	<!-- end .body -->
 </div>	<!-- end .fisheye -->
+{/strip}
