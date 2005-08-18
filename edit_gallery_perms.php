@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_gallery_perms.php,v 1.1.1.1.2.2 2005/07/26 15:50:04 drewslater Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_gallery_perms.php,v 1.1.1.1.2.3 2005/08/18 09:02:13 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -43,13 +43,13 @@ if (!empty($_REQUEST['submitNewPermissions'])) {
 	$fisheyeSuccess[] = tra("User permissions successfully revoked");
 }
 
-$userPerms = $gContent->getAllUserPermissions();
-$gBitSmarty->assign_by_ref('userPerms', $userPerms);
+$userPerms = $gContent->loadPermissions();
+$gBitSmarty->assign_by_ref('userPerms', $gContent->mPerms);
 
 if (!empty($_REQUEST['submitUpdatePerms'])) {
 	$existingPerms = $_REQUEST['existingPerms'];
 	foreach ($userPerms as $userPerm) {
-		if ($existingPerms[$userPerm['user_id']]['perm_level'] != $userPerm['perm_level']) { 
+		if ($existingPerms[$userPerm['user_id']]['perm_level'] != $userPerm['perm_level']) {
 			// Permisson level for this user has been altered
 			$gContent->grantUserPermissions($userPerm['user_id'], $existingPerms[$userPerm['user_id']]);
 			$fisheyeSuccess[] = $userPerm['real_name']." given ".$fisheyePermNameMap[$existingPerms[$userPerm['user_id']]]." permissions.";
