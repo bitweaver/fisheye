@@ -92,10 +92,10 @@ function MoveDown(imageId) {
 {/strip}
 				<tr>
 					<td colspan="5" style="text-align:right;">
-						<script type="text/javascript"><!--
+						<script type="text/javascript">//<![CDATA[
 							document.write("<label for=\"switcher\">{tr}Select all images{/tr}</label> ");
 							document.write("<input name=\"switcher\" id=\"switcher\" type=\"checkbox\" onclick=\"switchCheckboxes(this.form.id,'batch[]','switcher')\" />");
-						--></script>
+						//]]></script>
 					</td>
 				</tr>
 {strip}
