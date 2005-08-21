@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.19 2005/08/15 08:52:03 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.20 2005/08/21 21:01:36 spiderr Exp $
  * @package fisheye
  */
 
@@ -175,6 +175,34 @@ class FisheyeBase extends LibertyAttachable
 		}
 		return $ret;
 	}
+
+	/**
+	* Overloaded function that determines if this content can be edited by the current gBitUser
+	* @return the fully specified path to file to be included
+	*/
+	function hasUserPermission( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL ) {
+		$ret = FALSE;
+		if( $pPermName == 'bit_p_edit_fisheye' || $pPermName == 'bit_p_upload_fisheye' ) {
+			if( !($ret = $this->isOwner()) ) {
+				global $gBitUser;
+				if( !($ret = $gBitUser->isAdmin()) ) {
+					if( $this->loadPermissions() ) {
+						$userPerms = $this->getUserPermissions( $gBitUser->mUserId );
+						$ret = isset( $userPerms[$pPermName]['user_id'] ) && ( $userPerms[$pPermName]['user_id'] == $gBitUser->mUserId );
+					}
+				}
+			}
+		} else {
+			$ret = LibertyContent::hasUserPermission( $pPermName, $pFatalMessage );
+		}
+		if( !$ret && $pFatalIfFalse ) {
+			global $gBitSystem;
+			$gBitSystem->fatalPermission( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL );
+		}
+
+		return( $ret );
+	}
+
 
 
 }
