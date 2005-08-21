@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.14 2005/08/15 08:52:03 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.15 2005/08/21 21:01:24 spiderr Exp $
  * @package fisheye
  */
 
@@ -291,7 +291,8 @@ class FisheyeGallery extends FisheyeBase {
 
 
 	function loadThumbnail( $pSize='small', $pContentId=NULL ) {
-		$this->mInfo['preview_content'] = $this->getThumbnailImage( $pContentId );
+		$this->mPreviewImage = $this->getThumbnailImage( $pContentId );
+		$this->mInfo['preview_content'] = &$this->mPreviewImage;
 	}
 
 
