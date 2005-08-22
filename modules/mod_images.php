@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.2.2.9 2005/07/26 15:50:05 drewslater Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.2.2.10 2005/08/22 05:52:17 spiderr Exp $
  * @package fisheye
  * @subpackage modules
  */
@@ -58,7 +58,7 @@ if( $display ) {
 				$moduleTitle = 'Popular';
 			}
 		} else {
-			$moduleTitle = 'Recent';
+			$moduleTitle = 'Random';
 		}
 
 		$moduleTitle .= ' Images';
