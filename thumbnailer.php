@@ -9,7 +9,7 @@
  * suggested crontab entry runs the thumbnailer every minute:
  *		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
  *
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.4 2005/08/07 17:36:32 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.5 2005/08/24 20:50:17 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -41,7 +41,7 @@
 
 	$thumbCount = ( !empty( $argv[1] ) ) ? $argv[1] : ( !empty( $_REQUEST['thumbnails'] ) ? $_REQUEST['thumbnails'] : 10);
 
-	$gBitSystem->StartTrans();
+	$gBitSystem->mDb->StartTrans();
 
 	$sql = "SELECT tq.content_id AS hash_key, tq.*
 			FROM `".BIT_DB_PREFIX."tiki_thumbnail_queue` tq
@@ -57,7 +57,7 @@
 		$rs->MoveNext();
 	}
 
-	$gBitSystem->CompleteTrans();
+	$gBitSystem->mDb->CompleteTrans();
 
 	$log = array();
 	$total = date( 'U' );
@@ -83,7 +83,7 @@
 		// generate something that kinda looks like apache common log format
 		print $contentId.' - - ['.$log[$contentId]['time'].'] "'.$log[$contentId]['message'].'" '.$log[$contentId]['duration']."seconds <br/>\n";
 	}
-	
+
 	if( count($processContent) ) {
 		print '# '.count($processContent)." images processed in ".(date( 'U' ) - $total)." seconds<br/>\n";
 	}

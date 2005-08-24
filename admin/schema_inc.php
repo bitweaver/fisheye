@@ -3,7 +3,7 @@
 $tables = array(
 
 'tiki_fisheye_gallery' => "
-  gallery_id I4 PRIMARY,		
+  gallery_id I4 PRIMARY,
   content_id I4,
   rows_per_page I4,
   cols_per_page I4,
@@ -51,7 +51,9 @@ foreach( array_keys( $tables ) AS $tableName ) {
 
 $indices = array (
 	'tiki_fisheye_gallery_id_idx' => array( 'table' => 'tiki_fisheye_gallery', 'cols' => 'gallery_id', 'opts' => NULL ),
-	'tiki_fisheye_image_id_idx' => array( 'table' => 'tiki_fisheye_image', 'cols' => 'image_id', 'opts' => NULL )
+	'tiki_fisheye_gallery_content_idx' => array( 'table' => 'tiki_fisheye_gallery', 'cols' => 'content_id', 'opts' => array( 'UNIQUE' ) ),
+	'tiki_fisheye_image_id_idx' => array( 'table' => 'tiki_fisheye_image', 'cols' => 'image_id', 'opts' => NULL ),
+	'tiki_fisheye_image_content_idx' => array( 'table' => 'tiki_fisheye_image', 'cols' => 'content_id', 'opts' => array( 'UNIQUE' ) ),
 );
 $gBitInstaller->registerSchemaIndexes( FISHEYE_PKG_NAME, $indices );
 

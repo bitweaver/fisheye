@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.4 2005/08/24 20:50:17 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -9,30 +9,8 @@ if( !$gContent->isValid() ) {
 	$gBitSystem->fatalError( "No image exists with the given ID" );
 }
 
-if( !$gContent->hasUserAccess( 'bit_p_view_fisheye' ) ) {
-	if ( !empty($_REQUEST['submit_answer'])) {	// User is attempting to authenticate themseleves to view this gallery
-		if( !$gContent->validateUserAccess( $_REQUEST['try_access_answer']) ) {
-			$gBitSmarty->assign("failedLogin", "Incorrect Answer");
-			$gBitSystem->display("bitpackage:fisheye/authenticate.tpl", "Password Required to view: ".$gContent->getTitle() );
-			die;
-		}
-	} else {
-		if( !empty( $gContent->mInfo['access_answer'] ) ) {
-			$gBitSystem->display("bitpackage:fisheye/authenticate.tpl", "Password Required to view: ".$gContent->getTitle() );
-			die;
-		}
-		$gBitSystem->fatalError( tra( "You cannot view this image gallery" ) );
-	}
-}
-
-/**
- * categories setup
- */
-if( $gBitSystem->isPackageActive( 'categories' ) ) {
-	$cat_obj_type = FISHEYEIMAGE_CONTENT_TYPE_GUID;
-	$cat_objid = $gContent->mContentId;
-	include_once( CATEGORIES_PKG_PATH.'categories_display_inc.php' );
-}
+$displayHash = array( 'perm_name' => 'bit_p_view_fisheye' );
+$gContent->invokeServices( 'content_display_function', $displayHash );
 
 // Get the proper thumbnail size to display on this page
 reset($gContent->mStorage);

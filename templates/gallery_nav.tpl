@@ -5,9 +5,7 @@
 			{$gContent->getBreadcrumbLinks()}
 		</span>
 
-		{if $gBitSystem->isPackageActive( 'categories' )}
-			{include file="bitpackage:categories/categories_nav.tpl"}
-		{/if}
+		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='nav' serviceHash=$gContent->mInfo}
 
 		{if $gGallery}
 			<span class="navigation">

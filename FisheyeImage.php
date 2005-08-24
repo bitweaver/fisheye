@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.6 2005/08/07 17:36:32 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.7 2005/08/24 20:50:17 squareing Exp $
  * @package fisheye
  */
 
@@ -348,6 +348,27 @@ class FisheyeImage extends FisheyeBase {
 			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pMixed['content_id'];
 		}
 		return $ret;
+	}
+
+
+	/**
+	 * Generate a valid display link for the Blog
+	 *
+	 * @param	object	PostId of the item to use
+	 * @param	array	Not used
+	 * @return	object	Fully formatted html link for use by Liberty
+	 */
+	function getDisplayLink( $pImageId=NULL, $pMixed=NULL ) {
+		$ret = '';
+		if( !empty( $this ) ) {
+			$pImageId = $this->mImageId;
+			$title = $this->getTitle();
+			if( empty( $title ) ) {
+				$title = tra( 'Image' ).' '.$pImageId;
+			}
+			$ret = "<a title=\"".urlencode( $title )."\" href=\"" . FisheyeImage::getDisplayUrl( $pImageId, $pMixed ) . "\">".$title."</a>";
+		}
+		return( $ret );
 	}
 
 

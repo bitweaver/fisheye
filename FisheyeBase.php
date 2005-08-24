@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.9 2005/08/07 21:11:30 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.10 2005/08/24 20:50:17 squareing Exp $
  * @package fisheye
  */
 
@@ -176,134 +176,13 @@ class FisheyeBase extends LibertyAttachable
 		return $ret;
 	}
 
-	function isProtected() {
-		$ret = FALSE;
-		if (!empty($this->mInfo['access_level']) && ($this->mInfo['access_level'] == GATEKEEPER_ACCESS_PROTECTED || $this->mInfo['access_level'] == GATEKEEPER_ACCESS_PROTECTED_HIDDEN)) {
-			$ret = TRUE;
-		}
-		return $ret;
-	}
-
-
-	function validateUserAccess( $pAnswer=NULL, $pInfo=NULL ) {
-		if( empty( $pInfo ) ) {
-			$pInfo = $this->mInfo;
-		}
-
-		$ret = FALSE;
-		if( isset( $_SESSION['gatekeeper_security'][$pInfo['security_id']] ) && ($_SESSION['gatekeeper_security'][$pInfo['security_id']] == md5( $pInfo['access_answer'] )) ) {
-			$ret = TRUE;
-		} elseif( strtoupper( trim( $pAnswer ) ) == strtoupper( trim($pInfo['access_answer']) ) ) {
-			$_SESSION['gatekeeper_security'][$pInfo['security_id']] = md5( $pInfo['access_answer'] );
-			$ret = TRUE;
-		}
-		return $ret;
-	}
-
-
-    /**
-    * Overloaded function that determines if this content can be edited by the current gBitUser
-    * @return the fully specified path to file to be included
-    */
-	function hasUserAccess( $pPermName ) {
-		global $gBitUser;
-		// assume true for now
-		$ret = FALSE;
-		if( $this->isValid() && !($ret = $this->isOwner())  && !($ret = $gBitUser->isAdmin()) ) {
-			if( $this->mDb->isAdvancedPostgresEnabled() ) {
-				global $gBitDb, $gBitSmarty;
-				// This code makes use of the badass /usr/share/pgsql/contrib/tablefunc.sql
-				// contribution that you have to install like: psql foo < /usr/share/pgsql/contrib/tablefunc.sql
-
-				// This code pulls all branches for the current node and determines if there is a path from this content to the root
-				// without hitting a security_id. If there is clear path it returns TRUE. If there is a security_id, then
-				// it determines if the current user has permission
-				$query = "SELECT branch,level,cb_item_content_id,cb_gallery_content_id,ts.*
-						  FROM connectby('`".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`', '`gallery_content_id`', '`item_content_id`', ?, 0, '/') AS t(`cb_gallery_content_id` int,`cb_item_content_id` int, `level` int, `branch` text)
-						  	LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcsm ON (`cb_gallery_content_id`=tcsm.`content_id`)
-						  	LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON (ts.`security_id`=tcsm.`security_id`)
-						  ORDER BY branch
-						";
-$gBitDb->setFatalActive( FALSE );
-				$tree = $this->mDb->getAssoc( $query, array( $this->mContentId ) );
-$gBitDb->setFatalActive( TRUE );
-				if( $tree ) {
-					// we will assume true here since the prevention cases can repeatedly flag FALSE
-					$ret = TRUE;
-					$lastLevel = -1;
-					foreach( $tree AS $branch => $node ) {
-						if( $node['level'] <= $lastLevel ) {
-							// we have moved followed a branch to the end and there is no security!
-							$ret = TRUE;
-							break;
-						}
-						if( $node['security_id'] ) {
-							$ret = FALSE;
-							if( $node['is_hidden'] ) {
-								$ret = TRUE;
-							}
-							if( $node['is_private'] ) {
-								$ret = $this->isOwner();
-							}
-							if( !empty( $sec['access_answer'] ) ) {
-								if( !($ret = $this->validateUserAccess( NULL, $sec )) && empty( $this->mInfo['access_question'] ) ) {
-									$this->mInfo = array_merge( $this->mInfo, $sec );
-								}
-							}
-						}
-						$lastLevel = $node['level'];
-					}
-
-				} elseif( !empty( $gBitDb->mDb->_errorMsg ) ) {
-					if( $gBitUser->isOwner() ) {
-						$gBitSmarty->assign( 'feedback', array( 'warning' => $gBitDb->mDb->_errorMsg.'<br/>'.tra( 'Please check the galleries to which this item belongs' ) ) );
-					}
-					$ret = TRUE;
-				} else {
-					$ret = $gBitUser->hasPermission( $pPermName );
-				}
-			} else {
-
-				if( !($ret = empty($this->mInfo['security_id'] ) ) ) {
-					// order matters here!
-					if( $this->mInfo['is_hidden'] == 'y' ) {
-						$ret = TRUE;
-					}
-					if( $this->mInfo['is_private'] == 'y' ) {
-						$ret = $this->isOwner();
-					}
-					if( !empty( $this->mInfo['access_answer'] ) ) {
-						$ret = $this->validateUserAccess();
-					}
-				} else {
-					$ret = $gBitUser->hasPermission( $pPermName );
-				}
-/*
-				if( $pPermName == 'bit_p_edit_fisheye' ) {
-					if( !($ret = $this->isOwner()) ) {
-						global $gBitUser;
-						if( !($ret = $gBitUser->isAdmin()) ) {
-							if( $this->loadPermissions() ) {
-								$userPerms = $this->getUserPermissions( $gBitUser->mUserId );
-								$ret = isset( $userPerms[$pPermName]['user_id'] ) && ( $userPerms[$pPermName]['user_id'] == $gBitUser->mUserId );
-							}
-						}
-					}
-*/
-			}
-		}
-$this->debug(0);
-		return( $ret );
-	}
-
-
-    /**
-    * Overloaded function that determines if this content can be edited by the current gBitUser
-    * @return the fully specified path to file to be included
-    */
+	/**
+	* Overloaded function that determines if this content can be edited by the current gBitUser
+	* @return the fully specified path to file to be included
+	*/
 	function hasUserPermission( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL ) {
 		$ret = FALSE;
-		if( $pPermName == 'bit_p_edit_fisheye' ) {
+		if( $pPermName == 'bit_p_edit_fisheye' || $pPermName == 'bit_p_upload_fisheye' ) {
 			if( !($ret = $this->isOwner()) ) {
 				global $gBitUser;
 				if( !($ret = $gBitUser->isAdmin()) ) {
@@ -323,6 +202,7 @@ $this->debug(0);
 
 		return( $ret );
 	}
+
 
 
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.5 2005/08/01 18:40:08 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.6 2005/08/24 20:50:17 squareing Exp $
  * @package fisheye
  * @subpackage modules
  */
@@ -58,7 +58,7 @@ if( $display ) {
 				$moduleTitle = 'Popular';
 			}
 		} else {
-			$moduleTitle = 'Recent';
+			$moduleTitle = 'Random';
 		}
 
 		$moduleTitle .= ' Images';

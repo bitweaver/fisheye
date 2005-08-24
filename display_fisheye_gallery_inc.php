@@ -1,35 +1,12 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.4 2005/08/24 20:50:17 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
 
-if( !$gContent->hasUserAccess( 'bit_p_view_fisheye' ) ) {
-	if ( !empty($_REQUEST['submit_answer'])) {	// User is attempting to authenticate themseleves to view this gallery
-		if( !$gContent->validateUserAccess( $_REQUEST['try_access_answer']) ) {
-			$gBitSmarty->assign("failedLogin", "Incorrect Answer");
-			$gBitSystem->display("bitpackage:fisheye/authenticate.tpl", "Password Required to view: ".$gContent->getTitle() );
-			die;
-		}
-	} else {
-		if( !empty( $gContent->mInfo['access_answer'] ) ) {
-			$gBitSystem->display("bitpackage:fisheye/authenticate.tpl", "Password Required to view: ".$gContent->getTitle() );
-			die;
-		}
-		$gBitSystem->fatalError( tra( "You cannot view this image gallery" ) );
-	}
-}
-
-/**
- * categories setup
- */
-if( $gBitSystem->isPackageActive( 'categories' ) ) {
-	$cat_obj_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
-	$cat_objid =$gContent->mContentId;
-	include_once( CATEGORIES_PKG_PATH.'categories_display_inc.php' );
-}
-
+$displayHash = array( 'perm_name' => 'bit_p_view_fisheye' );
+$gContent->invokeServices( 'content_display_function', $displayHash );
 
 if (!empty($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {
 	$page = $_REQUEST['page'];
@@ -46,7 +23,7 @@ if ($page > $gContent->mInfo['num_pages']) {
 $imagesPerPage = $gContent->mInfo['rows_per_page'] * $gContent->mInfo['cols_per_page'];
 $imageOffset = $imagesPerPage * ($page-1);
 
-$gBitSmarty->assign_by_ref('page', $page);
+$gBitSmarty->assign_by_ref('pageCount', $page);
 $gBitSmarty->assign_by_ref('imagesPerPage', $imagesPerPage);
 $gBitSmarty->assign_by_ref('imageOffset', $imageOffset);
 $gBitSmarty->assign_by_ref('rows_per_page', $gContent->mInfo['rows_per_page']);

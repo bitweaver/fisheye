@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.5 2005/08/01 18:40:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.6 2005/08/24 20:50:17 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -46,21 +46,6 @@ if( !empty($_REQUEST['savegallery']) ) {
 			$gContent->generateThumbnails();
 		}
 
-		// nexus menu item storage
-		if( $gBitSystem->isPackageActive( 'nexus' ) && $gBitUser->hasPermission( 'bit_p_insert_nexus_item' ) ) {
-			$nexusHash['title'] = ( isset( $_REQUEST['title'] ) ? $_REQUEST['title'] : NULL );
-			$nexusHash['hint'] = ( isset( $_REQUEST['edit'] ) ? $_REQUEST['edit'] : NULL );
-			include_once( NEXUS_PKG_PATH.'insert_menu_item_inc.php' );
-		}
-		if ( $gBitSystem->isPackageActive('categories') ) {
-			$cat_desc = $gLibertySystem->mContentTypes[FISHEYEGALLERY_CONTENT_TYPE_GUID]['content_description'].' by '.$gBitUser->getDisplayName( FALSE, array( 'real_name' => $gContent->mInfo['creator_real_name'], 'user' => $gContent->mInfo['creator_user'], 'user_id'=>$gContent->mInfo['user_id'] ) );
-			$cat_name = $gContent->getTitle();
-			$cat_href = $gContent->getDisplayUrl();
-			$cat_objid = $gContent->mContentId;
-			$cat_content_id = $gContent->mContentId;
-			$cat_obj_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
-			include_once( CATEGORIES_PKG_PATH.'categorize_inc.php' );
-		}
 		header("location: ".$gContent->getDisplayUrl() );
 		die();
 	}
@@ -92,18 +77,6 @@ if( !empty($_REQUEST['savegallery']) ) {
 	die();
 }
 
-// Nexus menus
-if( $gBitSystem->isPackageActive( 'nexus' ) && $gBitUser->hasPermission( 'bit_p_insert_nexus_item' ) ) {
-	include_once( NEXUS_PKG_PATH.'insert_menu_item_inc.php' );
-}
-
-if ( $gBitSystem->isPackageActive('categories') ) {
-	$cat_type = FISHEYEGALLERY_CONTENT_TYPE_GUID;
-	$cat_objid = $gContent->mContentId;
-	include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
-}
-
-
 // Initalize the errors list which contains any errors which occured during storage
 $errors = (!empty($gContent->mErrors) ? $gContent->mErrors : array());
 $gBitSmarty->assign_by_ref('errors', $errors);
@@ -113,10 +86,7 @@ $getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->
 $galleryList = $gContent->getList( $getHash );
 $gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
-if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-	global $gGatekeeper;
-	$gBitSmarty->assign( 'securities', $gGatekeeper->getSecurityList( $gBitUser->mUserId ) );
-}
+$gContent->invokeServices( 'content_edit_function' );
 
 $gBitSystem->display( 'bitpackage:fisheye/edit_gallery.tpl', 'Edit Gallery: '.$gContent->getTitle() );
 
