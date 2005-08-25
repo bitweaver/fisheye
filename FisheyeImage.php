@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.15 2005/08/21 21:01:44 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.16 2005/08/25 20:23:43 lsces Exp $
  * @package fisheye
  */
 
@@ -266,7 +266,7 @@ class FisheyeImage extends FisheyeBase {
 			$this->mDb->query( $query, array( $this->mContentId ) );
 			$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_thumbnail_queue`
 					  (`content_id`, `queue_date`, `resize_original`) VALUES (?,?,?)";
-			$this->mDb->query( $query, array( $this->mContentId, date('U'), $pResizeOriginal ) );
+			$this->mDb->query( $query, array( $this->mContentId, $gBitSystem->getUTCTime(), $pResizeOriginal ) );
 		} else {
 			$this->renderThumbnails();
 		}

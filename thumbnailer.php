@@ -9,7 +9,7 @@
  * suggested crontab entry runs the thumbnailer every minute:
  *		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
  *
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.2.2.5 2005/08/11 18:26:59 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.2.2.6 2005/08/25 20:23:43 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -70,7 +70,7 @@
 		if( $image->renderThumbnails() ) {
 			$log[$contentId]['message'] = 'SUCCESS: Thumbnails created';
 			$sql3 = "UPDATE `".BIT_DB_PREFIX."tiki_thumbnail_queue` SET `begin_date`=?, `end_date`=? WHERE `content_id`=?";
-			$rs3 = $gBitSystem->mDb->query( $sql3, array( $begin, date('U'), $contentId ) );
+			$rs3 = $gBitSystem->mDb->query( $sql3, array( $begin, $gBitSystem->getUTCTime(), $contentId ) );
 		} else {
 			$log[$contentId]['message'] = ' ERROR: '.$image->mErrors['thumbnail'];
 		}
