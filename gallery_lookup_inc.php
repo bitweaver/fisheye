@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/gallery_lookup_inc.php,v 1.1.1.1.2.3 2005/08/11 18:26:59 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/gallery_lookup_inc.php,v 1.1.1.1.2.4 2005/08/30 16:30:10 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -22,11 +22,9 @@ if (!empty($_REQUEST['gallery_id']) && is_numeric($_REQUEST['gallery_id'])) {
 
 if( !empty( $_REQUEST['gallery_path'] ) ) {
 	$gContent->setGalleryPath( $_REQUEST['gallery_path'] );
-} else {
-	if( $parents = $gContent->getParentGalleries() ) {
-		$gal = current( $parents );
-		$gContent->setGalleryPath( '/'.$gal['gallery_id'] );
-	}
+} elseif( $gContent->isValid() && $parents = $gContent->getParentGalleries() ) {
+	$gal = current( $parents );
+	$gContent->setGalleryPath( '/'.$gal['gallery_id'] );
 }
 
 $gBitSmarty->assign_by_ref('gContent', $gContent);

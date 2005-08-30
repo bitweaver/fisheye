@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.20 2005/08/21 21:01:36 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.21 2005/08/30 16:30:10 spiderr Exp $
  * @package fisheye
  */
 
@@ -29,7 +29,7 @@ class FisheyeBase extends LibertyAttachable
 
 	// regular expression to determine if the title was computer generated
 	function isMachineName( $pString ) {
-		return( preg_match( '/(^[0-9][-0-9 ]*$)|(^[-0-9 ]*(img|dsc|dscn|pict|htg|dscf)[-0-9 ]*$)/i', $pString ) );
+		return( preg_match( '/(^[0-9][-0-9 ]*$)|(^[-0-9 ]*(img|dsc|dscn|pict|htg|dscf)[-0-9 ]*$)/i', trim( $pString ) ) );
 	}
 
 	// Gets a list of galleries which this item is attached to

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.1.1.1.2.9 2005/08/15 07:17:18 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.1.1.1.2.10 2005/08/30 16:30:10 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -14,6 +14,8 @@ require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 
 global $gBitSystem;
+
+vd( $_SERVER );
 
 include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
@@ -39,9 +41,11 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 			$_REQUEST['upload']['process_storage'] = STORAGE_IMAGE;
 	}
 	$_REQUEST['purge_from_galleries'] = TRUE;
+vd( $_REQUEST );
 	if( $gContent->store($_REQUEST) ) {
 		$gContent->addToGalleries( $_REQUEST['galleryAdditions'] );
 		// maybe we need to resize the original and generate thumbnails
+die;
 		if( !empty( $_REQUEST['resize'] ) ) {
 			$gContent->resizeOriginal( $_REQUEST['resize'] );
 		}

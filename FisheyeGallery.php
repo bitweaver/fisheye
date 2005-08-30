@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.15 2005/08/21 21:01:24 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.16 2005/08/30 16:30:10 spiderr Exp $
  * @package fisheye
  */
 
@@ -233,13 +233,13 @@ class FisheyeGallery extends FisheyeBase {
 	}
 
 
-	function getThumbnailUrl() {
+	function getThumbnailUrl( $pSize='small' ) {
 		if( empty( $this->mInfo['preview_content'] ) ) {
 			$this->loadThumbnail();
 		}
 
 		if( is_object( $this->mInfo['preview_content'] ) ) {
-			return $this->mInfo['preview_content']->getThumbnailUrl();
+			return $this->mInfo['preview_content']->getThumbnailUrl( $pSize );
 		}
 	}
 
