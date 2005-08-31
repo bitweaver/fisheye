@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.16 2005/08/25 20:23:43 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.17 2005/08/31 18:13:15 spiderr Exp $
  * @package fisheye
  */
 
@@ -156,6 +156,7 @@ class FisheyeImage extends FisheyeBase {
 			// delete it after saving the new one
 			if (!empty($this->mInfo['image_file']) && !empty($this->mInfo['image_file']['attachment_id']) && !empty($pStorageHash['upload'])) {
 				$currentImageAttachmentId = $this->mInfo['image_file']['attachment_id'];
+				$pStorageHash['attachment_id'] = $currentImageAttachmentId;
 			} else {
 				$currentImageAttachmentId = NULL;
 			}
@@ -165,7 +166,7 @@ class FisheyeImage extends FisheyeBase {
 				$pStorageHash['upload']['thumbnail'] = !$gBitSystem->isFeatureActive( 'feature_offline_thumbnailer' );
 			}
 			if( LibertyAttachable::store( $pStorageHash ) ) {
-				if ($currentImageAttachmentId) {
+				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['image_file']['attachment_id'] ) {
 					$this->expungeAttachment($currentImageAttachmentId);
 				}
 				$this->mContentId = $pStorageHash['content_id'];
