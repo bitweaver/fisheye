@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.6 2005/08/30 22:17:53 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.7 2005/09/03 10:19:11 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -42,7 +42,6 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 	if( $gContent->store($_REQUEST) ) {
 		$gContent->addToGalleries( $_REQUEST['galleryAdditions'] );
 		// maybe we need to resize the original and generate thumbnails
-
 		if( !empty( $_REQUEST['resize'] ) ) {
 			$gContent->resizeOriginal( $_REQUEST['resize'] );
 		}
