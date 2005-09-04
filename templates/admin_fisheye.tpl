@@ -4,7 +4,9 @@
 	{jstabs}
 		{jstab title="General Settings"}
 			{legend legend="General Settings"}
-				{formhelp note="To change the Image Processing engine, see the Admin --&gt; Liberty --&gt; Liberty Settings</a>"}
+				<div class="row">
+					{formhelp note="To change the Image Processing engine, you need to change the setting in Liberty Settings" link="kernel/admin/index.php?page=liberty/Liberty Settings"}
+				</div>
 
 				{foreach from=$formGalleryGeneral key=item item=output}
 					<div class="row">
