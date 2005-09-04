@@ -75,6 +75,7 @@ $gBitInstaller->registerPreferences( FISHEYE_PKG_NAME, array(
 	array( FISHEYE_PKG_NAME, 'fisheye_list_user','y'),
 	array( FISHEYE_PKG_NAME, 'fisheye_list_hits','y'),
 	array( FISHEYE_PKG_NAME, 'fisheye_list_thumbnail','y'),
+	array( FISHEYE_PKG_NAME, 'fisheye_list_thumbnail_size','small'),
 	array( FISHEYE_PKG_NAME, 'fisheye_gallery_list_title','y'),
 	array( FISHEYE_PKG_NAME, 'fisheye_gallery_list_description','y'),
 	array( FISHEYE_PKG_NAME, 'fisheye_gallery_list_image_titles','y'),

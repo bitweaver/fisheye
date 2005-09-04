@@ -26,7 +26,9 @@
 
 		{jstab title="List Settings"}
 			{legend legend="Gallery List Options"}
-				{formhelp note="The options below determine what information is shown on the List Galleries page."}
+				<div class="row">
+					{formhelp note="The options below determine what information is shown on the List Galleries page."}
+				</div>
 
 				{foreach from=$formGalleryListLists key=item item=output}
 					<div class="row">
@@ -40,10 +42,7 @@
 				<div class="row">
 					{formlabel label="List Thumbnail Size"}
 					{forminput}
-						{html_radios values="avatar" output="Avatar (100x75)" name="list_thumbnail_size" checked=$gBitSystemPrefs.fisheye_list_thumbnail_size}<br />
-						{html_radios values="small" output="Small (160x120)" name="list_thumbnail_size" checked=$gBitSystemPrefs.fisheye_list_thumbnail_size}<br />
-						{html_radios values="medium" output="Medium (400x300)" name="list_thumbnail_size" checked=$gBitSystemPrefs.fisheye_list_thumbnail_size}<br />
-						{html_radios values="large" output="Large (800x600)" name="list_thumbnail_size" checked=$gBitSystemPrefs.fisheye_list_thumbnail_size}
+						{html_options values=$imageSizes options=$imageSizes name="list_thumbnail_size" selected=$gBitSystemPrefs.fisheye_list_thumbnail_size}
 					{/forminput}
 				</div>
 			{/legend}
@@ -52,7 +51,9 @@
 		{jstab title="Gallery Display Settings"}
 			{legend legend="Gallery Display Settings"}
 				<input type="hidden" name="page" value="{$page}" />
-				{formhelp note="The options below determine what information is shown on a gallery display page."}
+				<div class="row">
+					{formhelp note="The options below determine what information is shown on a gallery display page."}
+				</div>
 
 				{foreach from=$formGalleryLists key=item item=output}
 					<div class="row">
@@ -66,7 +67,9 @@
 			{/legend}
 
 			{legend legend="Default Gallery Display Settings"}
-				{formhelp note="The settings below determine what the default display options will be set to for new galleries."}
+				<div class="row">
+					{formhelp note="The settings below determine what the default display options will be set to for new galleries."}
+				</div>
 
 				<div class="row">
 					{formlabel label="Default number of rows and columns"}
@@ -86,10 +89,7 @@
 				<div class="row">
 					{formlabel label="Default Thumbnail Size"}
 					{forminput}
-						{html_radios values="avatar" output="Avatar (100x100)" name="default_gallery_thumbnail_size"	checked=$gContent->mInfo.thumbnail_size}<br />
-						{html_radios values="small" output="Small (160x120)" name="default_gallery_thumbnail_size" checked=$gBitSystemPrefs.fisheye_gallery_default_thumbnail_size}<br />
-						{html_radios values="medium" output="Medium (400x300)" name="default_gallery_thumbnail_size" checked=$gBitSystemPrefs.fisheye_gallery_default_thumbnail_size}<br />
-						{html_radios values="large" output="Large (800x600)" name="default_gallery_thumbnail_size" checked=$gBitSystemPrefs.fisheye_gallery_default_thumbnail_size}
+						{html_options values=$imageSizes options=$imageSizes name="default_gallery_thumbnail_size" selected=$gBitSystemPrefs.fisheye_gallery_default_thumbnail_size}
 					{/forminput}
 				</div>
 
@@ -98,7 +98,9 @@
 
 		{jstab title="Image Display Settings"}
 			{legend legend="Image Display Settings"}
-				{formhelp note="The options below determine what information is displayed on the image display page."}
+				<div class="row">
+					{formhelp note="The options below determine what information is displayed on the image display page."}
+				</div>
 
 				{foreach from=$formImageLists key=item item=output}
 					<div class="row">
@@ -115,9 +117,7 @@
 				<div class="row">
 					{formlabel label="Default Thumbnail Size"}
 					{forminput}
-						{html_radios values="small" output="Small (160x120)" name="default_image_thumbnail_size" checked=$gBitSystemPrefs.fisheye_image_default_thumbnail_size}<br />
-						{html_radios values="medium" output="Medium (400x300)" name="default_image_thumbnail_size" checked=$gBitSystemPrefs.fisheye_image_default_thumbnail_size}<br />
-						{html_radios values="large" output="Large (800x600)" name="default_image_thumbnail_size" checked=$gBitSystemPrefs.fisheye_image_default_thumbnail_size}
+						{html_options values=$imageSizes options=$imageSizes name="default_image_thumbnail_size" selected=$gBitSystemPrefs.fisheye_image_default_thumbnail_size}
 					{/forminput}
 				</div>
 			{/legend}
