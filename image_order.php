@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.7 2005/08/26 12:35:03 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.8 2005/09/07 23:34:09 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -131,7 +131,7 @@ if (!empty($_REQUEST['cancel'])) {
 }
 
 // Get a list of all existing galleries
-$listHash = array( 'user_id'=>$gBitUser->mUserId, 'max_records'=>-1, 'sort_mode'=>'title_asc' );
+$listHash = array( 'user_id'=>$gBitUser->mUserId, 'max_records'=>-1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref('galleryList', $galleryList);
 $gContent->loadImages();
