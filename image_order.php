@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.9 2005/09/15 03:00:13 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.10 2005/09/15 03:57:49 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -33,8 +33,11 @@ if (!empty($_REQUEST['cancel'])) {
 	die;
 } elseif (!empty($_REQUEST['updateImageOrder'])) {
 	if( !empty( $_REQUEST['batch'] ) ) {
-		// flip so we can do instant has lookup
+		// flip so we can do instant hash lookup
 		$batchCon = array_flip( $_REQUEST['batch'] );
+		// increment the first element from 0 to 1 so any conditional tests will pass, particularly in the .tpl
+		$batchCon[key($batchCon)]++;
+		$smarty->assign_by_ref( 'batchEdit', $batchCon );
 	}
 
 	if( !empty( $_REQUEST['reorder_gallery'] ) && $gContent->loadImages() ) {

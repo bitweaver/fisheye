@@ -37,7 +37,7 @@
 
 						{counter print=false}
 						<td class="{$galleryImages[ix]->mType.content_type_guid}">
-							<a href="{$galleryImages[ix]->getDisplayUrl()|escape}"><img class="thumb" src="{$galleryImages[ix]->getThumbnailUrl()|replace:"&":"&amp;"}?{math equation="1 + rand(1,9999)"}" alt="{$galleryImages[ix]->mInfo.title}" /></a>
+							<a href="{$galleryImages[ix]->getDisplayUrl()|escape}"><img class="thumb" src="{$galleryImages[ix]->getThumbnailUrl()|replace:"&":"&amp;"}{if $batchEdit.$contentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galleryImages[ix]->mInfo.title}" /></a>
 						</td>
 
 						<td>
