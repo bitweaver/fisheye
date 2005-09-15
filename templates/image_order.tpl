@@ -136,6 +136,7 @@
 							<option value="upload_date">{tr}Date Uploaded{/tr}</option>
 							<option value="caption">{tr}Image Title{/tr}</option>
 							<option value="file_name">{tr}File Name{/tr}</option>
+							<option value="random">{tr}Random{/tr}</option>
 						</select>
 						{formhelp note=""}
 					{/forminput}

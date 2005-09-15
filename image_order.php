@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.8 2005/09/07 23:34:09 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.9 2005/09/15 03:00:13 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -52,6 +52,11 @@ if (!empty($_REQUEST['cancel'])) {
 			case 'file_name':
 				foreach( array_keys( $gContent->mItems ) as $imageId ) {
 					$reorder[$gContent->mItems[$imageId]->mContentId] = $gContent->mItems[$imageId]->mInfo['image_file']['filename'];
+				}
+				break;
+			case 'random':
+				foreach( array_keys( $gContent->mItems ) as $imageId ) {
+					$reorder[$gContent->mItems[$imageId]->mContentId] = rand( 0, 9999999 );
 				}
 				break;
 		}
