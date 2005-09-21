@@ -105,11 +105,11 @@
 							{/forminput}
 						</div>
 
-						{include file="bitpackage:liberty/edit_service_minis_inc.tpl}
+						{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_mini_tpl}
 					{/legend}
 				{/jstab}
 
-				{include file="bitpackage:liberty/edit_service_tabs_inc.tpl}
+				{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_tab_tpl}
 			{/jstabs}
 
 			<div class="row submit">
