@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.17 2005/08/31 18:13:15 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.18 2005/09/22 15:43:16 spiderr Exp $
  * @package fisheye
  */
 
@@ -115,7 +115,8 @@ class FisheyeImage extends FisheyeBase {
 							'landscape' => $this->isLandscape(),
 							'url' => $this->getDisplayUrl(),
 							'content_id' => $this->mContentId,
-							'bleed' => TRUE,
+							'title' => $this->getTitle(),
+							'has_description' => !empty( $this->mInfo['data'] ),
 						);
 		}
 		return $ret;
