@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.16 2005/08/30 16:30:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.17 2005/09/23 20:10:31 spiderr Exp $
  * @package fisheye
  */
 
@@ -281,7 +281,7 @@ class FisheyeGallery extends FisheyeBase {
 
 		if( !empty( $pThumbnailContentId ) ) {
 			$ret = $gLibertySystem->getLibertyObject( $pThumbnailContentId, $pThumbnailContentType );
-			if( get_class( $ret ) == 'fisheyegallery' ) {
+			if( strtolower( get_class( $ret ) ) == 'fisheyegallery' ) {
 				//recurse down in to find the first image
 				$ret = $ret->getThumbnailImage();
 			}
