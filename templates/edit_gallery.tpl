@@ -63,7 +63,7 @@
 							</div>
 						{/if}
 
-						{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_mini_tpl}
+						{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile=content_edit_mini_tpl}
 					{/legend}
 				{/jstab}
 
