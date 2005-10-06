@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.17 2005/09/23 20:10:31 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.18 2005/10/06 21:13:48 spiderr Exp $
  * @package fisheye
  */
 
@@ -306,6 +306,7 @@ class FisheyeGallery extends FisheyeBase {
 				$pContentId = NULL;
 			$query = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_gallery` SET `preview_content_id` = ? WHERE `gallery_id`= ?";
 			$rs = $this->mDb->query($query, array($pContentId, $this->mGalleryId));
+			$this->mInfo['preview_content_id'] = $pContentId;
 			$ret = TRUE;
 		}
 		return $ret;
