@@ -104,6 +104,7 @@
 						<select name="batch_command">
 							<option value=""></option>
 							<option value="delete">{tr}Delete{/tr}</option>
+							<option value="remove">{tr}Remove{/tr} ({tr}Don't delete if in other galleries{/tr})</option>
 							<option value="thumbnail">{tr}Regenerate Thumbnails{/tr}</option>
 							<option value="rotate:-90">&lt;&lt; {tr}Rotate Counter Clockwise{/tr}</option>
 							<option value="rotate:90">&gt;&gt; {tr}Rotate Clockwise{/tr}</option>

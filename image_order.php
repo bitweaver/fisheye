@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.12 2005/09/27 15:54:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.1.1.1.2.13 2005/10/08 18:00:24 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -79,6 +79,15 @@ if (!empty($_REQUEST['cancel'])) {
 					switch( $batchCommand ) {
 						case 'delete':
 							$galleryItem->expunge();
+							$galleryItem = NULL;
+							break;
+						case 'remove':
+							$parents = $galleryItem->getParentGalleries();
+							if( $galleryItem->isContentType( FISHEYEGALLERY_CONTENT_TYPE_GUID ) || count( $parents ) > 1 ) {
+								$gContent->removeItem( $contentId );
+							} else {
+								$galleryItem->expunge();
+							}
 							$galleryItem = NULL;
 							break;
 						case 'rotate':

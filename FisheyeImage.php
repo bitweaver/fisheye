@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.18 2005/09/22 15:43:16 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.19 2005/10/08 18:00:24 spiderr Exp $
  * @package fisheye
  */
 
@@ -296,7 +296,7 @@ class FisheyeImage extends FisheyeBase {
 		$info = NULL;
 		$pFilePath = ($pFilePath ? $pFilePath : (empty($this->mInfo['image_file']['storage_path']) ? NULL : BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path']));
 
-		if ($pFilePath && file_exists($pFilePath)) {
+		if ($pFilePath && file_exists($pFilePath) && filesize( $pFilePath ) ) {
 			if( $info = getimagesize(rtrim($pFilePath)) ) {
 				$info['width'] = $info[0];
 				$info['height'] = $info[1];
