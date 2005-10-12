@@ -1,5 +1,4 @@
 {strip}
-{assign var=serviceEditTpls value=$gLibertySystem->getServiceValues('content_edit_tpl')}
 <div class="floaticon">
 	<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php">{biticon ipackage="liberty" iname="upload" iexplain="upload new image"}</a>
 </div>
@@ -105,24 +104,12 @@
 								{/foreach}
 							{/forminput}
 						</div>
+
+						{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_mini_tpl}
 					{/legend}
 				{/jstab}
 
-				{if $serviceEditTpls.categorization }
-					{jstab title="Categorize"}
-						{legend legend="Categorize"}
-							{include file=$serviceEditTpls.categorization"}
-						{/legend}
-					{/jstab}
-				{/if}
-
-				{if $serviceEditTpls.menu}
-					{jstab title="Advanced"}
-						{legend legend="Insert Link in Menu"}
-							{include file=$serviceEditTpls.menu"}
-						{/legend}
-					{/jstab}
-				{/if}
+				{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_tab_tpl}
 			{/jstabs}
 
 			<div class="row submit">

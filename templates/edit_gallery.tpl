@@ -10,8 +10,6 @@
 		</h1>
 	</div>
 
-	{assign var=serviceEditTpls value=$gLibertySystem->getServiceValues('content_edit_tpl')}
-
 	<div class="body">
 		{form id="editGalleryForm" ipackage="fisheye" ifile="edit.php"}
 			{jstabs}
@@ -65,28 +63,13 @@
 							</div>
 						{/if}
 
-						{if $serviceEditTpls.access_control }
-							{include file=$serviceEditTpls.access_control"}
-						{/if}
+						{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile=content_edit_mini_tpl}
 					{/legend}
 				{/jstab}
 
-				{if $serviceEditTpls.categorization }
-					{jstab title="Categorize"}
-						{legend legend="Categorize"}
-							{include file=$serviceEditTpls.categorization"}
-						{/legend}
-					{/jstab}
-				{/if}
-
+				{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_tab_tpl}
 
 				{jstab title="Advanced Options"}
-					{if $serviceEditTpls.menu }
-						{legend legend="Insert Link in Menu"}
-							{include file=$serviceEditTpls.menu"}
-						{/legend}
-					{/if}
-
 					{if $galleryList}
 						{legend legend="Advanced Options"}
 							<div class="row">

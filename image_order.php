@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.6 2005/08/30 22:17:54 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.7 2005/10/12 15:13:49 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -33,8 +33,11 @@ if (!empty($_REQUEST['cancel'])) {
 	die;
 } elseif (!empty($_REQUEST['updateImageOrder'])) {
 	if( !empty( $_REQUEST['batch'] ) ) {
-		// flip so we can do instant has lookup
+		// flip so we can do instant hash lookup
 		$batchCon = array_flip( $_REQUEST['batch'] );
+		// increment the first element from 0 to 1 so any conditional tests will pass, particularly in the .tpl
+		$batchCon[key($batchCon)]++;
+		$gBitSmarty->assign_by_ref( 'batchEdit', $batchCon );
 	}
 
 	if( !empty( $_REQUEST['reorder_gallery'] ) && $gContent->loadImages() ) {
@@ -54,6 +57,11 @@ if (!empty($_REQUEST['cancel'])) {
 					$reorder[$gContent->mItems[$imageId]->mContentId] = $gContent->mItems[$imageId]->mInfo['image_file']['filename'];
 				}
 				break;
+			case 'random':
+				foreach( array_keys( $gContent->mItems ) as $imageId ) {
+					$reorder[$gContent->mItems[$imageId]->mContentId] = rand( 0, 9999999 );
+				}
+				break;
 		}
 		asort( $reorder );
 		$sortPos = 100;
@@ -71,6 +79,15 @@ if (!empty($_REQUEST['cancel'])) {
 					switch( $batchCommand ) {
 						case 'delete':
 							$galleryItem->expunge();
+							$galleryItem = NULL;
+							break;
+						case 'remove':
+							$parents = $galleryItem->getParentGalleries();
+							if( $galleryItem->isContentType( FISHEYEGALLERY_CONTENT_TYPE_GUID ) || count( $parents ) > 1 ) {
+								$gContent->removeItem( $contentId );
+							} else {
+								$galleryItem->expunge();
+							}
 							$galleryItem = NULL;
 							break;
 						case 'rotate':
@@ -111,7 +128,7 @@ if (!empty($_REQUEST['cancel'])) {
 				if( !empty( $_REQUEST['batch_security_id'] ) ) {
 				}
 				// if we are reordered, that takes precident
-				$newPos = (!empty( $newOrder[$contentId] ) ? $newOrder[$contentId] : $newPos);
+				$newPos = preg_replace( '/[\D]/', '', (!empty( $newOrder[$contentId] ) ? $newOrder[$contentId] : $newPos) );
 				if ($galleryItem->mInfo['title'] != $_REQUEST['imageTitle'][$contentId]) {
 					$storageHash = array('title' => $_REQUEST['imageTitle'][$contentId]);
 				}
@@ -131,7 +148,7 @@ if (!empty($_REQUEST['cancel'])) {
 }
 
 // Get a list of all existing galleries
-$listHash = array( 'user_id'=>$gBitUser->mUserId, 'max_records'=>-1, 'sort_mode'=>'title_asc' );
+$listHash = array( 'user_id'=>$gBitUser->mUserId, 'max_records'=>-1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref('galleryList', $galleryList);
 $gContent->loadImages();

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.8 2005/08/30 22:17:53 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.9 2005/10/12 15:13:49 spiderr Exp $
  * @package fisheye
  */
 
@@ -281,7 +281,7 @@ class FisheyeGallery extends FisheyeBase {
 
 		if( !empty( $pThumbnailContentId ) ) {
 			$ret = $gLibertySystem->getLibertyObject( $pThumbnailContentId, $pThumbnailContentType );
-			if( get_class( $ret ) == 'fisheyegallery' ) {
+			if( strtolower( get_class( $ret ) ) == 'fisheyegallery' ) {
 				//recurse down in to find the first image
 				$ret = $ret->getThumbnailImage();
 			}
@@ -306,6 +306,7 @@ class FisheyeGallery extends FisheyeBase {
 				$pContentId = NULL;
 			$query = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_gallery` SET `preview_content_id` = ? WHERE `gallery_id`= ?";
 			$rs = $this->mDb->query($query, array($pContentId, $this->mGalleryId));
+			$this->mInfo['preview_content_id'] = $pContentId;
 			$ret = TRUE;
 		}
 		return $ret;

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.9 2005/09/03 10:19:11 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.10 2005/10/12 15:13:49 spiderr Exp $
  * @package fisheye
  */
 
@@ -115,7 +115,8 @@ class FisheyeImage extends FisheyeBase {
 							'landscape' => $this->isLandscape(),
 							'url' => $this->getDisplayUrl(),
 							'content_id' => $this->mContentId,
-							'bleed' => TRUE,
+							'title' => $this->getTitle(),
+							'has_description' => !empty( $this->mInfo['data'] ),
 						);
 		}
 		return $ret;
@@ -295,7 +296,7 @@ class FisheyeImage extends FisheyeBase {
 		$info = NULL;
 		$pFilePath = ($pFilePath ? $pFilePath : (empty($this->mInfo['image_file']['storage_path']) ? NULL : BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path']));
 
-		if ($pFilePath && file_exists($pFilePath)) {
+		if ($pFilePath && file_exists($pFilePath) && filesize( $pFilePath ) ) {
 			if( $info = getimagesize(rtrim($pFilePath)) ) {
 				$info['width'] = $info[0];
 				$info['height'] = $info[1];
