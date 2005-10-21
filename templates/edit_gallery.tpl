@@ -37,7 +37,9 @@
 							{formlabel label="Rows per page" for="gallery-rows-per-page"}
 							{forminput}
 								<input type="text" id="gallery-rows-per-page" name="rows_per_page" size="2" maxlength="2" value="{$gContent->mInfo.rows_per_page|default:$gBitSystemPrefs.fisheye_gallery_default_rows_per_page}"/>
-								{formhelp note="Number of rows of images per gallery page"}
+								{if !$gBitSystem->isFeatureActive( 'fisheye_gallery_div_layout' )}
+									{formhelp note="Number of rows of images per gallery page"}
+								{/if}
 							{/forminput}
 						</div>
 
@@ -45,7 +47,11 @@
 							{formlabel label="Columns per page" for="gallery-cols-per-page"}
 							{forminput}
 								<input type="text" id="gallery-cols-per-page" name="cols_per_page" size="2" maxlength="2" value="{$gContent->mInfo.cols_per_page|default:$gBitSystemPrefs.fisheye_gallery_default_cols_per_page}"/>
-								{formhelp note="Number of columns of images per gallery page"}
+								{if !$gBitSystem->isFeatureActive( 'fisheye_gallery_div_layout' )}
+									{formhelp note="Number of columns of images per gallery page"}
+								{else}
+									{formhelp note="The gallery pages will be displayed using divs. This means that the rows and columns will adjust to the browsers width. You can specify what number of thumbnails to display per page.<br /><strong>[rows] * [columns] = [number of images]</strong>."}
+								{/if}
 							{/forminput}
 						</div>
 

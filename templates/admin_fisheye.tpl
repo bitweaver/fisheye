@@ -12,11 +12,11 @@
 					<div class="row">
 						{formlabel label=`$output.label` for=$item}
 						{forminput}
-						{if $output.type=='text'}
-							<input type="text" name="{$item}" id="{$item}" value="{$gBitSystemPrefs.$item}"/>
-						{elseif $output.type=='checkbox'}
-							{html_checkboxes name="$item" values="y" checked=`$gBitSystemPrefs.$item` labels=false id=$item}
-						{/if}
+							{if $output.type eq 'text'}
+								<input type="text" name="{$item}" id="{$item}" value="{$gBitSystemPrefs.$item}"/>
+							{elseif $output.type=='checkbox'}
+								{html_checkboxes name="$item" values="y" checked=`$gBitSystemPrefs.$item` labels=false id=$item}
+							{/if}
 							{formhelp note=`$output.note`}
 						{/forminput}
 					</div>
@@ -39,6 +39,7 @@
 						{/forminput}
 					</div>
 				{/foreach}
+
 				<div class="row">
 					{formlabel label="List Thumbnail Size"}
 					{forminput}
@@ -60,7 +61,7 @@
 						{formlabel label=`$output.label` for=$item}
 						{forminput}
 							{html_checkboxes name="$item" values="y" checked=`$gBitSystemPrefs.$item` labels=false id=$item}
-							{formhelp note=`$output.note`}
+							{formhelp note=`$output.note` page=`$output.page`}
 						{/forminput}
 					</div>
 				{/foreach}
@@ -83,6 +84,7 @@
 							<input type="text" size="2" maxlength="2" name="cols_per_page" value="{$gBitSystemPrefs.fisheye_gallery_default_cols_per_page}"/>&nbsp;
 							{tr}Columns Per Page{/tr}
 						</label>
+						{formhelp note="If you have chosen the &lt;div&gt; layout method, these number will merely be multiplied to generate the maximum number of images per page."}
 					{/forminput}
 				</div>
 

@@ -1,0 +1,11 @@
+/* generic div based fisheye settings */
+/* you can override these in your own css file */
+.thumbnailblock .avatar-thmb,
+.thumbnailblock .small-thmb,
+.thumbnailblock .medium-thmb,
+.thumbnailblock .large-thmb		{float:left; overflow:auto;}
+
+.thumbnailblock .avatar-thmb	{width:120px; height:170px;}
+.thumbnailblock .small-thmb		{width:180px; height:230px;}
+.thumbnailblock .medium-thmb	{width:420px; height:470px;}
+.thumbnailblock .large-thmb		{width:820px; height:870px;}
