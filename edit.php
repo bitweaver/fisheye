@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.6 2005/08/24 20:50:17 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.7 2005/10/23 14:39:44 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -27,10 +27,10 @@ if (empty($_REQUEST['gallery_id'])) {
 
 if( $gBitUser->hasPermission( 'bit_p_change_thumbnail_size' ) ) {
 	$thumbnailSizes = array(
-		'xsmall' => 'Avatar (100x75)',
-		'small' => 'Small (160x120)',
-		'medium' => 'Medium (400x300)',
-		'large' => 'Large (800x600)',
+		'avatar' => tra( 'Avatar (100x75 pixels)' ),
+		'small'  => tra( 'Small (160x120 pixels)' ),
+		'medium' => tra( 'Medium (400x300 pixels)' ),
+		'large'  => tra( 'Large (800x600 pixels)' ),
 	);
 	$gBitSmarty->assign( 'thumbnailSizes', $thumbnailSizes );
 }

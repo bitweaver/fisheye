@@ -74,6 +74,11 @@ $formGalleryLists = array(
 	"fisheye_gallery_list_image_descriptions" => array(
 		'label' => 'Image description',
 		'note' => 'Show image descriptions underneath each thumbnail',
+	),
+	"fisheye_gallery_div_layout" => array(
+		'label' => '&lt;div&gt; based Layout',
+		'note' => 'You can use a &lt;div&gt; based layout, which will adjust the number of images in each row to the width of the browser. Please visit the online help for more information.',
+		'page' => 'FisheyePackage',
 	)
 );
 $gBitSmarty->assign( 'formGalleryLists',$formGalleryLists );
