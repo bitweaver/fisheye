@@ -9,7 +9,7 @@
  * suggested crontab entry runs the thumbnailer every minute:
  *		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
  *
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.2.2.6 2005/08/25 20:23:43 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.2.2.7 2005/10/26 17:49:10 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -30,6 +30,8 @@
 		define( 'BIT_PHP_ERROR_REPORTING', E_ERROR | E_PARSE );
 	}
 
+	// running from cron can cause us not to be in the right dir.
+	chdir( dirname( __FILE__ ) );
 	require_once( '../bit_setup_inc.php' );
 	require_once( FISHEYE_PKG_PATH.'FisheyeImage.php' );
 

@@ -1,4 +1,7 @@
 {strip}
+
+{include file="bitpackage:fisheye/crop_image_js.tpl"}
+
 <div class="floaticon">
 	<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php">{biticon ipackage="liberty" iname="upload" iexplain="upload new image"}</a>
 </div>
@@ -49,7 +52,14 @@
 							{formlabel label="Current Image"}
 							{forminput}
 								{if $gContent->mInfo.image_file.storage_path}
-									<a href="{$smarty.const.FISHEYE_PKG_URL}view_image.php?image_id={$gContent->mImageId}"><img src="{$gContent->mInfo.image_file.thumbnail_url.medium}" alt="{$gContent->mInfo.title|escape}" /></a>
+									<img src="{$gContent->mInfo.image_file.thumbnail_url.medium}" id="cropimage" alt="{$gContent->mInfo.title|escape}" />
+<script>
+{literal}
+    window.onload = function() {
+      ImageBox.createBox("cropimage");
+    }
+{/literal}
+</script>
 									<br />
 									<small>
 										{if $gContent->mInfo.width && $gContent->mInfo.height}
