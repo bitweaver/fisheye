@@ -3,12 +3,12 @@
 $tables = array(
 
 'tiki_fisheye_gallery' => "
-  gallery_id I4 PRIMARY,
-  content_id I4,
-  rows_per_page I4,
-  cols_per_page I4,
-  thumbnail_size C(32),
-  preview_content_id I4
+	gallery_id I4 PRIMARY,
+	content_id I4,
+	rows_per_page I4,
+	cols_per_page I4,
+	thumbnail_size C(32),
+	preview_content_id I4
 ",
 
 'tiki_fisheye_gallery_image_map' => "
@@ -18,25 +18,25 @@ $tables = array(
 ",
 
 'tiki_fisheye_image' => "
-  image_id I4 PRIMARY,
-  content_id I4 NOTNULL,
-  photo_date I8,
-  width I4,
-  height I4
+	image_id I4 PRIMARY,
+	content_id I4 NOTNULL,
+	photo_date I8,
+	width I4,
+	height I4
 ",
 /*
 'tiki_fisheye_image_exif' => "
-  content_id I4 PRIMARY,
-  exif_title C(250),
-  exif_data X
+	content_id I4 PRIMARY,
+	exif_title C(250),
+	exif_data X
 ",
 */
 'tiki_thumbnail_queue' => "
-  content_id I4 PRIMARY,
-  queue_date I8 NOTNULL,
-  begin_date I8,
-  end_date I8,
-  resize_original integer
+	content_id I4 PRIMARY,
+	queue_date I8 NOTNULL,
+	begin_date I8,
+	end_date I8,
+	resize_original integer
 "
 
 );
@@ -91,11 +91,11 @@ $gBitInstaller->registerPreferences( FISHEYE_PKG_NAME, array(
 
 // ### Default User Permissions
 $gBitInstaller->registerUserPermissions( FISHEYE_PKG_NAME, array(
-	array('bit_p_view_fisheye', 'Can view image galleries', 'basic', 'fisheye'),
-	array('bit_p_create_fisheye', 'Can create an image gallery', 'registered', 'fisheye'),
-	array('bit_p_edit_fisheye', 'Can edit image gallery', 'registered', 'fisheye'),
-	array('bit_p_upload_fisheye', 'Can upload images to gallery', 'registered', 'fisheye'),
-	array('bit_p_admin_fisheye', 'Can admin image galleries', 'editors', 'fisheye')
+	array('bit_p_view_fisheye', 'Can view image galleries', 'basic', FISHEYE_PKG_NAME),
+	array('bit_p_create_fisheye', 'Can create an image gallery', 'registered', FISHEYE_PKG_NAME),
+	array('bit_p_edit_fisheye', 'Can edit image gallery', 'registered', FISHEYE_PKG_NAME),
+	array('bit_p_upload_fisheye', 'Can upload images to gallery', 'registered', FISHEYE_PKG_NAME),
+	array('bit_p_admin_fisheye', 'Can admin image galleries', 'editors', FISHEYE_PKG_NAME)
 ) );
 
 ?>
