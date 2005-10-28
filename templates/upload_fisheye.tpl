@@ -31,7 +31,7 @@
 				{forminput}
 					<div id="fileslist"></div>
 					<div class="clear"></div>
-					{formhelp note="Don't forget to upload the files by clicking on the button below."}
+					{formhelp note="These files will be uploaded when you hit the upload button below."}
 					<script type="text/javascript">//<![CDATA[
 						// Multi file upload
 						var multi_selector = new MultiSelector( document.getElementById( 'fileslist' ), 10 );
