@@ -13,20 +13,31 @@
 			{if $browserInfo.platform=='mac'}
 				{formhelp note="Mac Users: The newer .sitx format is not supported currently because the makers of the StuffIt application have not released new versions of their software for servers. Please use DropZip or similar for best results." force=true}
 			{/if}
+
 			<input type="hidden" name="gallery_id" value="{$galleryId|escape}"/>
 			<input type="hidden" name="image_id" value="{$imageId}"/>
 			<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 
-			<div class="uploadarray">
-				{assign var=uploads value=10 }
-				{section name=ix loop=$uploads name=uploads start=0 step=1 max=10}
-					<div class="row upload">
-						{formlabel label="Upload Image `$smarty.section.uploads.iteration`" for="image-upload-`$smarty.section.uploads.iteration`"}
-						{forminput}
-							<input type="file" name="{$smarty.section.uploads.iteration}" size="40" id="image-upload-{$smarty.section.uploads.iteration}" />
-						{/forminput}
-					</div>
-				{/section}
+			<div class="row">
+				{formlabel label="Select File(s)"}
+				{forminput}
+					<input type="file" name="file0" id="imageupload" />
+					{formhelp note=""}
+				{/forminput}
+			</div>
+
+			<div class="row">
+				{formlabel label="Selected File(s)" for=""}
+				{forminput}
+					<div id="fileslist"></div>
+					<div class="clear"></div>
+					{formhelp note="These files will be uploaded when you hit the upload button below."}
+					<script type="text/javascript">//<![CDATA[
+						// Multi file upload
+						var multi_selector = new MultiSelector( document.getElementById( 'fileslist' ), 10 );
+						multi_selector.addElement( document.getElementById( 'imageupload' ) );
+					//]]></script>
+				{/forminput}
 			</div>
 
 			<div class="row">
@@ -58,7 +69,7 @@
 
 			<div class="row submit">
 				<strong>{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</strong><br/>
-				<input type="submit" name="save_image" value="Save Image(s)"/>
+				<input type="submit" name="save_image" value="Upload File(s)" />
 			</div>
 		{/form}
 	</div> <!-- end .body -->

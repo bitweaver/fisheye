@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.6 2005/08/24 20:50:17 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.7 2005/10/29 17:52:39 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -92,7 +92,8 @@ if( $gBitSystem->isPackageActive( 'quota' ) ) {
 	require_once( QUOTA_PKG_PATH.'LibertyQuota.php' );
 	$quota = new LibertyQuota();
 	if( !$gBitUser->isAdmin() && !$quota->isUserUnderQuota( $gBitUser->mUserId ) ) {
-		$gBitSystem->fatalError( 'You are over your quota and have no space to upload new files.' );
+		$gBitSystem->display( 'bitpackage:quota/over_quota.tpl', tra( 'You are over your quota.' ) );
+		die;
 	}
 	if( !$gBitUser->isAdmin() ) {
 		// Prevent people from uploading more than there quota

@@ -28,6 +28,10 @@
 	<div class="body">
 		{formfeedback success=$fisheyeSuccess error=$fisheyeErrors warning=$fisheyeWarnings}
 		{if $gBitSystem->mPrefs.fisheye_gallery_div_layout eq 'y'}
+			{if $browserInfo.browser eq 'ie'}
+				<!-- we need this friggin table for MSIE that images don't float outside of the designated area - once again a hack for our favourite browser - grrr -->
+				<table style="border:0;border-collapse:collapse;border-spacing:0; width:auto;"><tr><td>
+			{/if}
 			<div class="thumbnailblock">
 				{section name=ix loop=$gContent->mItems}
 					{box class="box `$gContent->mInfo.thumbnail_size`-thmb `$gContent->mItems[ix]->mInfo.content_type_guid`"}
@@ -45,6 +49,9 @@
 					<div class="norecords">{tr}This gallery is empty{/tr}. <a href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">Upload pictures!</a></div>
 				{/section}
 			</div>
+			{if $browserInfo.browser eq 'ie'}
+				</td></tr></table>
+			{/if}
 			<div class="clear"></div>
 		{else}
 			<table class="thumbnailblock">

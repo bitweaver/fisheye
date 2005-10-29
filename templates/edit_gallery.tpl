@@ -29,7 +29,7 @@
 						<div class="row">
 							{formlabel label="Description" for="gallery-desc"}
 							{forminput}
-								<textarea name="edit" id="gallery-desc" rows="4" cols="40">{$gContent->mInfo.data}</textarea>
+								<textarea name="edit" id="gallery-desc" rows="4" cols="50">{$gContent->mInfo.data}</textarea>
 							{/forminput}
 						</div>
 
