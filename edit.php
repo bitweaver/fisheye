@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.11 2005/10/21 08:51:00 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.2.2.12 2005/11/01 20:42:29 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -81,7 +81,8 @@ if( !empty($_REQUEST['savegallery']) ) {
 $errors = (!empty($gContent->mErrors) ? $gContent->mErrors : array());
 $gBitSmarty->assign_by_ref('errors', $errors);
 
-$gBitSmarty->assign_by_ref( 'parentGalleries', $gContent->getParentGalleries() );
+$gallery = $gContent->getParentGalleries();
+$gBitSmarty->assign_by_ref( 'parentGalleries', $gallery );
 $getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->mContentId, 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gContent->getList( $getHash );
 $gBitSmarty->assign_by_ref('galleryList', $galleryList);
