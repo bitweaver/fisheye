@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.19 2005/10/08 18:00:24 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.20 2005/11/01 18:41:57 spiderr Exp $
  * @package fisheye
  */
 
@@ -220,7 +220,7 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
 			$fileHash['name'] = $this->mInfo['image_file']['filename'];
 			$fileHash['degrees'] = $pDegrees;
-			$rotateFunc = ($gBitSystem->getPreference( 'image_processor' ) == 'imagick' ) ? 'liberty_imagick_rotate_image' : 'liberty_gd_rotate_image';
+			$rotateFunc = liberty_get_function( 'rotate' );
 			if( $rotateFunc( $fileHash ) ) {
 				liberty_clear_thumbnails( $fileHash );
 				$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_image` SET `width`=`height`, `height`=`width` WHERE `content_id`=?", array( $this->mContentId ) );
