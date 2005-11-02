@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.12 2005/11/02 15:57:38 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.13 2005/11/02 17:53:16 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -282,7 +282,10 @@ $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' )
 				}
 			}
 		} else {
-			fisheye_store_upload( $pFileHash );
+			global $gBitUser;
+			if( $gBitUser->hasPermission( 'bit_p_fisheye_non_image_file_uploads' ) ) {
+				fisheye_store_upload( $pFileHash );
+			}
 		}
 		return $errors;
 	}

@@ -42,7 +42,7 @@
 				{/foreach}
 				<a href="{$gContent->mInfo.image_file.source_url}">Original</a>
 			{if $gContent->mInfo.width && $gContent->mInfo.height}
-				{$gContent->mInfo.width}x{$gContent->mInfo.height}
+				&nbsp;{$gContent->mInfo.width}x{$gContent->mInfo.height}
 			{/if}
 		</div>
 	</div>	<!-- end .body -->
