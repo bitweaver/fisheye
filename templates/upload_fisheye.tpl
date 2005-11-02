@@ -22,7 +22,7 @@
 				{formlabel label="Select File(s)"}
 				{forminput}
 					<input type="file" name="file0" id="imageupload" />
-					{formhelp note=""}
+					{formhelp note="To upload more than one file, please click on choose repeatedly."}
 				{/forminput}
 			</div>
 
