@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.20 2005/11/01 18:41:57 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.21 2005/11/02 15:57:38 spiderr Exp $
  * @package fisheye
  */
 
@@ -385,12 +385,11 @@ class FisheyeImage extends FisheyeBase {
 		// this is not the cleanest file_exists check, but has to be this way since $this->mInfo['image_file']*
 		// have BIT_ROOT_URL in them, and you will end up with dual prefixes if you do somethingn like
 		// file_exists( BIT_ROOT_PATH.$this->mInfo['image_file']['gallery_thumbnail_url'] )
-		if( !empty( $this->mInfo['image_file']['storage_path'] ) && file_exists( BIT_ROOT_PATH.dirname( $this->mInfo['image_file']['storage_path'] )."/$pSize.jpg" ) ) {
+		if( file_exists( $_SERVER['DOCUMENT_ROOT'].$this->mInfo['image_file']['gallery_thumbnail_url'] ) ) {
 			$ret = $this->mInfo['image_file']['gallery_thumbnail_url'];
 		} else {
 			$ret = FISHEYE_PKG_URL.'image/generating_thumbnails.png';
 		}
-
 		return $ret;
 	}
 
