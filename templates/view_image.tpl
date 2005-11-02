@@ -36,12 +36,13 @@
 		{/box}
 
 		<div class="pagination">
-			{if $gContent->mInfo.width && $gContent->mInfo.height}
 				{tr}View other sizes{/tr}<br />
 				{foreach key=size from=$gContent->mInfo.image_file.thumbnail_url item=url}
 				{if $url != $gContent->mInfo.display_url}<a href="{$gContent->getDisplayUrl(0,$size)|escape}">{/if}{$size}{if $url != $gContent->mInfo.display_url}</a>{/if}&nbsp;&bull;&nbsp;
 				{/foreach}
-				<a href="{$gContent->mInfo.image_file.source_url}">Original</a> {$gContent->mInfo.width}x{$gContent->mInfo.height}
+				<a href="{$gContent->mInfo.image_file.source_url}">Original</a>
+			{if $gContent->mInfo.width && $gContent->mInfo.height}
+				{$gContent->mInfo.width}x{$gContent->mInfo.height}
 			{/if}
 		</div>
 	</div>	<!-- end .body -->
