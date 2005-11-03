@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.19 2005/11/03 18:08:00 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.20 2005/11/03 20:04:06 squareing Exp $
  * @package fisheye
  */
 
@@ -460,7 +460,6 @@ vd( $this->mErrors );
 
 
 	function getList( &$pListHash ) {
-//	function getList($pUserId = NULL, $pFindString = NULL, $pSortMode = NULL, $pMaxRows = NULL) {
 		global $gBitUser,$gBitSystem, $commentsLib;
 
 		$this->prepGetList( $pListHash );
@@ -470,7 +469,6 @@ vd( $this->mErrors );
 		$sort = '';
 		$join = '';
 
-		$mapJoin = empty( $pListHash['show_empty'] ) ? ' INNER JOIN ' : ' LEFT OUTER JOIN ';
 		// this *has* to go first because of bindVars order
 		if( empty( $pListHash['show_empty'] ) ) {
 		// This will nicely pull out the unused rows, but it is dog slow
@@ -504,13 +502,24 @@ vd( $this->mErrors );
 			}
 		}
 
+		// weed out empty galleries if we don't need them
+		if( empty( $pListHash['show_empty'] ) ) {
+			$mapJoin = "INNER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim ON (tfgim.`gallery_content_id`=tc.`content_id`)";
+		} else {
+			$mapJoin = "";
+		}
+
+
 		if ( !empty( $pListHash['sort_mode'] ) ) {
 			//converted in prepGetList()
 			$sort .= " ORDER BY tc.".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
 		$query = "SELECT DISTINCT( tfg.`gallery_id` ) AS `hash_key`, tfg.*, tc.*, uu.`login`, uu.`real_name`, ptc.`content_type_guid` AS `preview_content_type_guid` $select
-				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( tfg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc $join
+				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( tfg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc
+				$join
+				$mapJoin
 				WHERE tfg.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid $sort";
 		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] ) ) {
 			$data = $rs->GetAssoc();
@@ -532,7 +541,9 @@ vd( $this->mErrors );
 		// count galleries
 		$query_c = "SELECT COUNT( DISTINCT( tfg.`gallery_id` ) )
 				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg
-				LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( tfg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc $join
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( tfg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc
+				$join
+				$mapJoin
 				LEFT JOIN  `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgimc ON( tfgimc.`gallery_content_id`=ptc.`content_id` )
 				WHERE tfg.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid";
 		$cant = $this->mDb->getOne( $query_c, $bindVars );
