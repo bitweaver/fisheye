@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.13 2005/11/02 17:53:16 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.14 2005/11/03 03:30:28 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -47,7 +47,8 @@ if (!empty($_REQUEST['save_image'])) {
 
 	$order = 100;
 	foreach( array_keys( $upImages ) as $key ) {
-		fisheye_store_upload( $upImages[$key] );
+		fisheye_store_upload( $upImages[$key], $order );
+		$order += 10;
 	}
 
 	if( !is_object( $gContent ) || !$gContent->isValid() ) {
@@ -121,7 +122,7 @@ $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' )
 		return $ret;
 	}
 
-	function fisheye_store_upload( &$pFileHash ) {
+	function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 		if( !empty( $pFileHash ) && ($pFileHash['size'] > 0) && is_uploaded_file( $pFileHash['tmp_name'] ) ) {
 			// make a copy for each image we need to store
 			$storeHash = $_REQUEST;
@@ -134,8 +135,7 @@ $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' )
 				array_merge( $upErrors, array_values( $image->mErrors ) );
 			}
 
-			$image->addToGalleries( $_REQUEST['galleryAdditions'], $order );
-			$order += 10;
+			$image->addToGalleries( $_REQUEST['galleryAdditions'], $pOrder );
 		}
 	}
 
@@ -204,7 +204,8 @@ $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' )
 
 	// Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
 	function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) {
-		$errors = NULL;
+		global $gBitSystem;
+		$errors = array();
 		if( $destDir = liberty_process_archive( $pFileHash ) ) {
 
 			if( empty( $pParentGallery ) && !is_uploaded_file( $pFileHash['tmp_name'] ) ) {
@@ -258,8 +259,9 @@ $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' )
 								$scanFile['type'] = finfo_file($res, $scanFile['tmp_name']);
 								finfo_close($res);
 							}
+
 							if( empty( $scanFile['type'] ) ) {
-								$scanFile['type'] = ( "image/unknown" );
+								$scanFile['type'] = $gBitSystem->lookupMimeType( substr( $fileName, strrpos( $fileName, '.' ) ) );
 							}
 							$newImage = new FisheyeImage();
 							$imageHash = array( 'upload' => $scanFile );
