@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.14 2005/11/03 03:30:28 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.15 2005/11/03 13:58:25 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -253,16 +253,6 @@ $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' )
 								$errors = array_merge( $errors, array_values( $newGallery->mErrors ) );
 							}
 						} else {
-							// support for the fileinfo pecl package: http://pecl.php.net/package/fileinfo
-							if( function_exists( 'finfo_open' ) ) {
-								$res = finfo_open(FILEINFO_MIME);
-								$scanFile['type'] = finfo_file($res, $scanFile['tmp_name']);
-								finfo_close($res);
-							}
-
-							if( empty( $scanFile['type'] ) ) {
-								$scanFile['type'] = $gBitSystem->lookupMimeType( substr( $fileName, strrpos( $fileName, '.' ) ) );
-							}
 							$newImage = new FisheyeImage();
 							$imageHash = array( 'upload' => $scanFile );
 							if( $newImage->store( $imageHash ) ) {
