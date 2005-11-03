@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.15 2005/11/03 13:58:25 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.16 2005/11/03 14:10:44 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -156,7 +156,7 @@ $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' )
 			switch( $mimeExt ) {
 				case 'x-rar-compressed':
 				case 'x-rar':
-					$shellResult = shell_exec( "rar x -w\"$destDir\" $pFileHash[tmp_name] " );
+					$shellResult = shell_exec( "unrar x $pFileHash[tmp_name] \"$destDir\"" );
 					break;
 				case 'x-bzip2':
 				case 'bzip2':
@@ -186,7 +186,7 @@ $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' )
 					if( $upExt == 'zip' ) {
 						$shellResult = shell_exec( "unzip $pFileHash[tmp_name] -d \"$destDir\"" );
 					} elseif( $upExt == 'rar' ) {
-						$shellResult = shell_exec( "rar x -w\"$destDir\" $pFileHash[tmp_name] " );
+						$shellResult = shell_exec( "unrar x $pFileHash[tmp_name] \"$destDir\"" );
 					} elseif( $upExt == 'sit' || $upExt == 'sitx' ) {
 						print( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
 						$shellResult = shell_exec( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
