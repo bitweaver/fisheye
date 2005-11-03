@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.16 2005/11/03 14:10:44 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.1.1.1.2.17 2005/11/03 18:08:00 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -96,7 +96,7 @@ if( $gBitSystem->isPackageActive( 'quota' ) ) {
 $gFisheyeGallery = new FisheyeGallery();
 $listHash = array( 'user_id' => $gBitUser->mUserId, 'show_empty' => true, 'max_records'=>-1, 'no_thumbnails'=>TRUE, 'sort_mode'=>'title_asc' );
 $galleryList = $gFisheyeGallery->getList( $listHash );
-$gBitSmarty->assign_by_ref('galleryList', $galleryList);
+$gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
 $gBitSmarty->assign( 'uploadMax', $uploadMax );
 

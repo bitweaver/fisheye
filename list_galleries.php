@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.1.1.1.2.3 2005/07/26 15:50:04 drewslater Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.1.1.1.2.4 2005/11/03 18:08:00 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -31,18 +31,17 @@ if (!empty($_REQUEST['user_id']) && is_numeric($_REQUEST['user_id'])) {
 
 $_REQUEST['thumbnail_size'] = $gBitSystem->getPreference( 'fisheye_list_thumbnail_size', 'small' );
 $galleryList = $gFisheyeGallery->getList( $_REQUEST );
-$gBitSmarty->assign_by_ref('galleryList', $galleryList);
 
-if (!empty($_REQUEST['offset']) && is_numeric($_REQUEST['offset'])) {
-	$gBitSmarty->assign_by_ref('iMaxRows', $iMaxRows);
-}
-if (!empty($_REQUEST['sort_mode'])) {
-	$gBitSmarty->assign_by_ref('iSortMode', $_REQUEST['sort_mode']);
-}
-if (!empty($_REQUEST['search'])) {
-	$gBitSmarty->assign_by_ref('iSearchString', $iSearchtring);
-}
+// pagination
+$offset = !empty( $_REQUEST['offset'] ) ? $_REQUEST['offset'] : 0;
+$gBitSmarty->assign( 'curPage', $page = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : 1 );
+$offset = ( $page - 1 ) * $gBitSystem->mPrefs['maxRecords'];
 
-$gBitSystem->display("bitpackage:fisheye/$template", "List Galleries" );
+// calculate page number
+$numPages = ceil( $galleryList['cant'] / $gBitSystem->mPrefs['maxRecords'] );
+$gBitSmarty->assign( 'numPages', $numPages );
 
+$gBitSmarty->assign( 'galleryList', $galleryList['data'] );
+
+$gBitSystem->display( "bitpackage:fisheye/$template", "List Galleries" );
 ?>

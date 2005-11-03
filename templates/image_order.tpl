@@ -13,7 +13,7 @@
 			<table class="data">
 				<caption>{tr}Image Order{/tr}</caption>
 				<tr>
-					<td style="width:1px;"></td>
+					<th style="width:1px;"></td>
 					<th scope="col" style="width:1px;">{tr}Thumbnail{/tr}</th>
 					<th scope="col">{tr}Title and Position{/tr}</th>
 					<th scope="col">{tr}Miscellaneous{/tr}</th>
