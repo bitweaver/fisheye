@@ -17,6 +17,10 @@
 							{else}
 								&laquo;&nbsp;{tr}previous{/tr}
 							{/if}
+							{if $gBitSystem->isFeatureActive( 'gallery_bar_use_thumbnails' )}
+								<br />
+								<img src="{$gGallery->mInfo.previous_image_avatar}" />
+							{/if}
 						</a>
 					{else}&nbsp;{/if}
 				</span>
@@ -28,6 +32,10 @@
 								{biticon ipackage=liberty iname=nav_next iexplain=next}
 							{else}
 								{tr}next{/tr}&nbsp;&raquo;
+							{/if}
+							{if $gBitSystem->isFeatureActive( 'gallery_bar_use_thumbnails' )}
+								<br />
+								<img src="{$gGallery->mInfo.next_image_avatar}" />
 							{/if}
 						</a>
 					{else}&nbsp;{/if}

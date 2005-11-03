@@ -11,8 +11,8 @@
 		{/if}
 	{/if}
 	{if $gContent->hasUserPermission('bit_p_admin')}
-			<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a>
-			<a title="{tr}Delete{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}&amp;delete=1">{biticon ipackage=liberty iname="delete" iexplain="Delete Image"}</a>
+		<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a>
+		<a title="{tr}Delete{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}&amp;delete=1">{biticon ipackage=liberty iname="delete" iexplain="Delete Image"}</a>
 	{/if}
 	</div>
 
@@ -36,11 +36,11 @@
 		{/box}
 
 		<div class="pagination">
-				{tr}View other sizes{/tr}<br />
-				{foreach key=size from=$gContent->mInfo.image_file.thumbnail_url item=url}
+			{tr}View other sizes{/tr}<br />
+			{foreach key=size from=$gContent->mInfo.image_file.thumbnail_url item=url}
 				{if $url != $gContent->mInfo.display_url}<a href="{$gContent->getDisplayUrl(0,$size)|escape}">{/if}{$size}{if $url != $gContent->mInfo.display_url}</a>{/if}&nbsp;&bull;&nbsp;
-				{/foreach}
-				<a href="{$gContent->mInfo.image_file.source_url}">Original</a>
+			{/foreach}
+			<a href="{$gContent->mInfo.image_file.source_url}">Original</a>
 			{if $gContent->mInfo.width && $gContent->mInfo.height}
 				&nbsp;{$gContent->mInfo.width}x{$gContent->mInfo.height}
 			{/if}

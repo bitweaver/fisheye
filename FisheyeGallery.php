@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.20 2005/11/03 20:04:06 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.21 2005/11/03 21:27:31 squareing Exp $
  * @package fisheye
  */
 
@@ -103,20 +103,36 @@ class FisheyeGallery extends FisheyeBase {
 				}
 				if( !empty( $pCurrentImageId ) ) {
 					// this code sucks but works - XOXO spiderr
-					$query = "SELECT tfgim.*,tfi.`image_id`
+					$query = "SELECT tfgim.*, tfi.`image_id`, tf.`storage_path`
 							FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim
 								INNER JOIN `".BIT_DB_PREFIX."tiki_fisheye_image` tfi ON ( tfi.`content_id`=tfgim.`item_content_id` )
+								INNER JOIN `".BIT_DB_PREFIX."tiki_files` tf ON ( tf.`file_id`=tfi.`image_id` )
 							WHERE tfgim.`gallery_content_id` = ?
 							ORDER BY tfgim.`position`, tfi.`content_id` ";
 					if( $rs = $this->mDb->query($query, array( $this->mContentId ) ) ) {
 						$rows = $rs->getRows();
 						for( $i = 0; $i < count( $rows ); $i++ ) {
 							if( $rows[$i]['image_id'] == $pCurrentImageId ) {
+
 								if( $i > 0 ) {
 									$this->mInfo['previous_image_id'] = $rows[$i-1]['image_id'];
+
+									$trailingName = dirname( $rows[$i-1]['storage_path'] )."/avatar.jpg";
+									if( file_exists( BIT_ROOT_PATH.$trailingName ) ) {
+										$this->mInfo['previous_image_avatar'] = BIT_ROOT_URL.$trailingName;
+									} else {
+										$this->mInfo['previous_image_avatar'] =FISHEYE_PKG_URL.'image/generating_thumbnails.png';
+									}
 								}
 								if( $i + 1  < count( $rows ) ) {
 									$this->mInfo['next_image_id'] = $rows[$i+1]['image_id'];
+
+									$trailingName = dirname( $rows[$i+1]['storage_path'] )."/avatar.jpg";
+									if( file_exists( BIT_ROOT_PATH.$trailingName ) ) {
+										$this->mInfo['next_image_avatar'] = BIT_ROOT_URL.$trailingName;
+									} else {
+										$this->mInfo['next_image_avatar'] =FISHEYE_PKG_URL.'image/generating_thumbnails.png';
+									}
 								}
 							}
 						}
