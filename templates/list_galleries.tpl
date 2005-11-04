@@ -26,6 +26,8 @@
 			</ul>
 		</div>
 
+		{minifind}
+
 		<ul class="clear data">
 			{foreach from=$galleryList key=galleryId item=gal}
 				<li class="item {cycle values='odd,even'} {$gal.content_type_guid}">

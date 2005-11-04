@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.22 2005/11/04 20:04:20 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.23 2005/11/04 20:13:52 squareing Exp $
  * @package fisheye
  */
 
@@ -505,9 +505,9 @@ vd( $this->mErrors );
 			$mid .= " AND tc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
 		}
-		if( !empty( $pListHash['search'] ) ) {
-			$mid .= " AND UPPER(tc.`title`) LIKE ? ";
-			$bindVars[] = '%'.strtoupper( $pListHash['search'] ).'%';
+		if( !empty( $pListHash['find'] ) ) {
+			$mid .= " AND UPPER( tc.`title` ) LIKE ? ";
+			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
 		}
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			$select .= ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
