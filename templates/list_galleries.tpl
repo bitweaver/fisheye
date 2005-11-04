@@ -99,7 +99,7 @@
 		</ul>
 
 		<div class="clear"></div>
-		{libertypagination page=$curPage numPages=$numPages}
+		{libertypagination page=$curPage numPages=$numPages find=$find}
 	</div>	<!-- end .body -->
 </div>	<!-- end .fisheye -->
 {/strip}
