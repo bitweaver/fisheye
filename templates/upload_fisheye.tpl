@@ -1,15 +1,15 @@
 <div class="admin fisheye">
 	<div class="header">
-		<h1>{tr}Upload Images{/tr}</h1>
+		<h1>{tr}Upload Files{/tr}</h1>
 	</div>
 
 	<div class="body">
-		{form enctype="multipart/form-data" legend="Upload Images"}
+		{form enctype="multipart/form-data" legend="Upload Files"}
 			{formfeedback note=$quotaMessage}
 			{formfeedback warning="The maximum file size you can upload is `$uploadMax` Megabytes"}
 			{formfeedback error=$errors}
 
-			{formhelp note="Here you can upload images. You can upload single image files, or you can upload archived files (.zip's, .sit's, .tar's, etc.) Archvied uploads will automatically be decompressed, and a gallery will created for every gallery in it. If you have nested folders, the hierarchy will be maintained for you with nested galleries." force=true}
+			{formhelp note="Here you can upload files. You can upload single files, or you can upload archived files (.zip's, .sit's, .tar's, etc.) Archvied uploads will automatically be decompressed, and a gallery will created for every gallery in it. If you have nested folders, the hierarchy will be maintained for you with nested galleries." force=true}
 			{if $browserInfo.platform=='mac'}
 				{formhelp note="Mac Users: The newer .sitx format is not supported currently because the makers of the StuffIt application have not released new versions of their software for servers. Please use DropZip or similar for best results." force=true}
 			{/if}
@@ -21,8 +21,8 @@
 			<div class="row">
 				{formlabel label="Select File(s)"}
 				{forminput}
-					<input type="file" name="file0" id="imageupload" />
-					{formhelp note="To upload more than one file, please click on choose repeatedly."}
+					<input type="file" name="file0" id="fileupload" />
+					{formhelp note="To upload more than one file, please click on choose repeatedly<br />(javascript has to be enabled for this to work)."}
 				{/forminput}
 			</div>
 
@@ -35,13 +35,25 @@
 					<script type="text/javascript">//<![CDATA[
 						// Multi file upload
 						var multi_selector = new MultiSelector( document.getElementById( 'fileslist' ), 10 );
-						multi_selector.addElement( document.getElementById( 'imageupload' ) );
+						multi_selector.addElement( document.getElementById( 'fileupload' ) );
 					//]]></script>
 				{/forminput}
 			</div>
 
+			{if $gBitUser->hasPermission( 'bit_p_fisheye_upload_nonimages' )}
+				<div class="row">
+					{formlabel label="Process Archive(s)" for="process_archive"}
+					{forminput}
+						<input type="checkbox" id="process_archive" value="true" checked="checked" />
+						{formhelp note="If you don't want to have archived files processed and extracted, please uncheck the above box."}
+					{/forminput}
+				</div>
+			{else}
+				<input type="hidden" id="process_archive" value="true" />
+			{/if}
+
 			<div class="row">
-				{formlabel label="Add Image(s) to these Galleries"}
+				{formlabel label="Add File(s) to these Galleries"}
 				{forminput}
 					{foreach from=$galleryList key=galId item=gal}
 							<input type="checkbox" name="galleryAdditions[]" value="{$galId}"
@@ -58,7 +70,7 @@
 							<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title}</a>
 							<br />
 					{foreachelse}
-						<div>{tr}No Galleries Found{/tr}. {tr}A gallery named <strong>{displayname hash=$gBitUser->mInfo nolink=1}'s Gallery</strong> will be created for you and images will be added to it.{/tr}</div>
+						<div>{tr}No Galleries Found{/tr}. {tr}A gallery named <strong>{displayname hash=$gBitUser->mInfo nolink=1}'s Gallery</strong> will be created for you and files will be added to it.{/tr}</div>
 					{/foreach}
 				{/forminput}
 			</div>
