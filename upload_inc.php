@@ -4,7 +4,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	$getHash = array( 'user_id' => $pUserId, 'max_records' => 1, 'sort_mode' => 'created_desc' );
 	$upList = $gal->getList( $getHash );
 	if( !empty( $upList['data'] ) ) {
-		$ret = key( $upList );
+		$ret = key( $upList['data'] );
 	} else {
 		$galleryHash = array( 'title' => $pNewName );
 		if( $gal->store( $galleryHash ) ) {
