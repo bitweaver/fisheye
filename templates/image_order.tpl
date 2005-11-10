@@ -54,7 +54,7 @@
 							<div class="row">
 								{formlabel label="Position" for="imagePosition-`$galleryImages[ix]->mContentId`"}
 								{forminput}
-									<input type="text" size="3" maxlength="3" name="imagePosition[{$galleryImages[ix]->mContentId}]" id="imagePosition-{$galleryImages[ix]->mContentId}" value="{$galleryImages[ix]->mInfo.position}"/>
+									<input type="text" size="8" maxlength="15" name="imagePosition[{$galleryImages[ix]->mContentId}]" id="imagePosition-{$galleryImages[ix]->mContentId}" value="{$galleryImages[ix]->mInfo.position}"/>
 								{/forminput}
 							</div>
 
