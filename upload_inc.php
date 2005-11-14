@@ -37,74 +37,11 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 	}
 }
 
-function liberty_process_archive( &$pFileHash ) {
-	$cwd = getcwd();
-	$dir = dirname( $pFileHash['tmp_name'] );
-	$upExt = strtolower( substr( $pFileHash['name'], (strrpos( $pFileHash['name'], '.' ) + 1) ) );
-	$baseDir = $dir.'/';
-	if( is_uploaded_file( $pFileHash['tmp_name'] ) ) {
-		global $gBitUser;
-		$baseDir .= $gBitUser->mUserId;
-	}
-	$destDir = $baseDir.'/'.basename( $pFileHash['tmp_name'] );
-	if( (is_dir( $baseDir ) || mkdir( $baseDir )) && @mkdir( $destDir ) ) {
-		// Some commands don't nicely support extracting to other directories
-		chdir( $destDir );
-		list( $mimeType, $mimeExt ) = split( '/', $pFileHash['type'] );
-		switch( $mimeExt ) {
-			case 'x-rar-compressed':
-			case 'x-rar':
-				$shellResult = shell_exec( "unrar x $pFileHash[tmp_name] \"$destDir\"" );
-				break;
-			case 'x-bzip2':
-			case 'bzip2':
-			case 'x-gzip':
-			case 'gzip':
-			case 'x-tgz':
-			case 'x-tar':
-			case 'tar':
-				switch( $upExt ) {
-					case 'gz':
-					case 'tgz': $compressFlag = '-z'; break;
-					case 'bz2': $compressFlag = '-j'; break;
-					default: $compressFlag = ''; break;
-				}
-				$shellResult = shell_exec( "tar -x $compressFlag -f $pFileHash[tmp_name]  -C \"$destDir\"" );
-				break;
-			case 'x-zip-compressed':
-			case 'x-zip':
-			case 'zip':
-				$shellResult = shell_exec( "unzip $pFileHash[tmp_name] -d \"$destDir\"" );
-				break;
-			case 'x-stuffit':
-			case 'stuffit':
-				$shellResult = shell_exec( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
-				break;
-			default:
-				if( $upExt == 'zip' ) {
-					$shellResult = shell_exec( "unzip $pFileHash[tmp_name] -d \"$destDir\"" );
-				} elseif( $upExt == 'rar' ) {
-					$shellResult = shell_exec( "unrar x $pFileHash[tmp_name] \"$destDir\"" );
-				} elseif( $upExt == 'sit' || $upExt == 'sitx' ) {
-					print( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
-					$shellResult = shell_exec( "unstuff -d=\"$destDir\" $pFileHash[tmp_name] " );
-					vd( $shellResult );
-				} else {
-					$destDir = NULL;
-				}
-				break;
-		}
-	}
-	chdir( $cwd );
-	return $destDir;
-}
-
 // Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
 function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) {
-	global $gBitSystem;
+	global $gBitSystem, $gBitUser;
 	$errors = array();
-	if( $destDir = liberty_process_archive( $pFileHash ) && !empty( $_REQUEST['process_archive'] ) ) {
-
+	if( ($destDir = liberty_process_archive( $pFileHash )) && (!empty( $_REQUEST['process_archive'] ) || $gBitUser->hasPermission( 'bit_p_fisheye_upload_nonimages' )) ) {
 		if( empty( $pParentGallery ) && !is_uploaded_file( $pFileHash['tmp_name'] ) ) {
 			$pParentGallery = new FisheyeGallery();
 			$galleryHash = array( 'title' => basename( $destDir ) );
@@ -120,6 +57,8 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 		global $gBitUser;
 		if( $gBitUser->hasPermission( 'bit_p_fisheye_upload_nonimages' ) ) {
 			fisheye_store_upload( $pFileHash );
+		} else {
+			$errors['upload'] = tra( 'Your upload could not be processed because it was determined to be a non-image and you only have permission to upload images.' );
 		}
 	}
 	return $errors;
