@@ -66,6 +66,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 
 // Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
 function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=FALSE ) {
+	$errors = array();
 	if( $archiveDir = opendir( $pDestinationDir ) ) {
 		$order = 100;
 		while( $fileName = readdir($archiveDir) ) {
