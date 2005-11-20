@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.24 2005/11/10 17:18:02 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.25 2005/11/20 17:04:34 squareing Exp $
  * @package fisheye
  */
 
@@ -113,7 +113,6 @@ class FisheyeGallery extends FisheyeBase {
 						$rows = $rs->getRows();
 						for( $i = 0; $i < count( $rows ); $i++ ) {
 							if( $rows[$i]['image_id'] == $pCurrentImageId ) {
-
 								if( $i > 0 ) {
 									$this->mInfo['previous_image_id'] = $rows[$i-1]['image_id'];
 
@@ -121,7 +120,8 @@ class FisheyeGallery extends FisheyeBase {
 									if( file_exists( BIT_ROOT_PATH.$trailingName ) ) {
 										$this->mInfo['previous_image_avatar'] = BIT_ROOT_URL.$trailingName;
 									} else {
-										$this->mInfo['previous_image_avatar'] =FISHEYE_PKG_URL.'image/generating_thumbnails.png';
+										$mime_type = BitSystem::lookupMimeType( preg_match( "/\..*?$/", $rows[$i-1]['storage_path'] ) );
+										$this->mInfo['previous_image_avatar'] = LibertySystem::getMimeThumbnailURL( $mime_type );
 									}
 								}
 								if( $i + 1  < count( $rows ) ) {
@@ -131,7 +131,8 @@ class FisheyeGallery extends FisheyeBase {
 									if( file_exists( BIT_ROOT_PATH.$trailingName ) ) {
 										$this->mInfo['next_image_avatar'] = BIT_ROOT_URL.$trailingName;
 									} else {
-										$this->mInfo['next_image_avatar'] =FISHEYE_PKG_URL.'image/generating_thumbnails.png';
+										$mime_type = BitSystem::lookupMimeType( preg_match( "/\..*?$/", $rows[$i+1]['storage_path'] ) );
+										$this->mInfo['next_image_avatar'] = LibertySystem::getMimeThumbnailURL( $mime_type );
 									}
 								}
 							}
