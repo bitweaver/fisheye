@@ -101,6 +101,10 @@ $formImageLists = array(
 		'label' => 'Use icons in the gallery bar',
 		'note' => 'When viewing an image, show <strong>previous</strong> and <strong>next</strong> links as images instead of words',
 	),
+	"gallery_bar_use_thumbnails" => array(
+		'label' => 'Use Thumbnails in gallery bar',
+		'note' => 'When viewing an image, show previous and next <strong>thumbnails</strong> with the appropriate links.',
+	),
 );
 $gBitSmarty->assign( 'formImageLists', $formImageLists);
 

@@ -6,7 +6,7 @@
 	$_REQUEST['root_only'] = TRUE;
 	$_REQUEST['get_thumbnails'] = TRUE;
 	$galleryList = $gFisheyeGallery->getList( $_REQUEST );
-	$gBitSmarty->assign_by_ref('galleryList', $galleryList);
+	$gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
 	/* Process the input parameters this page accepts */
 	if (!empty($gQueryUser) && $gQueryUser->isRegistered()) {

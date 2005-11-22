@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.9 2005/10/12 15:13:49 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.10 2005/11/22 07:25:47 squareing Exp $
  * @package fisheye
  */
 
@@ -103,9 +103,10 @@ class FisheyeGallery extends FisheyeBase {
 				}
 				if( !empty( $pCurrentImageId ) ) {
 					// this code sucks but works - XOXO spiderr
-					$query = "SELECT tfgim.*,tfi.`image_id`
+					$query = "SELECT tfgim.*, tfi.`image_id`, tf.`storage_path`
 							FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim
 								INNER JOIN `".BIT_DB_PREFIX."tiki_fisheye_image` tfi ON ( tfi.`content_id`=tfgim.`item_content_id` )
+								INNER JOIN `".BIT_DB_PREFIX."tiki_files` tf ON ( tf.`file_id`=tfi.`image_id` )
 							WHERE tfgim.`gallery_content_id` = ?
 							ORDER BY tfgim.`position`, tfi.`content_id` ";
 					if( $rs = $this->mDb->query($query, array( $this->mContentId ) ) ) {
@@ -114,9 +115,25 @@ class FisheyeGallery extends FisheyeBase {
 							if( $rows[$i]['image_id'] == $pCurrentImageId ) {
 								if( $i > 0 ) {
 									$this->mInfo['previous_image_id'] = $rows[$i-1]['image_id'];
+
+									$trailingName = dirname( $rows[$i-1]['storage_path'] )."/avatar.jpg";
+									if( file_exists( BIT_ROOT_PATH.$trailingName ) ) {
+										$this->mInfo['previous_image_avatar'] = BIT_ROOT_URL.$trailingName;
+									} else {
+										$mime_type = BitSystem::lookupMimeType( preg_match( "/\..*?$/", $rows[$i-1]['storage_path'] ) );
+										$this->mInfo['previous_image_avatar'] = LibertySystem::getMimeThumbnailURL( $mime_type );
+									}
 								}
 								if( $i + 1  < count( $rows ) ) {
 									$this->mInfo['next_image_id'] = $rows[$i+1]['image_id'];
+
+									$trailingName = dirname( $rows[$i+1]['storage_path'] )."/avatar.jpg";
+									if( file_exists( BIT_ROOT_PATH.$trailingName ) ) {
+										$this->mInfo['next_image_avatar'] = BIT_ROOT_URL.$trailingName;
+									} else {
+										$mime_type = BitSystem::lookupMimeType( preg_match( "/\..*?$/", $rows[$i+1]['storage_path'] ) );
+										$this->mInfo['next_image_avatar'] = LibertySystem::getMimeThumbnailURL( $mime_type );
+									}
 								}
 							}
 						}
@@ -157,7 +174,7 @@ class FisheyeGallery extends FisheyeBase {
 		foreach ($rows as $row) {
 			$pass = TRUE;
 			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-				$pass = empty( $row['security_id'] ) || ( $row['user_id'] == $gBitUser->mUserId ) || !empty( $_SESSION['gatekeeper_security'][$row['security_id']] );
+				$pass = $gBitUser->hasPermission( 'bit_p_admin_fisheye' ) || empty( $row['security_id'] ) || ( $row['user_id'] == $gBitUser->mUserId ) || !empty( $_SESSION['gatekeeper_security'][$row['security_id']] );
 			}
 			if( $pass && $item = $gLibertySystem->getLibertyObject( $row['item_content_id'], $row['content_type_guid'] ) ) {
 				$item->loadThumbnail( $this->mInfo['thumbnail_size'] );
@@ -460,16 +477,15 @@ vd( $this->mErrors );
 
 
 	function getList( &$pListHash ) {
-//	function getList($pUserId = NULL, $pFindString = NULL, $pSortMode = NULL, $pMaxRows = NULL) {
 		global $gBitUser,$gBitSystem, $commentsLib;
 
 		$this->prepGetList( $pListHash );
 		$bindVars = array();
 		$select = '';
 		$mid = '';
+		$sort = '';
 		$join = '';
 
-		$mapJoin = empty( $pListHash['show_empty'] ) ? ' INNER JOIN ' : ' LEFT OUTER JOIN ';
 		// this *has* to go first because of bindVars order
 		if( empty( $pListHash['show_empty'] ) ) {
 		// This will nicely pull out the unused rows, but it is dog slow
@@ -490,9 +506,9 @@ vd( $this->mErrors );
 			$mid .= " AND tc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
 		}
-		if( !empty( $pListHash['search'] ) ) {
-			$mid .= " AND UPPER(tc.`title`) LIKE ? ";
-			$bindVars[] = '%'.strtoupper( $pListHash['search'] ).'%';
+		if( !empty( $pListHash['find'] ) ) {
+			$mid .= " AND UPPER( tc.`title` ) LIKE ? ";
+			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
 		}
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			$select .= ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
@@ -503,31 +519,51 @@ vd( $this->mErrors );
 			}
 		}
 
+		// weed out empty galleries if we don't need them
+		if( empty( $pListHash['show_empty'] ) ) {
+			$mapJoin = "INNER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim ON (tfgim.`gallery_content_id`=tc.`content_id`)";
+		} else {
+			$mapJoin = "";
+		}
+
+
 		if ( !empty( $pListHash['sort_mode'] ) ) {
 			//converted in prepGetList()
-			$mid .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
+			$sort .= " ORDER BY tc.".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
 		$query = "SELECT DISTINCT( tfg.`gallery_id` ) AS `hash_key`, tfg.*, tc.*, uu.`login`, uu.`real_name`, ptc.`content_type_guid` AS `preview_content_type_guid` $select
-				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( tfg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc $join
-				WHERE tfg.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid";
-		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'],$pListHash['offset'] ) ) {
-			$ret = $rs->GetAssoc();
+				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( tfg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc
+				$mapJoin $join
+				WHERE tfg.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid $sort";
+		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] ) ) {
+			$data = $rs->GetAssoc();
 			if( empty( $pListHash['no_thumbnails'] ) ) {
 				$thumbsize = !empty( $pListHash['thumbnail_size'] ) ? $pListHash['thumbnail_size'] : 'small';
-				foreach( array_keys( $ret ) as $galleryId ) {
-					$ret[$galleryId]['display_url'] = $this->getDisplayUrl( $galleryId );
-					if( $thumbImage = $this->getThumbnailImage( $ret[$galleryId]['content_id'], $ret[$galleryId]['preview_content_id'], $ret[$galleryId]['preview_content_type_guid'] ) ) {
-						$ret[$galleryId]['thumbnail_url'] = $thumbImage->getThumbnailUrl( $thumbsize );
+				foreach( array_keys( $data ) as $galleryId ) {
+					$data[$galleryId]['display_url'] = $this->getDisplayUrl( $galleryId );
+					if( $thumbImage = $this->getThumbnailImage( $data[$galleryId]['content_id'], $data[$galleryId]['preview_content_id'], $data[$galleryId]['preview_content_type_guid'] ) ) {
+						$data[$galleryId]['thumbnail_url'] = $thumbImage->getThumbnailUrl( $thumbsize );
 					} elseif( !empty( $pListHash['show_empty'] ) ) {
-						$ret[$galleryId]['thumbnail_url'] = FISHEYE_PKG_URL.'image/no_image.png';
+						$data[$galleryId]['thumbnail_url'] = FISHEYE_PKG_URL.'image/no_image.png';
 					} else {
-						unset( $ret[$galleryId] );
+						unset( $data[$galleryId] );
 					}
 				}
 			}
 		}
 
+		// count galleries
+		$query_c = "SELECT COUNT( DISTINCT( tfg.`gallery_id` ) )
+				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( tfg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc
+				$mapJoin $join
+				WHERE tfg.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid";
+		$cant = $this->mDb->getOne( $query_c, $bindVars );
+
+		$ret['cant'] = $cant;
+		$ret['data'] = $data;
 		return $ret;
 	}
 }

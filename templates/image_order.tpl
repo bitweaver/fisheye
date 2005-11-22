@@ -13,7 +13,7 @@
 			<table class="data">
 				<caption>{tr}Image Order{/tr}</caption>
 				<tr>
-					<td style="width:1px;"></td>
+					<th style="width:1px;"></th>
 					<th scope="col" style="width:1px;">{tr}Thumbnail{/tr}</th>
 					<th scope="col">{tr}Title and Position{/tr}</th>
 					<th scope="col">{tr}Miscellaneous{/tr}</th>
@@ -54,7 +54,7 @@
 							<div class="row">
 								{formlabel label="Position" for="imagePosition-`$galleryImages[ix]->mContentId`"}
 								{forminput}
-									<input type="text" size="3" maxlength="3" name="imagePosition[{$galleryImages[ix]->mContentId}]" id="imagePosition-{$galleryImages[ix]->mContentId}" value="{$galleryImages[ix]->mInfo.position}"/>
+									<input type="text" size="8" maxlength="15" name="imagePosition[{$galleryImages[ix]->mContentId}]" id="imagePosition-{$galleryImages[ix]->mContentId}" value="{$galleryImages[ix]->mInfo.position}"/>
 								{/forminput}
 							</div>
 
@@ -106,24 +106,32 @@
 							<option value="delete">{tr}Delete{/tr}</option>
 							<option value="remove">{tr}Remove{/tr} ({tr}Don't delete if in other galleries{/tr})</option>
 							<option value="thumbnail">{tr}Regenerate Thumbnails{/tr}</option>
-							<option value="rotate:-90">&lt;&lt; {tr}Rotate Counter Clockwise{/tr}</option>
-							<option value="rotate:90">&gt;&gt; {tr}Rotate Clockwise{/tr}</option>
+							<optgroup label="{tr}Rotate{/tr}">
+								<option value="rotate:90">&gt;&gt; {tr}Rotate Clockwise{/tr}</option>
+								<option value="rotate:-90">&lt;&lt; {tr}Rotate Counter Clockwise{/tr}</option>
+							</optgroup>
 							{if $gBitSystem->isPackageActive( 'gatekeeper' ) }
-								<option value="security:">{tr}Set Security to{/tr} ~~ {tr}Publically Visible{/tr} ~~</option>
-								{foreach from=$securities key=secId item=sec}
-									<option value="security:{$secId}">{tr}Set Security to{/tr} "{$sec.security_description}"</option>
-								{/foreach}
+								<optgroup label="{tr}Set Security to{/tr}">
+									<option value="security:">~~ {tr}Publically Visible{/tr} ~~</option>
+									{foreach from=$securities key=secId item=sec}
+										<option value="security:{$secId}">{tr}Set Security to{/tr} "{$sec.security_description}"</option>
+									{/foreach}
+								</optgroup>
 							{/if}
-							{foreach from=$galleryList item=gal key=galleryId}
-								{if $gContent->mInfo.content_id ne $gal.content_id}
-									<option value="gallerycopy:{$gal.content_id}">{tr}Copy to gallery{/tr} "{$gal.title|truncate:30}"</option>
-								{/if}
-							{/foreach}
-							{foreach from=$galleryList item=gal key=galleryId}
-								{if $gContent->mInfo.content_id ne $gal.content_id}
-									<option value="gallerymove:{$gal.content_id}">{tr}Move to gallery{/tr} "{$gal.title|truncate:30}"</option>
-								{/if}
-							{/foreach}
+							<optgroup label="{tr}Copy to Gallery{/tr}">
+								{foreach from=$galleryList item=gal key=galleryId}
+									{if $gContent->mInfo.content_id ne $gal.content_id}
+										<option value="gallerycopy:{$gal.content_id}">{$gal.title|truncate:50}</option>
+									{/if}
+								{/foreach}
+							</optgroup>
+							<optgroup label="{tr}Move to Gallery{/tr}">
+								{foreach from=$galleryList item=gal key=galleryId}
+									{if $gContent->mInfo.content_id ne $gal.content_id}
+										<option value="gallerymove:{$gal.content_id}">{$gal.title|truncate:50}</option>
+									{/if}
+								{/foreach}
+							</optgroup>
 						</select>
 						{formhelp note=""}
 					{/forminput}

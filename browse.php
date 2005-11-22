@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/browse.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/browse.php,v 1.4 2005/11/22 07:25:47 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -16,8 +16,8 @@ global $gBitSystem, $gBitSmarty;
 
 $gFisheyeGallery = new FisheyeGallery();
 $galleryList = $gFisheyeGallery->getList( $_REQUEST );
-$gBitSmarty->assign_by_ref('galleryList', $galleryList);
+$gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
-$gBitSystem->display("bitpackage:fisheye/browse_galleries.tpl");
+$gBitSystem->display( "bitpackage:fisheye/browse_galleries.tpl" );
 
 ?>

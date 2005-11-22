@@ -1,7 +1,5 @@
 {strip}
 
-{include file="bitpackage:fisheye/crop_image_js.tpl"}
-
 <div class="floaticon">
 	<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php">{biticon ipackage="liberty" iname="upload" iexplain="upload new image"}</a>
 </div>

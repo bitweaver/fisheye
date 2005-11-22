@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.10 2005/10/12 15:13:49 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.11 2005/11/22 07:25:47 squareing Exp $
  * @package fisheye
  */
 
@@ -220,7 +220,7 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
 			$fileHash['name'] = $this->mInfo['image_file']['filename'];
 			$fileHash['degrees'] = $pDegrees;
-			$rotateFunc = ($gBitSystem->getPreference( 'image_processor' ) == 'imagick' ) ? 'liberty_imagick_rotate_image' : 'liberty_gd_rotate_image';
+			$rotateFunc = liberty_get_function( 'rotate' );
 			if( $rotateFunc( $fileHash ) ) {
 				liberty_clear_thumbnails( $fileHash );
 				$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_image` SET `width`=`height`, `height`=`width` WHERE `content_id`=?", array( $this->mContentId ) );
@@ -296,11 +296,15 @@ class FisheyeImage extends FisheyeBase {
 		$info = NULL;
 		$pFilePath = ($pFilePath ? $pFilePath : (empty($this->mInfo['image_file']['storage_path']) ? NULL : BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path']));
 
-		if ($pFilePath && file_exists($pFilePath) && filesize( $pFilePath ) ) {
-			if( $info = getimagesize(rtrim($pFilePath)) ) {
-				$info['width'] = $info[0];
-				$info['height'] = $info[1];
-				$info['size'] = filesize($pFilePath);
+		$checkFiles = array( $pFilePath, dirname( $pFilePath ).'/original.jpg' );
+
+		foreach( $checkFiles as $cf ) {
+			if ($cf && file_exists( $cf ) && filesize( $cf ) ) {
+				if( $info = getimagesize( rtrim( $cf ) ) ) {
+					$info['width'] = $info[0];
+					$info['height'] = $info[1];
+					$info['size'] = filesize( $cf );
+				}
 			}
 		}
 
@@ -382,16 +386,7 @@ class FisheyeImage extends FisheyeBase {
 		if( empty( $this->mInfo['image_file']['gallery_thumbnail_url'] ) ) {
 			$this->loadThumbnail( $pSize );
 		}
-		// this is not the cleanest file_exists check, but has to be this way since $this->mInfo['image_file']*
-		// have BIT_ROOT_URL in them, and you will end up with dual prefixes if you do somethingn like
-		// file_exists( BIT_ROOT_PATH.$this->mInfo['image_file']['gallery_thumbnail_url'] )
-		if( !empty( $this->mInfo['image_file']['storage_path'] ) && file_exists( BIT_ROOT_PATH.dirname( $this->mInfo['image_file']['storage_path'] )."/$pSize.jpg" ) ) {
-			$ret = $this->mInfo['image_file']['gallery_thumbnail_url'];
-		} else {
-			$ret = FISHEYE_PKG_URL.'image/generating_thumbnails.png';
-		}
-
-		return $ret;
+		return $this->mInfo['image_file']['gallery_thumbnail_url'];
 	}
 
 	function expunge() {
