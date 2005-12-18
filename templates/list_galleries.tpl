@@ -5,6 +5,8 @@
 	</div>
 
 	<div class="body">
+		{minifind}
+
 		<div class="navbar">
 			<ul class="sortby">
 				<li>{biticon ipackage=liberty iname=sort iexplain="sort by"}</li>
@@ -25,8 +27,6 @@
 				{/if}
 			</ul>
 		</div>
-
-		{minifind}
 
 		<ul class="clear data">
 			{foreach from=$galleryList key=galleryId item=gal}
