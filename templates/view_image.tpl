@@ -45,10 +45,15 @@
 				&nbsp;{$gContent->mInfo.width}x{$gContent->mInfo.height}
 			{/if}
 		</div>
+
+		{if $gBitUser->hasPermission( 'bit_p_content_attachments' )}
+			<p class="formhelp">
+				{tr}To include this file in a wiki page, blog post, article &hellip;, use the following string{/tr}: <strong>{ldelim}attachment&nbsp;id={$gContent->mInfo.image_file.attachment_id}{rdelim}</strong>
+			</p>
+		{/if}
 	</div>	<!-- end .body -->
 
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view'}
 
 </div>	<!-- end .fisheye -->
-
 {/strip}
