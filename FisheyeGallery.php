@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.27 2005/12/20 17:55:03 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.28 2005/12/20 20:10:59 spiderr Exp $
  * @package fisheye
  */
 
@@ -502,7 +502,7 @@ vd( $this->mErrors );
 			$join .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=tc.`content_id`) AND tfgim3.`item_content_id`=? ";
 			$bindVars[] = $pListHash['contain_item'];
 		}
-		if( $this->verifyId( $pListHash['user_id'] ) ) {
+		if( @$this->verifyId( $pListHash['user_id'] ) ) {
 			$mid .= " AND tc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
 		}
