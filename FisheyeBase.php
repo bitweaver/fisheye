@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.21 2005/08/30 16:30:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.22 2005/12/20 17:55:03 spiderr Exp $
  * @package fisheye
  */
 
@@ -34,7 +34,7 @@ class FisheyeBase extends LibertyAttachable
 
 	// Gets a list of galleries which this item is attached to
 	function getParentGalleries( $pContentId=NULL ) {
-		if( empty( $pContentId ) ) {
+		if( $this->verifyId( $pContentId ) ) {
 			$pContentId = $this->mContentId;
 		}
 		$ret = NULL;
@@ -55,7 +55,7 @@ class FisheyeBase extends LibertyAttachable
 	}
 
 	function updatePosition($pGalleryContentId, $newPosition = NULL) {
-		if( $pGalleryContentId && $newPosition && !empty($this->mContentId) ) {
+		if( $pGalleryContentId && $newPosition && $this->verifyId($this->mContentId) ) {
 			$sql = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` SET `position` = ? WHERE `item_content_id` = ? AND `gallery_content_id` = ?";
 			$rs = $this->mDb->query($sql, array($newPosition, $this->mContentId, $pGalleryContentId));
 		}
@@ -115,8 +115,8 @@ class FisheyeBase extends LibertyAttachable
 			if( count( $pGalleryArray ) ) {
 				foreach( $pGalleryArray as $galleryId ) {
 					// image has been requested to be put in a new gallery
-					if( empty( $inGalleries[$galleryId] ) ) {
-						if( empty( $galleries[$galleryId] ) ) {
+					if( $this->verifyId( $inGalleries[$galleryId] ) ) {
+						if( !$this->verifyId( $galleries[$galleryId] ) ) {
 							$galleries[$galleryId] = new FisheyeGallery( $galleryId );
 							$galleries[$galleryId]->load();
 						}
@@ -144,7 +144,7 @@ class FisheyeBase extends LibertyAttachable
 	}
 
 	function isInGallery( $pGalleryContentId, $pItemContentId = NULL) {
-		if( empty( $pItemContentId ) ) {
+		if( !$this->verifyId( $pItemContentId ) ) {
 			$pItemContentId = $this->mContentId;
 		}
 		$ret = FALSE;
