@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.28 2005/12/20 20:10:59 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.29 2005/12/22 08:15:57 squareing Exp $
  * @package fisheye
  */
 
@@ -39,16 +39,16 @@ class FisheyeGallery extends FisheyeBase {
 	}
 
 	function isValid() {
-		return( $this->verifyId( $this->mGalleryId ) || $this->verifyId( $this->mContentId ) );
+		return( @$this->verifyId( $this->mGalleryId ) || @$this->verifyId( $this->mContentId ) );
 	}
 
 	function load( $pCurrentImageId=NULL ) {
 		global $gBitSystem;
 		$bindVars = array(); $selectSql = ''; $joinSql = ''; $whereSql = '';
-		if($this->verifyId($this->mGalleryId)) {
+		if( @$this->verifyId( $this->mGalleryId ) ) {
 			$whereSql = " WHERE fg.`gallery_id` = ?";
-			$bindVars = array($this->mGalleryId);
-		} elseif ($this->verifyId($this->mContentId)) {
+			$bindVars = array( $this->mGalleryId );
+		} elseif ( @$this->verifyId( $this->mContentId ) ) {
 			$whereSql = " WHERE fg.`content_id` = ?";
 			$bindVars = array($this->mContentId);
 		} else {
@@ -70,7 +70,7 @@ class FisheyeGallery extends FisheyeBase {
 				$this->mInfo = $rs->fields;
 				$this->mContentId = $rs->fields['content_id'];
 				LibertyContent::load();
-				if ($this->verifyId($this->mInfo['gallery_id'])) {
+				if( @$this->verifyId($this->mInfo['gallery_id'] ) ) {
 
 					$this->mGalleryId = $this->mInfo['gallery_id'];
 					$this->mContentId = $this->mInfo['content_id'];
@@ -101,7 +101,7 @@ class FisheyeGallery extends FisheyeBase {
 					unset( $this->mContentId );
 					unset( $this->mGalleryId );
 				}
-				if( $this->verifyId( $pCurrentImageId ) ) {
+				if( @$this->verifyId( $pCurrentImageId ) ) {
 					// this code sucks but works - XOXO spiderr
 					$query = "SELECT tfgim.*, tfi.`image_id`, tf.`storage_path`
 							FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim
@@ -174,7 +174,7 @@ class FisheyeGallery extends FisheyeBase {
 		foreach ($rows as $row) {
 			$pass = TRUE;
 			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-				$pass = $gBitUser->hasPermission( 'bit_p_admin_fisheye' ) || !$this->verifyId( $row['security_id'] ) || ( $row['user_id'] == $gBitUser->mUserId ) || $this->verifyId( $_SESSION['gatekeeper_security'][$row['security_id']] );
+				$pass = $gBitUser->hasPermission( 'bit_p_admin_fisheye' ) || !@$this->verifyId( $row['security_id'] ) || ( $row['user_id'] == $gBitUser->mUserId ) || @$this->verifyId( $_SESSION['gatekeeper_security'][$row['security_id']] );
 			}
 			if( $pass && $item = $gLibertySystem->getLibertyObject( $row['item_content_id'], $row['content_type_guid'] ) ) {
 				$item->loadThumbnail( $this->mInfo['thumbnail_size'] );
@@ -265,14 +265,14 @@ class FisheyeGallery extends FisheyeBase {
 		global $gLibertySystem;
 		$ret = NULL;
 
-		if( !$this->verifyId( $pContentId ) ) {
+		if( !@$this->verifyId( $pContentId ) ) {
 			$pContentId = $this->mContentId;
 		}
 
 
 
-		if( !$this->verifyId( $pThumbnailContentId ) ) {
-			if( $this->verifyId( $this->mInfo['preview_content_id'] ) ) {
+		if( !@$this->verifyId( $pThumbnailContentId ) ) {
+			if( @$this->verifyId( $this->mInfo['preview_content_id'] ) ) {
 				$pThumbnailContentId = $this->mInfo['preview_content_id'];
 			} else {
 				if( $this->mDb->isAdvancedPostgresEnabled() ) {
@@ -296,7 +296,7 @@ class FisheyeGallery extends FisheyeBase {
 			}
 		}
 
-		if( $this->verifyId( $pThumbnailContentId ) ) {
+		if( @$this->verifyId( $pThumbnailContentId ) ) {
 			$ret = $gLibertySystem->getLibertyObject( $pThumbnailContentId, $pThumbnailContentType );
 			if( strtolower( get_class( $ret ) ) == 'fisheyegallery' ) {
 				//recurse down in to find the first image
@@ -361,7 +361,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	function removeItem( $pContentId ) {
 		$ret = FALSE;
-		if( $this->isValid() && $this->verifyId( $pContentId ) ) {
+		if( $this->isValid() && @$this->verifyId( $pContentId ) ) {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`
 					  WHERE `item_content_id`=? AND `gallery_content_id`=?";
 			$rs = $this->mDb->query($query, array($pContentId, $this->mContentId ) );
@@ -377,7 +377,7 @@ class FisheyeGallery extends FisheyeBase {
     */
 	function addItem( $pContentId, $pPosition=NULL ) {
 		$ret = FALSE;
-		if( $this->isValid() && $this->verifyId( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId  )  && !$this->isInGallery( $pContentId, $this->mContentId ) ) {
+		if( $this->isValid() && @$this->verifyId( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId  )  && !$this->isInGallery( $pContentId, $this->mContentId ) ) {
 			$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`, `position`) VALUES (?,?,?)";
 			$rs = $this->mDb->query($query, array($pContentId, $this->mContentId, $pPosition ) );
 			$ret = TRUE;
@@ -427,7 +427,7 @@ vd( $this->mErrors );
 	function galleryExistsInDatabase() {
 		$ret = FALSE;
 
-		if ($this->verifyId($this->mGalleryId)) {
+		if( @$this->verifyId( $this->mGalleryId ) ) {
 			$query = "SELECT COUNT(`gallery_id`) AS `count`
 					FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery`
 					WHERE `gallery_id` = ?";
@@ -454,11 +454,11 @@ vd( $this->mErrors );
     */
 	function getDisplayUrl( $pGalleryId=NULL, $pPath=NULL ) {
 		$ret = FISHEYE_PKG_URL;
-		if( !$this->verifyId( $pGalleryId ) ) {
+		if( !@$this->verifyId( $pGalleryId ) ) {
 			$pGalleryId = $this->mGalleryId;
 			$pPath = $this->mGalleryPath;
 		}
-		if( $this->verifyId( $pGalleryId ) ) {
+		if( @$this->verifyId( $pGalleryId ) ) {
 			global $gBitSystem;
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
 				$ret .= 'gallery'.$pPath.'/'.$pGalleryId;
@@ -468,7 +468,7 @@ vd( $this->mErrors );
 					$ret .= '&gallery_path='.$pPath;
 				}
 			}
-		} elseif( $this->verifyId( $pImageId['content_id'] ) ) {
+		} elseif( @$this->verifyId( $pImageId['content_id'] ) ) {
 			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pImageId['content_id'];
 		}
 		return $ret;
