@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.23 2005/12/22 23:36:36 sylvieg Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.3.2.24 2005/12/22 23:52:46 squareing Exp $
  * @package fisheye
  */
 
@@ -115,7 +115,7 @@ class FisheyeBase extends LibertyAttachable
 			if( count( $pGalleryArray ) ) {
 				foreach( $pGalleryArray as $galleryId ) {
 					// image has been requested to be put in a new gallery
-					if(!isset($inGalleries[$galleryId]) || $this->verifyId( $inGalleries[$galleryId] ) ) {
+					if( !empty( $inGalleries[$galleryId] ) ) {
 						if( !$this->verifyId( $galleries[$galleryId] ) ) {
 							$galleries[$galleryId] = new FisheyeGallery( $galleryId );
 							$galleries[$galleryId]->load();
