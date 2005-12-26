@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.11 2005/11/22 07:25:47 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.12 2005/12/26 12:23:58 squareing Exp $
  * @package fisheye
  */
 
@@ -20,8 +20,8 @@ class FisheyeImage extends FisheyeBase {
 
 	function FisheyeImage($pImageId = NULL, $pContentId = NULL) {
 		FisheyeBase::FisheyeBase();
-		$this->mImageId = $pImageId;
-		$this->mContentId = $pContentId;
+		$this->mImageId = (int)$pImageId;
+		$this->mContentId = (int)$pContentId;
 
 		$this->registerContentType(FISHEYEIMAGE_CONTENT_TYPE_GUID, array('content_type_guid' => FISHEYEIMAGE_CONTENT_TYPE_GUID,
 				'content_description' => 'Image',
@@ -37,10 +37,10 @@ class FisheyeImage extends FisheyeBase {
 			global $gBitSystem, $gBitUser;
 			$gateSql = NULL;
 			$mid = NULL;
-			if ($this->mImageId && is_numeric($this->mImageId)) {
+			if ( @$this->verifyId( $this->mImageId ) ) {
 				$mid = " WHERE tfi.`image_id` = ?";
 				$bindVars = array($this->mImageId);
-			} elseif ($this->mContentId && is_numeric($this->mContentId)) {
+			} elseif ( @$this->verifyId( $this->mContentId ) ) {
 				$mid = " WHERE tfi.`content_id` = ?";
 				$bindVars = array($this->mContentId);
 			}
@@ -65,7 +65,7 @@ class FisheyeImage extends FisheyeBase {
 				$this->mInfo['creator'] = (isset( $rs->fields['creator_real_name'] ) ? $rs->fields['creator_real_name'] : $rs->fields['creator_user'] );
 				$this->mInfo['editor'] = (isset( $rs->fields['modifier_real_name'] ) ? $rs->fields['modifier_real_name'] : $rs->fields['modifier_user'] );
 
-				if( $gBitSystem->isPackageActive( 'gatekeeper' ) && empty( $this->mInfo['security_id'] ) ) {
+				if( $gBitSystem->isPackageActive( 'gatekeeper' ) && !@$this->verifyId( $this->mInfo['security_id'] ) ) {
 					// check to see if this image is in a protected gallery
 					// this burns an extra select but avoids an big and gnarly LEFT JOIN sequence that may be hard to optimize on all DB's
 					$query = "SELECT ts.* FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim
@@ -326,13 +326,13 @@ class FisheyeImage extends FisheyeBase {
     * @return the url to display the gallery.
     */
 	function getDisplayUrl( $pImageId=NULL, $pMixed=NULL ) {
-		if( empty( $pImageId ) ) {
+		if( !@$this->verifyId( $pImageId ) ) {
 			$pImageId = $this->mImageId;
 		}
 
 		$size = ( !empty( $pMixed ) && isset( $this->mInfo['image_file']['thumbnail_url'][$pMixed] ) ) ? $pMixed : NULL ;
 		global $gBitSystem;
-		if( is_numeric( $pImageId ) ) {
+		if( @$this->verifyId( $pImageId ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
 				$ret = FISHEYE_PKG_URL.'image/'.$pImageId;
 				if( !empty( $this->mGalleryPath ) ) {
@@ -350,7 +350,7 @@ class FisheyeImage extends FisheyeBase {
 					$ret .= '&size='.$pMixed;
 				}
 			}
-		} elseif( !empty( $pMixed['content_id'] ) ) {
+		} elseif( @$this->verifyId( $pMixed['content_id'] ) ) {
 			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pMixed['content_id'];
 		}
 		return $ret;
@@ -366,7 +366,7 @@ class FisheyeImage extends FisheyeBase {
 	 */
 	function getDisplayLink( $pImageId=NULL, $pMixed=NULL ) {
 		$ret = '';
-		if( !empty( $this ) ) {
+		if( !empty( $this ) && @$this->verifyId( $pImageId ) ) {
 			$pImageId = $this->mImageId;
 			$title = $this->getTitle();
 			if( empty( $title ) ) {
@@ -408,7 +408,7 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	function isValid() {
-		return( !empty( $this->mImageId ) || !empty( $this->mContentId ) );
+		return( @$this->verifyId( $this->mImageId ) || @$this->verifyId( $this->mContentId ) );
 	}
 
 	function imageExistsInDatabase() {
@@ -436,7 +436,7 @@ class FisheyeImage extends FisheyeBase {
 		$mid = '';
 		$join = '';
 
-		if( !empty( $pListHash['user_id'] ) && is_numeric( $pListHash['user_id'] )) {
+		if( @$this->verifyId( $pListHash['user_id'] ) ) {
 			$mid .= " AND tc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
 		} elseif( !empty( $pListHash['recent_users'] )) {
@@ -446,7 +446,7 @@ class FisheyeImage extends FisheyeBase {
 
 
 
-		if( !empty( $pListHash['gallery_id'] ) && is_numeric( $pListHash['gallery_id'] )) {
+		if( @$this->verifyId( $pListHash['gallery_id'] ) ) {
 			$mid .= " AND tfg.`gallery_id` = ? ";
 			$bindVars[] = $pListHash['gallery_id'];
 		}
