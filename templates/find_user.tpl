@@ -2,28 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>Find User</title>
+	<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/bitweaver.js"></script>
 	<!--[if gte IE 5.5000]>
-		<script type="text/javascript" src="{$smarty.const.THEMES_PKG_URL}js/pngfix.js"></script>
+		<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/fixes/pngfix.js"></script>
 	<![endif]-->
 
-	<script type="text/javascript" src="{$smarty.const.KERNEL_PKG_URL}bitweaver.js"></script>
-	<style type="text/css">
-	<!--
+	<style type="text/css"><!--
 	  {if $gBitSystem->mStyles.styleSheet}@import url({$gBitSystem->mStyles.styleSheet});{/if}
 	  {if $gBitSystem->mStyles.browserStyleSheet}@import url({$gBitSystem->mStyles.browserStyleSheet});{/if}
 	  {if $gBitSystem->mStyles.customStyleSheet}@import url({$gBitSystem->mStyles.customStyleSheet});{/if}
-	-->
-	</style>
+	--></style>
 
 	{literal}
-		<script type="text/javascript"><!--
+		<script type="text/javascript">//<![CDATA[
 		function returnUserInfo(userId, username) {
 			self.opener.document.getElementById("found_user_id").value = userId;
 			self.opener.document.getElementById("found_username").innerHTML = username;
 			self.opener.document.getElementById("found_username_form_element").value = username;
 			self.close();
 		}
-		--></script>
+		//]]></script>
 	{/literal}
 {strip}
 </head>
