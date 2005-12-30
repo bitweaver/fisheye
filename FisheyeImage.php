@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.26 2005/12/22 08:14:21 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.27 2005/12/30 16:36:57 squareing Exp $
  * @package fisheye
  */
 
@@ -364,17 +364,21 @@ class FisheyeImage extends FisheyeBase {
 	 * @param	array	Not used
 	 * @return	object	Fully formatted html link for use by Liberty
 	 */
-	function getDisplayLink( $pImageId=NULL, $pMixed=NULL ) {
-		$ret = '';
-		if( !empty( $this ) && @$this->verifyId( $pImageId ) ) {
-			$pImageId = $this->mImageId;
-			$title = $this->getTitle();
-			if( empty( $title ) ) {
-				$title = tra( 'Image' ).' '.$pImageId;
-			}
-			$ret = "<a title=\"".urlencode( $title )."\" href=\"" . FisheyeImage::getDisplayUrl( $pImageId, $pMixed ) . "\">".$title."</a>";
+	function getDisplayLink( $pTitle=NULL, $pMixed=NULL ) {
+		global $gBitSystem;
+		if( empty( $pTitle ) && !empty( $this ) ) {
+			$pTitle = $this->getTitle();
 		}
-		return( $ret );
+
+		if( empty( $pMixed ) && !empty( $this ) ) {
+			$pMixed = $this->mInfo;
+		}
+
+		$ret = $pTitle;
+		if( $gBitSystem->isPackageActive( 'fisheye' ) ) {
+			$ret = '<a title="'.$pTitle.'" href="'.FisheyeImage::getDisplayUrl( NULL, $pMixed ).'">'.$pTitle.'</a>';
+		}
+		return $ret;
 	}
 
 
