@@ -3,9 +3,27 @@
 	$gFisheyeGallery = new FisheyeGallery();
 
 	/* Get a list of galleries which matches the imput paramters (default is to list every gallery in the system) */
-	$_REQUEST['root_only'] = TRUE;
-	$_REQUEST['get_thumbnails'] = TRUE;
-	$galleryList = $gFisheyeGallery->getList( $_REQUEST );
+	$listHash['root_only'] = TRUE;
+	$listHash['get_thumbnails'] = TRUE;
+/*	Not supported in FisheyeGallery::getList
+	if( !empty( $module_params['gallery_id'] ) && is_numeric( $module_params['gallery_id'] ) ) {
+		$listHash['gallery_id'] = $module_params['gallery_id'];
+	}*/
+	if ($gQueryUserId) {
+		$listHash['user_id'] = $gQueryUserId;
+	} elseif( !empty( $module_params['user_id'] ) && is_numeric( $module_params['user_id'] ) ) {
+		$listHash['user_id'] = $module_params['user_id'];
+	}
+	if( !empty( $module_params['contain_item'] ) && is_numeric( $module_params['contain_item'] ) ) {
+		$listHash['contain_item'] = $module_params['contain_item'];
+	}
+	if ( !empty( $module_params['sort_mode'] ) ) {
+		$listHash['sort_mode'] = $module_params['sort_mode'];
+	} else {
+		$listHash['sort_mode'] = 'title';
+	}
+
+	$galleryList = $gFisheyeGallery->getList( $listHash );
 	$gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
 	/* Process the input parameters this page accepts */
