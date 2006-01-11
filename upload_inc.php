@@ -1,4 +1,9 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.1.2.7 2006/01/11 12:20:32 lsces Exp $
+ * @package fisheye
+ * @subpackage functions
+ */
 function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	$gal = new FisheyeGallery();
 	$getHash = array( 'user_id' => $pUserId, 'max_records' => 1, 'sort_mode' => 'created_desc' );
