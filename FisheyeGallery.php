@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.29 2005/12/22 08:15:57 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.1.1.1.2.30 2006/01/13 22:37:38 spiderr Exp $
  * @package fisheye
  */
 
@@ -529,7 +529,7 @@ vd( $this->mErrors );
 
 		if ( !empty( $pListHash['sort_mode'] ) ) {
 			//converted in prepGetList()
-			$sort .= " ORDER BY tc.".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
+			$sort .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
 		$query = "SELECT DISTINCT( tfg.`gallery_id` ) AS `hash_key`, tfg.*, tc.*, uu.`login`, uu.`real_name`, ptc.`content_type_guid` AS `preview_content_type_guid` $select
