@@ -28,7 +28,7 @@
 <body>
 	<div class="finduser">
 	<h2>User Search</h2>
-		<form name="formUserSearch" action="{$PHP_SELF}">
+		<form name="formUserSearch" action="{$smarty.server.PHP_SELF}">
 			<div class="row">
 				Username: <input type="text" name="find" value="{$find}"/>
 			</div>
