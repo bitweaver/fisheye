@@ -1,4 +1,13 @@
 <?php
+/**
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.3 2006/01/14 19:54:13 squareing Exp $
+ * @package fisheye
+ * @subpackage functions
+ */
+
+/**
+ * fisheye_get_default_gallery_id
+ */
 function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	$gal = new FisheyeGallery();
 	$getHash = array( 'user_id' => $pUserId, 'max_records' => 1, 'sort_mode' => 'created_desc' );
@@ -20,6 +29,9 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	return $ret;
 }
 
+/**
+ * fisheye_store_upload 
+ */
 function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 	if( !empty( $pFileHash ) && ($pFileHash['size'] > 0) && is_uploaded_file( $pFileHash['tmp_name'] ) ) {
 		// make a copy for each image we need to store
@@ -37,7 +49,9 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 	}
 }
 
-// Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
+/**
+ * Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
+ */ 
 function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) {
 	global $gBitSystem, $gBitUser;
 	$errors = array();
@@ -64,7 +78,9 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 	return $errors;
 }
 
-// Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
+/**
+ * Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
+ */ 
 function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=FALSE ) {
 	$errors = array();
 	if( $archiveDir = opendir( $pDestinationDir ) ) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.8 2005/11/22 07:25:47 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.9 2006/01/14 19:54:13 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -18,7 +18,7 @@ global $gBitSystem;
 include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
 
-if ( (!empty($gContent->mImageId)) && ($gContent->mInfo['user_id'] != $gBitUser->mUserId && !$gBitUser->isAdmin()) ) {
+if ( (!empty($gContent->mImageId)) && ($gContent->getField( 'user_id' ) != $gBitUser->mUserId && !$gBitUser->isAdmin()) ) {
 	// This user does not own this image and they are not an Administrator
 	$gBitSmarty->assign( 'msg', tra( "You do not own this image!" ) );
 	$gBitSystem->display( "error.tpl" );
@@ -83,7 +83,7 @@ $gContent->loadParentGalleries();
 
 // Get a list of all existing galleries
 $gFisheyeGallery = new FisheyeGallery();
-$listHash = array( 'user_id' => $gContent->mInfo['user_id'], 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode' => 'title_asc', 'show_empty' => TRUE );
+$listHash = array( 'user_id' => $gContent->isValid() ? $gContent->getField( 'user_id' ) : $gBitUser->mUserId, 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode' => 'title_asc', 'show_empty' => TRUE );
 $galleryList = $gFisheyeGallery->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
