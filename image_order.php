@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.9 2006/01/15 06:46:36 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.10 2006/01/15 14:12:12 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -177,6 +177,7 @@ $gContent->loadImages();
 
 $gBitSmarty->assign_by_ref('formfeedback', $feedback);
 
+$gBitSmarty->assign( 'loadAjax', TRUE );
 $gBitSystem->display( 'bitpackage:fisheye/image_order.tpl', 'Edit Gallery Images: '.$gContent->getTitle() );
 
 ?>

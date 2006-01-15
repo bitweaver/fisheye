@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.9 2006/01/14 19:54:13 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.10 2006/01/15 14:12:11 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -40,17 +40,22 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 	}
 	$_REQUEST['purge_from_galleries'] = TRUE;
 	if( $gContent->store($_REQUEST) ) {
-		$gContent->addToGalleries( $_REQUEST['galleryAdditions'] );
 		// maybe we need to resize the original and generate thumbnails
 		if( !empty( $_REQUEST['resize'] ) ) {
 			$gContent->resizeOriginal( $_REQUEST['resize'] );
 		}
-		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
-			$gContent->generateThumbnails();
-		}
 		// This needs to happen after the store, else the image width/hieght are screwed for people using the background thumbnailer
 		if( !empty( $_REQUEST['rotate_image'] ) ) {
 			$gContent->rotateImage( $_REQUEST['rotate_image'] );
+		}
+		if( !empty( $_REQUEST['ajax'] ) && !empty( $_REQUEST['from'] ) ) {
+			// we need to refresh the images in the page after saving - not working yet - xing
+			header( 'Location: '.$_REQUEST['from']."?refresh=1&gallery_id=".$_REQUEST['gallery_id'] );
+			die;
+		}
+		$gContent->addToGalleries( $_REQUEST['galleryAdditions'] );
+		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
+			$gContent->generateThumbnails();
 		}
 		if( empty( $gContent->mErrors ) ) {
 			// add a refresh parameter to the URL so the thumbnails will properly refresh first go reload
@@ -91,6 +96,10 @@ $gBitSmarty->assign('requested_gallery', !empty($_REQUEST['gallery_id']) ? $_REQ
 
 $gContent->invokeServices( 'content_edit_function' );
 
-$gBitSystem->display( 'bitpackage:fisheye/edit_image.tpl', 'Edit Image: '.$gContent->getTitle() );
+if( !empty( $_REQUEST['ajax'] ) ) {
+	echo $gBitSmarty->fetch( 'bitpackage:fisheye/edit_image_inc.tpl', 'Edit Image: '.$gContent->getTitle() );
+} else {
+	$gBitSystem->display( 'bitpackage:fisheye/edit_image.tpl', 'Edit Image: '.$gContent->getTitle() );
+}
 
 ?>

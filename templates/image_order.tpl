@@ -4,18 +4,20 @@
 	</div>
 
 	<div class="body">
+		<p class="formhelp">{tr}Here you can re-arrange the order of the images in this gallery and quickly change their titles. The image position does not have to be in an exact sequence. In fact, we recommend you count by tens so you can easily insert or re-order images at a later date. If you need to add a detailed description to an image, click the <strong>Edit Image</strong> link next to the desired image.<br />Using the <strong>Gallery Image</strong> radio button you can specify what image is used to identify this particular gallery.{/tr}</p>
+
+		<a name="imgedit"> </a>
+		<div id="imgedit"></div>
+
 		{form id="batch_order" legend="Gallery Images"}
 {strip}
 			<input type="hidden" name="gallery_id" value="{$gContent->mGalleryId}"/>
 
 			{formfeedback hash=$formfeedback}
 
-			<p>Here you can re-arrange the order of the images in this gallery and quickly change their titles. The image position does not have to be in an exact sequence. In fact, we recommend you count by tens so you can easily insert or re-order images at a later date. If you need to add a detail description to the image, click the "Edit Image" link next to the desired image. Using the Gallery Image radio button you can specify what image is used to identify this particular gallery.</p>
-
-
 			<table class="data">
 				<tr>
-					<th scope="col" style="width:1px;">{tr}Thumbnail{/tr}</th>
+					<th scope="col" style="width:200px;">{tr}Thumbnail{/tr}</th>
 					<th scope="col">{tr}Title and Position{/tr}</th>
 					<th scope="col">{tr}Miscellaneous{/tr}</th>
 				</tr>
@@ -33,40 +35,23 @@
 					{/if}
 					<tr class="{$pageClass}">
 						{counter print=false}
-						<td class="{$galItem->mType.content_type_guid}" width="160">
+						<td class="{$galItem->mType.content_type_guid}">
 							<a href="{$galItem->getDisplayUrl()|escape}"><img class="thumb" src="{$gContent->mItems.$itemContentId->getThumbnailUrl()|replace:"&":"&amp;"}{if $batchEdit.$contentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galItem->mInfo.title}" /></a>
 						</td>
 
 						<td>
 							<div class="row">
-								{formlabel label="Title" for="imageTitle-`$galItem->mContentId`"}
-								{forminput}
-									<input type="text" maxlength="160" size="20" name="imageTitle[{$galItem->mContentId}]" id="imageTitle-{$galItem->mContentId}" value="{$galItem->mInfo.title}"/>
-									{if $galItem->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
-										&nbsp;<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}" target="_new">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a>
-									{/if}
-								{/forminput}
-							</div>
-
-							<div class="row">
-								{formlabel label="Position" for="imagePosition-`$galItem->mContentId`"}
-								{forminput}
-									<input type="text" size="8" maxlength="15" name="imagePosition[{$galItem->mContentId}]" id="imagePosition-{$galItem->mContentId}" value="{$galItem->mInfo.position}"/>
-								{/forminput}
-							</div>
-
-							<div class="row">
-								{formlabel label="Uploaded" for="imagePosition-`$galItem->mContentId`"}
-								{forminput}
-									{$galItem->mInfo.created|bit_short_datetime}
-								{/forminput}
-							</div>
-
-							<div class="row">
-								{formlabel label="File name" for="imagePosition-`$galItem->mContentId`"}
-								{forminput}
-									{$galItem->mInfo.image_file.filename}
-								{/forminput}
+								{if $galItem->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
+									<div class="floaticon">
+										<a href="#imgedit" onclick="javascript:ajax_updater( 'imgedit', '{$smarty.const.FISHEYE_PKG_URL}edit_image.php', 'ajax=true&amp;content_id={$galItem->mInfo.content_id}&amp;gallery_id={$gContent->mGalleryId}&amp;from={$smarty.const.FISHEYE_PKG_URL}image_order.php' );">{biticon iname="edit" ipackage="liberty" iexplain="Edit"}</a>
+										<noscript><div><a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a></div></noscript>
+									</div>
+								{/if}
+								<h2>{$galItem->mInfo.title}</h2>
+								<strong>{tr}Description{/tr}</strong>: {$galItem->mInfo.data|default:"[ {tr}none{/tr} ]"} <br />
+								<strong>{tr}Uploaded{/tr}</strong>: {$galItem->mInfo.created|bit_short_datetime} <br />
+								<strong>{tr}File name{/tr}</strong>: {$galItem->mInfo.image_file.filename} <br />
+								<strong>{tr}Position{/tr}</strong>: <input type="text" size="8" maxlength="15" name="imagePosition[{$galItem->mContentId}]" id="imagePosition-{$galItem->mContentId}" value="{$galItem->mInfo.position}"/>
 							</div>
 						</td>
 
@@ -107,30 +92,30 @@
 								<option value="remove">{tr}Remove{/tr} ({tr}Don't delete if in other galleries{/tr})</option>
 								<option value="thumbnail">{tr}Regenerate Thumbnails{/tr}</option>
 								<optgroup label="{tr}Rotate{/tr}">
-										<option value="rotate:90">&gt;&gt; {tr}Rotate Clockwise{/tr}</option>
-										<option value="rotate:-90">&lt;&lt; {tr}Rotate Counter Clockwise{/tr}</option>
+									<option value="rotate:90">&gt;&gt; {tr}Rotate Clockwise{/tr}</option>
+									<option value="rotate:-90">&lt;&lt; {tr}Rotate Counter Clockwise{/tr}</option>
 								</optgroup>
 								{if $gBitSystem->isPackageActive( 'gatekeeper' ) }
-										<optgroup label="{tr}Set Security to{/tr}">
-												<option value="security:">~~ {tr}Publically Visible{/tr} ~~</option>
-												{foreach from=$securities key=secId item=sec}
-														<option value="security:{$secId}">{tr}Set Security to{/tr} "{$sec.security_description}"</option>
-												{/foreach}
-										</optgroup>
+									<optgroup label="{tr}Set Security to{/tr}">
+										<option value="security:">~~ {tr}Publically Visible{/tr} ~~</option>
+										{foreach from=$securities key=secId item=sec}
+											<option value="security:{$secId}">{tr}Set Security to{/tr} "{$sec.security_description}"</option>
+										{/foreach}
+									</optgroup>
 								{/if}
 								<optgroup label="{tr}Copy to Gallery{/tr}">
-										{foreach from=$galleryList item=gal key=galleryId}
-												{if $gContent->mInfo.content_id ne $gal.content_id}
-														<option value="gallerycopy:{$gal.content_id}">{$gal.title|truncate:50}</option>
-												{/if}
-										{/foreach}
+									{foreach from=$galleryList item=gal key=galleryId}
+										{if $gContent->mInfo.content_id ne $gal.content_id}
+											<option value="gallerycopy:{$gal.content_id}">{$gal.title|truncate:50}</option>
+										{/if}
+									{/foreach}
 								</optgroup>
 								<optgroup label="{tr}Move to Gallery{/tr}">
-										{foreach from=$galleryList item=gal key=galleryId}
-												{if $gContent->mInfo.content_id ne $gal.content_id}
-														<option value="gallerymove:{$gal.content_id}">{$gal.title|truncate:50}</option>
-												{/if}
-										{/foreach}
+									{foreach from=$galleryList item=gal key=galleryId}
+										{if $gContent->mInfo.content_id ne $gal.content_id}
+											<option value="gallerymove:{$gal.content_id}">{$gal.title|truncate:50}</option>
+										{/if}
+									{/foreach}
 								</optgroup>
 						</select>
 
