@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.13 2006/01/10 21:11:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.14 2006/01/15 06:46:36 spiderr Exp $
  * @package fisheye
  */
 
@@ -37,12 +37,13 @@ class FisheyeImage extends FisheyeBase {
 			global $gBitSystem, $gBitUser;
 			$gateSql = NULL;
 			$mid = NULL;
+			$bindVars = array( $gBitUser->mUserId );
 			if ( @$this->verifyId( $this->mImageId ) ) {
 				$mid = " WHERE tfi.`image_id` = ?";
-				$bindVars = array($this->mImageId);
+				$bindVars[] = $this->mImageId;
 			} elseif ( @$this->verifyId( $this->mContentId ) ) {
 				$mid = " WHERE tfi.`content_id` = ?";
-				$bindVars = array($this->mContentId);
+				$bindVars[] = $this->mContentId;
 			}
 			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 				$gateSql = ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
@@ -51,11 +52,13 @@ class FisheyeImage extends FisheyeBase {
 			}
 			$sql = "SELECT tfi.*, tc.* $gateSql
 						, uue.`login` AS `modifier_user`, uue.`real_name` AS `modifier_real_name`
-						, uuc.`login` AS `creator_user`, uuc.`real_name` AS `creator_real_name`
-					FROM `".BIT_DB_PREFIX."tiki_fisheye_image` tfi, `".BIT_DB_PREFIX."tiki_content` tc
+						, uuc.`login` AS `creator_user`, uuc.`real_name` AS `creator_real_name`, ufm.`favorite_content_id` AS `is_favorite`
+					FROM `".BIT_DB_PREFIX."tiki_fisheye_image` tfi
+						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON (tc.`content_id` = tfi.`content_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = tc.`modifier_user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = tc.`user_id`)
-					$mid AND tc.`content_id` = tfi.`content_id`";
+						LEFT JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON (ufm.`favorite_content_id`=tc.`content_id` AND ufm.`user_id`=?)
+					$mid";
 			if( $rs = $this->mDb->query($sql, array($bindVars)) ) {
 				$this->mInfo = $rs->fields;
 

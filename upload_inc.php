@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.3 2006/01/14 19:54:13 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.4 2006/01/15 06:46:36 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -30,7 +30,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 }
 
 /**
- * fisheye_store_upload 
+ * fisheye_store_upload
  */
 function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 	if( !empty( $pFileHash ) && ($pFileHash['size'] > 0) && is_uploaded_file( $pFileHash['tmp_name'] ) ) {
@@ -51,7 +51,7 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 
 /**
  * Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
- */ 
+ */
 function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) {
 	global $gBitSystem, $gBitUser;
 	$errors = array();
@@ -80,7 +80,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 
 /**
  * Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
- */ 
+ */
 function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=FALSE ) {
 	$errors = array();
 	if( $archiveDir = opendir( $pDestinationDir ) ) {

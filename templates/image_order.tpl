@@ -1,100 +1,100 @@
 <div class="admin fisheye">
 	<div class="header">
-		<h1>{tr}Batch Edit Images{/tr}: <a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}">{$gContent->mInfo.title}</a></h1>
+		<h1>{tr}Gallery Images{/tr}: <a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}">{$gContent->mInfo.title}</a></h1>
 	</div>
 
 	<div class="body">
-		{form id="batch_order" legend="Batch Edit Images"}
+		{form id="batch_order" legend="Gallery Images"}
 {strip}
 			<input type="hidden" name="gallery_id" value="{$gContent->mGalleryId}"/>
 
 			{formfeedback hash=$formfeedback}
 
+			<p>Here you can re-arrange the order of the images in this gallery and quickly change their titles. The image position does not have to be in an exact sequence. In fact, we recommend you count by tens so you can easily insert or re-order images at a later date. If you need to add a detail description to the image, click the "Edit Image" link next to the desired image. Using the Gallery Image radio button you can specify what image is used to identify this particular gallery.</p>
+
+
 			<table class="data">
-				<caption>{tr}Image Order{/tr}</caption>
 				<tr>
-					<th style="width:1px;"></th>
 					<th scope="col" style="width:1px;">{tr}Thumbnail{/tr}</th>
 					<th scope="col">{tr}Title and Position{/tr}</th>
 					<th scope="col">{tr}Miscellaneous{/tr}</th>
 				</tr>
 
 				{counter start=0 print=false assign=imageCount}
-				{section name=ix loop=$galleryImages}
-					<tr class="{cycle values='even,odd'}">
-						{if $imageCount % $gContent->mInfo.images_per_page == 0}
-							{if $imageCount ne 0}
-									<td colspan="5">&nbsp;</td>
-								</tr>
-								<tr class="{cycle}">
-							{/if}
-							<th style="block-progression:rl;writing-mode:tb-rl;filter:flipv fliph;text-align:center;" rowspan="{$gContent->mInfo.images_per_page}">
-								{tr}Page{/tr} {math equation="imgCount / imagesPerPage + 1"
-									imgCount=$imageCount
-									imagesPerPage=$gContent->mInfo.images_per_page}
-							</th>
-						{/if}
-
+				{foreach from=$gContent->mItems item=galItem key=itemContentId}
+					{if $imageCount % $gContent->mInfo.images_per_page == 0}
+					<tr class="{cycle values='even,odd' assign='pageClass'}">
+						<th colspan="3">
+							{tr}Gallery Page{/tr} {math equation="imgCount / imagesPerPage + 1"
+								imgCount=$imageCount
+								imagesPerPage=$gContent->mInfo.images_per_page}
+						</th>
+					</tr>
+					{/if}
+					<tr class="{$pageClass}">
 						{counter print=false}
-						<td class="{$galleryImages[ix]->mType.content_type_guid}">
-							<a href="{$galleryImages[ix]->getDisplayUrl()|escape}"><img class="thumb" src="{$galleryImages[ix]->getThumbnailUrl()|replace:"&":"&amp;"}{if $batchEdit.$contentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galleryImages[ix]->mInfo.title}" /></a>
+						<td class="{$galItem->mType.content_type_guid}" width="160">
+							<a href="{$galItem->getDisplayUrl()|escape}"><img class="thumb" src="{$gContent->mItems.$itemContentId->getThumbnailUrl()|replace:"&":"&amp;"}{if $batchEdit.$contentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galItem->mInfo.title}" /></a>
 						</td>
 
 						<td>
 							<div class="row">
-								{formlabel label="Title" for="imageTitle-`$galleryImages[ix]->mContentId`"}
+								{formlabel label="Title" for="imageTitle-`$galItem->mContentId`"}
 								{forminput}
-									<input type="text" maxlength="160" size="20" name="imageTitle[{$galleryImages[ix]->mContentId}]" id="imageTitle-{$galleryImages[ix]->mContentId}" value="{$galleryImages[ix]->mInfo.title}"/>
-									{if $galleryImages[ix]->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
-										&nbsp;<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$gContent->mItems[ix]->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a>
+									<input type="text" maxlength="160" size="20" name="imageTitle[{$galItem->mContentId}]" id="imageTitle-{$galItem->mContentId}" value="{$galItem->mInfo.title}"/>
+									{if $galItem->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
+										&nbsp;<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}" target="_new">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a>
 									{/if}
 								{/forminput}
 							</div>
 
 							<div class="row">
-								{formlabel label="Position" for="imagePosition-`$galleryImages[ix]->mContentId`"}
+								{formlabel label="Position" for="imagePosition-`$galItem->mContentId`"}
 								{forminput}
-									<input type="text" size="8" maxlength="15" name="imagePosition[{$galleryImages[ix]->mContentId}]" id="imagePosition-{$galleryImages[ix]->mContentId}" value="{$galleryImages[ix]->mInfo.position}"/>
+									<input type="text" size="8" maxlength="15" name="imagePosition[{$galItem->mContentId}]" id="imagePosition-{$galItem->mContentId}" value="{$galItem->mInfo.position}"/>
 								{/forminput}
 							</div>
 
 							<div class="row">
-								{formlabel label="Uploaded" for="imagePosition-`$galleryImages[ix]->mContentId`"}
+								{formlabel label="Uploaded" for="imagePosition-`$galItem->mContentId`"}
 								{forminput}
-									{$galleryImages[ix]->mInfo.created|bit_short_datetime}
+									{$galItem->mInfo.created|bit_short_datetime}
 								{/forminput}
 							</div>
 
 							<div class="row">
-								{formlabel label="File name" for="imagePosition-`$galleryImages[ix]->mContentId`"}
+								{formlabel label="File name" for="imagePosition-`$galItem->mContentId`"}
 								{forminput}
-									{$galleryImages[ix]->mInfo.image_file.filename}
+									{$galItem->mInfo.image_file.filename}
 								{/forminput}
 							</div>
 						</td>
 
 						<td style="text-align:right;">
-							<label>{tr}Gallery Image{/tr}: <input type="radio" name="gallery_preview_content_id" value="{$galleryImages[ix]->mContentId}" {if $gContent->mInfo.preview_content_id == $galleryImages[ix]->mContentId}checked="checked"{/if}/></label><br />
-							<label>{tr}Batch Select{/tr}: <input type="checkbox" name="batch[]" value="{$galleryImages[ix]->mContentId}" /></label>
+							<label>{tr}Gallery Image{/tr}: <input type="radio" name="gallery_preview_content_id" value="{$galItem->mContentId}" {if $gContent->getField('preview_content_id') == $galItem->mContentId}checked="checked"{/if}/></label><br />
+							<label>{if $galItem->getField('is_favorite')}{biticon iname="favorite" ipackage="users" iexplain=""}{/if}{tr}Favorite Image{/tr}: <input type="checkbox" name="is_favorite[]" value="{$galItem->mContentId}" {if $galItem->getField('is_favorite')}checked="checked"{/if}/></label><br />
+							<label>{tr}Batch Select{/tr}: <input type="checkbox" name="batch[]" value="{$galItem->mContentId}" /></label>
 						</td>
 					</tr>
-				{/section}
-			</table>
+				{/foreach}
+				<tr>
+					<td colspan="4" align="right">
+						{tr}Use Random Gallery Image{/tr} <input type="radio" name="gallery_preview_content_id" id="gallery_preview_content_id" value="" {if $gContent->mInfo.preview_content_id == ""}checked="checked"{/if} /><br/>
 {/strip}
-			<div class="row" style="text-align:right;">
-				<script type="text/javascript">//<![CDATA[
-					document.write("<label for=\"switcher\">{tr}Select all images{/tr}</label> ");
-					document.write("<input name=\"switcher\" id=\"switcher\" type=\"checkbox\" onclick=\"switchCheckboxes(this.form.id,'batch[]','switcher')\" />");
-				//]]></script>
-			</div>
+<script type="text/javascript">//<![CDATA[
+	document.write("<label for=\"switcher\">{tr}Batch select all images{/tr}</label> ");
+	document.write("<input name=\"switcher\" id=\"switcher\" type=\"checkbox\" onclick=\"switchCheckboxes(this.form.id,'batch[]','switcher')\" />");
+//]]></script>
 {strip}
 
-			{legend legend="With selected images do the following"}
+					</td>
+				</tr>
+			</table>
+
+			{legend legend=""}
 				<div class="row">
-					{formlabel label="Use Random Gallery Image" for="gallery_preview_content_id"}
+					{formlabel label="" for="gallery_preview_content_id"}
 					{forminput}
-						<input type="radio" name="gallery_preview_content_id" id="gallery_preview_content_id" value="" {if $gContent->mInfo.preview_content_id == ""}checked="checked"{/if} />
-						{formhelp note="Using the Gallery Image radio button you can specify what image is used to identify this particular gallery."}
 					{/forminput}
 				</div>
 
@@ -102,38 +102,39 @@
 					{formlabel label="Batch commands" for=""}
 					{forminput}
 						<select name="batch_command">
-							<option value=""></option>
-							<option value="delete">{tr}Delete{/tr}</option>
-							<option value="remove">{tr}Remove{/tr} ({tr}Don't delete if in other galleries{/tr})</option>
-							<option value="thumbnail">{tr}Regenerate Thumbnails{/tr}</option>
-							<optgroup label="{tr}Rotate{/tr}">
-								<option value="rotate:90">&gt;&gt; {tr}Rotate Clockwise{/tr}</option>
-								<option value="rotate:-90">&lt;&lt; {tr}Rotate Counter Clockwise{/tr}</option>
-							</optgroup>
-							{if $gBitSystem->isPackageActive( 'gatekeeper' ) }
-								<optgroup label="{tr}Set Security to{/tr}">
-									<option value="security:">~~ {tr}Publically Visible{/tr} ~~</option>
-									{foreach from=$securities key=secId item=sec}
-										<option value="security:{$secId}">{tr}Set Security to{/tr} "{$sec.security_description}"</option>
-									{/foreach}
+								<option value=""></option>
+								<option value="delete">{tr}Delete{/tr}</option>
+								<option value="remove">{tr}Remove{/tr} ({tr}Don't delete if in other galleries{/tr})</option>
+								<option value="thumbnail">{tr}Regenerate Thumbnails{/tr}</option>
+								<optgroup label="{tr}Rotate{/tr}">
+										<option value="rotate:90">&gt;&gt; {tr}Rotate Clockwise{/tr}</option>
+										<option value="rotate:-90">&lt;&lt; {tr}Rotate Counter Clockwise{/tr}</option>
 								</optgroup>
-							{/if}
-							<optgroup label="{tr}Copy to Gallery{/tr}">
-								{foreach from=$galleryList item=gal key=galleryId}
-									{if $gContent->mInfo.content_id ne $gal.content_id}
-										<option value="gallerycopy:{$gal.content_id}">{$gal.title|truncate:50}</option>
-									{/if}
-								{/foreach}
-							</optgroup>
-							<optgroup label="{tr}Move to Gallery{/tr}">
-								{foreach from=$galleryList item=gal key=galleryId}
-									{if $gContent->mInfo.content_id ne $gal.content_id}
-										<option value="gallerymove:{$gal.content_id}">{$gal.title|truncate:50}</option>
-									{/if}
-								{/foreach}
-							</optgroup>
+								{if $gBitSystem->isPackageActive( 'gatekeeper' ) }
+										<optgroup label="{tr}Set Security to{/tr}">
+												<option value="security:">~~ {tr}Publically Visible{/tr} ~~</option>
+												{foreach from=$securities key=secId item=sec}
+														<option value="security:{$secId}">{tr}Set Security to{/tr} "{$sec.security_description}"</option>
+												{/foreach}
+										</optgroup>
+								{/if}
+								<optgroup label="{tr}Copy to Gallery{/tr}">
+										{foreach from=$galleryList item=gal key=galleryId}
+												{if $gContent->mInfo.content_id ne $gal.content_id}
+														<option value="gallerycopy:{$gal.content_id}">{$gal.title|truncate:50}</option>
+												{/if}
+										{/foreach}
+								</optgroup>
+								<optgroup label="{tr}Move to Gallery{/tr}">
+										{foreach from=$galleryList item=gal key=galleryId}
+												{if $gContent->mInfo.content_id ne $gal.content_id}
+														<option value="gallerymove:{$gal.content_id}">{$gal.title|truncate:50}</option>
+												{/if}
+										{/foreach}
+								</optgroup>
 						</select>
-						{formhelp note=""}
+
+						{formhelp note="With selected images do the following"}
 					{/forminput}
 				</div>
 
@@ -147,7 +148,7 @@
 							<option value="file_name">{tr}File Name{/tr}</option>
 							<option value="random">{tr}Random{/tr}</option>
 						</select>
-						{formhelp note=""}
+						{formhelp note="This will reset the position for every image in this gallery."}
 					{/forminput}
 				</div>
 			{/legend}

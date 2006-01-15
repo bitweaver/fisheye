@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.8 2005/11/22 07:25:47 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.9 2006/01/15 06:46:36 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -35,12 +35,24 @@ if (!empty($_REQUEST['cancel'])) {
 	if( !empty( $_REQUEST['batch'] ) ) {
 		// flip so we can do instant hash lookup
 		$batchCon = array_flip( $_REQUEST['batch'] );
-		// increment the first element from 0 to 1 so any conditional tests will pass, particularly in the .tpl
+		// increment the first element from 0 to 1 (element 0 index before flip) so any conditional tests will pass, particularly in the .tpl
 		$batchCon[key($batchCon)]++;
 		$gBitSmarty->assign_by_ref( 'batchEdit', $batchCon );
 	}
 
-	if( !empty( $_REQUEST['reorder_gallery'] ) && $gContent->loadImages() ) {
+	if( !empty( $_REQUEST['is_favorite'] ) ) {
+		// flip so we can do instant hash lookup
+		$favoriteCon = array_flip( $_REQUEST['is_favorite'] );
+		// increment the first element from 0 to 1 (element 0 index before flip) so any conditional tests will pass, particularly in the .tpl
+		$favoriteCon[key($favoriteCon)]++;
+	}
+
+	if( !empty( $_REQUEST['reorder_gallery'] ) || !empty( $favoriteCon ) ) {
+		$gContent->loadImages();
+	}
+
+
+	if( !empty( $_REQUEST['reorder_gallery'] ) ) {
 		switch( $_REQUEST['reorder_gallery'] ){
 			case 'upload_date':
 				foreach( array_keys( $gContent->mItems ) as $imageId ) {
@@ -68,6 +80,16 @@ if (!empty($_REQUEST['cancel'])) {
 		foreach( $reorder as $conId => $sortVal ) {
 			$newOrder[$conId] = $sortPos;
 			$sortPos += 10;
+		}
+	}
+
+	if( !empty( $favoriteCon ) ) {
+		foreach( array_keys( $gContent->mItems ) as $itemConId ) {
+			if( $gContent->mItems[$itemConId]->getField( 'is_favorite' ) && empty( $favoriteCon[$itemConId] ) ) {
+				$gBitUser->expungeFavorite( $itemConId );
+   			} elseif( !$gContent->mItems[$itemConId]->getField('is_favorite') && !empty( $favoriteCon[$itemConId] ) ) {
+				$gBitUser->storeFavorite( $itemConId );
+   			}
 		}
 	}
 
@@ -152,7 +174,6 @@ $listHash = array( 'user_id' => $gBitUser->mUserId, 'max_records' => -1, 'no_thu
 $galleryList = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 $gContent->loadImages();
-$gBitSmarty->assign_by_ref('galleryImages', $gContent->mItems);
 
 $gBitSmarty->assign_by_ref('formfeedback', $feedback);
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.13 2006/01/14 19:54:13 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.14 2006/01/15 06:46:36 spiderr Exp $
  * @package fisheye
  */
 
@@ -164,8 +164,8 @@ class FisheyeGallery extends FisheyeBase {
 		}
 		$this->mItems = NULL;
 
-		$query = "SELECT tfgim.*, tc.`content_type_guid`, tc.`user_id` $select
-				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id`=tfgim.`item_content_id` ) $join
+		$query = "SELECT tfgim.*, tc.`content_type_guid`, tc.`user_id`, ufm.`favorite_content_id` AS is_favorite $select
+				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id`=tfgim.`item_content_id` ) $join  LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=tc.`content_id` AND tc.`user_id`=ufm.`user_id` )
 				WHERE tfgim.`gallery_content_id` = ? $where
 				ORDER BY tfgim.`position`, tfgim.`item_content_id` $mid";
 		$rs = $this->mDb->query($query, $bindVars, $pMaxRows, $pOffset);
@@ -180,7 +180,7 @@ class FisheyeGallery extends FisheyeBase {
 				$item->loadThumbnail( $this->mInfo['thumbnail_size'] );
 				$item->setGalleryPath( $this->mGalleryPath.'/'.$this->mGalleryId );
 				$item->mInfo['position'] = $row['position'];
-				$this->mItems[] = $item;
+				$this->mItems[$row['item_content_id']] = $item;
 			}
 		}
 		return count( $this->mItems );
