@@ -50,14 +50,7 @@
 							{formlabel label="Current Image"}
 							{forminput}
 								{if $gContent->mInfo.image_file.storage_path}
-									<img src="{$gContent->mInfo.image_file.thumbnail_url.medium}" id="cropimage" alt="{$gContent->mInfo.title|escape}" />
-<script>
-{literal}
-    window.onload = function() {
-      ImageBox.createBox("cropimage");
-    }
-{/literal}
-</script>
+									<img src="{$gContent->mInfo.image_file.thumbnail_url.medium}" alt="{$gContent->mInfo.title|escape}" />
 									<br />
 									<small>
 										{if $gContent->mInfo.width && $gContent->mInfo.height}
