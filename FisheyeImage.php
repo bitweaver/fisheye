@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.27 2005/12/30 16:36:57 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.28 2006/01/20 09:55:14 squareing Exp $
  * @package fisheye
  */
 
@@ -376,7 +376,7 @@ class FisheyeImage extends FisheyeBase {
 
 		$ret = $pTitle;
 		if( $gBitSystem->isPackageActive( 'fisheye' ) ) {
-			$ret = '<a title="'.$pTitle.'" href="'.FisheyeImage::getDisplayUrl( NULL, $pMixed ).'">'.$pTitle.'</a>';
+			$ret = '<a title="'.htmlspecialchars( $pTitle ).'" href="'.FisheyeImage::getDisplayUrl( NULL, $pMixed ).'">'.htmlspecialchars( $pTitle ).'</a>';
 		}
 		return $ret;
 	}
