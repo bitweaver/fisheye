@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.10 2006/01/15 14:12:12 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.11 2006/01/23 07:20:27 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -151,8 +151,8 @@ if (!empty($_REQUEST['cancel'])) {
 				}
 				// if we are reordered, that takes precident
 				$newPos = preg_replace( '/[\D]/', '', (!empty( $newOrder[$contentId] ) ? $newOrder[$contentId] : $newPos) );
-				if ($galleryItem->mInfo['title'] != $_REQUEST['imageTitle'][$contentId]) {
-					$storageHash = array('title' => $_REQUEST['imageTitle'][$contentId]);
+				if ($galleryItem->mInfo['title'] != $_REQUEST['image_title'][$contentId]) {
+					$storageHash = array('title' => $_REQUEST['image_title'][$contentId]);
 				}
 				if( !empty( $storageHash ) ) {
 					$galleryItem->store($storageHash);

@@ -4,7 +4,7 @@
 	</div>
 
 	<div class="body">
-		<p class="formhelp">{tr}Here you can re-arrange the order of the images in this gallery and quickly change their titles. The image position does not have to be in an exact sequence. In fact, we recommend you count by tens so you can easily insert or re-order images at a later date. If you need to add a detailed description to an image, click the <strong>Edit Image</strong> link next to the desired image.<br />Using the <strong>Gallery Image</strong> radio button you can specify what image is used to identify this particular gallery.{/tr}</p>
+		<p class="formhelp">{tr}Here you can re-arrange the order of the images in this gallery and quickly change their titles. The image position does not have to be in an exact sequence. In fact, we recommend you count by tens so you can easily insert or re-order images at a later date. If you need to add a detailed description to an image, click the <strong>Edit Details</strong> link next to the desired image.<br />Using the <strong>Gallery Image</strong> radio button you can specify what image is used to identify this particular gallery.{/tr}</p>
 
 		<a name="imgedit"> </a>
 		<div id="imgedit"></div>
@@ -26,7 +26,7 @@
 				{foreach from=$gContent->mItems item=galItem key=itemContentId}
 					{if $imageCount % $gContent->mInfo.images_per_page == 0}
 					<tr class="{cycle values='even,odd' assign='pageClass'}">
-						<th colspan="3">
+						<th colspan="3" class="pagebreak">
 							{tr}Gallery Page{/tr} {math equation="imgCount / imagesPerPage + 1"
 								imgCount=$imageCount
 								imagesPerPage=$gContent->mInfo.images_per_page}
@@ -43,22 +43,22 @@
 							<div class="row">
 								{if $galItem->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
 									<div class="floaticon">
-										<a href="#imgedit" onclick="javascript:ajax_updater( 'imgedit', '{$smarty.const.FISHEYE_PKG_URL}edit_image.php', 'ajax=true&amp;content_id={$galItem->mInfo.content_id}&amp;gallery_id={$gContent->mGalleryId}&amp;from={$smarty.const.FISHEYE_PKG_URL}image_order.php' );">{biticon iname="edit" ipackage="liberty" iexplain="Edit"}</a>
+										<a href="#imgedit" onclick="javascript:ajax_updater( 'imgedit', '{$smarty.const.FISHEYE_PKG_URL}edit_image.php', 'ajax=true&amp;content_id={$galItem->mInfo.content_id}&amp;gallery_id={$gContent->mGalleryId}&amp;from={$smarty.const.FISHEYE_PKG_URL}image_order.php' );">{biticon iname="edit" ipackage="liberty" iexplain="Edit Details"}</a>
 										<noscript><div><a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a></div></noscript>
 									</div>
 								{/if}
-								<h2>{$galItem->mInfo.title}</h2>
-								<strong>{tr}Description{/tr}</strong>: {$galItem->mInfo.data|default:"[ {tr}none{/tr} ]"} <br />
-								<strong>{tr}Uploaded{/tr}</strong>: {$galItem->mInfo.created|bit_short_datetime} <br />
+								<input type="text" name="image_title[{$galItem->mContentId}]" value="{$galItem->getTitle()}" /><br />
+								<strong>{tr}Uploaded{/tr}</strong>: {$galItem->mInfo.created|bit_short_datetime}<br />
 								<strong>{tr}File name{/tr}</strong>: {$galItem->mInfo.image_file.filename} <br />
-								<strong>{tr}Position{/tr}</strong>: <input type="text" size="8" maxlength="15" name="imagePosition[{$galItem->mContentId}]" id="imagePosition-{$galItem->mContentId}" value="{$galItem->mInfo.position}"/>
+								<strong>{tr}Description{/tr}</strong>: {$galItem->mInfo.data|default:"[ {tr}none{/tr} ]"} <br />
 							</div>
 						</td>
 
-						<td style="text-align:right;">
+						<td style="text-align:right;width:12em;">
 							<label>{tr}Gallery Image{/tr}: <input type="radio" name="gallery_preview_content_id" value="{$galItem->mContentId}" {if $gContent->getField('preview_content_id') == $galItem->mContentId}checked="checked"{/if}/></label><br />
 							<label>{if $galItem->getField('is_favorite')}{biticon iname="favorite" ipackage="users" iexplain=""}{/if}{tr}Favorite Image{/tr}: <input type="checkbox" name="is_favorite[]" value="{$galItem->mContentId}" {if $galItem->getField('is_favorite')}checked="checked"{/if}/></label><br />
-							<label>{tr}Batch Select{/tr}: <input type="checkbox" name="batch[]" value="{$galItem->mContentId}" /></label>
+							<label>{tr}Batch Select{/tr}: <input type="checkbox" name="batch[]" value="{$galItem->mContentId}" /></label><br />
+							<label>{tr}Position{/tr}</label>: <input type="text" size="5" maxlength="15" name="imagePosition[{$galItem->mContentId}]" id="imagePosition-{$galItem->mContentId}" value="{$galItem->mInfo.position}"/>
 						</td>
 					</tr>
 				{/foreach}

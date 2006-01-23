@@ -5,21 +5,21 @@
 		<table style="border:0;border-collapse:collapse;border-spacing:0; width:auto;"><tr><td>
 	{/if}
 	<div class="thumbnailblock">
-		{section name=ix loop=$gContent->mItems}
-			{box class="box `$gContent->mInfo.thumbnail_size`-thmb `$gContent->mItems[ix]->mInfo.content_type_guid`"}
-				<a href="{$gContent->mItems[ix]->getDisplayUrl()|escape}">
-					<img class="thumb" src="{$gContent->mItems[ix]->getThumbnailUrl()}" alt="{$gContent->mItems[ix]->mInfo.title|default:'image'}" />
+		{foreach from=$gContent->mItems item=galItem key=itemContentId}
+			{box class="box `$gContent->mInfo.thumbnail_size`-thmb `$galItem->mInfo.content_type_guid`"}
+				<a href="{$galItem->getDisplayUrl()|escape}">
+					<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|default:'image'}" />
 				</a>
 				{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
-					<h3>{$gContent->mItems[ix]->mInfo.title}</h3>
+					<h3>{$galItem->mInfo.title}</h3>
 				{/if}
 				{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_descriptions' )}
-					<p>{$gContent->mItems[ix]->mInfo.data}</p>
+					<p>{$galItem->mInfo.data}</p>
 				{/if}
 			{/box}
-		{sectionelse}
+		{foreachelse}
 			<div class="norecords">{tr}This gallery is empty{/tr}. <a href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">Upload pictures!</a></div>
-		{/section}
+		{/foreach}
 	</div>
 	{if $browserInfo.browser eq 'ie'}
 		</td></tr></table>
@@ -30,21 +30,21 @@
 		{counter assign="imageCount" start="0" print=false}
 		{assign var="max" value=100}
 		{assign var="tdWidth" value="`$max/$cols_per_page`"}
-		{section name=ix loop=$gContent->mItems}
+		{foreach from=$gContent->mItems item=galItem key=itemContentId}
 			{if $imageCount % $cols_per_page == 0}
 				<tr > <!-- Begin Image Row -->
 			{/if}
 
 			<td style="width:{$tdWidth}%; vertical-align:top;"> <!-- Begin Image Cell -->
-				{box class="box `$gContent->mItems[ix]->mInfo.content_type_guid`"}
-					<a href="{$gContent->mItems[ix]->getDisplayUrl()|escape}">
-						<img class="thumb" src="{$gContent->mItems[ix]->getThumbnailUrl()}" alt="{$gContent->mItems[ix]->mInfo.title|default:'image'}" />
+				{box class="box `$galItem->mInfo.content_type_guid`"}
+					<a href="{$galItem->getDisplayUrl()|escape}">
+						<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|default:'image'}" />
 					</a>
 					{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
-						<h2>{$gContent->mItems[ix]->mInfo.title}</h2>
+						<h2>{$galItem->mInfo.title}</h2>
 					{/if}
 					{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_descriptions' )}
-						<p>{$gContent->mItems[ix]->mInfo.data}</p>
+						<p>{$galItem->mInfo.data}</p>
 					{/if}
 				{/box}
 			</td> <!-- End Image Cell -->
@@ -54,9 +54,9 @@
 				</tr> <!-- End Image Row -->
 			{/if}
 
-		{sectionelse}
+		{foreachelse}
 			<tr><td class="norecords">{tr}This gallery is empty{/tr}. <a href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">Upload pictures!</a></td></tr>
-		{/section}
+		{/foreach}
 
 		{if $imageCount % $cols_per_page != 0}</tr>{/if}
 	</table>

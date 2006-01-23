@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.14 2006/01/15 06:46:36 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.15 2006/01/23 07:20:27 spiderr Exp $
  * @package fisheye
  */
 
@@ -120,6 +120,7 @@ class FisheyeImage extends FisheyeBase {
 							'content_id' => $this->mContentId,
 							'title' => $this->getTitle(),
 							'has_description' => !empty( $this->mInfo['data'] ),
+							'is_favorite' => $this->getField('is_favorite'),
 						);
 		}
 		return $ret;
