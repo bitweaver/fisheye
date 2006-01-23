@@ -43,8 +43,10 @@
 							<div class="row">
 								{if $galItem->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
 									<div class="floaticon">
-										<a href="#imgedit" onclick="javascript:ajax_updater( 'imgedit', '{$smarty.const.FISHEYE_PKG_URL}edit_image.php', 'ajax=true&amp;content_id={$galItem->mInfo.content_id}&amp;gallery_id={$gContent->mGalleryId}&amp;from={$smarty.const.FISHEYE_PKG_URL}image_order.php' );">{biticon iname="edit" ipackage="liberty" iexplain="Edit Details"}</a>
-										<noscript><div><a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a></div></noscript>
+{*										<a href="#imgedit" onclick="javascript:ajax_updater( 'imgedit', '{$smarty.const.FISHEYE_PKG_URL}edit_image.php', 'ajax=true&amp;content_id={$galItem->mInfo.content_id}&amp;gallery_id={$gContent->mGalleryId}&amp;from={$smarty.const.FISHEYE_PKG_URL}image_order.php' );">{biticon iname="edit" ipackage="liberty" iexplain="Edit Details"}</a>
+										<noscript><div><a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a></div></noscript> *}
+										{* jspopup href="`$smarty.const.FISHEYE_PKG_URL`edit_image.php?content_id=`$galItem->mInfo.content_id`" title="edit image" *}
+										<div><a target="_new" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a></div>
 									</div>
 								{/if}
 								<input type="text" name="image_title[{$galItem->mContentId}]" value="{$galItem->getTitle()}" /><br />

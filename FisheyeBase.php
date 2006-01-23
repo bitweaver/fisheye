@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.13 2006/01/15 06:46:36 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.14 2006/01/23 08:12:11 spiderr Exp $
  * @package fisheye
  */
 
@@ -34,7 +34,7 @@ class FisheyeBase extends LibertyAttachable
 
 	// Gets a list of galleries which this item is attached to
 	function getParentGalleries( $pContentId=NULL ) {
-		if( $this->verifyId( $pContentId ) ) {
+		if( !$this->verifyId( $pContentId ) ) {
 			$pContentId = $this->mContentId;
 		}
 		$ret = NULL;
