@@ -3,7 +3,6 @@
 	<input type="hidden" name="gallery_id" value="{$smarty.request.gallery_id}"/>
 	<input type="hidden" name="image_id" value="{$imageId}"/>
 	<input type="hidden" name="ajax" value="{$smarty.request.ajax}" />
-	<input type="hidden" name="from" value="{$smarty.request.from}" />
 
 	<div class="row">
 		{formlabel label="Title" for="image-title"}

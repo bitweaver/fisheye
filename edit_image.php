@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.10 2006/01/15 14:12:11 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.11 2006/01/23 12:30:10 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -48,9 +48,9 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		if( !empty( $_REQUEST['rotate_image'] ) ) {
 			$gContent->rotateImage( $_REQUEST['rotate_image'] );
 		}
-		if( !empty( $_REQUEST['ajax'] ) && !empty( $_REQUEST['from'] ) ) {
+		if( !empty( $_REQUEST['ajax'] ) ) {
 			// we need to refresh the images in the page after saving - not working yet - xing
-			header( 'Location: '.$_REQUEST['from']."?refresh=1&gallery_id=".$_REQUEST['gallery_id'] );
+			header( 'Location: '.FISHEYE_PKG_URL."image_order.php?refresh=1&gallery_id=".$_REQUEST['gallery_id'] );
 			die;
 		}
 		$gContent->addToGalleries( $_REQUEST['galleryAdditions'] );
