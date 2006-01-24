@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.14 2006/01/23 08:12:11 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.15 2006/01/24 01:21:57 spiderr Exp $
  * @package fisheye
  */
 
@@ -58,7 +58,7 @@ class FisheyeBase extends LibertyAttachable
 		if( $pGalleryContentId && $newPosition && $this->verifyId($this->mContentId) ) {
 			// SQL optimization to prevent stupid updates of identical data
 			$sql = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` SET `position` = ?
-					WHERE `item_content_id` = ? AND `gallery_content_id` = ? AND `position`!=?";
+					WHERE `item_content_id` = ? AND `gallery_content_id` = ? AND (`position` IS NULL OR `position`!=?)";
 			$rs = $this->mDb->query($sql, array($newPosition, $this->mContentId, $pGalleryContentId, $newPosition));
 		}
 	}
