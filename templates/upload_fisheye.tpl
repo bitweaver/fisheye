@@ -4,7 +4,7 @@
 	</div>
 
 	<div class="body">
-		{form enctype="multipart/form-data" legend="Upload Files"}
+		{form enctype="multipart/form-data" legend="Upload Files" onsubmit="javascript:disableSubmit('submit_button');"}
 			{formfeedback note=$quotaMessage}
 			{formfeedback warning="The maximum file size you can upload is `$uploadMax` Megabytes"}
 			{formfeedback error=$errors}
@@ -15,6 +15,7 @@
 			{/if}
 
 			<input type="hidden" name="gallery_id" value="{$galleryId|escape}"/>
+			<input type="hidden" name="save_image" value="save" />
 			<input type="hidden" name="image_id" value="{$imageId}"/>
 			<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 
@@ -83,8 +84,8 @@
 			</div>
 
 			<div class="row submit">
-				<strong>{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</strong><br/>
-				<input type="submit" name="save_image" value="Upload File(s)" />
+				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
+				<input type="submit" id="submit_button" value="Upload File(s)" />
 			</div>
 		{/form}
 	</div> <!-- end .body -->
