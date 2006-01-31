@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.14 2006/01/15 06:46:36 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.15 2006/01/31 20:17:25 bitweaver Exp $
  * @package fisheye
  */
 
@@ -18,7 +18,7 @@ define('FISHEYEGALLERY_CONTENT_TYPE_GUID', 'fisheyegallery' );
  * @subpackage FisheyeGallery
  */
 class FisheyeGallery extends FisheyeBase {
-	var $mGalleryId;		// tiki_fisheye_gallery.gallery_id
+	var $mGalleryId;		// fisheye_gallery.gallery_id
 	var $mItems;			// Array of FisheyeImage class instances which belong to this gallery
 
 	function FisheyeGallery($pGalleryId = NULL, $pContentId = NULL) {
@@ -55,13 +55,13 @@ class FisheyeGallery extends FisheyeBase {
 			$whereSql = $bindVars = NULL;
 		}
 
-		if ($whereSql) {	// If we have some way to know what tiki_fisheye_gallery row to load...
+		if ($whereSql) {	// If we have some way to know what fisheye_gallery row to load...
 			$this->getServicesSql( 'content_load_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
 			$query = "SELECT fg.*, tc.* $selectSql
 						, uue.`login` AS modifier_user, uue.`real_name` AS `modifier_real_name`
 						, uuc.`login` AS creator_user, uuc.`real_name` AS `creator_real_name`
-					FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` fg, `".BIT_DB_PREFIX."tiki_content` tc $joinSql
+					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg, `".BIT_DB_PREFIX."tiki_content` tc $joinSql
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = tc.`modifier_user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = tc.`user_id`)
 					$whereSql AND fg.`content_id` = tc.`content_id`";
@@ -103,12 +103,12 @@ class FisheyeGallery extends FisheyeBase {
 				}
 				if( @$this->verifyId( $pCurrentImageId ) ) {
 					// this code sucks but works - XOXO spiderr
-					$query = "SELECT tfgim.*, tfi.`image_id`, tf.`storage_path`
-							FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim
-								INNER JOIN `".BIT_DB_PREFIX."tiki_fisheye_image` tfi ON ( tfi.`content_id`=tfgim.`item_content_id` )
-								INNER JOIN `".BIT_DB_PREFIX."tiki_files` tf ON ( tf.`file_id`=tfi.`image_id` )
-							WHERE tfgim.`gallery_content_id` = ?
-							ORDER BY tfgim.`position`, tfi.`content_id` ";
+					$query = "SELECT fgim.*, fi.`image_id`, tf.`storage_path`
+							FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+								INNER JOIN `".BIT_DB_PREFIX."fisheye_image` fi ON ( fi.`content_id`=fgim.`item_content_id` )
+								INNER JOIN `".BIT_DB_PREFIX."tiki_files` tf ON ( tf.`file_id`=fi.`image_id` )
+							WHERE fgim.`gallery_content_id` = ?
+							ORDER BY fgim.`position`, fi.`content_id` ";
 					if( $rs = $this->mDb->query($query, array( $this->mContentId ) ) ) {
 						$rows = $rs->getRows();
 						for( $i = 0; $i < count( $rows ); $i++ ) {
@@ -158,16 +158,16 @@ class FisheyeGallery extends FisheyeBase {
 		$join = '';
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			$select .= ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
-			$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs ON (tc.`content_id`=tcs.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON (ts.`security_id`=tcs.`security_id` )";
-//			$where = ' AND (tcs.`security_id` IS NULL OR tc.`user_id`=?) ';
+			$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (tc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts ON (ts.`security_id`=cg.`security_id` )";
+//			$where = ' AND (cg.`security_id` IS NULL OR tc.`user_id`=?) ';
 //			$bindVars[] = $gBitUser->mUserId;
 		}
 		$this->mItems = NULL;
 
-		$query = "SELECT tfgim.*, tc.`content_type_guid`, tc.`user_id`, ufm.`favorite_content_id` AS is_favorite $select
-				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id`=tfgim.`item_content_id` ) $join  LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=tc.`content_id` AND tc.`user_id`=ufm.`user_id` )
-				WHERE tfgim.`gallery_content_id` = ? $where
-				ORDER BY tfgim.`position`, tfgim.`item_content_id` $mid";
+		$query = "SELECT fgim.*, tc.`content_type_guid`, tc.`user_id`, ufm.`favorite_content_id` AS is_favorite $select
+				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id`=fgim.`item_content_id` ) $join  LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=tc.`content_id` AND tc.`user_id`=ufm.`user_id` )
+				WHERE fgim.`gallery_content_id` = ? $where
+				ORDER BY fgim.`position`, fgim.`item_content_id` $mid";
 		$rs = $this->mDb->query($query, $bindVars, $pMaxRows, $pOffset);
 
 		$rows = $rs->getRows();
@@ -206,7 +206,7 @@ class FisheyeGallery extends FisheyeBase {
 
 		if ($this->mGalleryId) {
 			$query = "SELECT COUNT(*) AS `count`
-					FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`
+					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
 					WHERE `gallery_content_id` = ?";
 			$rs = $this->mDb->query($query, array($this->mContentId));
 			$ret = $rs->fields['count'];
@@ -276,18 +276,18 @@ class FisheyeGallery extends FisheyeBase {
 				$pThumbnailContentId = $this->mInfo['preview_content_id'];
 			} else {
 				if( $this->mDb->isAdvancedPostgresEnabled() ) {
-					$query = "SELECT COALESCE( tfg.`preview_content_id`, tc.`content_id` )
-							FROM connectby('`".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
+					$query = "SELECT COALESCE( fg.`preview_content_id`, tc.`content_id` )
+							FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
 								INNER JOIN tiki_content tc ON(content_id=cb_item_content_id)
-								LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcsm ON (tcsm.`content_id`=tc.`content_id`), `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg
-							WHERE tc.`content_type_guid`='fisheyeimage' AND tcsm.`security_id` IS NULL AND `cb_parent_content_id`=tfg.`content_id` ORDER BY RANDOM()";
+								LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cgm ON (cgm.`content_id`=tc.`content_id`), `".BIT_DB_PREFIX."fisheye_gallery` fg
+							WHERE tc.`content_type_guid`='fisheyeimage' AND cgm.`security_id` IS NULL AND `cb_parent_content_id`=fg.`content_id` ORDER BY RANDOM()";
 					if( $pThumbnailContentId = $this->mDb->getOne( $query, array( $pContentId ) ) ) {
 						$pThumbnailContentType = 'fisheyeimage';
 					}
 				} else {
-					$query = "SELECT tfgim.`item_content_id`, tc.`content_type_guid`
-							FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tfgim.`item_content_id`=tc.`content_id` )
-							WHERE tfgim.`gallery_content_id` = ?
+					$query = "SELECT fgim.`item_content_id`, tc.`content_type_guid`
+							FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( fgim.`item_content_id`=tc.`content_id` )
+							WHERE fgim.`gallery_content_id` = ?
 							ORDER BY ".$this->mDb->convert_sortmode('random');
 					$rs = $this->mDb->query($query, array( $pContentId ), 1);
 					$pThumbnailContentId = $rs->fields['item_content_id'];
@@ -321,7 +321,7 @@ class FisheyeGallery extends FisheyeBase {
 		if ($this->mGalleryId) {
 			if (!$pContentId)
 				$pContentId = NULL;
-			$query = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_gallery` SET `preview_content_id` = ? WHERE `gallery_id`= ?";
+			$query = "UPDATE `".BIT_DB_PREFIX."fisheye_gallery` SET `preview_content_id` = ? WHERE `gallery_id`= ?";
 			$rs = $this->mDb->query($query, array($pContentId, $this->mGalleryId));
 			$this->mInfo['preview_content_id'] = $pContentId;
 			$ret = TRUE;
@@ -336,14 +336,14 @@ class FisheyeGallery extends FisheyeBase {
 				$this->mContentId = $pStorageHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
 				if ($this->galleryExistsInDatabase()) {
-					$query = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_gallery`
+					$query = "UPDATE `".BIT_DB_PREFIX."fisheye_gallery`
 							SET `rows_per_page` = ?, `cols_per_page` = ?, `thumbnail_size` = ?
 							WHERE `gallery_id` = ?";
 					$bindVars = array($pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size'], $this->mGalleryId);
 				} else {
-					$this->mGalleryId = $this->mDb->GenID('tiki_fisheye_gallery_id_seq');
+					$this->mGalleryId = $this->mDb->GenID('fisheye_gallery_id_seq');
 					$this->mInfo['gallery_id'] = $this->mGalleryId;
-					$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_gallery` (`gallery_id`, `content_id`, `rows_per_page`, `cols_per_page`, `thumbnail_size`) VALUES (?,?,?,?,?)";
+					$query = "INSERT INTO `".BIT_DB_PREFIX."fisheye_gallery` (`gallery_id`, `content_id`, `rows_per_page`, `cols_per_page`, `thumbnail_size`) VALUES (?,?,?,?,?)";
 					$bindVars = array($this->mGalleryId, $this->mContentId, $pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size']);
 				}
 				$rs = $this->mDb->query($query, $bindVars);
@@ -362,7 +362,7 @@ class FisheyeGallery extends FisheyeBase {
 	function removeItem( $pContentId ) {
 		$ret = FALSE;
 		if( $this->isValid() && @$this->verifyId( $pContentId ) ) {
-			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`
+			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
 					  WHERE `item_content_id`=? AND `gallery_content_id`=?";
 			$rs = $this->mDb->query($query, array($pContentId, $this->mContentId ) );
 			$ret = TRUE;
@@ -378,7 +378,7 @@ class FisheyeGallery extends FisheyeBase {
 	function addItem( $pContentId, $pPosition=NULL ) {
 		$ret = FALSE;
 		if( $this->isValid() && @$this->verifyId( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId  )  && !$this->isInGallery( $pContentId, $this->mContentId ) ) {
-			$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`, `position`) VALUES (?,?,?)";
+			$query = "INSERT INTO `".BIT_DB_PREFIX."fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`, `position`) VALUES (?,?,?)";
 			$rs = $this->mDb->query($query, array($pContentId, $this->mContentId, $pPosition ) );
 			$ret = TRUE;
 		}
@@ -396,7 +396,7 @@ class FisheyeGallery extends FisheyeBase {
 						$this->mItems[$key]->expunge( $pRecursiveDelete );
 					} elseif( $this->mItems[$key]->mInfo['content_type_guid'] == FISHEYEIMAGE_CONTENT_TYPE_GUID ) {
 						$query = "SELECT COUNT(`item_content_id`) AS `other_gallery`
-								  FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map`
+								  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
 								  WHERE `item_content_id`=? AND `gallery_content_id`!=?";
 						if( $rs = $this->mDb->query($query, array($this->mItems[$key]->mContentId, $this->mContentId ) ) ) {
 							if( empty( $rs->fields['other_gallery'] ) ) {
@@ -407,11 +407,11 @@ class FisheyeGallery extends FisheyeBase {
 				}
 			}
 
-			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` WHERE `gallery_content_id`=?";
+			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE `gallery_content_id`=?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ) );
-			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` WHERE `item_content_id`=?";
+			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE `item_content_id`=?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ) );
-			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` WHERE `content_id`=?";
+			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery` WHERE `content_id`=?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ) );
 			if( LibertyContent::expunge() ) {
 				$this->mDb->CompleteTrans();
@@ -429,7 +429,7 @@ vd( $this->mErrors );
 
 		if( @$this->verifyId( $this->mGalleryId ) ) {
 			$query = "SELECT COUNT(`gallery_id`) AS `count`
-					FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery`
+					FROM `".BIT_DB_PREFIX."fisheye_gallery`
 					WHERE `gallery_id` = ?";
 			$rs = $this->mDb->query($query, array($this->mGalleryId));
 			if ($rs->fields['count'] > 0)
@@ -489,17 +489,17 @@ vd( $this->mErrors );
 		// this *has* to go first because of bindVars order
 		if( empty( $pListHash['show_empty'] ) ) {
 		// This will nicely pull out the unused rows, but it is dog slow
-//  			 $join .= " INNER JOIN  `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim ON (tfgim.`gallery_content_id`=tc.`content_id`) ";
+//  			 $join .= " INNER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON (fgim.`gallery_content_id`=tc.`content_id`) ";
 			 $mid = '';
 		}
 
 		if( !empty( $pListHash['root_only'] ) ) {
-			$join .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim2 ON (tfgim2.`item_content_id`=tc.`content_id`)";
+			$join .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON (tfgim2.`item_content_id`=tc.`content_id`)";
 			$mid .= ' AND tfgim2.`item_content_id` IS NULL ';
 		}
 		if( !empty( $pListHash['contain_item'] ) ) {
 			$select = " , tfgim3.`item_content_id` AS `in_gallery` ";
-			$join .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=tc.`content_id`) AND tfgim3.`item_content_id`=? ";
+			$join .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=tc.`content_id`) AND tfgim3.`item_content_id`=? ";
 			$bindVars[] = $pListHash['contain_item'];
 		}
 		if( @$this->verifyId( $pListHash['user_id'] ) ) {
@@ -512,16 +512,16 @@ vd( $this->mErrors );
 		}
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			$select .= ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
-			$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs ON (tc.`content_id`=tcs.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON (ts.`security_id`=tcs.`security_id` )";
+			$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (tc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts ON (ts.`security_id`=cg.`security_id` )";
 			if( !$gBitUser->isAdmin() ) {
-				$mid .= ' AND (tcs.`security_id` IS NULL OR tc.`user_id`=?) ';
+				$mid .= ' AND (cg.`security_id` IS NULL OR tc.`user_id`=?) ';
 				$bindVars[] = $gBitUser->mUserId;
 			}
 		}
 
 		// weed out empty galleries if we don't need them
 		if( empty( $pListHash['show_empty'] ) ) {
-			$mapJoin = "INNER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim ON (tfgim.`gallery_content_id`=tc.`content_id`)";
+			$mapJoin = "INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON (fgim.`gallery_content_id`=tc.`content_id`)";
 		} else {
 			$mapJoin = "";
 		}
@@ -532,11 +532,11 @@ vd( $this->mErrors );
 			$sort .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
-		$query = "SELECT DISTINCT( tfg.`gallery_id` ) AS `hash_key`, tfg.*, tc.*, uu.`login`, uu.`real_name`, ptc.`content_type_guid` AS `preview_content_type_guid` $select
-				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg
-				LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( tfg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc
+		$query = "SELECT DISTINCT( fg.`gallery_id` ) AS `hash_key`, fg.*, tc.*, uu.`login`, uu.`real_name`, ptc.`content_type_guid` AS `preview_content_type_guid` $select
+				FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( fg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc
 				$mapJoin $join
-				WHERE tfg.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid $sort";
+				WHERE fg.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid $sort";
 		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] ) ) {
 			$data = $rs->GetAssoc();
 			if( empty( $pListHash['no_thumbnails'] ) ) {
@@ -555,11 +555,11 @@ vd( $this->mErrors );
 		}
 
 		// count galleries
-		$query_c = "SELECT COUNT( DISTINCT( tfg.`gallery_id` ) )
-				FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg
-				LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( tfg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc
+		$query_c = "SELECT COUNT( DISTINCT( fg.`gallery_id` ) )
+				FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` ptc ON( fg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc
 				$mapJoin $join
-				WHERE tfg.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid";
+				WHERE fg.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid";
 		$cant = $this->mDb->getOne( $query_c, $bindVars );
 
 		$ret['cant'] = $cant;

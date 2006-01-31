@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.15 2006/01/23 07:20:27 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.16 2006/01/31 20:17:25 bitweaver Exp $
  * @package fisheye
  */
 
@@ -39,22 +39,22 @@ class FisheyeImage extends FisheyeBase {
 			$mid = NULL;
 			$bindVars = array( $gBitUser->mUserId );
 			if ( @$this->verifyId( $this->mImageId ) ) {
-				$mid = " WHERE tfi.`image_id` = ?";
+				$mid = " WHERE fi.`image_id` = ?";
 				$bindVars[] = $this->mImageId;
 			} elseif ( @$this->verifyId( $this->mContentId ) ) {
-				$mid = " WHERE tfi.`content_id` = ?";
+				$mid = " WHERE fi.`content_id` = ?";
 				$bindVars[] = $this->mContentId;
 			}
 			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 				$gateSql = ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
-				$mid = " LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs ON ( tc.`content_id`=tcs.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON ( tcs.`security_id`=ts.`security_id` )
+				$mid = " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON ( tc.`content_id`=cg.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts ON ( cg.`security_id`=ts.`security_id` )
  						".$mid;
 			}
-			$sql = "SELECT tfi.*, tc.* $gateSql
+			$sql = "SELECT fi.*, tc.* $gateSql
 						, uue.`login` AS `modifier_user`, uue.`real_name` AS `modifier_real_name`
 						, uuc.`login` AS `creator_user`, uuc.`real_name` AS `creator_real_name`, ufm.`favorite_content_id` AS `is_favorite`
-					FROM `".BIT_DB_PREFIX."tiki_fisheye_image` tfi
-						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON (tc.`content_id` = tfi.`content_id`)
+					FROM `".BIT_DB_PREFIX."fisheye_image` fi
+						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON (tc.`content_id` = fi.`content_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = tc.`modifier_user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = tc.`user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON (ufm.`favorite_content_id`=tc.`content_id` AND ufm.`user_id`=?)
@@ -71,10 +71,10 @@ class FisheyeImage extends FisheyeBase {
 				if( $gBitSystem->isPackageActive( 'gatekeeper' ) && !@$this->verifyId( $this->mInfo['security_id'] ) ) {
 					// check to see if this image is in a protected gallery
 					// this burns an extra select but avoids an big and gnarly LEFT JOIN sequence that may be hard to optimize on all DB's
-					$query = "SELECT ts.* FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim
-								INNER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tsm ON(tfgim.`gallery_content_id`=tsm.`content_id` )
-								INNER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON(tsm.`security_id`=ts.`security_id` )
-							  WHERE tfgim.`item_content_id`=?";
+					$query = "SELECT ts.* FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+								INNER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` tsm ON(fgim.`gallery_content_id`=tsm.`content_id` )
+								INNER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts ON(tsm.`security_id`=ts.`security_id` )
+							  WHERE fgim.`item_content_id`=?";
 					$grs = $this->mDb->query($query, array( $this->mContentId ) );
 					if( $grs && $grs->RecordCount() ) {
 						$this->mInfo = array_merge( $this->mInfo, $grs->fields );
@@ -109,7 +109,7 @@ class FisheyeImage extends FisheyeBase {
 		if( $this->isValid() && ($details = $this->getImageDetails( BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'] ) ) ) {
 			if( $this->mInfo['width'] != $details['width'] || $this->mInfo['height'] != $details['height']  ) {
 				// if our data got out of sync with the database, force an update
-				$query = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
+				$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
 				$this->mDb->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );
 				$this->mInfo['width'] = $details['width'];
 				$this->mInfo['height'] = $details['height'];
@@ -189,14 +189,14 @@ class FisheyeImage extends FisheyeBase {
 				}
 
 				if ($this->imageExistsInDatabase()) {
-					$sql = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_image`
+					$sql = "UPDATE `".BIT_DB_PREFIX."fisheye_image`
 							SET `content_id` = ?, `width` = ?, `height` = ?
 							WHERE `image_id` = ?";
 					$bindVars = array($this->mContentId, $imageDetails['width'], $imageDetails['height'], $this->mImageId);
 				} else {
-					$this->mImageId = $this->mDb->GenID('tiki_fisheye_image_id_seq');
+					$this->mImageId = $this->mDb->GenID('fisheye_image_id_seq');
 					$this->mInfo['image_id'] = $this->mImageId;
-					$sql = "INSERT INTO `".BIT_DB_PREFIX."tiki_fisheye_image` (`image_id`, `content_id`, `width`, `height`) VALUES (?,?,?,?)";
+					$sql = "INSERT INTO `".BIT_DB_PREFIX."fisheye_image` (`image_id`, `content_id`, `width`, `height`) VALUES (?,?,?,?)";
 					$bindVars = array($this->mImageId, $this->mContentId, $imageDetails['width'], $imageDetails['height']);
 				}
 				$rs = $this->mDb->query($sql, $bindVars);
@@ -227,7 +227,7 @@ class FisheyeImage extends FisheyeBase {
 			$rotateFunc = liberty_get_function( 'rotate' );
 			if( $rotateFunc( $fileHash ) ) {
 				liberty_clear_thumbnails( $fileHash );
-				$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_image` SET `width`=`height`, `height`=`width` WHERE `content_id`=?", array( $this->mContentId ) );
+				$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=`height`, `height`=`width` WHERE `content_id`=?", array( $this->mContentId ) );
 				$this->generateThumbnails();
 			} else {
 				$this->mErrors['rotate'] = $fileHash['error'];
@@ -256,7 +256,7 @@ class FisheyeImage extends FisheyeBase {
 			$details = $this->getImageDetails( $fileHash['source_file'] );
 			$query = "UPDATE `".BIT_DB_PREFIX."tiki_files` SET `size`=? WHERE `file_id`=?";
 			$this->mDb->query( $query, array( $details['size'], $this->mInfo['image_file']['file_id'] ) );
-			$query = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
+			$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
 			$this->mDb->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );
 		}
 		return (count($this->mErrors) == 0);
@@ -267,10 +267,10 @@ class FisheyeImage extends FisheyeBase {
 		global $gBitSystem;
 		// LibertyAttachable will take care of thumbnail generation of the offline thumbnailer is not active
 		if( $gBitSystem->isFeatureActive( 'feature_offline_thumbnailer' ) ) {
-			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_thumbnail_queue`
+			$query = "DELETE FROM `".BIT_DB_PREFIX."liberty_thumbnail_queue`
 					  WHERE `content_id`=?";
 			$this->mDb->query( $query, array( $this->mContentId ) );
-			$query = "INSERT INTO `".BIT_DB_PREFIX."tiki_thumbnail_queue`
+			$query = "INSERT INTO `".BIT_DB_PREFIX."liberty_thumbnail_queue`
 					  (`content_id`, `queue_date`, `resize_original`) VALUES (?,?,?)";
 			$this->mDb->query( $query, array( $this->mContentId, $gBitSystem->getUTCTime(), $pResizeOriginal ) );
 		} else {
@@ -400,11 +400,11 @@ class FisheyeImage extends FisheyeBase {
 	function expunge() {
 		if( $this->isValid() ) {
 			$this->mDb->StartTrans();
-			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` WHERE `item_content_id` = ?";
+			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE `item_content_id` = ?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
-			$query = "UPDATE `".BIT_DB_PREFIX."tiki_fisheye_gallery` SET `preview_content_id`=NULL WHERE `preview_content_id` = ?";
+			$query = "UPDATE `".BIT_DB_PREFIX."fisheye_gallery` SET `preview_content_id`=NULL WHERE `preview_content_id` = ?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
-			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_fisheye_image` WHERE `content_id` = ?";
+			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_image` WHERE `content_id` = ?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
 			if( LibertyAttachable::expunge() ) {
 				$this->mDb->CompleteTrans();
@@ -423,7 +423,7 @@ class FisheyeImage extends FisheyeBase {
 		$ret = FALSE;
 		if( $this->isValid() && $this->mImageId ) {
 			$sql = "SELECT COUNT(`image_id`) AS `count`
-					FROM `".BIT_DB_PREFIX."tiki_fisheye_image`
+					FROM `".BIT_DB_PREFIX."fisheye_image`
 					WHERE `image_id` = ?";
 			$rs = $this->mDb->query($sql, array($this->mImageId));
 
@@ -455,7 +455,7 @@ class FisheyeImage extends FisheyeBase {
 
 
 		if( @$this->verifyId( $pListHash['gallery_id'] ) ) {
-			$mid .= " AND tfg.`gallery_id` = ? ";
+			$mid .= " AND fg.`gallery_id` = ? ";
 			$bindVars[] = $pListHash['gallery_id'];
 		}
 
@@ -466,11 +466,11 @@ class FisheyeImage extends FisheyeBase {
 //  $this->debug();
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			if( $this->mDb->isAdvancedPostgresEnabled() ) {
-				$mid .= " AND (SELECT ts.`security_id` FROM connectby('tiki_fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', tfi.`content_id`, 0, '/')  AS t(`cb_gallery_content_id` int, `cb_item_content_id` int, level int, branch text), `".BIT_DB_PREFIX."tiki_content_security_map` tcsm,  `".BIT_DB_PREFIX."tiki_security` ts
-						  WHERE ts.`security_id`=tcsm.`security_id` AND tcsm.`content_id`=`cb_gallery_content_id` LIMIT 1) IS NULL";
+				$mid .= " AND (SELECT ts.`security_id` FROM connectby('fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', fi.`content_id`, 0, '/')  AS t(`cb_gallery_content_id` int, `cb_item_content_id` int, level int, branch text), `".BIT_DB_PREFIX."gatekeeper_security_map` cgm,  `".BIT_DB_PREFIX."gatekeeper_security` ts
+						  WHERE ts.`security_id`=cgm.`security_id` AND cgm.`content_id`=`cb_gallery_content_id` LIMIT 1) IS NULL";
 			} else {
 				$select .= ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
-				$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs ON (tc.`content_id`=tcs.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts ON (ts.`security_id`=tcs.`security_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim ON (tfgim.`item_content_id`=tc.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content_security_map` tcs2 ON (tfgim.`gallery_content_id`=tcs2.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_security` ts2 ON (ts2.`security_id`=tcs2.`security_id` )";
+				$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (tc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts ON (ts.`security_id`=cg.`security_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON (fgim.`item_content_id`=tc.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` tcs2 ON (fgim.`gallery_content_id`=tcs2.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts2 ON (ts2.`security_id`=tcs2.`security_id` )";
 				$mid .= ' AND (tcs2.`security_id` IS NULL OR tc.`user_id`=?) ';
 				$bindVars[] = $gBitUser->mUserId;
 			}
@@ -479,14 +479,14 @@ class FisheyeImage extends FisheyeBase {
 			//converted in prepGetList()
 			$mid .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
-		$query = "SELECT $distinct tfi.`image_id` AS `hash_key`, tfi.*, tf.*, tc.*, tfg.`gallery_id`, uu.`login`, uu.`real_name` $select
-				FROM `".BIT_DB_PREFIX."tiki_fisheye_image` tfi
-					INNER JOIN `".BIT_DB_PREFIX."tiki_attachments` ta ON(ta.`content_id`=tfi.`content_id`)
-					INNER JOIN `".BIT_DB_PREFIX."tiki_files` tf ON(ta.`foreign_id`=tf.`file_id`)
+		$query = "SELECT $distinct fi.`image_id` AS `hash_key`, fi.*, tf.*, tc.*, fg.`gallery_id`, uu.`login`, uu.`real_name` $select
+				FROM `".BIT_DB_PREFIX."fisheye_image` fi
+					INNER JOIN `".BIT_DB_PREFIX."tiki_attachments` a ON(a.`content_id`=fi.`content_id`)
+					INNER JOIN `".BIT_DB_PREFIX."tiki_files` tf ON(a.`foreign_id`=tf.`file_id`)
 					, `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc $join
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery_image_map` tfgim2 ON(tfgim2.`item_content_id`=tc.`content_id`)
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_fisheye_gallery` tfg ON(tfg.`content_id`=tfgim2.`gallery_content_id`)
-				WHERE tfi.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid";
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON(tfgim2.`item_content_id`=tc.`content_id`)
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fg.`content_id`=tfgim2.`gallery_content_id`)
+				WHERE fi.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid";
 
 		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'],$pListHash['offset'] ) ) {
 			$ret = $rs->GetAssoc();
