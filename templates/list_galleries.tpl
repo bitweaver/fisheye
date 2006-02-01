@@ -10,19 +10,19 @@
 		<div class="navbar">
 			<ul class="sortby">
 				<li>{biticon ipackage=liberty iname=sort iexplain="sort by"}</li>
-				{if $fisheye_list_title eq 'y'}
+				{if $gBitSystem->isFeatureActive('fisheye_list_title')}
 					<li>{smartlink ititle="Gallery Name" isort="title" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
 				{/if}
-				{if $fisheye_list_user eq 'y'}
+				{if $gBitSystem->isFeatureActive('fisheye_list_user')}
 					<li>{smartlink ititle="Owner" isort=`$gBitSystemPrefs.display_name` user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
 				{/if}
-				{if $fisheye_list_created eq 'y'}
+				{if $gBitSystem->isFeatureActive('fisheye_list_created')}
 					<li>{smartlink ititle="Created" isort="created" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
 				{/if}
-				{if $fisheye_list_lastmodif eq 'y'}
+				{if $gBitSystem->isFeatureActive('fisheye_list_lastmodif')}
 					<li>{smartlink ititle="Last Modified" isort="last_modified" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
 				{/if}
-				{if $fisheye_list_hits eq 'y'}
+				{if $gBitSystem->isFeatureActive('fisheye_list_hits')}
 					<li>{smartlink ititle="Hits" isort="hits" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
 				{/if}
 			</ul>
@@ -58,34 +58,34 @@
 						{/if *}
 					</div>
 
-					<h2><a href="{$gal.display_url}">{if $fisheye_list_title eq 'y'}{$gal.title}{else}Gallery {$gal.gallery_id}{/if}</a></h2>
+					<h2><a href="{$gal.display_url}">{if $gBitSystem->isFeatureActive('fisheye_list_title')}{$gal.title}{else}Gallery {$gal.gallery_id}{/if}</a></h2>
 
-					{if $fisheye_list_thumbnail eq 'y' && $gal.display_url}
+					{if $gBitSystem->isFeatureActive('fisheye_list_thumbnail') && $gal.display_url}
 						<a href="{$gal.display_url}">
 							<img class="thumb" src="{$gal.thumbnail_url}" alt="{$gal.title}" title="{$gal.title}" />
 						</a>
 					{/if}
 
-					{if $fisheye_list_user eq 'y'}
+					{if $gBitSystem->isFeatureActive('fisheye_list_user')}
 						{displayname hash=$gal nolink=TRUE} &raquo; <a href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gal.user_id}">{tr}Galleries{/tr}</a>
 					{/if}
 					{* if $galleryList[ix]->isProtected()}
 						{biticon ipackage="fisheye" iname="locked" iexplain="Protected"}
 					{/if *}
-					{if $fisheye_list_description eq 'y'}
+					{if $gBitSystem->isFeatureActive('fisheye_list_description')}
 						<p>{$gal.data|truncate:200}</p>
 					{/if}
 
 					<div class="date">
-						{if $gBitSystem->isFeatureActive( 'fisheye_list_created' ) }
+						{if $gBitSystem->isFeatureActive('fisheye_list_created' ) }
 							Created: {$gal.created|bit_short_date}<br />
 						{/if}
-						{if $gBitSystem->isFeatureActive( 'fisheye_list_lastmodif' )}
+						{if $gBitSystem->isFeatureActive('fisheye_list_lastmodif' )}
 							Modified: {$gal.last_modified|bit_short_date}<br />
 						{/if}
 					</div>
 
-					{if $fisheye_list_hits eq 'y'}
+					{if $gBitSystem->isFeatureActive('fisheye_list_hits')}
 						{tr}Hits{/tr}: {$gal.hits}<br />
 					{/if}
 
