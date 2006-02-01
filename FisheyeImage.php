@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.16 2006/01/31 20:17:25 bitweaver Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.17 2006/02/01 18:41:04 squareing Exp $
  * @package fisheye
  */
 
@@ -46,18 +46,18 @@ class FisheyeImage extends FisheyeBase {
 				$bindVars[] = $this->mContentId;
 			}
 			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-				$gateSql = ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
-				$mid = " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON ( tc.`content_id`=cg.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts ON ( cg.`security_id`=ts.`security_id` )
+				$gateSql = ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
+				$mid = " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON ( lc.`content_id`=cg.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON ( cg.`security_id`=ls.`security_id` )
  						".$mid;
 			}
-			$sql = "SELECT fi.*, tc.* $gateSql
+			$sql = "SELECT fi.*, lc.* $gateSql
 						, uue.`login` AS `modifier_user`, uue.`real_name` AS `modifier_real_name`
 						, uuc.`login` AS `creator_user`, uuc.`real_name` AS `creator_real_name`, ufm.`favorite_content_id` AS `is_favorite`
 					FROM `".BIT_DB_PREFIX."fisheye_image` fi
-						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON (tc.`content_id` = fi.`content_id`)
-						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = tc.`modifier_user_id`)
-						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = tc.`user_id`)
-						LEFT JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON (ufm.`favorite_content_id`=tc.`content_id` AND ufm.`user_id`=?)
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (lc.`content_id` = fi.`content_id`)
+						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = lc.`modifier_user_id`)
+						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = lc.`user_id`)
+						LEFT JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON (ufm.`favorite_content_id`=lc.`content_id` AND ufm.`user_id`=?)
 					$mid";
 			if( $rs = $this->mDb->query($sql, array($bindVars)) ) {
 				$this->mInfo = $rs->fields;
@@ -71,9 +71,9 @@ class FisheyeImage extends FisheyeBase {
 				if( $gBitSystem->isPackageActive( 'gatekeeper' ) && !@$this->verifyId( $this->mInfo['security_id'] ) ) {
 					// check to see if this image is in a protected gallery
 					// this burns an extra select but avoids an big and gnarly LEFT JOIN sequence that may be hard to optimize on all DB's
-					$query = "SELECT ts.* FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+					$query = "SELECT ls.* FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
 								INNER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` tsm ON(fgim.`gallery_content_id`=tsm.`content_id` )
-								INNER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts ON(tsm.`security_id`=ts.`security_id` )
+								INNER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON(tsm.`security_id`=ls.`security_id` )
 							  WHERE fgim.`item_content_id`=?";
 					$grs = $this->mDb->query($query, array( $this->mContentId ) );
 					if( $grs && $grs->RecordCount() ) {
@@ -254,7 +254,7 @@ class FisheyeImage extends FisheyeBase {
 			// Ack this is evil direct bashing of the liberty tables! XOXO spiderr
 			// should be a cleaner way eventually
 			$details = $this->getImageDetails( $fileHash['source_file'] );
-			$query = "UPDATE `".BIT_DB_PREFIX."tiki_files` SET `size`=? WHERE `file_id`=?";
+			$query = "UPDATE `".BIT_DB_PREFIX."liberty_files` SET `size`=? WHERE `file_id`=?";
 			$this->mDb->query( $query, array( $details['size'], $this->mInfo['image_file']['file_id'] ) );
 			$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
 			$this->mDb->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );
@@ -445,7 +445,7 @@ class FisheyeImage extends FisheyeBase {
 		$join = '';
 
 		if( @$this->verifyId( $pListHash['user_id'] ) ) {
-			$mid .= " AND tc.`user_id` = ? ";
+			$mid .= " AND lc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
 		} elseif( !empty( $pListHash['recent_users'] )) {
 			$distinct = " DISTINCT ON ( uu.`user_id` ) ";
@@ -460,18 +460,18 @@ class FisheyeImage extends FisheyeBase {
 		}
 
 		if( !empty( $pListHash['search'] ) ) {
-			$mid .= " AND UPPER(tc.`title`) LIKE ? ";
+			$mid .= " AND UPPER(lc.`title`) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['search'] ).'%';
 		}
 //  $this->debug();
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			if( $this->mDb->isAdvancedPostgresEnabled() ) {
-				$mid .= " AND (SELECT ts.`security_id` FROM connectby('fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', fi.`content_id`, 0, '/')  AS t(`cb_gallery_content_id` int, `cb_item_content_id` int, level int, branch text), `".BIT_DB_PREFIX."gatekeeper_security_map` cgm,  `".BIT_DB_PREFIX."gatekeeper_security` ts
-						  WHERE ts.`security_id`=cgm.`security_id` AND cgm.`content_id`=`cb_gallery_content_id` LIMIT 1) IS NULL";
+				$mid .= " AND (SELECT ls.`security_id` FROM connectby('fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', fi.`content_id`, 0, '/')  AS t(`cb_gallery_content_id` int, `cb_item_content_id` int, level int, branch text), `".BIT_DB_PREFIX."gatekeeper_security_map` cgm,  `".BIT_DB_PREFIX."gatekeeper_security` ls
+						  WHERE ls.`security_id`=cgm.`security_id` AND cgm.`content_id`=`cb_gallery_content_id` LIMIT 1) IS NULL";
 			} else {
-				$select .= ' ,ts.`security_id`, ts.`security_description`, ts.`is_private`, ts.`is_hidden`, ts.`access_question`, ts.`access_answer` ';
-				$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (tc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts ON (ts.`security_id`=cg.`security_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON (fgim.`item_content_id`=tc.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` tcs2 ON (fgim.`gallery_content_id`=tcs2.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts2 ON (ts2.`security_id`=tcs2.`security_id` )";
-				$mid .= ' AND (tcs2.`security_id` IS NULL OR tc.`user_id`=?) ';
+				$select .= ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
+				$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (lc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON (ls.`security_id`=cg.`security_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON (fgim.`item_content_id`=lc.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` tcs2 ON (fgim.`gallery_content_id`=tcs2.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts2 ON (ts2.`security_id`=tcs2.`security_id` )";
+				$mid .= ' AND (tcs2.`security_id` IS NULL OR lc.`user_id`=?) ';
 				$bindVars[] = $gBitUser->mUserId;
 			}
 		}
@@ -479,14 +479,14 @@ class FisheyeImage extends FisheyeBase {
 			//converted in prepGetList()
 			$mid .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
-		$query = "SELECT $distinct fi.`image_id` AS `hash_key`, fi.*, tf.*, tc.*, fg.`gallery_id`, uu.`login`, uu.`real_name` $select
+		$query = "SELECT $distinct fi.`image_id` AS `hash_key`, fi.*, lf.*, lc.*, fg.`gallery_id`, uu.`login`, uu.`real_name` $select
 				FROM `".BIT_DB_PREFIX."fisheye_image` fi
-					INNER JOIN `".BIT_DB_PREFIX."tiki_attachments` a ON(a.`content_id`=fi.`content_id`)
-					INNER JOIN `".BIT_DB_PREFIX."tiki_files` tf ON(a.`foreign_id`=tf.`file_id`)
-					, `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."tiki_content` tc $join
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON(tfgim2.`item_content_id`=tc.`content_id`)
+					INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` a ON(a.`content_id`=fi.`content_id`)
+					INNER JOIN `".BIT_DB_PREFIX."liberty_files` lf ON(a.`foreign_id`=lf.`file_id`)
+					, `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."liberty_content` lc $join
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON(tfgim2.`item_content_id`=lc.`content_id`)
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fg.`content_id`=tfgim2.`gallery_content_id`)
-				WHERE fi.`content_id` = tc.`content_id` AND uu.`user_id` = tc.`user_id` $mid";
+				WHERE fi.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $mid";
 
 		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'],$pListHash['offset'] ) ) {
 			$ret = $rs->GetAssoc();

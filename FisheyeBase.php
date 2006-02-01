@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.16 2006/01/31 20:17:25 bitweaver Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.17 2006/02/01 18:41:04 squareing Exp $
  * @package fisheye
  */
 
@@ -40,9 +40,9 @@ class FisheyeBase extends LibertyAttachable
 		$ret = NULL;
 
 		if( is_numeric( $pContentId ) ) {
-			$sql = "SELECT fg.`gallery_id` AS `hash_key`, fg.*, tc.`title`
-					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg, `".BIT_DB_PREFIX."tiki_content` tc, `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
-					WHERE fgim.`item_content_id` = ? AND fgim.`gallery_content_id`=fg.`content_id` AND fg.`content_id`=tc.`content_id`";
+			$sql = "SELECT fg.`gallery_id` AS `hash_key`, fg.*, lc.`title`
+					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg, `".BIT_DB_PREFIX."liberty_content` lc, `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+					WHERE fgim.`item_content_id` = ? AND fgim.`gallery_content_id`=fg.`content_id` AND fg.`content_id`=lc.`content_id`";
 			$ret = $this->mDb->getAssoc( $sql, array( $pContentId ) );
 		}
 		return $ret;
@@ -83,18 +83,18 @@ class FisheyeBase extends LibertyAttachable
 			foreach( $path as $galleryId ) {
 				if( $galleryId ) {
 					$p++; $c++;
-					$selectSql .= " tc$p.`title` AS `title$p`, fg$p.`gallery_id` AS `gallery_id$p`,";
+					$selectSql .= " lc$p.`title` AS `title$p`, fg$p.`gallery_id` AS `gallery_id$p`,";
 					$joinSql .= " `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim$p
-						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc$p ON(fgim$p.`gallery_content_id`=tc$p.`content_id`)
-						INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg$p ON(fg$p.`content_id`=tc$p.`content_id`),";
-					$whereSql .= " fg$p.`gallery_id`=? AND fgim$p.`item_content_id`=tc$c.`content_id` AND ";
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc$p ON(fgim$p.`gallery_content_id`=lc$p.`content_id`)
+						INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg$p ON(fg$p.`content_id`=lc$p.`content_id`),";
+					$whereSql .= " fg$p.`gallery_id`=? AND fgim$p.`item_content_id`=lc$c.`content_id` AND ";
 					array_push( $bindVars, $galleryId );
 				}
 			}
-//			$selectSql .= " tc$c.title AS title$c ";//AS title$g, fg$g.gallery_id AS gallery_id$g";
+//			$selectSql .= " lc$c.title AS title$c ";//AS title$g, fg$g.gallery_id AS gallery_id$g";
 			$joinSql .= " `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim$c
-				INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc$c ON(fgim$c.`item_content_id`=tc$c.`content_id`) ";
-			$whereSql .= " tc$c.`content_id`=?  AND fgim$c.`gallery_content_id`=tc$p.`content_id` ";
+				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc$c ON(fgim$c.`item_content_id`=lc$c.`content_id`) ";
+			$whereSql .= " lc$c.`content_id`=?  AND fgim$c.`gallery_content_id`=lc$p.`content_id` ";
 			array_push( $bindVars, $this->mContentId );
 			$rs = $this->mDb->query( "SELECT ".rtrim( $selectSql, ',')." FROM ".rtrim( $joinSql, ',')." WHERE $whereSql", $bindVars );
 			if( !empty( $rs->fields ) ) {
