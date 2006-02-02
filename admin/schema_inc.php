@@ -65,6 +65,7 @@ $gBitInstaller->registerPackageInfo( FISHEYE_PKG_NAME, array(
 // ### Sequences
 $sequences = array (
 	'fisheye_gallery_id_seq' => array( 'start' => 1 )
+	'fisheye_image_id_seq' => array( 'start' => 1 )
 );
 $gBitInstaller->registerSchemaSequences( FISHEYE_PKG_NAME, $sequences );
 
