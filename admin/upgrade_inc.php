@@ -14,14 +14,10 @@ array( 'DATADICT' => array(
 		'tiki_fisheye_image' => 'fisheye_image',
 		'tiki_thumbnail_queue' => 'liberty_thumbnail_queue',
 	)),
+	array( 'RENAMESEQUENCE' => array(
+		"tiki_fisheye_gallery_id_seq" => "fisheye_gallery_id_seq",
+	)),
 )),
-array( 'PHP' => '
-	global $gBitSystem;
-	$current = $gBitSystem->mDb->GenID( "tiki_fisheye_gallery_id_seq" );
-	$gBitSystem->mDb->DropSequence( "tiki_fisheye_gallery_id_seq");
-	$gBitSystem->mDb->CreateSequence( "fisheye_gallery_id_seq", $current );
-' ),
-
 		)
 	),
 );
