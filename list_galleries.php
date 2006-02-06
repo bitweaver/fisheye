@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.5 2006/01/10 21:11:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.6 2006/02/06 00:06:23 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -35,10 +35,10 @@ $galleryList = $gFisheyeGallery->getList( $_REQUEST );
 // pagination
 $offset = !empty( $_REQUEST['offset'] ) ? $_REQUEST['offset'] : 0;
 $gBitSmarty->assign( 'curPage', $page = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : 1 );
-$offset = ( $page - 1 ) * $gBitSystem->mPrefs['maxRecords'];
+$offset = ( $page - 1 ) * $gBitSystem->mPrefs['max_records'];
 
 // calculate page number
-$numPages = ceil( $galleryList['cant'] / $gBitSystem->mPrefs['maxRecords'] );
+$numPages = ceil( $galleryList['cant'] / $gBitSystem->mPrefs['max_records'] );
 $gBitSmarty->assign( 'numPages', $numPages );
 
 $gBitSmarty->assign( 'galleryList', $galleryList['data'] );
