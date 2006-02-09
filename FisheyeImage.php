@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.17 2006/02/01 18:41:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.18 2006/02/09 12:53:32 lsces Exp $
  * @package fisheye
  */
 
@@ -474,7 +474,12 @@ class FisheyeImage extends FisheyeBase {
 				$mid .= ' AND (tcs2.`security_id` IS NULL OR lc.`user_id`=?) ';
 				$bindVars[] = $gBitUser->mUserId;
 			}
-		}
+		} else { 
+			$groups = array_keys($gBitUser->mGroups);
+			$mid .= ( empty( $mid ) ? " WHERE " : " AND " )." lc.`group_id` IN ( ".implode( ',',array_fill ( 0, count( $groups ),'?' ) )." )";
+			$bindVars = array_merge( $bindVars, $groups );
+		}		
+
 		if ( !empty( $pListHash['sort_mode'] ) ) {
 			//converted in prepGetList()
 			$mid .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
