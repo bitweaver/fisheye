@@ -4,7 +4,7 @@
 <div class="listing fisheye">
 	<div class="header">
 		<div class="floaticon">
-			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon'}
+			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon' serviceHash=$gContent->mInfo}
 			{if $gContent->hasUserPermission( 'bit_p_edit_fisheye' )}
 				<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=liberty iname="config" iexplain="Edit"}</a>
 				<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=fisheye iname="order" iexplain="Image Order"}</a>
@@ -28,14 +28,14 @@
 	<div class="body">
 		{formfeedback success=$fisheyeSuccess error=$fisheyeErrors warning=$fisheyeWarnings}
 
+		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
 		{include file="bitpackage:fisheye/view_gallery_images_inc.tpl"}
 		{*include file="bitpackage:fisheye/view_gallery_files_inc.tpl"*}
 	</div>	<!-- end .body -->
 
 	{libertypagination numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}
 
-	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view'}
-
+	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
 </div>	<!-- end .fisheye -->
 
 {/strip}

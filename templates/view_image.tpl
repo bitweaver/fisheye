@@ -23,6 +23,7 @@
 	</div>
 
 	<div class="body">
+		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
 		{box class="box image"}
 			<img src="{$gContent->mInfo.display_url}{$refresh}" alt="{$gContent->mInfo.title|default:$gContent->mInfo.image_file.filename}" title="{$gContent->mInfo.data|default:$gContent->mInfo.filename}" />
 
@@ -53,7 +54,7 @@
 		{/if}
 	</div>	<!-- end .body -->
 
-	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view'}
+	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
 
 </div>	<!-- end .fisheye -->
 {/strip}
