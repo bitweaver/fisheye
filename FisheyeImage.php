@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.19 2006/02/11 12:21:11 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.20 2006/02/13 10:06:12 squareing Exp $
  * @package fisheye
  */
 
@@ -168,7 +168,7 @@ class FisheyeImage extends FisheyeBase {
 
 			// LibertyAttachable will take care of thumbnail generation of the offline thumbnailer is not active
 			if( !empty( $pStorageHash['upload'] ) ) {
-				$pStorageHash['upload']['thumbnail'] = !$gBitSystem->isFeatureActive( 'feature_offline_thumbnailer' );
+				$pStorageHash['upload']['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
 			}
 			if( LibertyAttachable::store( $pStorageHash ) ) {
 				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['image_file']['attachment_id'] ) {
@@ -202,7 +202,7 @@ class FisheyeImage extends FisheyeBase {
 				$rs = $this->mDb->query($sql, $bindVars);
 
 				// check to see if we need offline thumbnailing
-				if( $gBitSystem->isFeatureActive( 'feature_offline_thumbnailer' ) ) {
+				if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) ) {
 					$this->generateThumbnails();
 				}
 			}
@@ -266,7 +266,7 @@ class FisheyeImage extends FisheyeBase {
 	function generateThumbnails( $pResizeOriginal=NULL ) {
 		global $gBitSystem;
 		// LibertyAttachable will take care of thumbnail generation of the offline thumbnailer is not active
-		if( $gBitSystem->isFeatureActive( 'feature_offline_thumbnailer' ) ) {
+		if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) ) {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."liberty_thumbnail_queue`
 					  WHERE `content_id`=?";
 			$this->mDb->query( $query, array( $this->mContentId ) );
