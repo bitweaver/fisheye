@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.18 2006/02/11 12:21:10 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.19 2006/02/14 21:53:25 squareing Exp $
  * @package fisheye
  */
 
@@ -56,7 +56,7 @@ class FisheyeGallery extends FisheyeBase {
 		}
 
 		if ($whereSql) {	// If we have some way to know what fisheye_gallery row to load...
-			$this->getServicesSql( 'content_load_function', $selectSql, $joinSql, $whereSql, $bindVars );
+			$this->getServicesSql( 'content_load_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
 			$query = "SELECT fg.*, lc.* $selectSql
 						, uue.`login` AS modifier_user, uue.`real_name` AS `modifier_real_name`
