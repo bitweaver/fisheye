@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.19 2006/02/14 21:53:25 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.20 2006/02/17 11:20:54 squareing Exp $
  * @package fisheye
  */
 
@@ -44,7 +44,9 @@ class FisheyeGallery extends FisheyeBase {
 
 	function load( $pCurrentImageId=NULL ) {
 		global $gBitSystem;
-		$bindVars = array(); $selectSql = ''; $joinSql = ''; $whereSql = '';
+		$bindVars = array();
+		$selectSql = $joinSql = $whereSql = '';
+
 		if( @$this->verifyId( $this->mGalleryId ) ) {
 			$whereSql = " WHERE fg.`gallery_id` = ?";
 			$bindVars = array( $this->mGalleryId );
@@ -474,47 +476,35 @@ vd( $this->mErrors );
 		return $ret;
 	}
 
-
-
 	function getList( &$pListHash ) {
 		global $gBitUser,$gBitSystem, $commentsLib;
 
 		$this->prepGetList( $pListHash );
 		$bindVars = array();
-		$select = '';
-		$mid = '';
-		$sort = '';
-		$join = '';
-
-		// this *has* to go first because of bindVars order
-		if( empty( $pListHash['show_empty'] ) ) {
-		// This will nicely pull out the unused rows, but it is dog slow
-//  			 $join .= " INNER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON (fgim.`gallery_content_id`=lc.`content_id`) ";
-			 $mid = '';
-		}
+		$selectSql = $joinSql = $whereSql = $sortSql = '';
 
 		if( !empty( $pListHash['root_only'] ) ) {
-			$join .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON (tfgim2.`item_content_id`=lc.`content_id`)";
-			$mid .= ' AND tfgim2.`item_content_id` IS NULL ';
+			$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON (tfgim2.`item_content_id`=lc.`content_id`)";
+			$whereSql .= ' AND tfgim2.`item_content_id` IS NULL ';
 		}
 		if( !empty( $pListHash['contain_item'] ) ) {
-			$select = " , tfgim3.`item_content_id` AS `in_gallery` ";
-			$join .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=lc.`content_id`) AND tfgim3.`item_content_id`=? ";
+			$selectSql = " , tfgim3.`item_content_id` AS `in_gallery` ";
+			$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=lc.`content_id`) AND tfgim3.`item_content_id`=? ";
 			$bindVars[] = $pListHash['contain_item'];
 		}
 		if( @$this->verifyId( $pListHash['user_id'] ) ) {
-			$mid .= " AND lc.`user_id` = ? ";
+			$whereSql .= " AND lc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
 		}
 		if( !empty( $pListHash['find'] ) ) {
-			$mid .= " AND UPPER( lc.`title` ) LIKE ? ";
+			$whereSql .= " AND UPPER( lc.`title` ) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
 		}
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-			$select .= ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
-			$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (lc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON (ls.`security_id`=cg.`security_id` )";
+			$selectSql .= ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
+			$joinSql .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (lc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON (ls.`security_id`=cg.`security_id` )";
 			if( !$gBitUser->isAdmin() ) {
-				$mid .= ' AND (cg.`security_id` IS NULL OR lc.`user_id`=?) ';
+				$whereSql .= ' AND (cg.`security_id` IS NULL OR lc.`user_id`=?) ';
 				$bindVars[] = $gBitUser->mUserId;
 			}
 		}
@@ -526,17 +516,18 @@ vd( $this->mErrors );
 			$mapJoin = "";
 		}
 
-
 		if ( !empty( $pListHash['sort_mode'] ) ) {
 			//converted in prepGetList()
-			$sort .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
+			$sortSql .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
-		$query = "SELECT DISTINCT( fg.`gallery_id` ) AS `hash_key`, fg.*, lc.*, uu.`login`, uu.`real_name`, ptc.`content_type_guid` AS `preview_content_type_guid` $select
+		$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+
+		$query = "SELECT DISTINCT( fg.`gallery_id` ) AS `hash_key`, fg.*, lc.*, uu.`login`, uu.`real_name`, ptc.`content_type_guid` AS `preview_content_type_guid` $selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
 				LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` ptc ON( fg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."liberty_content` lc
-				$mapJoin $join
-				WHERE fg.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $mid $sort";
+				$mapJoin $joinSql
+				WHERE fg.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $whereSql $sortSql";
 		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] ) ) {
 			$data = $rs->GetAssoc();
 			if( empty( $pListHash['no_thumbnails'] ) ) {
@@ -558,8 +549,8 @@ vd( $this->mErrors );
 		$query_c = "SELECT COUNT( DISTINCT( fg.`gallery_id` ) )
 				FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
 				LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` ptc ON( fg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."liberty_content` lc
-				$mapJoin $join
-				WHERE fg.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $mid";
+				$mapJoin $joinSql
+				WHERE fg.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $whereSql";
 		$cant = $this->mDb->getOne( $query_c, $bindVars );
 
 		$ret['cant'] = $cant;

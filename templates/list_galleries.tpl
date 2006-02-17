@@ -89,6 +89,8 @@
 						{tr}Hits{/tr}: {$gal.hits}<br />
 					{/if}
 
+					{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gal}
+
 					<div class="clear"></div>
 				</li>
 			{foreachelse}

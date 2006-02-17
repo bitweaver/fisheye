@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.20 2006/02/13 10:06:12 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.21 2006/02/17 11:20:54 squareing Exp $
  * @package fisheye
  */
 
@@ -36,30 +36,34 @@ class FisheyeImage extends FisheyeBase {
 		if( $this->isValid() ) {
 			global $gBitSystem, $gBitUser;
 			$gateSql = NULL;
-			$mid = NULL;
+			$selectSql = $joinSql = $whereSql = '';
 			$bindVars = array( $gBitUser->mUserId );
+
 			if ( @$this->verifyId( $this->mImageId ) ) {
-				$mid = " WHERE fi.`image_id` = ?";
+				$whereSql = " WHERE fi.`image_id` = ?";
 				$bindVars[] = $this->mImageId;
 			} elseif ( @$this->verifyId( $this->mContentId ) ) {
-				$mid = " WHERE fi.`content_id` = ?";
+				$whereSql = " WHERE fi.`content_id` = ?";
 				$bindVars[] = $this->mContentId;
 			}
+
 			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 				$gateSql = ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
-				$mid = " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON ( lc.`content_id`=cg.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON ( cg.`security_id`=ls.`security_id` )
- 						".$mid;
+				$whereSql = " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON ( lc.`content_id`=cg.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON ( cg.`security_id`=ls.`security_id` ) ".$whereSql;
 			}
-			$sql = "SELECT fi.*, lc.* $gateSql
+
+			$this->getServicesSql( 'content_load_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+
+			$sql = "SELECT fi.*, lc.* $gateSql $selectSql
 						, uue.`login` AS `modifier_user`, uue.`real_name` AS `modifier_real_name`
 						, uuc.`login` AS `creator_user`, uuc.`real_name` AS `creator_real_name`, ufm.`favorite_content_id` AS `is_favorite`
 					FROM `".BIT_DB_PREFIX."fisheye_image` fi
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (lc.`content_id` = fi.`content_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = lc.`modifier_user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = lc.`user_id`)
-						LEFT JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON (ufm.`favorite_content_id`=lc.`content_id` AND ufm.`user_id`=?)
-					$mid";
-			if( $rs = $this->mDb->query($sql, array($bindVars)) ) {
+						LEFT JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON (ufm.`favorite_content_id`=lc.`content_id` AND ufm.`user_id`=?) $joinSql
+					$whereSql";
+			if( $rs = $this->mDb->query( $sql, array( $bindVars ) ) ) {
 				$this->mInfo = $rs->fields;
 
 				$this->mImageId = $this->mInfo['image_id'];
@@ -474,22 +478,25 @@ class FisheyeImage extends FisheyeBase {
 				$mid .= ' AND (tcs2.`security_id` IS NULL OR lc.`user_id`=?) ';
 				$bindVars[] = $gBitUser->mUserId;
 			}
-		}		
+		}
 
 		if ( !empty( $pListHash['sort_mode'] ) ) {
 			//converted in prepGetList()
 			$mid .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
-		$query = "SELECT $distinct fi.`image_id` AS `hash_key`, fi.*, lf.*, lc.*, fg.`gallery_id`, uu.`login`, uu.`real_name` $select
+
+		$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+
+		$query = "SELECT $distinct fi.`image_id` AS `hash_key`, fi.*, lf.*, lc.*, fg.`gallery_id`, uu.`login`, uu.`real_name` $select $selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_image` fi
 					INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` a ON(a.`content_id`=fi.`content_id`)
 					INNER JOIN `".BIT_DB_PREFIX."liberty_files` lf ON(a.`foreign_id`=lf.`file_id`)
 					, `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."liberty_content` lc $join
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON(tfgim2.`item_content_id`=lc.`content_id`)
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fg.`content_id`=tfgim2.`gallery_content_id`)
-				WHERE fi.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $mid";
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fg.`content_id`=tfgim2.`gallery_content_id`) $joinSql
+				WHERE fi.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $mid $whereSql";
 
-		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'],$pListHash['offset'] ) ) {
+		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] ) ) {
 			$ret = $rs->GetAssoc();
 			if( empty( $pListHash['no_thumbnails'] ) ) {
 				foreach( array_keys( $ret ) as $imageId ) {

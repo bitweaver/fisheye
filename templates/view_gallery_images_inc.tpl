@@ -36,6 +36,7 @@
 			{/if}
 
 			<td style="width:{$tdWidth}%; vertical-align:top;"> <!-- Begin Image Cell -->
+				{*include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$galItem->mInfo*}
 				{box class="box `$galItem->mInfo.content_type_guid`"}
 					<a href="{$galItem->getDisplayUrl()|escape}">
 						<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|default:'image'}" />
