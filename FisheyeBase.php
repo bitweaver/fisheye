@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.17 2006/02/01 18:41:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.18 2006/02/19 19:54:17 lsces Exp $
  * @package fisheye
  */
 
@@ -57,8 +57,8 @@ class FisheyeBase extends LibertyAttachable
 	function updatePosition($pGalleryContentId, $newPosition = NULL) {
 		if( $pGalleryContentId && $newPosition && $this->verifyId($this->mContentId) ) {
 			// SQL optimization to prevent stupid updates of identical data
-			$sql = "UPDATE `".BIT_DB_PREFIX."fisheye_gallery_image_map` SET `position` = ?
-					WHERE `item_content_id` = ? AND `gallery_content_id` = ? AND (`position` IS NULL OR `position`!=?)";
+			$sql = "UPDATE `".BIT_DB_PREFIX."fisheye_gallery_image_map` SET `item_position` = ?
+					WHERE `item_content_id` = ? AND `gallery_content_id` = ? AND (`item_position` IS NULL OR `item_position`!=?)";
 			$rs = $this->mDb->query($sql, array($newPosition, $this->mContentId, $pGalleryContentId, $newPosition));
 		}
 	}

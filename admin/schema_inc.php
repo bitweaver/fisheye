@@ -14,7 +14,7 @@ $tables = array(
 'fisheye_gallery_image_map' => "
 	gallery_content_id I4 NOTNULL,
 	item_content_id I4 NOTNULL,
-	position I4
+	item_position I4
 ",
 
 'fisheye_image' => "

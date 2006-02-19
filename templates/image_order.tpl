@@ -56,7 +56,7 @@
 							<label>{tr}Gallery Image{/tr}: <input type="radio" name="gallery_preview_content_id" value="{$galItem->mContentId}" {if $gContent->getField('preview_content_id') == $galItem->mContentId}checked="checked"{/if}/></label><br />
 							<label>{if $galItem->getField('is_favorite')}{biticon iname="favorite" ipackage="users" iexplain=""}{/if}{tr}Favorite Image{/tr}: <input type="checkbox" name="is_favorite[]" value="{$galItem->mContentId}" {if $galItem->getField('is_favorite')}checked="checked"{/if}/></label><br />
 							<label>{tr}Batch Select{/tr}: <input type="checkbox" name="batch[]" value="{$galItem->mContentId}" /></label><br />
-							<label>{tr}Position{/tr}</label>: <input type="text" size="5" style="text-align:right;" maxlength="15" name="imagePosition[{$galItem->mContentId}]" id="imagePosition-{$galItem->mContentId}" value="{$galItem->mInfo.position}"/>
+							<label>{tr}Position{/tr}</label>: <input type="text" size="5" style="text-align:right;" maxlength="15" name="imagePosition[{$galItem->mContentId}]" id="imagePosition-{$galItem->mContentId}" value="{$galItem->mInfo.item_position}"/>
 						</td>
 					</tr>
 				{/foreach}

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.20 2006/02/17 11:20:54 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.21 2006/02/19 19:54:17 lsces Exp $
  * @package fisheye
  */
 
@@ -110,7 +110,7 @@ class FisheyeGallery extends FisheyeBase {
 								INNER JOIN `".BIT_DB_PREFIX."fisheye_image` fi ON ( fi.`content_id`=fgim.`item_content_id` )
 								INNER JOIN `".BIT_DB_PREFIX."liberty_files` lf ON ( lf.`file_id`=fi.`image_id` )
 							WHERE fgim.`gallery_content_id` = ?
-							ORDER BY fgim.`position`, fi.`content_id` ";
+							ORDER BY fgim.`item_position`, fi.`content_id` ";
 					if( $rs = $this->mDb->query($query, array( $this->mContentId ) ) ) {
 						$rows = $rs->getRows();
 						for( $i = 0; $i < count( $rows ); $i++ ) {
@@ -169,7 +169,7 @@ class FisheyeGallery extends FisheyeBase {
 		$query = "SELECT fgim.*, lc.`content_type_guid`, lc.`user_id`, ufm.`favorite_content_id` AS is_favorite $select
 				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` ) $join  LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
 				WHERE fgim.`gallery_content_id` = ? $where
-				ORDER BY fgim.`position`, fgim.`item_content_id` $mid";
+				ORDER BY fgim.`item_position`, fgim.`item_content_id` $mid";
 		$rs = $this->mDb->query($query, $bindVars, $pMaxRows, $pOffset);
 
 		$rows = $rs->getRows();
@@ -181,7 +181,7 @@ class FisheyeGallery extends FisheyeBase {
 			if( $pass && $item = $gLibertySystem->getLibertyObject( $row['item_content_id'], $row['content_type_guid'] ) ) {
 				$item->loadThumbnail( $this->mInfo['thumbnail_size'] );
 				$item->setGalleryPath( $this->mGalleryPath.'/'.$this->mGalleryId );
-				$item->mInfo['position'] = $row['position'];
+				$item->mInfo['item_position'] = $row['item_position'];
 				$this->mItems[$row['item_content_id']] = $item;
 			}
 		}
@@ -207,9 +207,9 @@ class FisheyeGallery extends FisheyeBase {
 		$ret = 0;
 
 		if ($this->mGalleryId) {
-			$query = "SELECT COUNT(*) AS `count`
-					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
-					WHERE `gallery_content_id` = ?";
+			$query = 'SELECT COUNT(*) AS "count"`
+					FROM `'.BIT_DB_PREFIX.'fisheye_gallery_image_map`
+					WHERE `gallery_content_id` = ?';
 			$rs = $this->mDb->query($query, array($this->mContentId));
 			$ret = $rs->fields['count'];
 		}
@@ -380,7 +380,7 @@ class FisheyeGallery extends FisheyeBase {
 	function addItem( $pContentId, $pPosition=NULL ) {
 		$ret = FALSE;
 		if( $this->isValid() && @$this->verifyId( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId  )  && !$this->isInGallery( $pContentId, $this->mContentId ) ) {
-			$query = "INSERT INTO `".BIT_DB_PREFIX."fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`, `position`) VALUES (?,?,?)";
+			$query = "INSERT INTO `".BIT_DB_PREFIX."fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`, `item_position`) VALUES (?,?,?)";
 			$rs = $this->mDb->query($query, array($pContentId, $this->mContentId, $pPosition ) );
 			$ret = TRUE;
 		}
