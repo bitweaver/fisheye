@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.21 2006/02/19 19:54:17 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.22 2006/02/21 12:42:20 squareing Exp $
  * @package fisheye
  */
 
@@ -207,7 +207,7 @@ class FisheyeGallery extends FisheyeBase {
 		$ret = 0;
 
 		if ($this->mGalleryId) {
-			$query = 'SELECT COUNT(*) AS "count"`
+			$query = 'SELECT COUNT(*) AS "count"
 					FROM `'.BIT_DB_PREFIX.'fisheye_gallery_image_map`
 					WHERE `gallery_content_id` = ?';
 			$rs = $this->mDb->query($query, array($this->mContentId));
