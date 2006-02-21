@@ -1,3 +1,4 @@
+{strip}
 <div class="admin fisheye">
 	<div class="header">
 		<h1>{tr}Gallery Images{/tr}: <a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}">{$gContent->mInfo.title}</a></h1>
@@ -9,7 +10,6 @@
 		<div id="imgedit"></div>
 
 		{form id="batch_order" legend="Gallery Images"}
-{strip}
 			<input type="hidden" name="gallery_id" value="{$gContent->mGalleryId}"/>
 
 			{formfeedback hash=$formfeedback}
@@ -63,12 +63,9 @@
 				<tr>
 					<td colspan="4" align="right">
 						{tr}Use Random Gallery Image{/tr} <input type="radio" name="gallery_preview_content_id" id="gallery_preview_content_id" value="" {if $gContent->mInfo.preview_content_id == ""}checked="checked"{/if} /><br/>
-{/strip}
-<script type="text/javascript">//<![CDATA[
-	document.write("<label>{tr}Batch select all images{/tr} <input name=\"switcher\" id=\"switcher\" type=\"checkbox\" onclick=\"switchCheckboxes(this.form.id,'batch[]','switcher')\" /></label>");
-//]]></script>
-{strip}
-
+						<script type="text/javascript">/* <![CDATA[ */
+							document.write("<label>{tr}Batch select all images{/tr} <input name=\"switcher\" id=\"switcher\" type=\"checkbox\" onclick=\"switchCheckboxes(this.form.id,'batch[]','switcher')\" /></label>");
+						/* ]]> */</script>
 					</td>
 				</tr>
 			</table>
@@ -135,7 +132,7 @@
 			<div class="row submit">
 				<input type="submit" name="cancel" value="{tr}Back{/tr}"/> <input type="submit" name="updateImageOrder" value="{tr}Save Changes{/tr}"/>
 			</div>
-{/strip}
 		{/form}
 	</div><!-- end .body -->
 </div><!-- end .fisheye -->
+{/strip}

@@ -1,3 +1,4 @@
+{strip}
 <div class="admin fisheye">
 	<div class="header">
 		<h1>{tr}Upload Files{/tr}</h1>
@@ -33,11 +34,10 @@
 					<div id="fileslist"></div>
 					<div class="clear"></div>
 					{formhelp note="These files will be uploaded when you hit the upload button below."}
-					<script type="text/javascript">//<![CDATA[
-						// Multi file upload
+					<script type="text/javascript">/* <![CDATA[ Multi file upload */
 						var multi_selector = new MultiSelector( document.getElementById( 'fileslist' ), 10 );
 						multi_selector.addElement( document.getElementById( 'fileupload' ) );
-					//]]></script>
+					/* ]]> */</script>
 				{/forminput}
 			</div>
 
@@ -90,3 +90,4 @@
 		{/form}
 	</div> <!-- end .body -->
 </div> <!-- end .fisheye -->
+{/strip}

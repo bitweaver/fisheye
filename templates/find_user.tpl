@@ -3,14 +3,11 @@
 <head>
 	<title>Find User</title>
 	<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/bitweaver.js"></script>
-	<!--[if gte IE 5.5000]>
-		<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/fixes/pngfix.js"></script>
-	<![endif]-->
 
 	<style type="text/css"><!--
-	  {if $gBitSystem->mStyles.styleSheet}@import url({$gBitSystem->mStyles.styleSheet});{/if}
-	  {if $gBitSystem->mStyles.browserStyleSheet}@import url({$gBitSystem->mStyles.browserStyleSheet});{/if}
-	  {if $gBitSystem->mStyles.customStyleSheet}@import url({$gBitSystem->mStyles.customStyleSheet});{/if}
+		{if $gBitSystem->mStyles.styleSheet}@import url({$gBitSystem->mStyles.styleSheet});{/if}
+		{if $gBitSystem->mStyles.browserStyleSheet}@import url({$gBitSystem->mStyles.browserStyleSheet});{/if}
+		{if $gBitSystem->mStyles.customStyleSheet}@import url({$gBitSystem->mStyles.customStyleSheet});{/if}
 	--></style>
 
 	{literal}
@@ -37,7 +34,7 @@
 			</div>
 		</form>
 	</div>
-	
+
 	{if $foundUsers}
 	<div class="body">
 		<h2>Search Results</h2>
@@ -49,7 +46,7 @@
 				<td>{$foundUsers[ix].real_name}</td>
 				<td>{$foundUsers[ix].user_id}</td>
 				<td><a href="javascript:void(null);" style="cursor:hand;" onclick="returnUserInfo({$foundUsers[ix].user_id},'{$foundUsers[ix].real_name}');">Select User</a></td>
-			</tr>			
+			</tr>
 		{/section}
 		</table>
 	</div>
