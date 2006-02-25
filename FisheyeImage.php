@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.21 2006/02/17 11:20:54 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.22 2006/02/25 05:33:17 spiderr Exp $
  * @package fisheye
  */
 
@@ -47,10 +47,10 @@ class FisheyeImage extends FisheyeBase {
 				$bindVars[] = $this->mContentId;
 			}
 
-			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-				$gateSql = ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
-				$whereSql = " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON ( lc.`content_id`=cg.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON ( cg.`security_id`=ls.`security_id` ) ".$whereSql;
-			}
+//			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
+//				$gateSql = ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
+//				$whereSql = " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON ( lc.`content_id`=cg.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON ( cg.`security_id`=ls.`security_id` ) ".$whereSql;
+//			}
 
 			$this->getServicesSql( 'content_load_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
