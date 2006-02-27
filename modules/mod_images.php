@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.6 2005/08/24 20:50:17 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.7 2006/02/27 16:13:49 bitweaver Exp $
  * @package fisheye
  * @subpackage modules
  */
@@ -17,7 +17,7 @@ $image = new FisheyeImage();
 $display = TRUE;
 
 $listHash = $module_params;
-if( !empty( $gContent ) && $gContent->mInfo['content_type_guid'] == FISHEYEGALLERY_CONTENT_TYPE_GUID ) {
+if( !empty( $gContent ) && $gContent->getField( 'content_type_guid' ) == FISHEYEGALLERY_CONTENT_TYPE_GUID ) {
 	$displayCount = empty( $gContent->mItems ) ? 0 : count( $gContent->mItems );
 	$thumbCount = $gContent->mInfo['rows_per_page'] * $gContent->mInfo["cols_per_page"];
 	$listHash['gallery_id'] = $gContent->mGalleryId;
