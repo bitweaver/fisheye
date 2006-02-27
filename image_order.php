@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.11 2006/01/23 07:20:27 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.12 2006/02/27 18:37:57 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -95,6 +95,7 @@ if (!empty($_REQUEST['cancel'])) {
 
 	foreach ($_REQUEST['imagePosition'] as $contentId=>$newPos) {
 		if( $galleryItem = $gLibertySystem->getLibertyObject( $contentId ) ) {
+			$galleryItem->load();
 			if( isset( $batchCon[$contentId] ) ) {
 				if( !empty( $_REQUEST['batch_command'] ) ) {
 					@list( $batchCommand, $batchParam ) = @split( ':', $_REQUEST['batch_command'] );
@@ -153,6 +154,8 @@ if (!empty($_REQUEST['cancel'])) {
 				$newPos = preg_replace( '/[\D]/', '', (!empty( $newOrder[$contentId] ) ? $newOrder[$contentId] : $newPos) );
 				if ($galleryItem->mInfo['title'] != $_REQUEST['image_title'][$contentId]) {
 					$storageHash = array('title' => $_REQUEST['image_title'][$contentId]);
+					// make sure we don't delete the 'data' field on en masse title updating
+					$storageHash['edit'] = $galleryItem->getField( 'data' );
 				}
 				if( !empty( $storageHash ) ) {
 					$galleryItem->store($storageHash);
