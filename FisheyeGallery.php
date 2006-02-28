@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.23 2006/02/26 20:52:09 seannerd Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.24 2006/02/28 01:42:54 seannerd Exp $
  * @package fisheye
  */
 
@@ -521,15 +521,15 @@ vd( $this->mErrors );
 			$sortSql .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 		// Putting in the below hack because mssql cannot select distinct on a text blob column.
-		$dbFieldHack    = $gBitDbType == 'mssql' ? " CAST(lc.`data` AS VARCHAR(250)) as `data` " : " lc.`data` ";
+		$selectSql = $gBitDbType == 'mssql' ? " ,CAST(lc.`data` AS VARCHAR(250)) as `data` " : " ,lc.`data` ";
 
 		$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
 		$query = "SELECT DISTINCT( fg.`gallery_id` ) AS `hash_key`, fg.*, 
 				lc.`content_id`, lc.`user_id`, lc.`modifier_user_id`, lc.`created`, lc.`last_modified`,
 				lc.`content_type_guid`, lc.`format_guid`, lc.`hits`, lc.`last_hit`, lc.`event_time`, lc.`version`,
-				lc.`lang_code`, lc.`title`, lc.`ip`, $dbFieldHack, 
-				uu.`login`, uu.`real_name`, ptc.`content_type_guid` AS `preview_content_type_guid` $selectSql
+				lc.`lang_code`, lc.`title`, lc.`ip`, uu.`login`, uu.`real_name`,
+				ptc.`content_type_guid` AS `preview_content_type_guid` $selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
 				LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` ptc ON( fg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."liberty_content` lc
 				$mapJoin $joinSql
