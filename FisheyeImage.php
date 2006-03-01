@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.22 2006/02/25 05:33:17 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.23 2006/03/01 20:16:07 spiderr Exp $
  * @package fisheye
  */
 
@@ -251,7 +251,7 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
 			$fileHash['name'] = $this->mInfo['image_file']['filename'];
 			$fileHash['max_height'] = $fileHash['max_width'] = $pResizeOriginal;
-			$resizeFunc = ($gBitSystem->getPreference( 'image_processor' ) == 'imagick' ) ? 'liberty_imagick_resize_image' : 'liberty_gd_resize_image';
+			$resizeFunc = ($gBitSystem->getConfig( 'image_processor' ) == 'imagick' ) ? 'liberty_imagick_resize_image' : 'liberty_gd_resize_image';
 			if( !$resizeFunc( $fileHash ) ) {
 				$this->mErrors['upload'] = $fileHash['errors'];
 			}

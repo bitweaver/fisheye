@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.4 2006/03/01 20:16:07 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -18,7 +18,7 @@ global $gBitSystem, $gDebug;
 //$gDebug = TRUE;
 
 if( !empty( $_REQUEST['size'] ) ) {
-	setcookie( 'fisheyeviewsize', $_REQUEST['size'], 0, $gBitSystem->getPreference('cookie_path'), $gBitSystem->getPreference('cookie_domain') );
+	setcookie( 'fisheyeviewsize', $_REQUEST['size'], 0, $gBitSystem->getConfig('cookie_path'), $gBitSystem->getConfig('cookie_domain') );
 }
 
 if( !empty( $_REQUEST['refresh'] ) ) {

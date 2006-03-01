@@ -123,7 +123,7 @@ if (!empty($_REQUEST['fisheyeAdminSubmit'])) {
 		if( $data['type'] == 'checkbox' ) {
 			simple_set_toggle($item, FISHEYE_PKG_NAME);
 		} else {
-			$gBitSystem->storePreference($item, $_REQUEST[$item], FISHEYE_PKG_NAME );
+			$gBitSystem->storeConfig($item, $_REQUEST[$item], FISHEYE_PKG_NAME );
 		}
 	}
 
@@ -136,17 +136,17 @@ if (!empty($_REQUEST['fisheyeAdminSubmit'])) {
 	foreach ($formGalleryLists as $item => $data) {
 		simple_set_toggle($item, FISHEYE_PKG_NAME);
 	}
-	$gBitSystem->storePreference('fisheye_list_thumbnail_size', $_REQUEST['list_thumbnail_size'], FISHEYE_PKG_NAME);
-	$gBitSystem->storePreference('fisheye_gallery_default_thumbnail_size', $_REQUEST['default_gallery_thumbnail_size'], FISHEYE_PKG_NAME);
-	$gBitSystem->storePreference('fisheye_gallery_default_rows_per_page', $_REQUEST['rows_per_page'], FISHEYE_PKG_NAME);
-	$gBitSystem->storePreference('fisheye_gallery_default_cols_per_page', $_REQUEST['cols_per_page'], FISHEYE_PKG_NAME);
+	$gBitSystem->storeConfig('fisheye_list_thumbnail_size', $_REQUEST['list_thumbnail_size'], FISHEYE_PKG_NAME);
+	$gBitSystem->storeConfig('fisheye_gallery_default_thumbnail_size', $_REQUEST['default_gallery_thumbnail_size'], FISHEYE_PKG_NAME);
+	$gBitSystem->storeConfig('fisheye_gallery_default_rows_per_page', $_REQUEST['rows_per_page'], FISHEYE_PKG_NAME);
+	$gBitSystem->storeConfig('fisheye_gallery_default_cols_per_page', $_REQUEST['cols_per_page'], FISHEYE_PKG_NAME);
 
 	// Image Display Settings
 	foreach ($formImageLists as $item => $data) {
 		simple_set_toggle( $item, FISHEYE_PKG_NAME );
 	}
 	if( !empty( $_REQUEST['default_image_thumbnail_size'] ) ) {
-		$gBitSystem->storePreference('fisheye_image_default_thumbnail_size', $_REQUEST['default_image_thumbnail_size'], FISHEYE_PKG_NAME );
+		$gBitSystem->storeConfig('fisheye_image_default_thumbnail_size', $_REQUEST['default_image_thumbnail_size'], FISHEYE_PKG_NAME );
 	}
 
 }

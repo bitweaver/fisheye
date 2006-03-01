@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.24 2006/02/28 01:42:54 seannerd Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.25 2006/03/01 20:16:07 spiderr Exp $
  * @package fisheye
  */
 
@@ -220,15 +220,15 @@ class FisheyeGallery extends FisheyeBase {
 		global $gBitSystem;
 
 		if (empty($pStorageHash['rows_per_page'])) {
-			$pStorageHash['rows_per_page'] = $gBitSystem->getPreference('fisheye_gallery_default_rows_per_page', (!empty($this->mInfo['rows_per_page']) ? $this->mInfo['rows_per_page'] : FISHEYE_DEFAULT_ROWS_PER_PAGE));
+			$pStorageHash['rows_per_page'] = $gBitSystem->getConfig('fisheye_gallery_default_rows_per_page', (!empty($this->mInfo['rows_per_page']) ? $this->mInfo['rows_per_page'] : FISHEYE_DEFAULT_ROWS_PER_PAGE));
 		}
 
 		if (empty($pStorageHash['cols_per_page'])) {
-			$pStorageHash['cols_per_page'] = $gBitSystem->getPreference('fisheye_gallery_default_cols_per_page', (!empty($this->mInfo['cols_per_page']) ? $this->mInfo['cols_per_page'] : FISHEYE_DEFAULT_COLS_PER_PAGE));
+			$pStorageHash['cols_per_page'] = $gBitSystem->getConfig('fisheye_gallery_default_cols_per_page', (!empty($this->mInfo['cols_per_page']) ? $this->mInfo['cols_per_page'] : FISHEYE_DEFAULT_COLS_PER_PAGE));
 		}
 
 		if (empty($pStorageHash['thumbnail_size'])) {
-			$pStorageHash['thumbnail_size'] = $gBitSystem->getPreference('fisheye_gallery_default_thumbnail_size', (!empty($this->mInfo['thumbnail_size']) ? $this->mInfo['thumbnail_size'] : FISHEYE_DEFAULT_THUMBNAIL_SIZE));
+			$pStorageHash['thumbnail_size'] = $gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size', (!empty($this->mInfo['thumbnail_size']) ? $this->mInfo['thumbnail_size'] : FISHEYE_DEFAULT_THUMBNAIL_SIZE));
 		}
 
 		if (empty($pStorageHash['title'])) {

@@ -13,9 +13,9 @@
 						{formlabel label=`$output.label` for=$item}
 						{forminput}
 							{if $output.type eq 'text'}
-								<input type="text" name="{$item}" id="{$item}" value="{$gBitSystemPrefs.$item}"/>
+								<input type="text" name="{$item}" id="{$item}" value="{$gBitSystem->getConfig($item)}"/>
 							{elseif $output.type=='checkbox'}
-								{html_checkboxes name="$item" values="y" checked=`$gBitSystemPrefs.$item` labels=false id=$item}
+								{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
 							{/if}
 							{formhelp note=`$output.note`}
 						{/forminput}
@@ -34,7 +34,7 @@
 					<div class="row">
 						{formlabel label=`$output.label` for=$item}
 						{forminput}
-							{html_checkboxes name="$item" values="y" checked=`$gBitSystemPrefs.$item` labels=false id=$item}
+							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
 							{formhelp note=`$output.note`}
 						{/forminput}
 					</div>
@@ -43,7 +43,7 @@
 				<div class="row">
 					{formlabel label="List Thumbnail Size"}
 					{forminput}
-						{html_options values=$imageSizes options=$imageSizes name="list_thumbnail_size" selected=$gBitSystemPrefs.fisheye_list_thumbnail_size}
+						{html_options values=$imageSizes options=$imageSizes name="list_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_list_thumbnail_size')}
 					{/forminput}
 				</div>
 			{/legend}
@@ -60,7 +60,7 @@
 					<div class="row">
 						{formlabel label=`$output.label` for=$item}
 						{forminput}
-							{html_checkboxes name="$item" values="y" checked=`$gBitSystemPrefs.$item` labels=false id=$item}
+							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
 							{formhelp note=`$output.note` page=`$output.page`}
 						{/forminput}
 					</div>
@@ -76,12 +76,12 @@
 					{formlabel label="Default number of rows and columns"}
 					{forminput}
 						<label>
-							<input type="text" size="2" maxlength="2" name="rows_per_page" value="{$gBitSystemPrefs.fisheye_gallery_default_rows_per_page}"/>&nbsp;
+							<input type="text" size="2" maxlength="2" name="rows_per_page" value="{$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/>&nbsp;
 							{tr}Rows Per Page{/tr}
 						</label>
 						<br />
 						<label>
-							<input type="text" size="2" maxlength="2" name="cols_per_page" value="{$gBitSystemPrefs.fisheye_gallery_default_cols_per_page}"/>&nbsp;
+							<input type="text" size="2" maxlength="2" name="cols_per_page" value="{$gBitSystem->getConfig('fisheye_gallery_default_cols_per_page')}"/>&nbsp;
 							{tr}Columns Per Page{/tr}
 						</label>
 						{formhelp note="If you have chosen the &lt;div&gt; layout method, these number will merely be multiplied to generate the maximum number of images per page."}
@@ -91,7 +91,7 @@
 				<div class="row">
 					{formlabel label="Default Thumbnail Size"}
 					{forminput}
-						{html_options values=$imageSizes options=$imageSizes name="default_gallery_thumbnail_size" selected=$gBitSystemPrefs.fisheye_gallery_default_thumbnail_size}
+						{html_options values=$imageSizes options=$imageSizes name="default_gallery_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size')}
 					{/forminput}
 				</div>
 
@@ -108,7 +108,7 @@
 					<div class="row">
 						{formlabel label=`$output.label` for=$item}
 						{forminput}
-							{html_checkboxes name="$item" values="y" checked=`$gBitSystemPrefs.$item` labels=false id=$item}
+							{html_checkboxes name="$item" values="y" checked=`$gBitSystem->getConfig($item) labels=false id=$item}
 							{formhelp note=`$output.note`}
 						{/forminput}
 					</div>
@@ -119,7 +119,7 @@
 				<div class="row">
 					{formlabel label="Default Thumbnail Size"}
 					{forminput}
-						{html_options values=$imageSizes options=$imageSizes name="default_image_thumbnail_size" selected=$gBitSystemPrefs.fisheye_image_default_thumbnail_size}
+						{html_options values=$imageSizes options=$imageSizes name="default_image_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_image_default_thumbnail_size')}
 					{/forminput}
 				</div>
 			{/legend}
