@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.1.1.1.2.5 2006/01/09 04:40:08 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.1.1.1.2.6 2006/03/09 17:47:34 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -15,6 +15,8 @@ require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 global $gBitSystem, $gBitSmarty, $gFisheyeGallery;
 
 $gFisheyeGallery = new FisheyeGallery();
+
+$gBitSystem->verifyPermission( 'bit_p_view_fisheye' );
 
 /* Get a list of galleries which matches the imput paramters (default is to list every gallery in the system) */
 $_REQUEST['root_only'] = TRUE;

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.1.1.1.2.2 2005/07/26 15:50:05 drewslater Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.1.1.1.2.3 2006/03/09 17:47:34 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -15,7 +15,7 @@ require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 
 global $gBitSystem, $gDebug;
 
-//$gDebug = TRUE;
+$gBitSystem->verifyPermission( 'bit_p_view_fisheye' );
 
 if( !empty( $_REQUEST['size'] ) ) {
 	setcookie( 'fisheyeviewsize', $_REQUEST['size'], 0, $gBitSystem->getPreference('cookie_path'), $gBitSystem->getPreference('cookie_domain') );

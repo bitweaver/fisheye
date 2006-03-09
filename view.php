@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.1.1.1.2.1 2005/06/27 10:55:45 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.1.1.1.2.2 2006/03/09 17:47:34 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -15,7 +15,7 @@ require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 
 global $gBitSystem, $fisheyeErrors, $fisheyeWarnings, $fisheyeSuccess;
 
-//$gDebug = TRUE;
+$gBitSystem->verifyPermission( 'bit_p_view_fisheye' );
 
 include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 
