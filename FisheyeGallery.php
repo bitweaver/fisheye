@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.25 2006/03/01 20:16:07 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.26 2006/03/19 16:14:11 spiderr Exp $
  * @package fisheye
  */
 
@@ -63,10 +63,11 @@ class FisheyeGallery extends FisheyeBase {
 			$query = "SELECT fg.*, lc.* $selectSql
 						, uue.`login` AS modifier_user, uue.`real_name` AS `modifier_real_name`
 						, uuc.`login` AS creator_user, uuc.`real_name` AS `creator_real_name`
-					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg, `".BIT_DB_PREFIX."liberty_content` lc $joinSql
+					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg 
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (fg.`content_id` = lc.`content_id`) $joinSql
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = lc.`modifier_user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = lc.`user_id`)
-					$whereSql AND fg.`content_id` = lc.`content_id`";
+					$whereSql";
 
 			if( $rs = $this->mDb->query($query, $bindVars) ) {
 				$this->mInfo = $rs->fields;
