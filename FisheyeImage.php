@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.23 2006/03/01 20:16:07 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.24 2006/03/22 14:19:29 spiderr Exp $
  * @package fisheye
  */
 
@@ -258,7 +258,7 @@ class FisheyeImage extends FisheyeBase {
 			// Ack this is evil direct bashing of the liberty tables! XOXO spiderr
 			// should be a cleaner way eventually
 			$details = $this->getImageDetails( $fileHash['source_file'] );
-			$query = "UPDATE `".BIT_DB_PREFIX."liberty_files` SET `size`=? WHERE `file_id`=?";
+			$query = "UPDATE `".BIT_DB_PREFIX."liberty_files` SET `file_size`=? WHERE `file_id`=?";
 			$this->mDb->query( $query, array( $details['size'], $this->mInfo['image_file']['file_id'] ) );
 			$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
 			$this->mDb->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );

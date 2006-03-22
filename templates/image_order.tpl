@@ -40,14 +40,16 @@
 
 						<td>
 							<input type="text" name="image_title[{$galItem->mContentId}]" value="{$galItem->getTitle()}" /><br />
+							{if $galItem->isContentType( FISHEYEIMAGE_CONTENT_TYPE_GUID )}
 							<strong>{tr}Uploaded{/tr}</strong>: {$galItem->mInfo.created|bit_short_datetime}<br />
 							<strong>{tr}File name{/tr}</strong>: {$galItem->mInfo.image_file.filename} <br />
-							{if $galItem->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
+								{if $galItem->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
 								<strong>{tr}Edit Image{/tr}</strong>: <a href="javascript:ajax_updater( 'imgedit', '{$smarty.const.FISHEYE_PKG_URL}edit_image.php', 'ajax=true&amp;content_id={$galItem->mInfo.content_id}&amp;gallery_id={$gContent->mGalleryId}' );">{biticon iname="edit" ipackage="liberty" iexplain="Edit Details"}</a>
 								<noscript><div><a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a></div></noscript>
 {*								jspopup href="`$smarty.const.FISHEYE_PKG_URL`edit_image.php?content_id=`$galItem->mInfo.content_id`" title="edit image" *}
 {*								<a target="_new" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a> *}
 								<br />
+								{/if}
 							{/if}
 							<strong>{tr}Description{/tr}</strong>: {$galItem->mInfo.data|default:"[ {tr}none{/tr} ]"} <br />
 						</td>

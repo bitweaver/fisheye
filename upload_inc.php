@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.4 2006/01/15 06:46:36 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.5 2006/03/22 14:19:30 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -90,7 +90,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 		}
 		sort( $sortedNames );
 		foreach( $sortedNames as $fileName ) {
-			if( !preg_match( '/^\./', $fileName ) ) {
+			if( !preg_match( '/^\./', $fileName ) && ($fileName != 'Thumbs.db') ) {
 				$scanFile = array(
 					'name' => $fileName,
 					'size' => filesize( "$pDestinationDir/$fileName" ),
