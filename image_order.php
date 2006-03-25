@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.12 2006/02/27 18:37:57 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.13 2006/03/25 14:54:34 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -47,10 +47,7 @@ if (!empty($_REQUEST['cancel'])) {
 		$favoriteCon[key($favoriteCon)]++;
 	}
 
-	if( !empty( $_REQUEST['reorder_gallery'] ) || !empty( $favoriteCon ) ) {
-		$gContent->loadImages();
-	}
-
+	$gContent->loadImages();
 
 	if( !empty( $_REQUEST['reorder_gallery'] ) ) {
 		switch( $_REQUEST['reorder_gallery'] ){
@@ -83,13 +80,13 @@ if (!empty($_REQUEST['cancel'])) {
 		}
 	}
 
-	if( !empty( $favoriteCon ) ) {
+	if( !empty( $gContent->mItems ) ) {
 		foreach( array_keys( $gContent->mItems ) as $itemConId ) {
 			if( $gContent->mItems[$itemConId]->getField( 'is_favorite' ) && empty( $favoriteCon[$itemConId] ) ) {
 				$gBitUser->expungeFavorite( $itemConId );
-   			} elseif( !$gContent->mItems[$itemConId]->getField('is_favorite') && !empty( $favoriteCon[$itemConId] ) ) {
+			} elseif( !$gContent->mItems[$itemConId]->getField('is_favorite') && !empty( $favoriteCon[$itemConId] ) ) {
 				$gBitUser->storeFavorite( $itemConId );
-   			}
+			}
 		}
 	}
 
