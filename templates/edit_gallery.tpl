@@ -3,7 +3,7 @@
 	<div class="header">
 		<h1>
 			{if $gContent->mInfo.title}
-				{tr}Edit Gallery {$gContent->mInfo.title}{/tr}
+				{tr}Edit Gallery {$gContent->mInfo.title|escape}{/tr}
 			{else}
 				{tr}Create Image Gallery{/tr}
 			{/if}
@@ -22,7 +22,7 @@
 						<div class="row">
 							{formlabel label="Title" for="gallery-title"}
 							{forminput}
-								<input type="text" name="title" id="gallery-title" value="{$gContent->mInfo.title}" maxlength="160" size="50"/>
+								<input type="text" name="title" id="gallery-title" value="{$gContent->mInfo.title|escape}" maxlength="160" size="50"/>
 							{/forminput}
 						</div>
 
@@ -88,7 +88,7 @@
 												checked="checked"
 											{/if}
 										/>
-										<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title}</a>
+										<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title|escape}</a>
 										<br />
 										{/if}
 									{foreachelse}

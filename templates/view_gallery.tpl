@@ -18,7 +18,7 @@
 			{/if}
 		</div>
 
-		<h1>{$gContent->mInfo.title}</h1>
+		<h1>{$gContent->mInfo.title|escape}</h1>
 
 		{if $gContent->mInfo.data}
 			<p>{$gContent->mInfo.data}</p>

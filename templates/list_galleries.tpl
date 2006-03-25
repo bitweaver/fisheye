@@ -58,11 +58,11 @@
 						{/if *}
 					</div>
 
-					<h2><a href="{$gal.display_url}">{if $gBitSystem->isFeatureActive('fisheye_list_title')}{$gal.title}{else}Gallery {$gal.gallery_id}{/if}</a></h2>
+					<h2><a href="{$gal.display_url}">{if $gBitSystem->isFeatureActive('fisheye_list_title')}{$gal.title|escape}{else}Gallery {$gal.gallery_id}{/if}</a></h2>
 
 					{if $gBitSystem->isFeatureActive('fisheye_list_thumbnail') && $gal.display_url}
 						<a href="{$gal.display_url}">
-							<img class="thumb" src="{$gal.thumbnail_url}" alt="{$gal.title}" title="{$gal.title}" />
+							<img class="thumb" src="{$gal.thumbnail_url}" alt="{$gal.title|escape}" title="{$gal.title|escape}" />
 						</a>
 					{/if}
 

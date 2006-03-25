@@ -68,7 +68,7 @@
 									{/section}
 								{/if}
 							/>
-							<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title}</a>
+							<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title|escape}</a>
 							<br />
 					{foreachelse}
 						<p class="norecords">

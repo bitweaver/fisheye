@@ -8,10 +8,10 @@
 		{foreach from=$gContent->mItems item=galItem key=itemContentId}
 			{box class="box `$gContent->mInfo.thumbnail_size`-thmb `$galItem->mInfo.content_type_guid`"}
 				<a href="{$galItem->getDisplayUrl()|escape}">
-					<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|default:'image'}" />
+					<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
 				</a>
 				{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
-					<h3>{$galItem->mInfo.title}</h3>
+					<h3>{$galItem->mInfo.title|escape}</h3>
 				{/if}
 				{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_descriptions' )}
 					<p>{$galItem->mInfo.data}</p>
@@ -39,10 +39,10 @@
 				{*include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$galItem->mInfo*}
 				{box class="box `$galItem->mInfo.content_type_guid`"}
 					<a href="{$galItem->getDisplayUrl()|escape}">
-						<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|default:'image'}" />
+						<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
 					</a>
 					{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
-						<h2>{$galItem->mInfo.title}</h2>
+						<h2>{$galItem->mInfo.title|escape}</h2>
 					{/if}
 					{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_descriptions' )}
 						<p>{$galItem->mInfo.data}</p>

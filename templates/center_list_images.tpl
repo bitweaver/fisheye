@@ -11,7 +11,7 @@
 			{foreach from=$thumbnailList key=galleryId item=gal}
 				{if $fisheye_list_thumbnail eq 'y'}
 					<a href="{$gal.display_url}">
-						<img class="thumb" src="{$gal.thumbnail_url}" alt="{$gal.title}" title="{$gal.title}" />
+						<img class="thumb" src="{$gal.thumbnail_url}" alt="{$gal.title|escape}" title="{$gal.title|escape}" />
 					</a>
 				{/if}
 			{foreachelse}

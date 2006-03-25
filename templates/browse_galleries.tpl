@@ -14,7 +14,7 @@
 
 			{section name=ix loop=$galleryList}
 				<tr>
-					<td>{$galleryList[ix].title}</td>
+					<td>{$galleryList[ix].title|escape}</td>
 				</tr>
 			{/section}
 		</table>

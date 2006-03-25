@@ -19,16 +19,16 @@
 	{formfeedback hash=$feedback}
 
 	<div class="header">
-		<h1>{$gGallery->mInfo.title}</h1>
+		<h1>{$gGallery->mInfo.title|escape}</h1>
 	</div>
 
 	<div class="body">
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
 		{box class="box image"}
-			<img src="{$gContent->mInfo.display_url}{$refresh}" alt="{$gContent->mInfo.title|default:$gContent->mInfo.image_file.filename}" title="{$gContent->mInfo.data|default:$gContent->mInfo.filename}" />
+			<img src="{$gContent->mInfo.display_url}{$refresh}" alt="{$gContent->mInfo.title|escape|default:$gContent->mInfo.image_file.filename}" title="{$gContent->mInfo.data|default:$gContent->mInfo.filename}" />
 
 			{if $gBitSystem->isFeatureActive( 'fisheye_image_list_title' )}
-				<h1>{$gContent->mInfo.title|default:$gContent->mInfo.image_file.filename}</h1>
+				<h1>{$gContent->mInfo.title|escape|default:$gContent->mInfo.image_file.filename}</h1>
 			{/if}
 
 			{if $gBitSystem->isFeatureActive( 'fisheye_image_list_description' ) and $gContent->mInfo.data ne ''}

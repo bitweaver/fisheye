@@ -6,7 +6,7 @@
 
 <div class="admin fisheye">
 	<div class="header">
-		<h1>{if $gContent->mInfo.image_id}{tr}Edit Image{/tr}: {$gContent->mInfo.title} {else}{tr}Add New Image{/tr} {/if}</h1>
+		<h1>{if $gContent->mInfo.image_id}{tr}Edit Image{/tr}: {$gContent->mInfo.title|escape} {else}{tr}Add New Image{/tr} {/if}</h1>
 	</div>
 
 	<div class="body">
@@ -98,7 +98,7 @@
 													checked="checked"
 												{/if}
 											{/if}
-										/> <a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$galleryId}">{$gal.title}</a>
+										/> <a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$galleryId}">{$gal.title|escape}</a>
 										<br />
 								{foreachelse}
 									<div>{tr}No Galleries Found{/tr}</div>

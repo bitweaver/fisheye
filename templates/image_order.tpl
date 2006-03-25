@@ -1,7 +1,7 @@
 {strip}
 <div class="admin fisheye">
 	<div class="header">
-		<h1>{tr}Gallery Images{/tr}: <a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}">{$gContent->mInfo.title}</a></h1>
+		<h1>{tr}Gallery Images{/tr}: <a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}">{$gContent->mInfo.title|escape}</a></h1>
 	</div>
 
 	<div class="body">
@@ -35,7 +35,7 @@
 					<tr class="{$pageClass}">
 						{counter print=false}
 						<td class="{$galItem->mType.content_type_guid}">
-							<a href="{$galItem->getDisplayUrl()|escape}"><img class="thumb" src="{$gContent->mItems.$itemContentId->getThumbnailUrl()|replace:"&":"&amp;"}{if $batchEdit.$contentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galItem->mInfo.title}" /></a>
+							<a href="{$galItem->getDisplayUrl()|escape}"><img class="thumb" src="{$gContent->mItems.$itemContentId->getThumbnailUrl()|replace:"&":"&amp;"}{if $batchEdit.$contentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galItem->mInfo.title|escape}" /></a>
 						</td>
 
 						<td>
@@ -99,14 +99,14 @@
 								<optgroup label="{tr}Copy to Gallery{/tr}">
 									{foreach from=$galleryList item=gal key=galleryId}
 										{if $gContent->mInfo.content_id ne $gal.content_id}
-											<option value="gallerycopy:{$gal.content_id}">{$gal.title|truncate:50}</option>
+											<option value="gallerycopy:{$gal.content_id}">{$gal.title|escape|truncate:50}</option>
 										{/if}
 									{/foreach}
 								</optgroup>
 								<optgroup label="{tr}Move to Gallery{/tr}">
 									{foreach from=$galleryList item=gal key=galleryId}
 										{if $gContent->mInfo.content_id ne $gal.content_id}
-											<option value="gallerymove:{$gal.content_id}">{$gal.title|truncate:50}</option>
+											<option value="gallerymove:{$gal.content_id}">{$gal.title|escape|truncate:50}</option>
 										{/if}
 									{/foreach}
 								</optgroup>
