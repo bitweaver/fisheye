@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.8 2005/11/22 07:25:47 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.9 2006/03/25 14:44:22 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -18,6 +18,8 @@ global $fisheyeErrors, $fisheyeWarnings, $fisheyeSuccess;
 
 include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 require_once( FISHEYE_PKG_PATH.'upload_inc.php');
+
+$gBitSystem->verifyPermission( 'bit_p_upload_fisheye' );
 
 if( !empty( $_REQUEST['save_image'] ) ) {
 	// first of all set the execution time for this process to unlimited
