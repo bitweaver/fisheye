@@ -17,6 +17,11 @@ array( 'DATADICT' => array(
 	array( 'RENAMESEQUENCE' => array(
 		"tiki_fisheye_gallery_id_seq" => "fisheye_gallery_id_seq",
 	)),
+	array( 'RENAMECOLUMN' => array(
+		'fisheye_gallery_image_map' => array(
+			'`position`' => 'item_position'
+		),
+	)),
 )),
 		)
 	),
