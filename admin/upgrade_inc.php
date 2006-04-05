@@ -19,7 +19,7 @@ array( 'DATADICT' => array(
 	)),
 	array( 'RENAMECOLUMN' => array(
 		'fisheye_gallery_image_map' => array(
-			'`position`' => 'item_position'
+			'`position`' => '`item_position` I4'
 		),
 	)),
 )),
