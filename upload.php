@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.9 2006/03/25 14:44:22 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.10 2006/04/08 08:25:10 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -102,6 +102,7 @@ $galleryList = $gFisheyeGallery->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
 $gBitSmarty->assign( 'uploadMax', $uploadMax );
+$gBitSmarty->assign( 'loadMultiFile', TRUE );
 
 $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' );
 ?>
