@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.11 2006/01/23 12:30:10 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.12 2006/04/11 13:04:24 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -64,7 +64,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		}
 	}
 } elseif( !empty($_REQUEST['delete']) ) {
-	$gContent->hasUserPermission( 'bit_p_admin_fisheye', TRUE, tra( "You do not have permission to delete this image." ) );
+	$gContent->hasUserPermission( 'p_fisheye_admin', TRUE, tra( "You do not have permission to delete this image." ) );
 
 	if( !empty( $_REQUEST['cancel'] ) ) {
 		// user cancelled - just continue on, doing nothing

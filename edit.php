@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.8 2005/11/22 07:25:47 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.9 2006/04/11 13:04:24 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -19,8 +19,8 @@ include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 
 // Ensure the user has the permission to create new image galleries
 if (empty($_REQUEST['gallery_id'])) {
-	$gBitSystem->verifyPermission('bit_p_create_fisheye');
-} elseif( !$gContent->hasUserPermission( 'bit_p_edit_fisheye' ) ) {
+	$gBitSystem->verifyPermission('p_fisheye_create');
+} elseif( !$gContent->hasUserPermission( 'p_fisheye_edit' ) ) {
 	// This user does not own this gallery and they have not been granted the permission to edit this gallery
 	$gBitSystem->fatalError( tra( "You cannot edit this image gallery" ) );
 }
@@ -50,7 +50,7 @@ if( !empty($_REQUEST['savegallery']) ) {
 		die();
 	}
 }elseif( !empty($_REQUEST['delete']) ) {
-	$gContent->hasUserPermission( 'bit_p_admin_fisheye', TRUE, tra( "You do not have permission to delete this image gallery" ) );
+	$gContent->hasUserPermission( 'p_fisheye_admin', TRUE, tra( "You do not have permission to delete this image gallery" ) );
 
 	if( !empty( $_REQUEST['cancel'] ) ) {
 		// user cancelled - just continue on, doing nothing

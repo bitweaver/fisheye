@@ -3,14 +3,14 @@
 
 <div class="display fisheye">
 	<div class="floaticon">
-	{if $gBitSystem->isPackageActive( 'pdf' ) && $gContent->hasUserPermission( 'bit_p_pdf_generation' )}
+	{if $gBitSystem->isPackageActive( 'pdf' ) && $gContent->hasUserPermission( 'p_pdf_generation' )}
 		{if $structureInfo.root_structure_id}
 			<a title="{tr}create PDF{/tr}" href="{$smarty.const.PDF_PKG_URL}index.php?structure_id={$structureInfo.root_structure_id}">{biticon ipackage="pdf" iname="pdf" iexplain="PDF"}</a>
 		{else}
 			<a title="{tr}create PDF{/tr}" href="{$smarty.const.PDF_PKG_URL}index.php?content_id={$gContent->mContentId}">{biticon ipackage="pdf" iname="pdf" iexplain="PDF"}</a>
 		{/if}
 	{/if}
-	{if $gContent->hasUserPermission('bit_p_admin')}
+	{if $gContent->hasUserPermission('p_admin')}
 		<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a>
 		<a title="{tr}Delete{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}&amp;delete=1">{biticon ipackage=liberty iname="delete" iexplain="Delete Image"}</a>
 	{/if}
@@ -47,7 +47,7 @@
 			{/if}
 		</div>
 
-		{if $gBitUser->hasPermission( 'bit_p_content_attachments' )}
+		{if $gBitUser->hasPermission( 'p_liberty_attach_attachments' )}
 			<p class="formhelp">
 				{tr}To include this file in a wiki page, blog post, article &hellip;, use the following string{/tr}: <strong>{ldelim}attachment&nbsp;id={$gContent->mInfo.image_file.attachment_id}{rdelim}</strong>
 			</p>

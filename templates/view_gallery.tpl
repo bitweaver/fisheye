@@ -5,14 +5,14 @@
 	<div class="header">
 		<div class="floaticon">
 			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon' serviceHash=$gContent->mInfo}
-			{if $gContent->hasUserPermission( 'bit_p_edit_fisheye' )}
+			{if $gContent->hasUserPermission( 'p_fisheye_edit' )}
 				<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=liberty iname="config" iexplain="Edit"}</a>
 				<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=fisheye iname="order" iexplain="Image Order"}</a>
 			{/if}
-			{if $gContent->hasUserPermission( 'bit_p_upload_fisheye' )}
+			{if $gContent->hasUserPermission( 'p_fisheye_upload' )}
 				<a title="{tr}Add Image{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=liberty iname="upload" iexplain="Add Image"}</a>
 			{/if}
-			{if $gContent->hasUserPermission( 'bit_p_admin_fisheye' )}
+			{if $gContent->hasUserPermission( 'p_fisheye_admin' )}
 				<a title="{tr}User Permissions{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}&amp;delete=1">{biticon ipackage=liberty iname="delete" iexplain="Delete Gallery"}</a>
 			{* appears broken at the moment	<a title="{tr}User Permissions{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_gallery_perms.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=liberty iname="permissions" iexplain="User Permissions"}</a> *}
 			{/if}

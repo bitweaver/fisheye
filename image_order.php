@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.13 2006/03/25 14:54:34 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.14 2006/04/11 13:04:24 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -23,7 +23,7 @@ if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 }
 
 // Ensure the user has the permission to create new image galleries
-if( !$gContent->hasUserPermission( 'bit_p_edit_fisheye' ) ) {
+if( !$gContent->hasUserPermission( 'p_fisheye_edit' ) ) {
 	// This user does not own this gallery and they have not been granted the permission to edit this gallery
 	$gBitSystem->fatalError( tra( "You cannot edit this image gallery" ) );
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.5 2006/03/22 14:19:30 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.6 2006/04/11 13:04:24 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -55,7 +55,7 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) {
 	global $gBitSystem, $gBitUser;
 	$errors = array();
-	if( ($destDir = liberty_process_archive( $pFileHash )) && (!empty( $_REQUEST['process_archive'] ) || !$gBitUser->hasPermission( 'bit_p_fisheye_upload_nonimages' )) ) {
+	if( ($destDir = liberty_process_archive( $pFileHash )) && (!empty( $_REQUEST['process_archive'] ) || !$gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )) ) {
 		if( empty( $pParentGallery ) && !is_uploaded_file( $pFileHash['tmp_name'] ) ) {
 			$pParentGallery = new FisheyeGallery();
 			$galleryHash = array( 'title' => basename( $destDir ) );
@@ -69,7 +69,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 		fisheye_process_directory( $destDir, $pParentGallery, $pRoot );
 	} else {
 		global $gBitUser;
-		if( $gBitUser->hasPermission( 'bit_p_fisheye_upload_nonimages' ) ) {
+		if( $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) ) {
 			fisheye_store_upload( $pFileHash );
 		} else {
 			$errors['upload'] = tra( 'Your upload could not be processed because it was determined to be a non-image and you only have permission to upload images.' );

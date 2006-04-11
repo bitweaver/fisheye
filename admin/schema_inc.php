@@ -92,12 +92,12 @@ $gBitInstaller->registerPreferences( FISHEYE_PKG_NAME, array(
 
 // ### Default User Permissions
 $gBitInstaller->registerUserPermissions( FISHEYE_PKG_NAME, array(
-	array('bit_p_view_fisheye', 'Can view image galleries', 'basic', FISHEYE_PKG_NAME),
-	array('bit_p_create_fisheye', 'Can create an image gallery', 'registered', FISHEYE_PKG_NAME),
-	array('bit_p_edit_fisheye', 'Can edit image gallery', 'registered', FISHEYE_PKG_NAME),
-	array('bit_p_upload_fisheye', 'Can upload images to gallery', 'registered', FISHEYE_PKG_NAME),
-	array('bit_p_admin_fisheye', 'Can admin image galleries', 'editors', FISHEYE_PKG_NAME),
-	array('bit_p_fisheye_upload_nonimages', 'Can upload non_image files', 'editors', FISHEYE_PKG_NAME)
+	array('p_fisheye_view', 'Can view image galleries', 'basic', FISHEYE_PKG_NAME),
+	array('p_fisheye_create', 'Can create an image gallery', 'registered', FISHEYE_PKG_NAME),
+	array('p_fisheye_edit', 'Can edit image gallery', 'registered', FISHEYE_PKG_NAME),
+	array('p_fisheye_upload', 'Can upload images to gallery', 'registered', FISHEYE_PKG_NAME),
+	array('p_fisheye_admin', 'Can admin image galleries', 'editors', FISHEYE_PKG_NAME),
+	array('p_fisheye_upload_nonimages', 'Can upload non_image files', 'editors', FISHEYE_PKG_NAME)
 ) );
 
 ?>

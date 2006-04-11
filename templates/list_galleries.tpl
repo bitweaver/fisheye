@@ -44,16 +44,16 @@
 						{if $gal.access_answer}
 							{tr}Password{/tr}
 						{/if}
-						{* if $galleryList[ix]->hasUserPermission('bit_p_edit_fisheye')}
+						{* if $galleryList[ix]->hasUserPermission('p_fisheye_edit')}
 							<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="config" iexplain="Edit"}</a>
 						{/if}
-						{if $galleryList[ix]->hasUserPermission('bit_p_edit_fisheye')}
+						{if $galleryList[ix]->hasUserPermission('p_fisheye_edit')}
 						 	<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="current" iexplain="Item Order"}</a>
 						{/if}
-						{if $galleryList[ix]->hasUserPermission('bit_p_upload_fisheye')}
+						{if $galleryList[ix]->hasUserPermission('p_fisheye_upload')}
 							<a title="{tr}Add Image{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="upload" iexplain="Add Image"}</a>
 						{/if}
-						{if $galleryList[ix]->hasUserPermission('bit_p_admin_fisheye')}
+						{if $galleryList[ix]->hasUserPermission('p_fisheye_admin')}
 							<a title="{tr}User Permissions{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_gallery_perms.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="permissions" iexplain="User Permissions"}</a>
 						{/if *}
 					</div>

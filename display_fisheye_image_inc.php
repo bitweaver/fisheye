@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.5 2006/03/01 20:16:07 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.6 2006/04/11 13:04:24 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -9,7 +9,7 @@ if( !$gContent->isValid() ) {
 	$gBitSystem->fatalError( "No image exists with the given ID" );
 }
 
-$displayHash = array( 'perm_name' => 'bit_p_view_fisheye' );
+$displayHash = array( 'perm_name' => 'p_fisheye_view' );
 $gContent->invokeServices( 'content_display_function', $displayHash );
 
 // Get the proper thumbnail size to display on this page

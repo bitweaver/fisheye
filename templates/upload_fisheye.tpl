@@ -41,7 +41,7 @@
 				{/forminput}
 			</div>
 
-			{if $gBitUser->hasPermission( 'bit_p_fisheye_upload_nonimages' )}
+			{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
 				<div class="row">
 					{formlabel label="Process Archive(s)" for="process_archive"}
 					{forminput}

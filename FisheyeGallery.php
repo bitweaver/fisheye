@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.26 2006/03/19 16:14:11 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.27 2006/04/11 13:04:24 squareing Exp $
  * @package fisheye
  */
 
@@ -177,7 +177,7 @@ class FisheyeGallery extends FisheyeBase {
 		foreach ($rows as $row) {
 			$pass = TRUE;
 			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-				$pass = $gBitUser->hasPermission( 'bit_p_admin_fisheye' ) || !@$this->verifyId( $row['security_id'] ) || ( $row['user_id'] == $gBitUser->mUserId ) || @$this->verifyId( $_SESSION['gatekeeper_security'][$row['security_id']] );
+				$pass = $gBitUser->hasPermission( 'p_fisheye_admin' ) || !@$this->verifyId( $row['security_id'] ) || ( $row['user_id'] == $gBitUser->mUserId ) || @$this->verifyId( $_SESSION['gatekeeper_security'][$row['security_id']] );
 			}
 			if( $pass && $item = $gLibertySystem->getLibertyObject( $row['item_content_id'], $row['content_type_guid'] ) ) {
 				$item->loadThumbnail( $this->mInfo['thumbnail_size'] );

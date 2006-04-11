@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.4 2005/08/24 20:50:17 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.5 2006/04/11 13:04:24 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
 
-$displayHash = array( 'perm_name' => 'bit_p_view_fisheye' );
+$displayHash = array( 'perm_name' => 'p_fisheye_view' );
 $gContent->invokeServices( 'content_display_function', $displayHash );
 
 if (!empty($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {

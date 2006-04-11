@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.18 2006/02/19 19:54:17 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.19 2006/04/11 13:04:24 squareing Exp $
  * @package fisheye
  */
 
@@ -123,7 +123,7 @@ class FisheyeBase extends LibertyAttachable
 							$galleries[$galleryId]->load();
 						}
 						if( $galleries[$galleryId]->isValid() ) {
-							if( $galleries[$galleryId]->hasUserPermission( 'bit_p_edit_fisheye' ) ) {
+							if( $galleries[$galleryId]->hasUserPermission( 'p_fisheye_edit' ) ) {
 								$galleries[$galleryId]->addItem( $this->mContentId, $pPosition );
 							} else {
 								$this->mErrors[] = "You do not have permission to attach ".$this->getTitle()." to ".$galleries[$galleryId]->getTitle();
@@ -184,7 +184,7 @@ class FisheyeBase extends LibertyAttachable
 	*/
 	function hasUserPermission( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL ) {
 		$ret = FALSE;
-		if( $pPermName == 'bit_p_edit_fisheye' || $pPermName == 'bit_p_upload_fisheye' ) {
+		if( $pPermName == 'p_fisheye_edit' || $pPermName == 'p_fisheye_upload' ) {
 			if( !($ret = $this->isOwner()) ) {
 				global $gBitUser;
 				if( !($ret = $gBitUser->isAdmin()) ) {
