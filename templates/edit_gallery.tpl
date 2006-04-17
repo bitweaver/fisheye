@@ -3,7 +3,7 @@
 	<div class="header">
 		<h1>
 			{if $gContent->mInfo.title}
-				{tr}Edit Gallery {$gContent->mInfo.title}{/tr}
+				{tr}Edit Gallery{/tr}: {$gContent->mInfo.title}
 			{else}
 				{tr}Create Image Gallery{/tr}
 			{/if}
