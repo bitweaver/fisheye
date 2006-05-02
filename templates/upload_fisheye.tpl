@@ -2,7 +2,7 @@
 	{include file="bitpackage:xupload/upload_form_inc.tpl"}
 	{assign var=target value="upload"}
 	{assign var=id value="xuploadform"}
-	{assign var=action value="/xupload/cgi/upload.cgi?upload_id="}
+	{assign var=action value="`$smarty.const.XUPLOAD_PKG_URL`cgi/upload.cgi?upload_id="}
 	{assign var=onsubmit value="return StartUpload();"}
 {else}
 	{assign var=onsubmit value="javascript:disableSubmit('submit_button');"}
