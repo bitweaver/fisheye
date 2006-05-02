@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.7 2006/05/02 11:24:52 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.8 2006/05/02 13:18:24 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -50,7 +50,7 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 		$image->addToGalleries( $_REQUEST['galleryAdditions'], $pOrder );
 		// if we're using xupload, we want to remove the temp files
 		if( $gBitSystem->isPackageActive( 'xupload' ) ) {
-			//@unlink( $pFileHash['tmp_name'] );
+			@unlink( $pFileHash['tmp_name'] );
 		}
 	}
 }
