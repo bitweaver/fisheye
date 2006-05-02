@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.6 2006/04/11 13:04:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.7 2006/05/02 11:24:52 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -33,7 +33,10 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
  * fisheye_store_upload
  */
 function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
-	if( !empty( $pFileHash ) && ($pFileHash['size'] > 0) && is_uploaded_file( $pFileHash['tmp_name'] ) ) {
+	global $gBitSystem;
+	// when xupload is active, is_uploaded_file() doesn't work anymore since
+	// the file has been handled by xupload
+	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && ( $gBitSystem->isPackageActive( 'xupload' ) || is_uploaded_file( $pFileHash['tmp_name'] ) ) ) {
 		// make a copy for each image we need to store
 		$storeHash = $_REQUEST;
 		$image = new FisheyeImage();
@@ -44,8 +47,11 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 		if( !$image->store( $storeHash ) ) {
 			array_merge( $upErrors, array_values( $image->mErrors ) );
 		}
-
 		$image->addToGalleries( $_REQUEST['galleryAdditions'], $pOrder );
+		// if we're using xupload, we want to remove the temp files
+		if( $gBitSystem->isPackageActive( 'xupload' ) ) {
+			//@unlink( $pFileHash['tmp_name'] );
+		}
 	}
 }
 

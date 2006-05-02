@@ -1,3 +1,13 @@
+{if $gBitSystem->isPackageActive( 'xupload' )}
+	{include file="bitpackage:xupload/upload_form_inc.tpl"}
+	{assign var=target value="upload"}
+	{assign var=id value="xuploadform"}
+	{assign var=action value="/xupload/cgi/upload.cgi?upload_id="}
+	{assign var=onsubmit value="return StartUpload();"}
+{else}
+	{assign var=onsubmit value="javascript:disableSubmit('submit_button');"}
+{/if}
+
 {strip}
 <div class="admin fisheye">
 	<div class="header">
@@ -5,7 +15,7 @@
 	</div>
 
 	<div class="body">
-		{form enctype="multipart/form-data" legend="Upload Files" onsubmit="javascript:disableSubmit('submit_button');"}
+		{form enctype="multipart/form-data" legend="Upload Files" onsubmit=$onsubmit id=$id target=$target action=$action}
 			{formfeedback note=$quotaMessage}
 			{formfeedback warning="The maximum file size you can upload is `$uploadMax` Megabytes"}
 			{formfeedback error=$errors}
@@ -20,26 +30,30 @@
 			<input type="hidden" name="image_id" value="{$imageId}"/>
 			<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 
-			<div class="row">
-				{formlabel label="Select File(s)"}
-				{forminput}
-					<input type="file" name="file0" id="fileupload" />
-					{formhelp note="To upload more than one file, please click on choose repeatedly<br />(javascript has to be enabled for this to work)."}
-				{/forminput}
-			</div>
+			{if $gBitSystem->isPackageActive( 'xupload' )}
+				{include file="bitpackage:xupload/upload_body_inc.tpl"}
+			{else}
+				<div class="row">
+					{formlabel label="Select File(s)"}
+					{forminput}
+						<input type="file" name="file0" id="fileupload" />
+						{formhelp note="To upload more than one file, please click on choose repeatedly<br />(javascript has to be enabled for this to work)."}
+					{/forminput}
+				</div>
 
-			<div class="row">
-				{formlabel label="Selected File(s)" for=""}
-				{forminput}
-					<div id="fileslist"></div>
-					<div class="clear"></div>
-					{formhelp note="These files will be uploaded when you hit the upload button below."}
-					<script type="text/javascript">/* <![CDATA[ Multi file upload */
-						var multi_selector = new MultiSelector( document.getElementById( 'fileslist' ), 10 );
-						multi_selector.addElement( document.getElementById( 'fileupload' ) );
-					/* ]]> */</script>
-				{/forminput}
-			</div>
+				<div class="row">
+					{formlabel label="Selected File(s)" for=""}
+					{forminput}
+						<div id="fileslist"></div>
+						<div class="clear"></div>
+						{formhelp note="These files will be uploaded when you hit the upload button below."}
+						<script type="text/javascript">/* <![CDATA[ Multi file upload */
+							var multi_selector = new MultiSelector( document.getElementById( 'fileslist' ), 10 );
+							multi_selector.addElement( document.getElementById( 'fileupload' ) );
+						/* ]]> */</script>
+					{/forminput}
+				</div>
+			{/if}
 
 			{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
 				<div class="row">

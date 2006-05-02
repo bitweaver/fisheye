@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.11 2006/04/11 13:04:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.12 2006/05/02 11:24:52 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -28,6 +28,7 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 	$upImages = array();
 	$upArchives = array();
 	$upErrors = array();
+
 	foreach( array_keys( $_FILES ) as $key ) {
 		if( preg_match( '/(^image|pdf)/i', $_FILES[$key]['type'] ) ) {
 			$upImages[$key] = $_FILES[$key];
@@ -102,7 +103,9 @@ $galleryList = $gFisheyeGallery->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
 $gBitSmarty->assign( 'uploadMax', $uploadMax );
-$gBitSmarty->assign( 'loadMultiFile', TRUE );
+if( !$gBitSystem->isPackageActive( 'xupload' ) ) {
+	$gBitSmarty->assign( 'loadMultiFile', TRUE );
+}
 
 $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' );
 ?>
