@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.27 2006/04/11 13:04:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.28 2006/05/04 08:45:16 squareing Exp $
  * @package fisheye
  */
 
@@ -380,7 +380,7 @@ class FisheyeGallery extends FisheyeBase {
     */
 	function addItem( $pContentId, $pPosition=NULL ) {
 		$ret = FALSE;
-		if( $this->isValid() && @$this->verifyId( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId  )  && !$this->isInGallery( $pContentId, $this->mContentId ) ) {
+		if( @$this->verifyId( $this->mContentId ) && @$this->verifyId( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId  )  && !$this->isInGallery( $pContentId, $this->mContentId ) ) {
 			$query = "INSERT INTO `".BIT_DB_PREFIX."fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`, `item_position`) VALUES (?,?,?)";
 			$rs = $this->mDb->query($query, array($pContentId, $this->mContentId, $pPosition ) );
 			$ret = TRUE;
