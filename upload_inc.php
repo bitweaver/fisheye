@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.8 2006/05/02 13:18:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.9 2006/05/04 07:08:45 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -144,5 +144,6 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 			}
 		}
 	}
+	return $errors;
 }
 ?>
