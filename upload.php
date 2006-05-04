@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.12 2006/05/02 11:24:52 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.13 2006/05/04 10:03:20 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -44,7 +44,6 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 		$_REQUEST['galleryAdditions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
 	}
 
-	$newGalleries = array();
 	foreach( array_keys( $upArchives ) as $key ) {
 		$upErrors = fisheye_process_archive( $upArchives[$key], $gContent, TRUE );
 	}
