@@ -24,13 +24,6 @@ $tables = array(
 	width I4,
 	height I4
 ",
-/*
-'fisheye_image_exif' => "
-	content_id I4 PRIMARY,
-	exif_title C(250),
-	exif_data X
-",
-*/
 'liberty_thumbnail_queue' => "
 	content_id I4 PRIMARY,
 	queue_date I8 NOTNULL,
@@ -38,7 +31,6 @@ $tables = array(
 	end_date I8,
 	resize_original integer
 "
-
 );
 
 global $gBitInstaller;
