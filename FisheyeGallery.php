@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.28 2006/05/04 08:45:16 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.29 2006/05/07 15:46:08 spiderr Exp $
  * @package fisheye
  */
 
@@ -484,10 +484,14 @@ vd( $this->mErrors );
 		$bindVars = array();
 		$selectSql = $joinSql = $whereSql = $sortSql = '';
 
-		if( !empty( $pListHash['root_only'] ) ) {
-			$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON (tfgim2.`item_content_id`=lc.`content_id`)";
-			$whereSql .= ' AND tfgim2.`item_content_id` IS NULL ';
+		if( $gBitDbType == 'mysql' ) {
+			// loser mysql without subselects
+			if( !empty( $pListHash['root_only'] ) ) {
+				$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON (tfgim2.`item_content_id`=lc.`content_id`)";
+				$whereSql .= ' AND tfgim2.`item_content_id` IS NULL ';
+			}
 		}
+		
 		if( !empty( $pListHash['contain_item'] ) ) {
 			$selectSql = " , tfgim3.`item_content_id` AS `in_gallery` ";
 			$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=lc.`content_id`) AND tfgim3.`item_content_id`=? ";
@@ -501,6 +505,7 @@ vd( $this->mErrors );
 			$whereSql .= " AND UPPER( lc.`title` ) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
 		}
+
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			$selectSql .= ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
 			$joinSql .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (lc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON (ls.`security_id`=cg.`security_id` )";
@@ -510,11 +515,20 @@ vd( $this->mErrors );
 			}
 		}
 
-		// weed out empty galleries if we don't need them
-		if( empty( $pListHash['show_empty'] ) ) {
-			$mapJoin = "INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON (fgim.`gallery_content_id`=lc.`content_id`)";
+		$mapJoin = "";
+		if( $gBitDbType != 'mysql' ) {
+			// weed out empty galleries if we don't need them. DO NOT get clever and change the IN and EXISTS choices here.
+			if( empty( $pListHash['show_empty'] ) ) {
+				$whereSql .= " AND fg.`content_id` IN (SELECT `gallery_content_id` FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim WHERE fgim.`gallery_content_id`=fg.`content_id`)";
+			}
+			if( !empty( $pListHash['root_only'] ) ) {
+				$whereSql .= " AND NOT EXISTS (SELECT `gallery_content_id` FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 WHERE tfgim2.`item_content_id`=lc.`content_id`)";
+			}
 		} else {
-			$mapJoin = "";
+			// weed out empty galleries if we don't need them
+			if( empty( $pListHash['show_empty'] ) ) {
+				$mapJoin = "INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON (fgim.`gallery_content_id`=lc.`content_id`)";
+			}
 		}
 
 		if ( !empty( $pListHash['sort_mode'] ) ) {
@@ -522,19 +536,25 @@ vd( $this->mErrors );
 			$sortSql .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 		// Putting in the below hack because mssql cannot select distinct on a text blob column.
-		$selectSql = $gBitDbType == 'mssql' ? " ,CAST(lc.`data` AS VARCHAR(250)) as `data` " : " ,lc.`data` ";
+		$selectSql .= $gBitDbType == 'mssql' ? " ,CAST(lc.`data` AS VARCHAR(250)) as `data` " : " ,lc.`data` ";
 
 		$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
-		$query = "SELECT DISTINCT( fg.`gallery_id` ) AS `hash_key`, fg.*, 
-				lc.`content_id`, lc.`user_id`, lc.`modifier_user_id`, lc.`created`, lc.`last_modified`,
-				lc.`content_type_guid`, lc.`format_guid`, lc.`hits`, lc.`last_hit`, lc.`event_time`, lc.`version`,
-				lc.`lang_code`, lc.`title`, lc.`ip`, uu.`login`, uu.`real_name`,
-				ptc.`content_type_guid` AS `preview_content_type_guid` $selectSql
+		if( !empty( $whereSql ) ) {
+			$whereSql = substr_replace( $whereSql, ' WHERE ', 0, 4 );
+		}
+
+		$query = "SELECT fg.`gallery_id` AS `hash_key`, fg.*, 
+					lc.`content_id`, lc.`user_id`, lc.`modifier_user_id`, lc.`created`, lc.`last_modified`,
+					lc.`content_type_guid`, lc.`format_guid`, lc.`hits`, lc.`last_hit`, lc.`event_time`, lc.`version`,
+					lc.`lang_code`, lc.`title`, lc.`ip`, uu.`login`, uu.`real_name`, plc.`content_type_guid` AS `preview_content_type_guid`
+					$selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
-				LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` ptc ON( fg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."liberty_content` lc
-				$mapJoin $joinSql
-				WHERE fg.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $whereSql $sortSql";
+					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (fg.`content_id` = lc.`content_id`)
+					INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id` = lc.`user_id`)
+					$mapJoin $joinSql
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` plc ON (fg.`preview_content_id` = plc.`content_id`)
+				$whereSql $sortSql";
 		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] ) ) {
 			$data = $rs->GetAssoc();
 			if( empty( $pListHash['no_thumbnails'] ) ) {
@@ -553,11 +573,13 @@ vd( $this->mErrors );
 		}
 
 		// count galleries
-		$query_c = "SELECT COUNT( DISTINCT( fg.`gallery_id` ) )
+		$query_c = "SELECT COUNT( fg.`gallery_id` )
 				FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
-				LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` ptc ON( fg.`preview_content_id`=ptc.`content_id` ), `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."liberty_content` lc
+					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (fg.`content_id` = lc.`content_id`)
+					INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id` = lc.`user_id`)
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` ptc ON( fg.`preview_content_id`=ptc.`content_id` )
 				$mapJoin $joinSql
-				WHERE fg.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $whereSql";
+				$whereSql";
 		$cant = $this->mDb->getOne( $query_c, $bindVars );
 
 		$ret['cant'] = $cant;
