@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.9 2006/05/04 07:08:45 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.10 2006/05/08 09:22:47 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -34,9 +34,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
  */
 function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 	global $gBitSystem;
-	// when xupload is active, is_uploaded_file() doesn't work anymore since
-	// the file has been handled by xupload
-	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && ( $gBitSystem->isPackageActive( 'xupload' ) || is_uploaded_file( $pFileHash['tmp_name'] ) ) ) {
+	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && is_file( $pFileHash['tmp_name'] ) ) {
 		// make a copy for each image we need to store
 		$storeHash = $_REQUEST;
 		$image = new FisheyeImage();
@@ -48,10 +46,9 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 			array_merge( $upErrors, array_values( $image->mErrors ) );
 		}
 		$image->addToGalleries( $_REQUEST['galleryAdditions'], $pOrder );
-		// if we're using xupload, we want to remove the temp files
-		if( $gBitSystem->isPackageActive( 'xupload' ) ) {
-			@unlink( $pFileHash['tmp_name'] );
-		}
+
+		// when we're using xupload, we need to remove temp files manually
+		@unlink( $pFileHash['tmp_name'] );
 	}
 }
 
@@ -61,8 +58,8 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
 function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) {
 	global $gBitSystem, $gBitUser;
 	$errors = array();
-	if( ($destDir = liberty_process_archive( $pFileHash )) && (!empty( $_REQUEST['process_archive'] ) || !$gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )) ) {
-		if( empty( $pParentGallery ) && !is_uploaded_file( $pFileHash['tmp_name'] ) ) {
+	if( ( $destDir = liberty_process_archive( $pFileHash ) ) && ( !empty( $_REQUEST['process_archive'] ) || !$gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) ) ) {
+		if( empty( $pParentGallery ) && !is_file( $pFileHash['tmp_name'] ) ) {
 			$pParentGallery = new FisheyeGallery();
 			$galleryHash = array( 'title' => basename( $destDir ) );
 			if( !$pParentGallery->store( $galleryHash ) ) {
@@ -88,6 +85,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
  * Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
  */
 function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=FALSE ) {
+	global $gBitSystem;
 	$errors = array();
 	if( $archiveDir = opendir( $pDestinationDir ) ) {
 		$order = 100;
@@ -96,8 +94,9 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 		}
 		sort( $sortedNames );
 		foreach( $sortedNames as $fileName ) {
-			if( !preg_match( '/^\./', $fileName ) && ($fileName != 'Thumbs.db') ) {
+			if( !preg_match( '/^\./', $fileName ) && ( $fileName != 'Thumbs.db' ) ) {
 				$scanFile = array(
+					'type' => $gBitSystem->lookupMimeType( substr( $fileName, ( strrpos( $fileName, '.' ) + 1 )  ) ),
 					'name' => $fileName,
 					'size' => filesize( "$pDestinationDir/$fileName" ),
 					'tmp_name' => "$pDestinationDir/$fileName",
@@ -138,6 +137,89 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 						$pParentGallery->addItem( $newImage->mContentId );
 					} else {
 						$errors = array_merge( $errors, array_values( $newImage->mErrors ) );
+					}
+				}
+				$order += 10;
+			}
+		}
+	}
+	return $errors;
+}
+
+
+// this function will process a directory and all it's sub directories without
+// making any assumptions. hierarchy of sub directories is maintained and
+// archives can be processed or simply added to the galleries.
+function fisheye_process_ftp_directory( $pProcessDir ) {
+	global $gBitSystem, $gBitUser;
+	if( empty( $_REQUEST['galleryAdditions'] ) ) {
+		$_REQUEST['galleryAdditions'] = array();
+	}
+
+	$errors = array();
+	if( $archiveDir = opendir( $pProcessDir ) ) {
+		$order = 100;
+		while( $fileName = readdir($archiveDir) ) {
+			$sortedNames[] = $fileName;
+		}
+
+		sort( $sortedNames );
+		$order = 100;
+
+		foreach( $sortedNames as $fileName ) {
+			if( !preg_match( '/^\./', $fileName ) && ( $fileName != 'Thumbs.db' ) ) {
+				$scanFile = array(
+					'type'     => $gBitSystem->lookupMimeType( substr( $fileName, ( strrpos( $fileName, '.' ) + 1 )  ) ),
+					'name'     => $fileName,
+					'size'     => filesize( "$pProcessDir/$fileName" ),
+					'tmp_name' => "$pProcessDir/$fileName",
+				);
+
+				if( is_dir( $pProcessDir.'/'.$fileName ) ) {
+					// create a new gallery from directory
+					$dirGallery = new FisheyeGallery();
+					$galleryHash = array( 'title' => str_replace( '_', ' ', $fileName ) );
+					if( $dirGallery->store( $galleryHash ) ) {
+						$dirGallery->addToGalleries( $_REQUEST['galleryAdditions'] );
+						$errors = array_merge( $errors, fisheye_process_directory( $pProcessDir.'/'.$fileName, $dirGallery ) );
+					} else {
+						$errors = array_merge( $errors, array_values( $dirGallery->mErrors ) );
+					}
+					unset( $dirGallery );
+				} else {
+					if( preg_match( '/(^image|pdf)/i', $scanFile['type'] ) ) {
+						// process image
+						$newImage = new FisheyeImage();
+						$imageHash = array( 'upload' => $scanFile );
+						if( $newImage->store( $imageHash ) ) {
+							$newImage->addToGalleries( $_REQUEST['galleryAdditions'] );
+
+							// if we have a gallery to add these images to, load one of them
+							if( !empty( $_REQUEST['galleryAdditions'][0] ) ) {
+								$imageGallery->mGalleryId = $_REQUEST['galleryAdditions'][0];
+								$imageGallery->load();
+							}
+
+							if( @!is_object( $imageGallery ) ) {
+								global $gBitUser;
+								$imageGallery = new FisheyeGallery( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
+								$imageGallery->load();
+							}
+
+							$imageGallery->addItem( $newImage->mContentId );
+						} else {
+							$errors = array_merge( $errors, array_values( $newImage->mErrors ) );
+						}
+					} else {
+						// create a new gallery from archive
+						$archiveGallery = new FisheyeGallery();
+						$galleryHash = array( 'title' => substr( $fileName, 0, ( str_replace( '_', ' ', strrpos( $fileName, '.' ) ) ) ) );
+						if( !$archiveGallery->store( $galleryHash ) ) {
+							$errors = array_merge( $errors, array_values( $archiveGallery->mErrors ) );
+						}
+
+						$errors = fisheye_process_archive( $scanFile, $archiveGallery, TRUE );
+						unset( $archiveGallery );
 					}
 				}
 				$order += 10;
