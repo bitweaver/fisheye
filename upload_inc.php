@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.10 2006/05/08 09:22:47 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.11 2006/05/18 18:41:08 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -195,15 +195,21 @@ function fisheye_process_ftp_directory( $pProcessDir ) {
 							$newImage->addToGalleries( $_REQUEST['galleryAdditions'] );
 
 							// if we have a gallery to add these images to, load one of them
-							if( !empty( $_REQUEST['galleryAdditions'][0] ) ) {
+							if( !empty( $_REQUEST['galleryAdditions'][0] ) && @!is_object( $imageGallery ) ) {
+								$imageGallery = new FisheyeGallery();
 								$imageGallery->mGalleryId = $_REQUEST['galleryAdditions'][0];
 								$imageGallery->load();
 							}
 
 							if( @!is_object( $imageGallery ) ) {
 								global $gBitUser;
-								$imageGallery = new FisheyeGallery( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
-								$imageGallery->load();
+								$galleryHash = array( 'title' => $gBitUser->getDisplayName()."'s Gallery" );
+								$imageGallery = new FisheyeGallery();
+								if( $imageGallery->store( $galleryHash ) ) {
+									$imageGallery->load();
+								} else {
+									$errors = array_merge( $errors, array_values( $imageGallery->mErrors ) );
+								}
 							}
 
 							$imageGallery->addItem( $newImage->mContentId );
