@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.10 2006/04/11 17:52:09 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.11 2006/05/18 18:45:04 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -58,9 +58,9 @@ if( !empty($_REQUEST['savegallery']) ) {
 		$formHash['delete'] = TRUE;
 		$formHash['gallery_id'] = $gContent->mGalleryId;
 		$formHash['input'] = array(
-			'<input name="recurse" value="" type="radio" checked="checked" />'.tra( 'Delete only images in this gallery. Sub-galleries will not be removed.' ),
-			'<input name="recurse" value="all" type="radio" /> '.tra( 'Permanently delete all contents, even if they appear in other galleries.' ),
-			);
+			'<label><input name="recurse" value="" type="radio" checked="checked" /> '.tra( 'Delete only images in this gallery. Sub-galleries will not be removed.' ).'</label>',
+			'<label><input name="recurse" value="all" type="radio" /> '.tra( 'Permanently delete all contents, even if they appear in other galleries.' ).'</label>',
+		);
 		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the gallery '.$gContent->getTitle().'?', 'error' => 'This cannot be undone!' ) );
 	} else {
 		$userId = $gContent->mInfo['user_id'];
