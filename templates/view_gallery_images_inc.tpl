@@ -1,5 +1,5 @@
 {strip}
-{if $gBitSystem->mPrefs.fisheye_gallery_div_layout eq 'y'}
+{if $gBitSystem->isFeatureActive( 'fisheye_gallery_div_layout' )}
 	{if $gBrowserInfo.browser eq 'ie'}
 		<!-- we need this friggin table for MSIE that images don't float outside of the designated area - once again a hack for our favourite browser - grrr -->
 		<table style="border:0;border-collapse:collapse;border-spacing:0; width:auto;"><tr><td>
@@ -7,6 +7,7 @@
 	<div class="thumbnailblock">
 		{foreach from=$gContent->mItems item=galItem key=itemContentId}
 			{box class="box `$gContent->mInfo.thumbnail_size`-thmb `$galItem->mInfo.content_type_guid`"}
+				{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$galItem->mInfo type=mini}
 				<a href="{$galItem->getDisplayUrl()|escape}">
 					<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
 				</a>
@@ -36,7 +37,7 @@
 			{/if}
 
 			<td style="width:{$tdWidth}%; vertical-align:top;"> <!-- Begin Image Cell -->
-				{*include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$galItem->mInfo*}
+				{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$galItem->mInfo type=mini}
 				{box class="box `$galItem->mInfo.content_type_guid`"}
 					<a href="{$galItem->getDisplayUrl()|escape}">
 						<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
