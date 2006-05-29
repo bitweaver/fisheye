@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.24 2006/03/22 14:19:29 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.25 2006/05/29 19:13:32 spiderr Exp $
  * @package fisheye
  */
 
@@ -143,7 +143,12 @@ class FisheyeImage extends FisheyeBase {
 
 		// let's add a default title
 		if( empty( $pStorageHash['title'] ) && !empty( $pStorageHash['upload']['name'] ) ) {
-			if( strpos( '.', $pStorageHash['upload']['name'] ) ) {
+			if( preg_match( '/^[A-Z]:\\\/', $pStorageHash['upload']['name'] ) ) {
+				// MSIE shit file names if passthrough via gigaupload, etc.
+				// basename will not work - see http://us3.php.net/manual/en/function.basename.php
+				$tmp = preg_split("[\\\]",$pStorageHash['upload']['name']);
+				$defaultName = $tmp[count($tmp) - 1];
+			} elseif( strpos( '.', $pStorageHash['upload']['name'] ) ) {
 				list( $defaultName, $ext ) = explode( '.', $pStorageHash['upload']['name'] );
 			} else {
 				$defaultName = $pStorageHash['upload']['name'];
