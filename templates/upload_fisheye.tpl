@@ -1,11 +1,7 @@
-{if $gBitSystem->isPackageActive( 'xupload' )}
-	{include file="bitpackage:xupload/upload_form_inc.tpl"}
-	{assign var=target value="upload"}
-	{assign var=id value="xuploadform"}
-	{assign var=action value="`$smarty.const.XUPLOAD_PKG_URL`cgi/upload.cgi?upload_id="}
-	{assign var=onsubmit value="return StartUpload();"}
+{if $gBitSystem->isPackageActive('gigaupload')}
+	{include file="bitpackage:gigaupload/gigaupload_js_inc.tpl"}
 {else}
-	{assign var=onsubmit value="javascript:disableSubmit('submit_button');"}
+	{assign var=onsubmit value="javascript:disableSubmit('submitbutton');"}
 {/if}
 
 {strip}
@@ -15,8 +11,9 @@
 	</div>
 
 	<div class="body">
-		{form enctype="multipart/form-data" legend="Upload Files" onsubmit=$onsubmit id=$id target=$target action=$action}
+		{form enctype="multipart/form-data" legend="Upload Files" onsubmit=$onSubmit id=$id target=$target action=$action}
 			{formfeedback note=$quotaMessage}
+			
 			{formfeedback warning="The maximum file size you can upload is `$uploadMax` Megabytes"}
 			{formfeedback error=$errors}
 
@@ -30,8 +27,10 @@
 			<input type="hidden" name="image_id" value="{$imageId}"/>
 			<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 
-			{if $gBitSystem->isPackageActive( 'xupload' )}
-				{include file="bitpackage:xupload/upload_body_inc.tpl"}
+		<div id="uploadblock">
+			{if $gBitSystem->isPackageActive( 'gigaupload' )}
+				{$gigaPopup}
+				{include file="bitpackage:gigaupload/gigaupload_form_inc.tpl"}
 			{else}
 				<div class="row">
 					{formlabel label="Select File(s)"}
@@ -96,10 +95,15 @@
 			<div class="row">
 				{include file="bitpackage:fisheye/resize_image_select.tpl"}
 			</div>
+		</div>
+
+			{if $gBitSystem->isPackageActive( 'gigaupload' )}
+				{include file="bitpackage:gigaupload/gigaupload_progress_container_inc.tpl"}
+			{/if}
 
 			<div class="row submit">
 				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
-				<input type="submit" id="submit_button" value="Upload File(s)" />
+				<input type="submit" id="submitbutton" value="Upload File(s)" {if $submitClick}onclick="{$submitClick}"{/if}/>
 			</div>
 		{/form}
 	</div> <!-- end .body -->
