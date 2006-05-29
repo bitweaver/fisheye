@@ -39,7 +39,7 @@
 						</td>
 
 						<td>
-							<input type="text" name="image_title[{$galItem->mContentId}]" value="{$galItem->getTitle()}" /><br />
+							<input type="text" name="image_title[{$galItem->mContentId}]" value="{$galItem->getTitle()|escape:html}" /><br />
 							{if $galItem->isContentType( FISHEYEIMAGE_CONTENT_TYPE_GUID )}
 							<strong>{tr}Uploaded{/tr}</strong>: {$galItem->mInfo.created|bit_short_datetime}<br />
 							<strong>{tr}File name{/tr}</strong>: {$galItem->mInfo.image_file.filename} <br />
