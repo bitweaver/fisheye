@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.28 2006/01/20 09:55:14 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.2.2.29 2006/05/31 21:07:39 mej Exp $
  * @package fisheye
  */
 
@@ -56,9 +56,13 @@ class FisheyeImage extends FisheyeBase {
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = tc.`modifier_user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = tc.`user_id`)
 					$mid AND tc.`content_id` = tfi.`content_id`";
-			if( $rs = $this->mDb->query($sql, array($bindVars)) ) {
+			//error_log("Using SQL query:  $sql");
+			$rs = $this->mDb->query($sql, array($bindVars));
+			//error_log("Got result set:	$rs");
+			if( $rs && is_object($rs) && $rs->fields) {
 				$this->mInfo = $rs->fields;
 
+				//var_dump($this->mInfo);
 				$this->mImageId = $this->mInfo['image_id'];
 				$this->mContentId = $this->mInfo['content_id'];
 
@@ -86,9 +90,12 @@ class FisheyeImage extends FisheyeBase {
 				} else {
 					$this->mInfo['image_file'] = NULL;
 				}
+			} else {
+				error_log("No image found in DB for id $this->mImageId/$this->mContentId.");
 			}
 		} else {
 			// We don't have an image_id or a content_id so there is no way to know what to load
+			error_log("FisheyeImage::load() called with no parameters!");
 			return NULL;
 		}
 
@@ -282,11 +289,14 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
 			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
 			$fileHash['name'] = $this->mInfo['image_file']['filename'];
+			echo "Generating thumbnails for $fileHash[name] ($fileHash[source_file]) as $fileHash[type] to $fileHash[dest_path]";
 			// just generate thumbnails
 			liberty_generate_thumbnails( $fileHash );
 			if( !empty( $fileHash['error'] ) ) {
 				$this->mErrors['thumbnail'] = $fileHash['error'];
 			}
+		} else {
+			$this->mErrors['thumbnail'] = sprintf("Unable to load %s for thumbnailing.", $this->mInfo['image_file']);
 		}
 		return( count($this->mErrors) == 0 );
 	}
