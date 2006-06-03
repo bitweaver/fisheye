@@ -1,5 +1,5 @@
 {if $gBitSystem->isPackageActive('gigaupload')}
-	{include file="bitpackage:gigaupload/gigaupload_js_inc.tpl"}
+	{include file="bitpackage:gigaupload/js_inc.tpl"}
 {else}
 	{assign var=onSubmit value="javascript:disableSubmit('submitbutton');"}
 {/if}
@@ -30,7 +30,7 @@
 			<div id="uploadblock">
 				{if $gBitSystem->isPackageActive( 'gigaupload' )}
 					{$gigaPopup}
-					{include file="bitpackage:gigaupload/gigaupload_form_inc.tpl"}
+					{include file="bitpackage:gigaupload/form_inc.tpl"}
 				{else}
 					<div class="row">
 						{formlabel label="Select File(s)"}
@@ -98,7 +98,7 @@
 			</div>
 
 			{if $gBitSystem->isPackageActive( 'gigaupload' )}
-				{include file="bitpackage:gigaupload/gigaupload_progress_container_inc.tpl"}
+				{include file="bitpackage:gigaupload/progress_container_inc.tpl"}
 			{/if}
 
 			<div class="row submit">
