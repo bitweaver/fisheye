@@ -1,5 +1,5 @@
 {if $gBitSystem->isPackageActive('gigaupload')}
-	{include file="bitpackage:gigaupload/gigaupload_js_inc.tpl"}
+	{include file="bitpackage:gigaupload/js_inc.tpl"}
 {else}
 	{assign var=onSubmit value="javascript:disableSubmit('submitbutton');"}
 {/if}
@@ -29,7 +29,7 @@
 
 			<div id="uploadblock">
 				{if $gBitSystem->isPackageActive( 'gigaupload' )}
-					{include file="bitpackage:gigaupload/gigaupload_form_inc.tpl"}
+					{include file="bitpackage:gigaupload/form_inc.tpl"}
 				{else}
 					<div class="row">
 						{formlabel label="Select File(s)"}
@@ -95,10 +95,6 @@
 					{include file="bitpackage:fisheye/resize_image_select.tpl"}
 				</div>
 			</div>
-
-			{if $gBitSystem->isPackageActive( 'gigaupload' )}
-				{include file="bitpackage:gigaupload/gigaupload_progress_container_inc.tpl"}
-			{/if}
 
 			<div class="row submit">
 				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
