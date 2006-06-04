@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.14 2006/05/29 17:26:45 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.15 2006/06/04 10:26:51 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -32,7 +32,7 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 	foreach( array_keys( $_FILES ) as $key ) {
 		if( preg_match( '/(^image|pdf)/i', $_FILES[$key]['type'] ) ) {
 			$upImages[$key] = $_FILES[$key];
-		} elseif( !empty( $_FILES[$key]['size'] ) ) {
+		} elseif( !empty( $_FILES[$key]['tmp_name'] ) && !empty( $_FILES[$key]['name'] ) ) {
 			$upArchives[$key] = $_FILES[$key];
 		}
 	}
@@ -94,7 +94,9 @@ if( $gBitSystem->isPackageActive( 'quota' ) ) {
 	}
 }
 
-$gBitSmarty->assign( 'loadAjax', TRUE );
+//$gBitSmarty->assign( 'loadAjax', TRUE );
+
+$gContent->invokeServices( 'content_edit_function' );
 
 // Get a list of all existing galleries
 $gFisheyeGallery = new FisheyeGallery();
@@ -105,6 +107,8 @@ $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 $gBitSmarty->assign( 'uploadMax', $uploadMax );
 if( $gBitSystem->isPackageActive( 'gigaupload' ) ) {
 	gigapload_smarty_setup( FISHEYE_PKG_URL.'upload.php' );
+} else {
+	$gBitSmarty->assign( 'loadMultiFile', TRUE );
 }
 
 $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' );
