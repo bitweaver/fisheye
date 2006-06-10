@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.15 2006/06/04 10:26:51 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.16 2006/06/10 16:18:42 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -66,35 +66,7 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 	}
 }
 
-// settings that are useful to know about at upload time
-$postMax = str_replace( 'M', '', ini_get( 'post_max_size' ));
-$uploadMax = str_replace( 'M', '', ini_get( 'upload_max_filesize' ) );
-
-if( $postMax < $uploadMax ) {
-	$uploadMax = $postMax;
-}
-
-
-if( $gBitSystem->isPackageActive( 'quota' ) ) {
-	require_once( QUOTA_PKG_PATH.'LibertyQuota.php' );
-	$quota = new LibertyQuota();
-	if( !$gBitUser->isAdmin() && !$quota->isUserUnderQuota( $gBitUser->mUserId ) ) {
-		$gBitSystem->display( 'bitpackage:quota/over_quota.tpl', tra( 'You are over your quota.' ) );
-		die;
-	}
-	if( !$gBitUser->isAdmin() ) {
-		// Prevent people from uploading more than there quota
-		$q = $quota->getUserQuota( $gBitUser->mUserId );
-		$u = $quota->getUserUsage( $gBitUser->mUserId );
-		$gBitSmarty->assign('quotaMessage', tra( 'Your remaining disk quota is' ).' '.round(($q-$u)/1000000, 2).' '.tra('Megabytes') );
-		$qMegs = round( $q / 1000000 );
-		if( $qMegs < $uploadMax ) {
-			$uploadMax = $qMegs;
-		}
-	}
-}
-
-//$gBitSmarty->assign( 'loadAjax', TRUE );
+require_once( LIBERTY_PKG_PATH.'calculate_max_upload_inc.php' );
 
 $gContent->invokeServices( 'content_edit_function' );
 
@@ -104,7 +76,6 @@ $listHash = array( 'user_id' => $gBitUser->mUserId, 'show_empty' => true, 'max_r
 $galleryList = $gFisheyeGallery->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
-$gBitSmarty->assign( 'uploadMax', $uploadMax );
 if( $gBitSystem->isPackageActive( 'gigaupload' ) ) {
 	gigapload_smarty_setup( FISHEYE_PKG_URL.'upload.php' );
 } else {
