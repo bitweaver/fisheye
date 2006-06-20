@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.16 2006/06/10 16:18:42 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.17 2006/06/20 16:22:56 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -77,7 +77,7 @@ $galleryList = $gFisheyeGallery->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
 if( $gBitSystem->isPackageActive( 'gigaupload' ) ) {
-	gigapload_smarty_setup( FISHEYE_PKG_URL.'upload.php' );
+	gigaupload_smarty_setup( FISHEYE_PKG_URL.'upload.php' );
 } else {
 	$gBitSmarty->assign( 'loadMultiFile', TRUE );
 }
