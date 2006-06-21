@@ -1,6 +1,5 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine  on
-	RewriteBase    /fisheye/
 	RewriteRule    ^image/([0-9]+)(/[0-9/]+)*/?([A-Za-z]+)*$  view_image.php?image_id=$1&gallery_path=$2&size=$3  [L,QSA]
 	RewriteRule    ^gallery([0-9/]+)*/([0-9]+)/?$  view.php?gallery_id=$2&gallery_path=$1  [L,QSA]
 </IfModule>
