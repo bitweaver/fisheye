@@ -75,9 +75,10 @@
 
 				{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_tab_tpl}
 
-				{jstab title="Advanced Options"}
-					{if $galleryList}
-						{legend legend="Advanced Options"}
+				{if $galleryList}
+					{jstab title="Gallery Memberships"}
+						{legend legend="Gallery Memberships"}
+							{tr}If you would like this gallery to be a sub-gallery, check the parent gallery below. It is possible to belong to multiple galleries. If no parent is checked, this gallery will appear as a top-level gallery.{/tr}
 							<div class="row">
 								{formlabel label="`$gContent->mInfo.content_description` Belongs to These Galleries"}
 								{forminput}
@@ -97,8 +98,8 @@
 								{/forminput}
 							</div>
 						{/legend}
-					{/if}
-				{/jstab}
+					{/jstab}
+				{/if}
 			{/jstabs}
 
 			<div class="row submit">
