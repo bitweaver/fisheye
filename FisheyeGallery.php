@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.29 2006/05/07 15:46:08 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.30 2006/06/22 17:31:11 sylvieg Exp $
  * @package fisheye
  */
 
@@ -235,6 +235,9 @@ class FisheyeGallery extends FisheyeBase {
 		if (empty($pStorageHash['title'])) {
 			$this->mErrors[] = "You must specify a title for this image gallery";
 		}
+		if (!empty($pStorageHash['image_comment'])) {
+			$pStorageHash['image_comment'] = 'y';
+		}
 
 		$pStorageHash['content_type_guid'] = FISHEYEGALLERY_CONTENT_TYPE_GUID;
 
@@ -340,14 +343,14 @@ class FisheyeGallery extends FisheyeBase {
 				$this->mInfo['content_id'] = $this->mContentId;
 				if ($this->galleryExistsInDatabase()) {
 					$query = "UPDATE `".BIT_DB_PREFIX."fisheye_gallery`
-							SET `rows_per_page` = ?, `cols_per_page` = ?, `thumbnail_size` = ?
+							SET `rows_per_page` = ?, `cols_per_page` = ?, `thumbnail_size` = ?, `image_comment` = ?
 							WHERE `gallery_id` = ?";
-					$bindVars = array($pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size'], $this->mGalleryId);
+					$bindVars = array($pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size'], $pStorageHash['image_comment'], $this->mGalleryId);
 				} else {
 					$this->mGalleryId = $this->mDb->GenID('fisheye_gallery_id_seq');
 					$this->mInfo['gallery_id'] = $this->mGalleryId;
-					$query = "INSERT INTO `".BIT_DB_PREFIX."fisheye_gallery` (`gallery_id`, `content_id`, `rows_per_page`, `cols_per_page`, `thumbnail_size`) VALUES (?,?,?,?,?)";
-					$bindVars = array($this->mGalleryId, $this->mContentId, $pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size']);
+					$query = "INSERT INTO `".BIT_DB_PREFIX."fisheye_gallery` (`gallery_id`, `content_id`, `rows_per_page`, `cols_per_page`, `thumbnail_size`, `image_comment`) VALUES (?,?,?,?,?,?)";
+					$bindVars = array($this->mGalleryId, $this->mContentId, $pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size'], $pStorageHash['image_comment']);
 				}
 				$rs = $this->mDb->query($query, $bindVars);
 				$this->mDb->CompleteTrans();

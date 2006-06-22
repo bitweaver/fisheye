@@ -56,5 +56,9 @@
 
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
 
+	{if $gGallery->mInfo.image_comment eq 'y'}
+		{include file="bitpackage:liberty/comments.tpl"}
+	{/if}
+
 </div>	<!-- end .fisheye -->
 {/strip}

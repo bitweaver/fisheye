@@ -8,7 +8,8 @@ $tables = array(
 	rows_per_page I4,
 	cols_per_page I4,
 	thumbnail_size C(32),
-	preview_content_id I4
+	preview_content_id I4,
+	image_comment C(1)
 ",
 
 'fisheye_gallery_image_map' => "
