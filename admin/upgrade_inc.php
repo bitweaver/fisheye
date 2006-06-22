@@ -22,6 +22,11 @@ array( 'DATADICT' => array(
 			'`position`' => '`item_position` I4'
 		),
 	)),
+	array('ALTER'=> array(
+		'fisheye_gallery' => array(
+			'image_comment' => array( '`image_comment`', 'C(1)' ), // , 'NULL' ),
+		),
+	)),
 )),
 		)
 	),
