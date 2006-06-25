@@ -36,6 +36,11 @@
 	{libertypagination numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}
 
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
+
+	{if $gContent->getPreference('allow_comments') eq 'y'}
+		{include file="bitpackage:liberty/comments.tpl"}
+	{/if}
+
 </div>	<!-- end .fisheye -->
 
 {/strip}

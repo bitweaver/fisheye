@@ -31,7 +31,7 @@
 				<h1>{$gContent->mInfo.title|escape|default:$gContent->mInfo.image_file.filename}</h1>
 			{/if}
 
-			{if $gBitSystem->isFeatureActive( 'fisheye_image_list_description' ) and $gContent->mInfo.data ne ''}
+			{if $gBitSystem->isFeatureActive('fisheye_image_list_description') and $gContent->mInfo.data ne ''}
 				<p>{$gContent->mInfo.data}</p>
 			{/if}
 		{/box}
@@ -56,7 +56,7 @@
 
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
 
-	{if $gGallery->mInfo.image_comment eq 'y'}
+	{if $gGallery->getPreference('allow_comments') eq 'y'}
 		{include file="bitpackage:liberty/comments.tpl"}
 	{/if}
 

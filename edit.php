@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.12 2006/06/22 20:11:53 sylvieg Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.13 2006/06/25 20:34:54 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -37,6 +37,7 @@ if( $gBitUser->hasPermission( 'p_fisheye_change_thumb_size' ) ) {
 
 if( !empty($_REQUEST['savegallery']) ) {
 	if( $gContent->store( $_REQUEST ) ) {
+		$gContent->storePreference( 'allow_comments', !empty( $_REQUEST['allow_comments'] ) ? $_REQUEST['allow_comments'] : NULL );
 		// make sure var is fully stuffed with current data
 		$gContent->load();
 		// set the mappings, or if nothing checked, nuke them all

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.2 2005/06/28 07:45:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.3 2006/06/25 20:34:54 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -26,6 +26,15 @@ if ( !$gContent->isValid() ) {
 	// No gallery was indicated so we will redirect to the browse galleries page
 	header("location: list_galleries.php");
 	die;
+}
+
+if( $gContent->getPreference('allow_comments') == 'y' ) {
+	$commentsParentId = $gContent->mContentId;
+	$comments_vars = Array('fisheyegallery');
+	$comments_prefix_var='fisheyegallery:';
+	$comments_object_var='fisheyegallery';
+	$comments_return_url = $_SERVER['PHP_SELF']."?gallery_id=".$gContent->mGalleryId;
+	include_once( LIBERTY_PKG_PATH.'comments_inc.php' );
 }
 
 require_once( FISHEYE_PKG_PATH.'display_fisheye_gallery_inc.php' );

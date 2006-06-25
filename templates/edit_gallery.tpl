@@ -72,7 +72,7 @@
 						<div class="row">
 							{formlabel label="Image Comments" for=image_comment}
 							{forminput}
-								<input type="checkbox" name="image_comment" id="image_comment" {if $gContent->mInfo.image_comment eq 'y'}checked="checked"{/if} />
+								<input type="checkbox" name="allow_comments" id="allow_comments" value="y" {if $gContent->getPreference('allow_comments') eq 'y'}checked="checked"{/if} />
 								{formhelp note="Allow posting comments for an image."}
 							{/forminput}
 						</div>
