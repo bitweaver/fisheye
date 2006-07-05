@@ -49,7 +49,7 @@
 			</tr>
 		{/section}
 		</table>
-	</div>
+	</div><!-- end .body -->
 	{/if}
 </body>
 </html>

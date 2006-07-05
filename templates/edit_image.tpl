@@ -117,7 +117,7 @@
 				<input type="submit" name="saveImage" value="Save Image"/>
 			</div>
 		{/form}
-	</div> <!-- class="body" -->
-</div> <!-- class="admin fisheye" -->
+	</div> <!-- end .body -->
+</div> <!-- end .fisheye -->
 
 {/strip}
