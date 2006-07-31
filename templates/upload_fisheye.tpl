@@ -13,6 +13,7 @@
 
 	<div class="body">
 		{form enctype="multipart/form-data" onsubmit=$onSubmit id=$id target=$target action=$action}
+			<div id="uploadblock">
 			{jstabs}
 				{jstab title="Upload Files"}
 					{legend legend="Upload Files"}
@@ -31,7 +32,6 @@
 						<input type="hidden" name="image_id" value="{$imageId}"/>
 						<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 
-						<div id="uploadblock">
 							{if $gBitSystem->isPackageActive( 'gigaupload' )}
 								{$gigaPopup}
 								{include file="bitpackage:gigaupload/form_inc.tpl"}
@@ -94,28 +94,30 @@
 										</p>
 									{/foreach}
 								{/forminput}
-							</div>
 
 							<div class="row">
 								{include file="bitpackage:fisheye/resize_image_select.tpl"}
 							</div>
 						</div>
+					{/legend}
+				{/jstab}
+
+				{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_tab_tpl}
+
+			{/jstabs}
+			</div>
+
+						{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_mini_tpl}
 
 						{if $gBitSystem->isPackageActive( 'gigaupload' )}
 							{include file="bitpackage:gigaupload/progress_container_inc.tpl"}
 						{/if}
 
-						{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_mini_tpl}
-
 						<div class="row submit">
 							<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
 							<input type="submit" id="submitbutton" value="Upload File(s)" {if $submitClick}onclick="{$submitClick}"{/if}/>
 						</div>
-					{/legend}
-				{/jstab}
 
-				{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_tab_tpl}
-			{/jstabs}
 		{/form}
 	</div> <!-- end .body -->
 </div> <!-- end .fisheye -->
