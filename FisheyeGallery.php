@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.32 2006/08/19 14:40:57 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.33 2006/08/19 17:06:15 hash9 Exp $
  * @package fisheye
  */
 
@@ -546,7 +546,7 @@ vd( $this->mErrors );
 
 		$query = "SELECT fg.`gallery_id` AS `hash_key`, fg.*, 
 					lc.`content_id`, lc.`user_id`, lc.`modifier_user_id`, lc.`created`, lc.`last_modified`,
-					lc.`content_type_guid`, lc.`format_guid`, lch.`hits`, lc.`last_hit`, lc.`event_time`, lc.`version`,
+					lc.`content_type_guid`, lc.`format_guid`, lch.`hits`, lch.`last_hit`, lc.`event_time`, lc.`version`,
 					lc.`lang_code`, lc.`title`, lc.`ip`, uu.`login`, uu.`real_name`, plc.`content_type_guid` AS `preview_content_type_guid`
 					$selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
