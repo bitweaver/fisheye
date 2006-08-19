@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.31 2006/06/25 20:34:54 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.32 2006/08/19 14:40:57 squareing Exp $
  * @package fisheye
  */
 
@@ -546,11 +546,12 @@ vd( $this->mErrors );
 
 		$query = "SELECT fg.`gallery_id` AS `hash_key`, fg.*, 
 					lc.`content_id`, lc.`user_id`, lc.`modifier_user_id`, lc.`created`, lc.`last_modified`,
-					lc.`content_type_guid`, lc.`format_guid`, lc.`hits`, lc.`last_hit`, lc.`event_time`, lc.`version`,
+					lc.`content_type_guid`, lc.`format_guid`, lch.`hits`, lc.`last_hit`, lc.`event_time`, lc.`version`,
 					lc.`lang_code`, lc.`title`, lc.`ip`, uu.`login`, uu.`real_name`, plc.`content_type_guid` AS `preview_content_type_guid`
 					$selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
 					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (fg.`content_id` = lc.`content_id`)
+					LEFT JOIN `".BIT_DB_PREFIX."liberty_content_hits` lch ON (lch.`content_id` = lc.`content_id`)
 					INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id` = lc.`user_id`)
 					$mapJoin $joinSql
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` plc ON (fg.`preview_content_id` = plc.`content_id`)
