@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.33 2006/08/19 17:06:15 hash9 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.34 2006/08/29 14:48:02 squareing Exp $
  * @package fisheye
  */
 
@@ -491,19 +491,28 @@ vd( $this->mErrors );
 				$whereSql .= ' AND tfgim2.`item_content_id` IS NULL ';
 			}
 		}
-		
+
 		if( !empty( $pListHash['contain_item'] ) ) {
 			$selectSql = " , tfgim3.`item_content_id` AS `in_gallery` ";
 			$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=lc.`content_id`) AND tfgim3.`item_content_id`=? ";
 			$bindVars[] = $pListHash['contain_item'];
 		}
+
 		if( @$this->verifyId( $pListHash['user_id'] ) ) {
 			$whereSql .= " AND lc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
 		}
+
 		if( !empty( $pListHash['find'] ) ) {
 			$whereSql .= " AND UPPER( lc.`title` ) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
+		}
+
+		if( !empty( $pListHash['show_public'] ) ) {
+			$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."liberty_content_prefs` lcp ON( lcp.`content_id`=lc.`content_id` )";
+			$whereSql .= " OR( lcp.`pref_name`=? AND lcp.`pref_value`=? ) ";
+			$bindVars[] = 'is_public';
+			$bindVars[] = 'y';
 		}
 
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {

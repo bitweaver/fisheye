@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.13 2006/06/25 20:34:54 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.14 2006/08/29 14:48:02 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -35,8 +35,9 @@ if( $gBitUser->hasPermission( 'p_fisheye_change_thumb_size' ) ) {
 	$gBitSmarty->assign( 'thumbnailSizes', $thumbnailSizes );
 }
 
-if( !empty($_REQUEST['savegallery']) ) {
+if( !empty( $_REQUEST['savegallery'] ) ) {
 	if( $gContent->store( $_REQUEST ) ) {
+		$gContent->storePreference( 'is_public', !empty( $_REQUEST['is_public'] ) ? $_REQUEST['is_public'] : NULL );
 		$gContent->storePreference( 'allow_comments', !empty( $_REQUEST['allow_comments'] ) ? $_REQUEST['allow_comments'] : NULL );
 		// make sure var is fully stuffed with current data
 		$gContent->load();
@@ -50,7 +51,7 @@ if( !empty($_REQUEST['savegallery']) ) {
 		header("location: ".$gContent->getDisplayUrl() );
 		die();
 	}
-}elseif( !empty($_REQUEST['delete']) ) {
+} elseif( !empty( $_REQUEST['delete'] ) ) {
 	$gContent->hasUserPermission( 'p_fisheye_admin', TRUE, tra( "You do not have permission to delete this image gallery" ) );
 
 	if( !empty( $_REQUEST['cancel'] ) ) {

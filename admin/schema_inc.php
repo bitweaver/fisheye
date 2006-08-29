@@ -91,7 +91,8 @@ $gBitInstaller->registerUserPermissions( FISHEYE_PKG_NAME, array(
 	array('p_fisheye_upload', 'Can upload images to gallery', 'registered', FISHEYE_PKG_NAME),
 	array('p_fisheye_admin', 'Can admin image galleries', 'editors', FISHEYE_PKG_NAME),
 	array('p_fisheye_upload_nonimages', 'Can upload non_image files', 'editors', FISHEYE_PKG_NAME),
-	array('p_fisheye_change_thumb_size', 'Can set the thumbnail size for a gallery', 'editors', FISHEYE_PKG_NAME)
+	array('p_fisheye_change_thumb_size', 'Can set the thumbnail size for a gallery', 'editors', FISHEYE_PKG_NAME),
+	array('p_fisheye_create_public_gal', 'Can create public galleries any user can load images into', 'editors', FISHEYE_PKG_NAME),
 ) );
 
 ?>
