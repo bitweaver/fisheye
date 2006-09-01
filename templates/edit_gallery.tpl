@@ -20,7 +20,7 @@
 						<input type="hidden" name="gallery_id" value="{$galleryId|escape}"/>
 
 						<div class="row">
-							{formlabel label="Title" for="gallery-title"}
+							{formlabel label="Title" for="gallery-title" mandatory="y"}
 							{forminput}
 								<input type="text" name="title" id="gallery-title" value="{$gContent->mInfo.title|escape}" maxlength="160" size="50"/>
 							{/forminput}
