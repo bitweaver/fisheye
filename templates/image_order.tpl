@@ -47,7 +47,7 @@
 							<strong>{tr}Uploaded{/tr}</strong>: {$galItem->mInfo.created|bit_short_datetime}<br />
 							<strong>{tr}File name{/tr}</strong>: {$galItem->mInfo.image_file.filename} <br />
 								{if $galItem->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
-								<strong>{tr}Edit Image{/tr}</strong>: <a href="javascript:ajax_updater( 'imgedit', '{$smarty.const.FISHEYE_PKG_URL}edit_image.php', 'ajax=true&amp;content_id={$galItem->mInfo.content_id}&amp;gallery_id={$gContent->mGalleryId}' );">{biticon iname="edit" ipackage="liberty" iexplain="Edit Details"}</a>
+								<strong>{tr}Edit Image{/tr}</strong>: <a href="javascript:ajax_updater( 'imgedit', '{$smarty.const.FISHEYE_PKG_URL}edit_image.php', 'ajax=true&amp;content_id={$galItem->mInfo.content_id}&amp;gallery_id={$gContent->mGalleryId}' );">{biticon ipackage="liberty" iname="edit" iexplain="Edit Details"}</a>
 								<noscript><div><a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a></div></noscript>
 {*								jspopup href="`$smarty.const.FISHEYE_PKG_URL`edit_image.php?content_id=`$galItem->mInfo.content_id`" title="edit image" *}
 {*								<a target="_new" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}">{biticon ipackage=liberty iname="edit" iexplain="Edit Image"}</a> *}
@@ -59,7 +59,7 @@
 
 						<td style="text-align:right;width:12em;">
 							<label>{tr}Gallery Image{/tr}: <input type="radio" name="gallery_preview_content_id" value="{$galItem->mContentId}" {if $gContent->getField('preview_content_id') == $galItem->mContentId}checked="checked"{/if}/></label><br />
-							<label>{if $galItem->getField('is_favorite')}{biticon iname="favorite" ipackage="users" iexplain=""}{/if}{tr}Favorite Image{/tr}: <input type="checkbox" name="is_favorite[]" value="{$galItem->mContentId}" {if $galItem->getField('is_favorite')}checked="checked"{/if}/></label><br />
+							<label>{if $galItem->getField('is_favorite')}{biticon ipackage="users" iname="favorite" iexplain=""}{/if}{tr}Favorite Image{/tr}: <input type="checkbox" name="is_favorite[]" value="{$galItem->mContentId}" {if $galItem->getField('is_favorite')}checked="checked"{/if}/></label><br />
 							<label>{tr}Batch Select{/tr}: <input type="checkbox" name="batch[]" value="{$galItem->mContentId}" /></label><br />
 							<label>{tr}Position{/tr}</label>: <input type="text" size="5" style="text-align:right;" maxlength="15" name="imagePosition[{$galItem->mContentId}]" id="imagePosition-{$galItem->mContentId}" value="{$galItem->mInfo.item_position}"/>
 						</td>
