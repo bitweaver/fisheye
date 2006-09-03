@@ -9,7 +9,7 @@
 
 		<div class="navbar">
 			<ul class="sortby">
-				<li>{biticon ipackage=liberty iname=sort iexplain="sort by" iforce="icon"}</li>
+				<li>{biticon ipackage="icons" iname="emblem-symbolic-link" iexplain="sort by" iforce="icon"}</li>
 				{if $gBitSystem->isFeatureActive('fisheye_list_title')}
 					<li>{smartlink ititle="Gallery Name" isort="title" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
 				{/if}
@@ -33,7 +33,7 @@
 				<li class="item {cycle values='odd,even'} {$gal.content_type_guid}">
 					<div class="floaticon">
 						{if $gal.is_hidden=='y' || $gal.is_private=='y' || $gal.access_answer}
-							{biticon ipackage=liberty iname="security" iexplain="Security" label=TRUE}
+							{biticon ipackage="icons" iname="emblem-readonly" iexplain="Security" label=TRUE}
 						{/if}
 						{if $gal.is_hidden=='y'}
 							{tr}Hidden{/tr}
@@ -45,16 +45,16 @@
 							{tr}Password{/tr}
 						{/if}
 						{* if $galleryList[ix]->hasUserPermission('p_fisheye_edit')}
-							<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="config" iexplain="Edit"}</a>
+							<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="document-properties" iexplain="Edit"}</a>
 						{/if}
 						{if $galleryList[ix]->hasUserPermission('p_fisheye_edit')}
-						 	<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="current" iexplain="Item Order"}</a>
+						 	<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="emblem-default" iexplain="Item Order"}</a>
 						{/if}
 						{if $galleryList[ix]->hasUserPermission('p_fisheye_upload')}
-							<a title="{tr}Add Image{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="upload" iexplain="Add Image"}</a>
+							<a title="{tr}Add Image{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="applications-internet" iexplain="Add Image"}</a>
 						{/if}
 						{if $galleryList[ix]->hasUserPermission('p_fisheye_admin')}
-							<a title="{tr}User Permissions{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_gallery_perms.php?gallery_id={$galleryId}">{biticon ipackage=liberty iname="permissions" iexplain="User Permissions"}</a>
+							<a title="{tr}User Permissions{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_gallery_perms.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="emblem-shared" iexplain="User Permissions"}</a>
 						{/if *}
 					</div>
 
@@ -70,7 +70,7 @@
 						{displayname hash=$gal nolink=TRUE} &raquo; <a href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gal.user_id}">{tr}Galleries{/tr}</a>
 					{/if}
 					{* if $galleryList[ix]->isProtected()}
-						{biticon ipackage="fisheye" iname="locked" iexplain="Protected"}
+						{biticon ipackage="icons" iname="emblem-readonly" iexplain="Protected"}
 					{/if *}
 					{if $gBitSystem->isFeatureActive('fisheye_list_description')}
 						<p>{$gal.data|truncate:200}</p>

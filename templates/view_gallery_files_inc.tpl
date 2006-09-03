@@ -3,7 +3,7 @@
 
 <div class="navbar">
 	<ul class="sortby">
-		<li>{biticon ipackage=liberty iname=sort iexplain="sort by"}</li>
+		<li>{biticon ipackage="icons" iname="emblem-symbolic-link" iexplain="sort by"}</li>
 		<li>{smartlink ititle="Created" isort="created" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
 		<li>{smartlink ititle="Last Modified" isort="last_modified" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
 		<li>{smartlink ititle="File Type" isort="file_type" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
