@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.34 2006/08/29 14:48:02 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.35 2006/09/06 04:51:15 spiderr Exp $
  * @package fisheye
  */
 
@@ -10,6 +10,10 @@
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php' );		// A gallery is composed of FisheyeImages
 
 define('FISHEYEGALLERY_CONTENT_TYPE_GUID', 'fisheyegallery' );
+
+define( 'FISHEYE_PAGINATION_FIXED_GRID', 'fixed_grid' );
+define( 'FISHEYE_PAGINATION_AUTO_FLOW', 'auto_flow' );
+define( 'FISHEYE_PAGINATION_POSITION_NUMBER', 'position_number' );
 
 /**
  * FisheyeBase extends LibertyAttachable, which this class doesn't need, but we need a common base class
@@ -95,10 +99,13 @@ class FisheyeGallery extends FisheyeBase {
 						$this->mInfo['access_answer'] = '';
 					}
 
-					$this->mInfo['images_per_page'] = ($this->mInfo['cols_per_page'] * $this->mInfo['rows_per_page']);
-
 					$this->mInfo['num_images'] = $this->getImageCount();
-					$this->mInfo['num_pages'] = (int)($this->mInfo['num_images'] / $this->mInfo['images_per_page'] + ($this->mInfo['num_images'] % $this->mInfo['images_per_page'] == 0 ? 0 : 1));
+					if( $this->getPreference( 'gallery_pagination' ) == FISHEYE_PAGINATION_POSITION_NUMBER ) {
+						$this->mInfo['num_pages'] = $this->mDb->getOne( "SELECT COUNT( distinct( floor(`item_position`) ) ) FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE gallery_content_id=?", array( $this->mContentId ) );
+					} else {
+						$this->mInfo['images_per_page'] = ($this->mInfo['cols_per_page'] * $this->mInfo['rows_per_page']);
+						$this->mInfo['num_pages'] = (int)($this->mInfo['num_images'] / $this->mInfo['images_per_page'] + ($this->mInfo['num_images'] % $this->mInfo['images_per_page'] == 0 ? 0 : 1));
+					}
 
 				} else {
 					unset( $this->mContentId );
@@ -148,17 +155,35 @@ class FisheyeGallery extends FisheyeBase {
 		return count($this->mInfo);
 	}
 
-	function loadImages($pOffset = NULL, $pMaxRows = NULL) {
+	function loadImages( $pPage=-1 ) {
 		global $gLibertySystem, $gBitSystem, $gBitUser;
-		if (!$this->mGalleryId || !$this->mContentId) {
+		if( !$this->isValid() ) {
 			return NULL;
 		}
 
 		$bindVars = array($this->mContentId);
 		$mid = '';
-		$where = '';
+		$whereSql = '';
 		$select = '';
 		$join = '';
+		$rows = NULL;
+		$offset = NULL;
+		// load for just a single page
+		if( $pPage != -1 ) {
+			if( $this->getPreference( 'gallery_pagination' ) == FISHEYE_PAGINATION_POSITION_NUMBER ) {
+				$query = "SELECT DISTINCT(FLOOR(`item_position`)) 
+						  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` 
+						  WHERE gallery_content_id=?
+						  ORDER BY floor(item_position)";
+				$mantissa = $this->mDb->getOne( $query, array( $this->mContentId ), 1, ($pPage - 1) );
+				$whereSql .= " AND floor(item_position)=? ";
+				array_push( $bindVars, $mantissa );
+			} else {
+				$rows = $this->getField( 'rows_per_page' ) * $this->getField( 'cols_per_page' );
+				$offset = $rows * ($pPage - 1);
+			}
+		}
+
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			$select .= ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
 			$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (lc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON (ls.`security_id`=cg.`security_id` )";
@@ -169,9 +194,9 @@ class FisheyeGallery extends FisheyeBase {
 
 		$query = "SELECT fgim.*, lc.`content_type_guid`, lc.`user_id`, ufm.`favorite_content_id` AS is_favorite $select
 				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` ) $join  LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
-				WHERE fgim.`gallery_content_id` = ? $where
+				WHERE fgim.`gallery_content_id` = ? $whereSql
 				ORDER BY fgim.`item_position`, fgim.`item_content_id` $mid";
-		$rs = $this->mDb->query($query, $bindVars, $pMaxRows, $pOffset);
+		$rs = $this->mDb->query($query, $bindVars, $rows, $offset);
 
 		$rows = $rs->getRows();
 		foreach ($rows as $row) {
@@ -584,9 +609,9 @@ vd( $this->mErrors );
 
 		// count galleries
 		$query_c = "SELECT COUNT( fg.`gallery_id` )
-				FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
-					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (fg.`content_id` = lc.`content_id`)
-					INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id` = lc.`user_id`)
+					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (fg.`content_id` = lc.`content_id`)
+						INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id` = lc.`user_id`)
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` ptc ON( fg.`preview_content_id`=ptc.`content_id` )
 				$mapJoin $joinSql
 				$whereSql";

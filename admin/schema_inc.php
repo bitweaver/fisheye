@@ -15,7 +15,7 @@ $tables = array(
 'fisheye_gallery_image_map' => "
 	gallery_content_id I4 NOTNULL,
 	item_content_id I4 NOTNULL,
-	item_position I4
+	item_position F
 ",
 
 'fisheye_image' => "
@@ -25,6 +25,7 @@ $tables = array(
 	width I4,
 	height I4
 ",
+
 'liberty_thumbnail_queue' => "
 	content_id I4 PRIMARY,
 	queue_date I8 NOTNULL,

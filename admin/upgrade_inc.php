@@ -17,19 +17,31 @@ array( 'DATADICT' => array(
 	array( 'RENAMESEQUENCE' => array(
 		"tiki_fisheye_gallery_id_seq" => "fisheye_gallery_id_seq",
 	)),
-	array( 'RENAMECOLUMN' => array(
-		'fisheye_gallery_image_map' => array(
-			'`position`' => '`item_position` I4'
-		),
-	)),
-/*
 	array('ALTER'=> array(
-		'fisheye_gallery' => array(
-			'image_comment' => array( '`image_comment`', 'C(1)' ), // , 'NULL' ),
+		'fisheye_gallery_image_map' => array(
+			'item_position' => array( '`item_position`', 'F' ),
 		),
 	)),
-*/
 )),
+
+// Queries
+array( 'QUERY' =>
+	array( 'SQL92' => array(
+	// Copy int positions to floats
+	"UPDATE `".BIT_DB_PREFIX."fisheye_gallery_image_map` SET `item_position`=`position`",
+	),
+)),
+
+// DataDict cleanup
+array( 'DATADICT' => array(
+	array( 'DROPCOLUMN' => array(
+		'fisheye_gallery_image_map' => array( '`position`' ),
+	)),
+	array( 'CREATEINDEX' => array(
+		'fisheye_gallery_image_map_pos_idx' => array( 'fisheye_gallery_image_map', '`gallery_content_id`,`item_position`', array( 'UNIQUE' ) ),
+	)),
+)),
+
 		)
 	),
 );

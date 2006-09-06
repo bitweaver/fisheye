@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.14 2006/04/11 13:04:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.15 2006/09/06 04:51:15 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -148,7 +148,7 @@ if (!empty($_REQUEST['cancel'])) {
 				if( !empty( $_REQUEST['batch_security_id'] ) ) {
 				}
 				// if we are reordered, that takes precident
-				$newPos = preg_replace( '/[\D]/', '', (!empty( $newOrder[$contentId] ) ? $newOrder[$contentId] : $newPos) );
+				$newPos = preg_replace( '/[^\d\.]/', '', (!empty( $newOrder[$contentId] ) ? $newOrder[$contentId] : $newPos) );
 				if ($galleryItem->mInfo['title'] != $_REQUEST['image_title'][$contentId]) {
 					$storageHash = array('title' => $_REQUEST['image_title'][$contentId]);
 					// make sure we don't delete the 'data' field on en masse title updating

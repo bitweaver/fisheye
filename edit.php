@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.14 2006/08/29 14:48:02 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.15 2006/09/06 04:51:15 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -35,10 +35,19 @@ if( $gBitUser->hasPermission( 'p_fisheye_change_thumb_size' ) ) {
 	$gBitSmarty->assign( 'thumbnailSizes', $thumbnailSizes );
 }
 
+$gBitSmarty->assign( 'galleryPaginationTypes', array( FISHEYE_PAGINATION_FIXED_GRID => 'Fixed Grid', FISHEYE_PAGINATION_AUTO_FLOW => 'Auto-Flow Images', FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number' ) );
+
 if( !empty( $_REQUEST['savegallery'] ) ) {
+
+	if( $_REQUEST['gallery_pagination'] == 'auto_flow' ) {
+		$_REQUEST['rows_per_page'] = $_REQUEST['total_per_page'];
+		$_REQUEST['cols_per_page'] = '1';
+	}
+
 	if( $gContent->store( $_REQUEST ) ) {
 		$gContent->storePreference( 'is_public', !empty( $_REQUEST['is_public'] ) ? $_REQUEST['is_public'] : NULL );
 		$gContent->storePreference( 'allow_comments', !empty( $_REQUEST['allow_comments'] ) ? $_REQUEST['allow_comments'] : NULL );
+		$gContent->storePreference( 'gallery_pagination', !empty( $_REQUEST['gallery_pagination'] ) ? $_REQUEST['gallery_pagination'] : NULL );
 		// make sure var is fully stuffed with current data
 		$gContent->load();
 		// set the mappings, or if nothing checked, nuke them all
@@ -82,6 +91,9 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 // Initalize the errors list which contains any errors which occured during storage
 $errors = (!empty($gContent->mErrors) ? $gContent->mErrors : array());
 $gBitSmarty->assign_by_ref('errors', $errors);
+
+$gBitSystem->setOnloadScript( 'updateGalleryPagination();' );
+$gBitSmarty->assign( 'loadAjax', TRUE );
 
 $gallery = $gContent->getParentGalleries();
 $gBitSmarty->assign_by_ref( 'parentGalleries', $gallery );

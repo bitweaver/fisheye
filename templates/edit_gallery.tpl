@@ -1,5 +1,14 @@
 {literal}
-
+<script type="text/javascript">//<![CDATA[
+function updateGalleryPagination() {
+	$('fixed_grid-pagination').style.display = 'none';
+	$('auto_flow-pagination').style.display = 'none';
+	$('position_number-pagination').style.display = 'none';
+	var select;
+	select = $F('gallery-pagination');
+	$(select+'-pagination').style.display = 'block';
+}
+//]]></script>
 {/literal}
 {strip}
 <div class="edit fisheye">
@@ -49,27 +58,27 @@
 						<div class="row">
 							{formlabel label="Gallery Pagination" for="gallery-pagination"}
 							{forminput}
-								{html_options name="gallery_pagination" id="gallery-pagination" options=$galleryPaginationTypes selected=$gContent->getPreference('gallery_pagination',$gBitSystem->getConfig('default_gallery_pagination','fixed_grid')}
+								{html_options name="gallery_pagination" id="gallery-pagination" options=$galleryPaginationTypes selected=$gContent->getPreference('gallery_pagination',$gBitSystem->getConfig('default_gallery_pagination',$smarty.const.FISHEYE_PAGINATION_FIXED_GRID)) onchange="updateGalleryPagination();"}
+								<div id="fixed_grid-pagination">
+									<input type="text" id="gallery-rows-per-page" name="rows_per_page" size="2" maxlength="2" value="{$gContent->mInfo.rows_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/> {tr}Rows per page{/tr}<br/>
+									<input type="text" id="gallery-cols-per-page" name="cols_per_page" size="2" maxlength="2" value="{$gContent->mInfo.cols_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_cols_per_page')}"/> {tr}Columns per page{/tr}
+									{formhelp note="The images will be displayed in a fixed grid. You can specify the number of thumbnails to display per page.<br /><strong>[rows] * [columns] = [number of images]</strong>."}
+								</div>
+		
+								<div id="auto_flow-pagination">
+									<input type="text" id="gallery-cols-per-page" name="total_per_page" size="2" maxlength="2" value="{$gContent->getField('rows_per_page',$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page'))}"/> {tr}Total images per page{/tr}
+									{formhelp note="The layout of the images on each gallery page will automatically adjust to the browsers width. You can specify the total number of thumbnails to display per page."}
+								</div>
+		
+								<div id="position_number-pagination">
+									{formhelp note="This option allows you to designate each specific image on each page. The image order number entered on the Image Order page will determine the exact location of each image. Fractional numbers indicate PAGE.POSITION and will specifiy variable images per page, such as: 1.1, 1.2, 2.1, 3.1, 3.2, 3.3"}
+								</div>
+								
 							{/forminput}
 						</div>
 
 
 
-						<div class="row" id="matrix-pagination">
-							{forminput}
-								<input type="text" id="gallery-rows-per-page" name="rows_per_page" size="2" maxlength="2" value="{$gContent->mInfo.rows_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/> {tr}Rows per page{/tr}<br/>
-								<input type="text" id="gallery-cols-per-page" name="cols_per_page" size="2" maxlength="2" value="{$gContent->mInfo.cols_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_cols_per_page')}"/> {tr}Columns per page{/tr}
-								{formhelp note="The images will be displayed in a fixed grid. You can specify what number of thumbnails to display per page.<br /><strong>[rows] * [columns] = [number of images]</strong>."}
-							{/forminput}
-						</div>
-
-						<div class="row" id="">
-							{formlabel label="" for="gallery-cols-per-page"}
-							{forminput}
-								<input type="text" id="gallery-cols-per-page" name="cols_per_page" size="2" maxlength="2" value="{$gContent->mInfo.cols_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_cols_per_page')}"/> {tr}Total images per page{/tr}
-								{formhelp note="The images per page pages will automatically adjust to the browsers width. You can specify what number of thumbnails to display per page.<br /><strong>[rows] * [columns] = [number of images]</strong>."}
-							{/forminput}
-						</div>
 
 						{if $thumbnailSizes}
 							<div class="row">

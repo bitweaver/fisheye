@@ -25,13 +25,13 @@
 				</tr>
 
 				{counter start=0 print=false assign=imageCount}
+				{counter start=1 assign=pageCount}
 				{foreach from=$gContent->mItems item=galItem key=itemContentId}
-					{if $imageCount % $gContent->mInfo.images_per_page == 0}
+					{assign var=thisMantissa value=$galItem->getField('item_position')|floor}
+					{if ($gContent->getPreference('gallery_pagination')==$smarty.const.FISHEYE_PAGINATION_POSITION_NUMBER && $lastMantissa != $thisMantissa) || ($gContent->mInfo.images_per_page && $imageCount % $gContent->mInfo.images_per_page == 0)}
 					<tr class="{cycle values='even,odd' assign='pageClass'}">
 						<th colspan="3" class="pagebreak">
-							{tr}Gallery Page{/tr} {math equation="imgCount / imagesPerPage + 1"
-								imgCount=$imageCount
-								imagesPerPage=$gContent->mInfo.images_per_page}
+							{tr}Gallery Page{/tr} {$pageCount} 
 						</th>
 					</tr>
 					{/if}
@@ -64,6 +64,7 @@
 							<label>{tr}Position{/tr}</label>: <input type="text" size="5" style="text-align:right;" maxlength="15" name="imagePosition[{$galItem->mContentId}]" id="imagePosition-{$galItem->mContentId}" value="{$galItem->mInfo.item_position}"/>
 						</td>
 					</tr>
+					{assign var=lastMantissa value=$galItem->getField('item_position')|floor}
 				{/foreach}
 				<tr>
 					<td colspan="4" align="right">

@@ -1,5 +1,5 @@
 {strip}
-{if $gBitSystem->isFeatureActive( 'fisheye_gallery_div_layout' )}
+{if $gContent->getPreference('gallery_pagination',$gBitSystem->getConfig('default_gallery_pagination','fixed_grid')) == 'auto_flow'}
 	{if $gBrowserInfo.browser eq 'ie'}
 		<!-- we need this friggin table for MSIE that images don't float outside of the designated area - once again a hack for our favourite browser - grrr -->
 		<table style="border:0;border-collapse:collapse;border-spacing:0; width:auto;"><tr><td>

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.5 2006/04/11 13:04:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.6 2006/09/06 04:51:15 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -20,7 +20,7 @@ if ($page > $gContent->mInfo['num_pages']) {
 	$page = 1;
 }
 
-$imagesPerPage = $gContent->mInfo['rows_per_page'] * $gContent->mInfo['cols_per_page'];
+$imagesPerPage = $gContent->getField( 'rows_per_page' ) * $gContent->getField( 'cols_per_page' );
 $imageOffset = $imagesPerPage * ($page-1);
 
 $gBitSmarty->assign_by_ref('pageCount', $page);
@@ -29,7 +29,7 @@ $gBitSmarty->assign_by_ref('imageOffset', $imageOffset);
 $gBitSmarty->assign_by_ref('rows_per_page', $gContent->mInfo['rows_per_page']);
 $gBitSmarty->assign_by_ref('cols_per_page', $gContent->mInfo['cols_per_page']);
 
-$gContent->loadImages($imageOffset, $imagesPerPage);
+$gContent->loadImages( $page );
 $gContent->addHit();
 
 $gBitSystem->setBrowserTitle( $gContent->getTitle().' '.tra('Gallery') );
