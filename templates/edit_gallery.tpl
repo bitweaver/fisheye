@@ -56,6 +56,14 @@ function updateGalleryPagination() {
 						{/if}
 
 						<div class="row">
+							{formlabel label="Show Original Images" for="link_original_images"}
+							{forminput}
+								<input type="checkbox" name="link_original_images" id="link_original_images" value="y" {if $gContent->getPreference('link_original_images') eq 'y'}checked="checked"{/if} />
+								{formhelp note="Display a link to the original image for anyone viewing the images in the gallery."}
+							{/forminput}
+						</div>
+
+						<div class="row">
 							{formlabel label="Gallery Pagination" for="gallery-pagination"}
 							{forminput}
 								{html_options name="gallery_pagination" id="gallery-pagination" options=$galleryPaginationTypes selected=$gContent->getPreference('gallery_pagination',$gBitSystem->getConfig('default_gallery_pagination',$smarty.const.FISHEYE_PAGINATION_FIXED_GRID)) onchange="updateGalleryPagination();"}
