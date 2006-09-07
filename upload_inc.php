@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.12 2006/06/04 20:34:07 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.13 2006/09/07 02:23:10 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -75,7 +75,6 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 		if( $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) ) {
 			fisheye_store_upload( $pFileHash );
 		} else {
-bt();		
 			$errors['upload'] = tra( 'Your upload could not be processed because it was determined to be a non-image and you only have permission to upload images.' );
 		}
 	}
