@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.35 2006/09/06 04:51:15 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.36 2006/09/07 02:22:11 spiderr Exp $
  * @package fisheye
  */
 
@@ -214,7 +214,7 @@ class FisheyeGallery extends FisheyeBase {
 		return count( $this->mItems );
 	}
 
-	function exportHtml( $pData = NULL ) {
+	function exportHtml( $pPaginate = FALSE ) {
 		$ret = NULL;
 		$ret[] = array(	'type' => FISHEYEGALLERY_CONTENT_TYPE_GUID,
 						'landscape' => FALSE,
@@ -223,8 +223,23 @@ class FisheyeGallery extends FisheyeBase {
 					);
 		if( $this->loadImages() ) {
 			foreach( array_keys( $this->mItems ) as $key ) {
-				$ret[] = $this->mItems[$key]->exportHtml();
+				if( $pPaginate ) {
+					$ret[] = $this->mItems[$key]->exportHtml();
+				} else {
+					$ret['page'][$this->getItemPage($key)][] = $this->mItems[$key]->exportHtml();;
+				}
 			}
+		}
+		return $ret;
+	}
+
+	function getItemPage( $pItemContentId ) {
+		$ret = NULL;
+		if( empty( $this->mPaginationLookup ) ) {
+			$this->mPaginationLookup = $this->mDb->getAssoc( "SELECT `item_content_id`, floor(`item_position`) FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE `gallery_content_id`=?", array( $this->mContentId ) );
+		}
+		if( !empty( $this->mPaginationLookup[$pItemContentId] ) ) {
+			$ret = $this->mPaginationLookup[$pItemContentId];
 		}
 		return $ret;
 	}
