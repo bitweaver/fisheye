@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.36 2006/09/07 02:22:11 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.37 2006/09/08 00:48:14 spiderr Exp $
  * @package fisheye
  */
 
@@ -216,7 +216,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	function exportHtml( $pPaginate = FALSE ) {
 		$ret = NULL;
-		$ret[] = array(	'type' => FISHEYEGALLERY_CONTENT_TYPE_GUID,
+		$ret['metadata'] = array(	'type' => FISHEYEGALLERY_CONTENT_TYPE_GUID,
 						'landscape' => FALSE,
 						'url' => $this->getDisplayUrl(),
 						'content_id' => $this->mContentId,
@@ -224,9 +224,9 @@ class FisheyeGallery extends FisheyeBase {
 		if( $this->loadImages() ) {
 			foreach( array_keys( $this->mItems ) as $key ) {
 				if( $pPaginate ) {
-					$ret[] = $this->mItems[$key]->exportHtml();
+					$ret['content']['page'][$this->getItemPage($key)][] = $this->mItems[$key]->exportHtml();;
 				} else {
-					$ret['page'][$this->getItemPage($key)][] = $this->mItems[$key]->exportHtml();;
+					$ret['content'][] = $this->mItems[$key]->exportHtml();
 				}
 			}
 		}
