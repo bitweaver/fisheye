@@ -24,8 +24,8 @@
 					<th scope="col">{tr}Miscellaneous{/tr}</th>
 				</tr>
 
-				{counter start=0 print=false assign=imageCount}
-				{counter start=1 assign=pageCount}
+				{counter name=imageCount start=0 assign=imageCount}
+				{counter name=pageCount start=1 assign=pageCount}
 				{foreach from=$gContent->mItems item=galItem key=itemContentId}
 					{assign var=thisMantissa value=$galItem->getField('item_position')|floor}
 					{if ($gContent->getPreference('gallery_pagination')==$smarty.const.FISHEYE_PAGINATION_POSITION_NUMBER && $lastMantissa != $thisMantissa) || ($gContent->mInfo.images_per_page && $imageCount % $gContent->mInfo.images_per_page == 0)}
@@ -34,9 +34,10 @@
 							{tr}Gallery Page{/tr} {$pageCount} 
 						</th>
 					</tr>
+						{counter name=pageCount print=false}
 					{/if}
 					<tr class="{$pageClass}">
-						{counter print=false}
+						{counter name=imageCount print=false}
 						<td class="{$galItem->mType.content_type_guid}">
 							<a href="{$galItem->getDisplayUrl()|escape}"><img class="thumb" src="{$gContent->mItems.$itemContentId->getThumbnailUrl()|replace:"&":"&amp;"}{if $batchEdit.$contentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galItem->mInfo.title|escape}" /></a>
 						</td>
