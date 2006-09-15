@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.37 2006/09/08 00:48:14 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.38 2006/09/15 02:44:57 spiderr Exp $
  * @package fisheye
  */
 
@@ -480,6 +480,15 @@ vd( $this->mErrors );
 		}
 
 		return $ret;
+	}
+
+    /**
+    * Returns the layout of the gallery accounting for various defaults
+    * @return the layout string preference
+    */
+	function getLayout() {
+		global $gBitSystem;
+		return $this->getPreference( 'gallery_pagination', $gBitSystem->getConfig( 'default_gallery_pagination', 'fixed_grid' ) );
 	}
 
     /**
