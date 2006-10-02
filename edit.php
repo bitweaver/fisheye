@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.16 2006/09/06 05:14:29 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.17 2006/10/02 03:19:52 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -98,7 +98,7 @@ $gBitSmarty->assign( 'loadAjax', TRUE );
 
 $gallery = $gContent->getParentGalleries();
 $gBitSmarty->assign_by_ref( 'parentGalleries', $gallery );
-$getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->mContentId, 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc' );
+$getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->mContentId, 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc', 'show_empty'=>TRUE );
 $galleryList = $gContent->getList( $getHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
