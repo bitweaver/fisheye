@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.28 2006/09/15 03:39:06 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.29 2006/10/08 16:50:05 spiderr Exp $
  * @package fisheye
  */
 
@@ -22,6 +22,7 @@ class FisheyeImage extends FisheyeBase {
 		FisheyeBase::FisheyeBase();
 		$this->mImageId = (int)$pImageId;
 		$this->mContentId = (int)$pContentId;
+		$this->mAdminContentPerm = 'p_fisheye_admin';
 
 		$this->registerContentType(FISHEYEIMAGE_CONTENT_TYPE_GUID, array('content_type_guid' => FISHEYEIMAGE_CONTENT_TYPE_GUID,
 				'content_description' => 'Image',

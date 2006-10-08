@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.40 2006/10/06 20:44:38 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.41 2006/10/08 16:50:05 spiderr Exp $
  * @package fisheye
  */
 
@@ -30,6 +30,7 @@ class FisheyeGallery extends FisheyeBase {
 		$this->mGalleryId = (int)$pGalleryId;		// Set member variables according to the parameters we were passed
 		$this->mContentId = (int)$pContentId;		// liberty_content.content_id which this gallery references
 		$this->mItems = NULL;					// Assume no images (if $pAutoLoad is TRUE we will populate this array later)
+		$this->mAdminContentPerm = 'p_fisheye_admin';
 
 		// This registers the content type for FishEye galleries
 		// FYI: Any class which uses a table which inherits from liberty_content should create their own content type(s)
