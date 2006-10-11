@@ -26,6 +26,13 @@ $tables = array(
 	height I4
 ",
 
+'fisheye_exif_data' => "
+	content_id I4 NOTNULL,
+	exif_name C(250),
+	exif_value_short C(250),
+	exif_value_long X
+",
+
 'liberty_thumbnail_queue' => "
 	content_id I4 PRIMARY,
 	queue_date I8 NOTNULL,
