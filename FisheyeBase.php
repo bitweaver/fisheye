@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.19 2006/04/11 13:04:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.20 2006/11/07 15:08:53 squareing Exp $
  * @package fisheye
  */
 
@@ -123,7 +123,7 @@ class FisheyeBase extends LibertyAttachable
 							$galleries[$galleryId]->load();
 						}
 						if( $galleries[$galleryId]->isValid() ) {
-							if( $galleries[$galleryId]->hasUserPermission( 'p_fisheye_edit' ) ) {
+							if( $galleries[$galleryId]->hasUserPermission( 'p_fisheye_edit' ) || $galleries[$galleryId]->isPublic() ) {
 								$galleries[$galleryId]->addItem( $this->mContentId, $pPosition );
 							} else {
 								$this->mErrors[] = "You do not have permission to attach ".$this->getTitle()." to ".$galleries[$galleryId]->getTitle();
@@ -142,6 +142,12 @@ class FisheyeBase extends LibertyAttachable
 					$rs = $this->mDb->query($sql, array( $galleryId, $this->mContentId ) );
 				}
 			}
+		}
+	}
+
+	function isPublic() {
+		if( $this->isValid() ) {
+			return ( $this->getPreference( 'is_public' ) == 'y' );
 		}
 	}
 
@@ -204,8 +210,5 @@ class FisheyeBase extends LibertyAttachable
 
 		return( $ret );
 	}
-
-
-
 }
 ?>
