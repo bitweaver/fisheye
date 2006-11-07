@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.29 2006/10/08 16:50:05 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.30 2006/11/07 09:41:16 squareing Exp $
  * @package fisheye
  */
 
@@ -463,8 +463,6 @@ class FisheyeImage extends FisheyeBase {
 			$pListHash['sort_mode'] = 'uu.user_id_desc';
 		}
 
-
-
 		if( @$this->verifyId( $pListHash['gallery_id'] ) ) {
 			$mid .= " AND fg.`gallery_id` = ? ";
 			$bindVars[] = $pListHash['gallery_id'];
@@ -474,6 +472,12 @@ class FisheyeImage extends FisheyeBase {
 			$mid .= " AND UPPER(lc.`title`) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['search'] ).'%';
 		}
+
+		if( !empty( $pListHash['max_age'] ) && is_numeric( $pListHash['max_age'] ) ) {
+			$mid .= " AND lc.`created` > ? ";
+			$bindVars[] = $pListHash['max_age'];
+		}
+
 //  $this->debug();
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 			if( $this->mDb->isAdvancedPostgresEnabled() ) {
