@@ -15,7 +15,7 @@
 	{formfeedback hash=$feedback}
 
 	<div class="header">
-		<h1>{$gGallery->getTitle()|default:$gContent->mInfo.image_file.filename|escape}</h1>
+		<h1>{$gContent->getTitle()|default:$gContent->mInfo.image_file.filename|escape}</h1>
 	</div>
 
 	<div class="body">
