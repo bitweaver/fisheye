@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.13 2006/09/07 02:23:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.14 2006/11/07 12:11:52 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -9,15 +9,22 @@
  * fisheye_get_default_gallery_id
  */
 function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
+	global $gBitUser;
 	$gal = new FisheyeGallery();
 	$getHash = array( 'user_id' => $pUserId, 'max_records' => 1, 'sort_mode' => 'created_desc' );
 	$upList = $gal->getList( $getHash );
 	if( !empty( $upList['data'] ) ) {
 		$ret = key( $upList['data'] );
-	} else {
+	} elseif( $gBitUser->hasPermission( 'fisheye_create_gallery' ) ) {
 		$galleryHash = array( 'title' => $pNewName );
 		if( $gal->store( $galleryHash ) ) {
 			$ret = $gal->mGalleryId;
+		}
+	} else {
+		$getHash = array( 'show_public' => TRUE, 'max_records' => 1, 'sort_mode' => 'created_desc' );
+		$upList = $gal->getList( $getHash );
+		if( !empty( $upList['data'] ) ) {
+			$ret = key( $upList['data'] );
 		}
 	}
 
@@ -32,11 +39,11 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 /**
  * fisheye_store_upload
  */
-function fisheye_store_upload( &$pFileHash, $pOrder = 10 ) {
+function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array() ) {
 	global $gBitSystem;
 	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && is_file( $pFileHash['tmp_name'] ) ) {
 		// make a copy for each image we need to store
-		$storeHash = $_REQUEST;
+		$storeHash = array_merge( $_REQUEST, $pImageData );
 		$image = new FisheyeImage();
 		// Store/Update the image
 		$storeHash['upload'] = &$pFileHash;

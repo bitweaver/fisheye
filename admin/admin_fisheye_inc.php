@@ -19,6 +19,13 @@ $formGalleryGeneral = array(
 		'type' => 'checkbox'
 	)
 );
+if( !$gBitSystem->isPackageActive( 'gigaupload' ) ) {
+	$formGalleryGeneral["fisheye_extended_upload_slots"] = array(
+		'label' => 'Extended Upload Slots',
+		'note' => 'When you enable this, users can enter the title and description of the file when uploading them.',
+		'type' => 'checkbox'
+	);
+};
 $gBitSmarty->assign('formGalleryGeneral', $formGalleryGeneral);
 
 $formGalleryListLists = array(
