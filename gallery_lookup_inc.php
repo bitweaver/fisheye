@@ -1,20 +1,16 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/gallery_lookup_inc.php,v 1.5 2005/08/30 22:17:54 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/gallery_lookup_inc.php,v 1.6 2006/11/08 08:01:37 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
 
 global $gContent;
 
-if (!empty($_REQUEST['gallery_id']) && is_numeric($_REQUEST['gallery_id'])) {
-	$gContent = new FisheyeGallery( $_REQUEST['gallery_id'] );
-	if( !$gContent->load() ) {
-	}
-} elseif (!empty($_REQUEST['content_id']) && is_numeric($_REQUEST['content_id'])) {
-	$gContent = new FisheyeGallery( NULL, $_REQUEST['content_id'] );
-	if( !$gContent->load() ) {
-	}
+$lookup = array();
+
+if( $gContent = FisheyeGallery::lookup( $_REQUEST ) ) {
+	$gContent->load();
 } else {
 	$gContent = new FisheyeGallery();
 	$galleryId = NULL;

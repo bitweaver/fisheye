@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.30 2006/11/07 09:41:16 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.31 2006/11/08 08:01:37 spiderr Exp $
  * @package fisheye
  */
 
@@ -31,6 +31,26 @@ class FisheyeImage extends FisheyeBase {
 				'handler_file' => 'FisheyeImage.php',
 				'maintainer_url' => 'http://www.bitweaver.org'
 			) );
+	}
+
+	function lookup( $pLookupHash ) {
+		global $gBitDb;
+		$ret = NULL;
+
+		if (!empty($pLookupHash['image_id']) && is_numeric($pLookupHash['image_id'])) {
+			$lookup = $gBitDb->getRow( "SELECT lc.`content_id`, lc.`content_type_guid` FROM `".BIT_DB_PREFIX."fisheye_image` fi INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fi.`content_id`) WHERE `image_id`=?", array( $pLookupHash['image_id'] ) );
+			$lookupContentId = $lookup['content_id'];
+			$lookupContentGuid = $lookup['content_type_guid'];
+		} elseif (!empty($pLookupHash['content_id']) && is_numeric($pLookupHash['content_id'])) {
+			$lookupContentId = $lookup['content_id'];
+			$lookupContentGuid = NULL;
+		}
+	
+		if( BitBase::verifyId( $lookupContentId ) ) {
+			$ret = LibertyBase::getLibertyObject( $lookupContentId, $lookupContentGuid );
+		}
+
+		return $ret;
 	}
 
 	function load() {
@@ -111,7 +131,7 @@ class FisheyeImage extends FisheyeBase {
 //		$ret .= '<img src="'.$this->mInfo['image_file']['source_url'].'" width="400" height="300" />';
 		$ret = NULL;
 		// make sure we have a valid image file.
-		if( $this->isValid() && ($details = $this->getImageDetails( BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'] ) ) ) {
+		if( $this->isValid() && ($details = $this->getImageDetails() ) ) {
 			if( $this->mInfo['width'] != $details['width'] || $this->mInfo['height'] != $details['height']  ) {
 				// if our data got out of sync with the database, force an update
 				$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
@@ -120,7 +140,7 @@ class FisheyeImage extends FisheyeBase {
 				$this->mInfo['height'] = $details['height'];
 			}
 
-			$ret = array(	'type' => FISHEYEIMAGE_CONTENT_TYPE_GUID,
+			$ret = array(	'type' => $this->getContentType(),
 							'landscape' => $this->isLandscape(),
 							'url' => $this->getDisplayUrl(),
 							'content_id' => $this->mContentId,
@@ -137,7 +157,7 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	function verifyImageData(&$pStorageHash) {
-		$pStorageHash['content_type_guid'] = FISHEYEIMAGE_CONTENT_TYPE_GUID;
+		$pStorageHash['content_type_guid'] = $this->getContentType();
 
 		if ( empty($pStorageHash['purge_from_galleries']) ) {
 			$pStorageHash['purge_from_galleries'] = FALSE;
@@ -306,10 +326,26 @@ class FisheyeImage extends FisheyeBase {
 		return( count($this->mErrors) == 0 );
 	}
 
+	function getSourceUrl() {
+		$ret = NULL;
+		if( !empty( $this->mInfo['image_file']['storage_path'] ) ) {
+			 $ret = BIT_ROOT_URL.$this->mInfo['image_file']['storage_path'];
+		}
+		return $ret;
+	}
+
+	function getSourceFile() {
+		$ret = NULL;
+		if( !empty( $this->mInfo['image_file']['storage_path'] ) ) {
+			 $ret = BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'];
+		}
+		return $ret;
+	}
+
 	// Get resolution, etc
 	function getImageDetails($pFilePath = NULL) {
 		$info = NULL;
-		$pFilePath = ($pFilePath ? $pFilePath : (empty($this->mInfo['image_file']['storage_path']) ? NULL : BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path']));
+		$pFilePath = ($pFilePath ? $pFilePath : $this->getSourceFile());
 
 		$checkFiles = array( $pFilePath, dirname( $pFilePath ).'/original.jpg' );
 
@@ -327,11 +363,19 @@ class FisheyeImage extends FisheyeBase {
 	}
 
     /**
-    * Returns include file that will
+    * Returns include file that will setup vars for display
     * @return the fully specified path to file to be included
     */
 	function getRenderFile() {
 		return FISHEYE_PKG_PATH."display_fisheye_image_inc.php";
+	}
+
+    /**
+    * Returns template file used for display
+    * @return the fully specified path to file to be included
+    */
+	function getRenderTemplate() {
+		return 'bitpackage:fisheye/view_image.tpl';
 	}
 
     /**

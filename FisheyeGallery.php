@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.41 2006/10/08 16:50:05 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.42 2006/11/08 08:01:38 spiderr Exp $
  * @package fisheye
  */
 
@@ -45,6 +45,27 @@ class FisheyeGallery extends FisheyeBase {
 
 	function isValid() {
 		return( @$this->verifyId( $this->mGalleryId ) || @$this->verifyId( $this->mContentId ) );
+	}
+
+	function lookup( $pLookupHash ) {
+		global $gBitDb;
+		$ret = NULL;
+
+		$lookupContentId = NULL;
+		if (!empty($pLookupHash['gallery_id']) && is_numeric($pLookupHash['gallery_id'])) {
+			$lookup = $gBitDb->getRow( "SELECT lc.`content_id`, lc.`content_type_guid` FROM `".BIT_DB_PREFIX."fisheye_gallery` fg INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) WHERE `gallery_id`=?", array( $pLookupHash['gallery_id'] ) );
+			$lookupContentId = $lookup['content_id'];
+			$lookupContentGuid = $lookup['content_type_guid'];
+		} elseif (!empty($pLookupHash['content_id']) && is_numeric($pLookupHash['content_id'])) {
+			$lookupContentId = $lookup['content_id'];
+			$lookupContentGuid = NULL;
+		}
+	
+		if( BitBase::verifyId( $lookupContentId ) ) {
+			$ret = LibertyBase::getLibertyObject( $lookupContentId, $lookupContentGuid );
+		}
+
+		return $ret;
 	}
 
 	function load( $pCurrentImageId=NULL ) {
@@ -194,8 +215,12 @@ class FisheyeGallery extends FisheyeBase {
 		}
 		$this->mItems = NULL;
 
-		$query = "SELECT fgim.*, lc.`content_type_guid`, lc.`user_id`, ufm.`favorite_content_id` AS is_favorite $select
-				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` ) $join  LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
+		$query = "SELECT fgim.*, lc.`content_type_guid`, lc.`user_id`, lct.*, ufm.`favorite_content_id` AS is_favorite $select
+				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim 
+					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` ) 
+					INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` ) 
+					$join  
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
 				WHERE fgim.`gallery_content_id` = ? $whereSql
 				ORDER BY fgim.`item_position`, fgim.`item_content_id` $mid";
 		$rs = $this->mDb->query($query, $bindVars, $rows, $offset);
@@ -206,11 +231,16 @@ class FisheyeGallery extends FisheyeBase {
 			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 				$pass = $gBitUser->hasPermission( 'p_fisheye_admin' ) || !@$this->verifyId( $row['security_id'] ) || ( $row['user_id'] == $gBitUser->mUserId ) || @$this->verifyId( $_SESSION['gatekeeper_security'][$row['security_id']] );
 			}
-			if( $pass && $item = $gLibertySystem->getLibertyObject( $row['item_content_id'], $row['content_type_guid'] ) ) {
-				$item->loadThumbnail( $this->mInfo['thumbnail_size'] );
-				$item->setGalleryPath( $this->mGalleryPath.'/'.$this->mGalleryId );
-				$item->mInfo['item_position'] = $row['item_position'];
-				$this->mItems[$row['item_content_id']] = $item;
+			if( $pass ) {
+				$type = $gLibertySystem->mContentTypes[$row['content_type_guid']];
+				require_once( constant( strtoupper( $type['handler_package'] ).'_PKG_PATH' ).$type['handler_file'] );
+				$item = new $type['handler_class']( NULL, $row['item_content_id'] );
+				if( is_object( $item ) && $item->load() ) {
+					$item->loadThumbnail( $this->mInfo['thumbnail_size'] );
+					$item->setGalleryPath( $this->mGalleryPath.'/'.$this->mGalleryId );
+					$item->mInfo['item_position'] = $row['item_position'];
+					$this->mItems[$row['item_content_id']] = $item;
+				}
 			}
 		}
 		return count( $this->mItems );
@@ -218,7 +248,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	function exportHtml( $pPaginate = FALSE ) {
 		$ret = NULL;
-		$ret['metadata'] = array(	'type' => FISHEYEGALLERY_CONTENT_TYPE_GUID,
+		$ret['metadata'] = array(	'type' => $this->getContentType(),
 						'landscape' => FALSE,
 						'url' => $this->getDisplayUrl(),
 						'content_id' => $this->mContentId,
@@ -278,7 +308,7 @@ class FisheyeGallery extends FisheyeBase {
 			$this->mErrors[] = "You must specify a title for this image gallery";
 		}
 
-		$pStorageHash['content_type_guid'] = FISHEYEGALLERY_CONTENT_TYPE_GUID;
+		$pStorageHash['content_type_guid'] = $this->getContentType();
 
 		return (count($this->mErrors) == 0);
 	}
@@ -494,11 +524,19 @@ vd( $this->mErrors );
 	}
 
     /**
-    * Returns include file that will
+    * Returns include file that will setup the object for rendering
     * @return the fully specified path to file to be included
     */
 	function getRenderFile() {
 		return FISHEYE_PKG_PATH."display_fisheye_gallery_inc.php";
+	}
+
+    /**
+    * Returns template file used for display
+    * @return the fully specified path to file to be included
+    */
+	function getRenderTemplate() {
+		return 'bitpackage:fisheye/view_gallery.tpl';
 	}
 
     /**

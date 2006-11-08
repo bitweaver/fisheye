@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.6 2006/04/11 13:04:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.7 2006/11/08 08:02:53 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -22,6 +22,6 @@ $thumbSize = (!empty( $_REQUEST['size'] ) ? $_REQUEST['size'] :
 $gContent->mInfo['display_url'] = $gContent->getThumbnailUrl( $thumbSize );
 
 $gBitSystem->setBrowserTitle( $gContent->getTitle() );
-$gBitSystem->display("bitpackage:fisheye/view_image.tpl");
+$gBitSystem->display( $gContent->getRenderTemplate() );
 
 ?>

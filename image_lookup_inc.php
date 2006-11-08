@@ -1,18 +1,14 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_lookup_inc.php,v 1.3 2005/08/01 18:40:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_lookup_inc.php,v 1.4 2006/11/08 08:01:37 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
 
 global $gContent, $gGallery;
 
-if (!empty($_REQUEST['image_id']) && is_numeric($_REQUEST['image_id'])) {
-	$gContent = new FisheyeImage( $_REQUEST['image_id'] );
-	$gContent->load();
-	//vd($gContent->mInfo['image_file']);
-} elseif (!empty($_REQUEST['content_id']) && is_numeric($_REQUEST['content_id'])) {
-	$gContent = new FisheyeImage( NULL, $_REQUEST['content_id'] );
+
+if( $gContent = FisheyeImage::lookup( $_REQUEST ) ) {
 	$gContent->load();
 } else {
 	$gContent = new FisheyeImage();
