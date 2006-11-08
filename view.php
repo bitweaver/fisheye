@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.3 2006/06/25 20:34:54 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.4 2006/11/08 08:02:30 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -24,7 +24,7 @@ $gHideModules = $gBitSystem->isFeatureActive( 'fisheye_gallery_hide_modules' );
 
 if ( !$gContent->isValid() ) {
 	// No gallery was indicated so we will redirect to the browse galleries page
-	header("location: list_galleries.php");
+	header("location: ".FISHEYE_PKG_URL."list_galleries.php");
 	die;
 }
 
