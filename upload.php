@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.19 2006/11/07 12:11:51 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.20 2006/11/10 15:49:13 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -85,7 +85,6 @@ $listHash = array(
 	'no_thumbnails'=>TRUE,
 	'sort_mode'=>'title_asc',
 	'show_empty' => TRUE,
-	'show_public' => TRUE
 );
 $galleryList = $gFisheyeGallery->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
