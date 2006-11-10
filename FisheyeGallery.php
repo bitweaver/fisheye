@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.43 2006/11/10 16:33:33 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.44 2006/11/10 18:09:55 spiderr Exp $
  * @package fisheye
  */
 
@@ -600,7 +600,7 @@ vd( $this->mErrors );
 
 		if( !empty( $pListHash['show_public'] ) ) {
 			$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."liberty_content_prefs` lcp ON( lcp.`content_id`=lc.`content_id` )";
-			$whereSql .= " OR( lcp.`pref_name`=? AND lcp.`pref_value`=? ) ";
+			$whereSql .= " OR  ( lcp.`pref_name`=? AND lcp.`pref_value`=? ) ";
 			$bindVars[] = 'is_public';
 			$bindVars[] = 'y';
 		}

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.14 2006/11/07 12:11:52 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.15 2006/11/10 18:09:55 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -15,21 +15,23 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	$upList = $gal->getList( $getHash );
 	if( !empty( $upList['data'] ) ) {
 		$ret = key( $upList['data'] );
-	} elseif( $gBitUser->hasPermission( 'fisheye_create_gallery' ) ) {
+	} else { // if( $gBitUser->hasPermission( 'p_fisheye_create' ) ) {
 		$galleryHash = array( 'title' => $pNewName );
 		if( $gal->store( $galleryHash ) ) {
 			$ret = $gal->mGalleryId;
 		}
+/*
 	} else {
-		$getHash = array( 'show_public' => TRUE, 'max_records' => 1, 'sort_mode' => 'created_desc' );
+		$getHash = array( 'max_records' => 1, 'sort_mode' => 'created_desc' );
 		$upList = $gal->getList( $getHash );
 		if( !empty( $upList['data'] ) ) {
 			$ret = key( $upList['data'] );
 		}
+*/
 	}
 
 	global $gContent;
-	if( !is_object( $gContent ) || !$gContent->isValid() ) {
+	if( $ret && (!is_object( $gContent ) || !$gContent->isValid()) ) {
 		$gContent = new FisheyeGallery( $ret );
 		$gContent->load();
 	}
