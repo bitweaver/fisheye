@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.31 2006/11/08 08:01:37 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.32 2006/11/10 16:33:33 spiderr Exp $
  * @package fisheye
  */
 
@@ -37,10 +37,12 @@ class FisheyeImage extends FisheyeBase {
 		global $gBitDb;
 		$ret = NULL;
 
+		$lookupContentId = NULL;
 		if (!empty($pLookupHash['image_id']) && is_numeric($pLookupHash['image_id'])) {
-			$lookup = $gBitDb->getRow( "SELECT lc.`content_id`, lc.`content_type_guid` FROM `".BIT_DB_PREFIX."fisheye_image` fi INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fi.`content_id`) WHERE `image_id`=?", array( $pLookupHash['image_id'] ) );
-			$lookupContentId = $lookup['content_id'];
-			$lookupContentGuid = $lookup['content_type_guid'];
+			if( $lookup = $gBitDb->getRow( "SELECT lc.`content_id`, lc.`content_type_guid` FROM `".BIT_DB_PREFIX."fisheye_image` fi INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fi.`content_id`) WHERE `image_id`=?", array( $pLookupHash['image_id'] ) ) ) {
+				$lookupContentId = $lookup['content_id'];
+				$lookupContentGuid = $lookup['content_type_guid'];
+			}
 		} elseif (!empty($pLookupHash['content_id']) && is_numeric($pLookupHash['content_id'])) {
 			$lookupContentId = $lookup['content_id'];
 			$lookupContentGuid = NULL;
