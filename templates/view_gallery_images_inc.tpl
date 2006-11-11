@@ -12,7 +12,7 @@
 					<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
 				</a>
 				{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
-					<h3>{$galItem->mInfo.title|escape}</h3>
+					<h2>{$galItem->mInfo.title|escape}</h2>
 				{/if}
 				{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_descriptions' )}
 					<p>{$galItem->mInfo.data}</p>
