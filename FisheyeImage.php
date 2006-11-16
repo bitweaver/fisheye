@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.32 2006/11/10 16:33:33 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.33 2006/11/16 00:14:57 spiderr Exp $
  * @package fisheye
  */
 
@@ -44,7 +44,7 @@ class FisheyeImage extends FisheyeBase {
 				$lookupContentGuid = $lookup['content_type_guid'];
 			}
 		} elseif (!empty($pLookupHash['content_id']) && is_numeric($pLookupHash['content_id'])) {
-			$lookupContentId = $lookup['content_id'];
+			$lookupContentId = $pLookupHash['content_id'];
 			$lookupContentGuid = NULL;
 		}
 	
