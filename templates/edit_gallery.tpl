@@ -50,7 +50,7 @@ function updateGalleryPagination() {
 								{formlabel label="Public Gallery" for="is_public"}
 								{forminput}
 									<input type="checkbox" name="is_public" id="is_public" value="y" {if $gContent->getPreference('is_public') eq 'y'}checked="checked"{/if} />
-									{formhelp note="Allow other users to upload to this this gallery."}
+									{formhelp note="Allow other users to upload to this gallery."}
 								{/forminput}
 							</div>
 						{/if}
