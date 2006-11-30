@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.15 2006/11/10 18:09:55 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.16 2006/11/30 02:24:05 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -41,7 +41,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 /**
  * fisheye_store_upload
  */
-function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array() ) {
+function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array(), $pAutoRotate=TRUE ) {
 	global $gBitSystem;
 	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && is_file( $pFileHash['tmp_name'] ) ) {
 		// make a copy for each image we need to store
@@ -53,6 +53,9 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array() 
 		$storeHash['purge_from_galleries'] = TRUE;
 		if( !$image->store( $storeHash ) ) {
 			array_merge( $upErrors, array_values( $image->mErrors ) );
+			if( $pAutoRotate ) {
+				$image->rotateImage( 'auto' );
+			}
 		}
 		$image->addToGalleries( $_REQUEST['galleryAdditions'], $pOrder );
 

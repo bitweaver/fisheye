@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.22 2006/11/16 15:14:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.23 2006/11/30 02:24:05 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -57,7 +57,7 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 
 	$order = 100;
 	foreach( array_keys( $upImages ) as $key ) {
-		fisheye_store_upload( $upImages[$key], $order, $upData[$key] );
+		fisheye_store_upload( $upImages[$key], $order, $upData[$key], !empty( $_REQUEST['rotate_image'] ) );
 		$order += 10;
 	}
 

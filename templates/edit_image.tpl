@@ -75,10 +75,13 @@
 						<div class="row">
 							{formlabel label="Rotate Image"}
 							{forminput}
+{if function_exists('exif_read_data')}
+								<label><input type="radio" name="rotate_image" value="auto"/> {biticon ipackage="fisheye" iname="rotate_auto" iexplain="Auto Rotate"}</label> &nbsp;&nbsp;&nbsp;&nbsp;
+{/if}
 								<label><input type="radio" name="rotate_image" value="-90"/> {biticon ipackage="fisheye" iname="rotate_ccw" iexplain="Rotate Counter Clockwise"}</label> &nbsp;&nbsp;&nbsp;&nbsp;
 								<label>{biticon ipackage="fisheye" iname="rotate_cw" iexplain="Rotate Clockwise"} <input type="radio" name="rotate_image" value="90"/></label>
 								<br />
-								<label><input type="radio" name="rotate_image" value="" checked="checked"/> {tr}don't rotate{/tr}</label>
+								<label> <input type="radio" name="rotate_image" value="" checked="checked"/> {tr}don't rotate{/tr}</label>
 							{/forminput}
 						</div>
 

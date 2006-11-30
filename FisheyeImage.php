@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.33 2006/11/16 00:14:57 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.34 2006/11/30 02:24:05 spiderr Exp $
  * @package fisheye
  */
 
@@ -246,6 +246,19 @@ class FisheyeImage extends FisheyeBase {
 		return (count($this->mErrors) == 0);
 	}
 
+	function getExifField( $pExifField ) {
+		$ret = NULL;
+		if( function_exists( 'exif_read_data' ) ) {
+			$pExifField = strtolower( $pExifField );
+			if( empty( $this->mExif ) ) {
+				$this->mExif = array_change_key_case( exif_read_data( $this->getSourceFile() ), CASE_LOWER );
+			}
+			if( !empty( $this->mExif[$pExifField] ) ) {
+				$ret = $this->mExif[$pExifField];
+			}
+		}
+		return $ret;
+	}
 
 	function rotateImage( $pDegrees ) {
 		global $gBitSystem;
@@ -256,14 +269,50 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
 			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
 			$fileHash['name'] = $this->mInfo['image_file']['filename'];
-			$fileHash['degrees'] = $pDegrees;
-			$rotateFunc = liberty_get_function( 'rotate' );
-			if( $rotateFunc( $fileHash ) ) {
-				liberty_clear_thumbnails( $fileHash );
-				$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=`height`, `height`=`width` WHERE `content_id`=?", array( $this->mContentId ) );
-				$this->generateThumbnails();
-			} else {
-				$this->mErrors['rotate'] = $fileHash['error'];
+			if( $pDegrees == 'auto' ) {
+				if( $exifOrientation = $this->getExifField( 'orientation' ) ) {
+					switch( $exifOrientation ) {
+						 case 1: //) transform="";;
+							break;
+						 case 2: //) transform="-flip horizontal";;
+							break;
+						 case 3: //) transform="-rotate 180";;
+							$pDegrees = 180;
+							break;
+						 case 4: //) transform="-flip vertical";;
+							break;
+						 case 5: //) transform="-transpose";;
+							break;
+						 case 6: //) transform="-rotate 90";;
+							// make sure image has not already been rotated
+							if( $this->isLandscape() ) {
+								$pDegrees = 90;
+							}
+							break;
+						 case 7: //) transform="-transverse";;
+							break;
+						 case 8: //) transform="-rotate 270";;
+							// make sure image has not already been rotated
+							if( $this->isLandscape() ) {
+								$pDegrees = 270;
+							}
+							break;
+						 // *) transform="";;
+					}	
+				}
+			}
+			if( is_numeric( $pDegrees ) ) {
+				$fileHash['degrees'] = $pDegrees;
+				$rotateFunc = liberty_get_function( 'rotate' );
+				if( $rotateFunc( $fileHash ) ) {
+					liberty_clear_thumbnails( $fileHash );
+					$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=`height`, `height`=`width` WHERE `content_id`=?", array( $this->mContentId ) );
+					$this->generateThumbnails();
+				} else {
+					$this->mErrors['rotate'] = $fileHash['error'];
+				}
+			} elseif( $pDegrees == 'auto' ) {
+				$this->mErrors['rotate'] = "Image was not auto-rotated.";
 			}
 		}
 		return (count($this->mErrors) == 0);

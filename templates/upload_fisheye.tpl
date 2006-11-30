@@ -136,6 +136,16 @@
 						<input type="hidden" name="process_archive" value="true" />
 					{/if}
 
+					{if function_exists('exif_read_data')}
+						<div class="row">
+							{formlabel label="Auto-Rotate Images" for="rotate_image"}
+							{forminput}
+								<input type="checkbox" id="rotate_image" name="rotate_image" value="auto" checked="checked" />
+								{formhelp note="If your camera was turned sideways when the image was taken, this will attempt to orient the image correctly."}
+							{/forminput}
+						</div>
+					{/if}
+
 					<div class="row">
 						{formlabel label="Add File(s) to these Galleries"}
 						{forminput}
