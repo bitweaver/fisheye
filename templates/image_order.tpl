@@ -89,6 +89,7 @@
 							<option value="remove">{tr}Remove{/tr} ({tr}Don't delete if in other galleries{/tr})</option>
 							<option value="thumbnail">{tr}Regenerate Thumbnails{/tr}</option>
 							<optgroup label="{tr}Rotate{/tr}">
+								<option value="rotate:auto">^^ {tr}Auto Rotate{/tr}</option>
 								<option value="rotate:90">&gt;&gt; {tr}Rotate Clockwise{/tr}</option>
 								<option value="rotate:-90">&lt;&lt; {tr}Rotate Counter Clockwise{/tr}</option>
 							</optgroup>
@@ -104,14 +105,14 @@
 								<optgroup label="{tr}Copy to Gallery{/tr}">
 									{foreach from=$galleryList item=gal key=galleryId}
 										{if $gContent->mInfo.content_id ne $gal.content_id}
-											<option value="gallerycopy:{$gal.content_id}">{$gal.title|escape|truncate:50}</option>
+											<option value="gallerycopy:{$gal.content_id}">&raquo; {$gal.title|escape|truncate:50}</option>
 										{/if}
 									{/foreach}
 								</optgroup>
 								<optgroup label="{tr}Move to Gallery{/tr}">
 									{foreach from=$galleryList item=gal key=galleryId}
 										{if $gContent->mInfo.content_id ne $gal.content_id}
-											<option value="gallerymove:{$gal.content_id}">{$gal.title|escape|truncate:50}</option>
+											<option value="gallerymove:{$gal.content_id}">-&gt; {$gal.title|escape|truncate:50}</option>
 										{/if}
 									{/foreach}
 								</optgroup>

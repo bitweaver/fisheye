@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.15 2006/09/06 04:51:15 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.16 2006/11/30 02:19:09 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -167,6 +167,15 @@ if (!empty($_REQUEST['cancel'])) {
 		$gContent->mInfo['preview_content_id'] = $_REQUEST['gallery_preview_content_id'];
 	}
 
+	$_SESSION['image_order_feedback'] = $feedback;
+
+	// Redirect so reload does not cause double-batch processing
+	bit_redirect( FISHEYE_PKG_URL.'image_order.php?gallery_id='.$gContent->getField( 'gallery_id' ) );
+}
+
+if( !empty( $_SESSION['image_order_feedback'] ) ) {
+	$feedback = $_SESSION['image_order_feedback'];
+	unset( $_SESSION['image_order_feedback'] );
 }
 
 // Get a list of all existing galleries
