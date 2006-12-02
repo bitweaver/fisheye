@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.34 2006/11/30 02:24:05 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.35 2006/12/02 19:12:11 spiderr Exp $
  * @package fisheye
  */
 
@@ -380,7 +380,7 @@ class FisheyeImage extends FisheyeBase {
 	function getSourceUrl() {
 		$ret = NULL;
 		if( !empty( $this->mInfo['image_file']['storage_path'] ) ) {
-			 $ret = BIT_ROOT_URL.$this->mInfo['image_file']['storage_path'];
+			 $ret =  BIT_ROOT_URL.dirname( $this->mInfo['image_file']['storage_path'] ).'/'.rawurlencode( basename( $this->mInfo['image_file']['storage_path'] ) );
 		}
 		return $ret;
 	}
