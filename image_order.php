@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.16 2006/11/30 02:19:09 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.17 2006/12/02 19:12:52 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -48,6 +48,8 @@ if (!empty($_REQUEST['cancel'])) {
 	}
 
 	$gContent->loadImages();
+
+	$feedback = NULL;
 
 	if( !empty( $_REQUEST['reorder_gallery'] ) ) {
 		switch( $_REQUEST['reorder_gallery'] ){
