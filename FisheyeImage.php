@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.35 2006/12/02 19:12:11 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.36 2006/12/03 06:34:57 spiderr Exp $
  * @package fisheye
  */
 
@@ -86,14 +86,12 @@ class FisheyeImage extends FisheyeBase {
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = lc.`user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON (ufm.`favorite_content_id`=lc.`content_id` AND ufm.`user_id`=uuc.`user_id`) $joinSql
 					$whereSql";
-			if( $rs = $this->mDb->query( $sql, array( $bindVars ) ) ) {
-				$this->mInfo = $rs->fields;
-
+			if( $this->mInfo = $this->mDb->getRow( $sql, array( $bindVars ) ) ) {
 				$this->mImageId = $this->mInfo['image_id'];
 				$this->mContentId = $this->mInfo['content_id'];
 
-				$this->mInfo['creator'] = (isset( $rs->fields['creator_real_name'] ) ? $rs->fields['creator_real_name'] : $rs->fields['creator_user'] );
-				$this->mInfo['editor'] = (isset( $rs->fields['modifier_real_name'] ) ? $rs->fields['modifier_real_name'] : $rs->fields['modifier_user'] );
+				$this->mInfo['creator'] = (isset( $this->mInfo['creator_real_name'] ) ? $this->mInfo['creator_real_name'] : $this->mInfo['creator_user'] );
+				$this->mInfo['editor'] = (isset( $this->mInfo['modifier_real_name'] ) ? $this->mInfo['modifier_real_name'] : $this->mInfo['modifier_user'] );
 
 				if( $gBitSystem->isPackageActive( 'gatekeeper' ) && !@$this->verifyId( $this->mInfo['security_id'] ) ) {
 					// check to see if this image is in a protected gallery
@@ -347,6 +345,7 @@ class FisheyeImage extends FisheyeBase {
 
 	function generateThumbnails( $pResizeOriginal=NULL ) {
 		global $gBitSystem;
+		$ret = FALSE;
 		// LibertyAttachable will take care of thumbnail generation of the offline thumbnailer is not active
 		if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) ) {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."liberty_thumbnail_queue`
@@ -356,18 +355,20 @@ class FisheyeImage extends FisheyeBase {
 					  (`content_id`, `queue_date`, `resize_original`) VALUES (?,?,?)";
 			$this->mDb->query( $query, array( $this->mContentId, $gBitSystem->getUTCTime(), $pResizeOriginal ) );
 		} else {
-			$this->renderThumbnails();
+			$ret = $this->renderThumbnails();
 		}
+		return $ret;
 	}
 
 
-	function renderThumbnails() {
+	function renderThumbnails( $pThumbSizes=NULL ) {
 		if( !empty( $this->mInfo['image_file'] ) || $this->load() ) {
 			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'];
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
 			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
 			$fileHash['name'] = $this->mInfo['image_file']['filename'];
+			$fileHash['thumbnail_sizes'] = $pThumbSizes;
 			// just generate thumbnails
 			liberty_generate_thumbnails( $fileHash );
 			if( !empty( $fileHash['error'] ) ) {
@@ -436,6 +437,7 @@ class FisheyeImage extends FisheyeBase {
     * @return the url to display the gallery.
     */
 	function getDisplayUrl( $pImageId=NULL, $pMixed=NULL ) {
+		$ret = '';
 		if( !@$this->verifyId( $pImageId ) ) {
 			$pImageId = $this->mImageId;
 		}
