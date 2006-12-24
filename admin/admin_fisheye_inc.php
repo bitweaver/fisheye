@@ -92,10 +92,6 @@ $formGalleryLists = array(
 		'note' => 'You can use a &lt;div&gt; based layout, which will adjust the number of images in each row to the width of the browser. Please visit the online help for more information.',
 		'page' => 'FisheyePackage',
 	),
-	"fisheye_gallery_upload_noorder" => array(
-		'label' => "Don't set order",
-		'note' => "Don't set the order when uploading more than one item i.e. position of all items will be equal until set manually.",
-	),
 );
 $gBitSmarty->assign( 'formGalleryLists',$formGalleryLists );
 
