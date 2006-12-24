@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.45 2006/11/16 00:14:57 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.46 2006/12/24 13:39:02 squareing Exp $
  * @package fisheye
  */
 
@@ -186,17 +186,20 @@ class FisheyeGallery extends FisheyeBase {
 		}
 
 		$bindVars = array($this->mContentId);
-		$mid = '';
-		$whereSql = '';
-		$select = '';
-		$join = '';
-		$rows = NULL;
-		$offset = NULL;
+		$whereSql = $selectSql = $joinSql = $orderSql = '';
+		$rows = $offset = NULL;
+
+		if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
+			$orderSql = ", ".$this->mDb->convert_sortmode( $gBitSystem->getConfig( 'fisheye_gallery_default_sort_mode' ) );
+		} else {
+			$orderSql = ", fgim.`item_content_id`";
+		}
+
 		// load for just a single page
 		if( $pPage != -1 ) {
 			if( $this->getPreference( 'gallery_pagination' ) == FISHEYE_PAGINATION_POSITION_NUMBER ) {
-				$query = "SELECT DISTINCT(FLOOR(`item_position`)) 
-						  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` 
+				$query = "SELECT DISTINCT(FLOOR(`item_position`))
+						  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
 						  WHERE gallery_content_id=?
 						  ORDER BY floor(item_position)";
 				$mantissa = $this->mDb->getOne( $query, array( $this->mContentId ), 1, ($pPage - 1) );
@@ -209,21 +212,21 @@ class FisheyeGallery extends FisheyeBase {
 		}
 
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-			$select .= ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
-			$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (lc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON (ls.`security_id`=cg.`security_id` )";
+			$selectSql .= ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
+			$joinSql .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (lc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON (ls.`security_id`=cg.`security_id` )";
 //			$where = ' AND (cg.`security_id` IS NULL OR lc.`user_id`=?) ';
 //			$bindVars[] = $gBitUser->mUserId;
 		}
 		$this->mItems = NULL;
 
-		$query = "SELECT fgim.*, lc.`content_type_guid`, lc.`user_id`, lct.*, ufm.`favorite_content_id` AS is_favorite $select
+		$query = "SELECT fgim.*, lc.`content_type_guid`, lc.`user_id`, lct.*, ufm.`favorite_content_id` AS is_favorite $selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim 
 					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` ) 
 					INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` ) 
-					$join  
+					$joinSql
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
 				WHERE fgim.`gallery_content_id` = ? $whereSql
-				ORDER BY fgim.`item_position`, fgim.`item_content_id` $mid";
+				ORDER BY fgim.`item_position` $orderSql";
 		$rs = $this->mDb->query($query, $bindVars, $rows, $offset);
 
 		$rows = $rs->getRows();

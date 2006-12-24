@@ -65,6 +65,14 @@
 						{/forminput}
 					</div>
 				{/foreach}
+
+				<div class="row">
+					{formlabel label="Default sort order" for="fisheye_gallery_default_sort_mode"}
+					{forminput}
+						{html_options values=$sortOptions options=$sortOptions name="fisheye_gallery_default_sort_mode" id="fisheye_gallery_default_sort_mode" selected=$gBitSystem->getConfig('fisheye_gallery_default_sort_mode')}
+						{formhelp note="This is the order of the images if they have not been sorted manually i.e. all the images with the same position value."}
+					{/forminput}
+				</div>
 			{/legend}
 
 			{legend legend="Default Gallery Display Settings"}
@@ -89,12 +97,11 @@
 				</div>
 
 				<div class="row">
-					{formlabel label="Default Thumbnail Size"}
+					{formlabel label="Default Thumbnail Size" for="default_gallery_thumbnail_size"}
 					{forminput}
-						{html_options values=$imageSizes options=$imageSizes name="default_gallery_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size')}
+						{html_options values=$imageSizes options=$imageSizes name="default_gallery_thumbnail_size" id="default_gallery_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size')}
 					{/forminput}
 				</div>
-
 			{/legend}
 		{/jstab}
 

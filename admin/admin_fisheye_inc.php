@@ -22,7 +22,7 @@ $formGalleryGeneral = array(
 		'label' => 'Show Public Galleries on Upload',
 		'note' => 'Enable this if you want to have all public galleries visible when uploading files. This might cause problems on large sites with many public galleries.',
 		'type' => 'checkbox'
-	)
+	),
 );
 if( !$gBitSystem->isPackageActive( 'gigaupload' ) ) {
 	$formGalleryGeneral["fisheye_extended_upload_slots"] = array(
@@ -61,7 +61,7 @@ $formGalleryListLists = array(
 	"fisheye_list_lastmodif" => array(
 		'label' => 'Last modification',
 		'note' => 'List date this gallery was last modified',
-	)
+	),
 );
 $gBitSmarty->assign('formGalleryListLists', $formGalleryListLists);
 
@@ -91,7 +91,11 @@ $formGalleryLists = array(
 		'label' => '&lt;div&gt; based Layout',
 		'note' => 'You can use a &lt;div&gt; based layout, which will adjust the number of images in each row to the width of the browser. Please visit the online help for more information.',
 		'page' => 'FisheyePackage',
-	)
+	),
+	"fisheye_gallery_upload_noorder" => array(
+		'label' => "Don't set order",
+		'note' => "Don't set the order when uploading more than one item i.e. position of all items will be equal until set manually.",
+	),
 );
 $gBitSmarty->assign( 'formGalleryLists',$formGalleryLists );
 
@@ -119,6 +123,17 @@ $formImageLists = array(
 	),
 );
 $gBitSmarty->assign( 'formImageLists', $formImageLists);
+
+$sortOptions = array(
+	''                      => tra( 'None' ),
+	'lc.title_desc'         => tra( 'Image Title' ).  ' - '.tra( 'descending' ),
+	'lc.title_asc'          => tra( 'Image Title' ).  ' - '.tra( 'ascending' ),
+	'lc.created_desc'       => tra( 'Date Uploaded' ).' - '.tra( 'descending' ),
+	'lc.created_asc'        => tra( 'Date Uploaded' ).' - '.tra( 'ascending' ),
+	'lc.last_modified_desc' => tra( 'Last Modified' ).' - '.tra( 'descending' ),
+	'lc.last_modified_asc'  => tra( 'Last Modified' ).' - '.tra( 'ascending' ),
+);
+$gBitSmarty->assign( 'sortOptions', $sortOptions );
 
 $imageSizes = array(
 	'avatar' => tra( 'Avatar ( 100 x 75 pixels )' ),
@@ -152,6 +167,7 @@ if (!empty($_REQUEST['fisheyeAdminSubmit'])) {
 	$gBitSystem->storeConfig('fisheye_gallery_default_thumbnail_size', $_REQUEST['default_gallery_thumbnail_size'], FISHEYE_PKG_NAME);
 	$gBitSystem->storeConfig('fisheye_gallery_default_rows_per_page', $_REQUEST['rows_per_page'], FISHEYE_PKG_NAME);
 	$gBitSystem->storeConfig('fisheye_gallery_default_cols_per_page', $_REQUEST['cols_per_page'], FISHEYE_PKG_NAME);
+	$gBitSystem->storeConfig('fisheye_gallery_default_sort_mode', $_REQUEST['fisheye_gallery_default_sort_mode'], FISHEYE_PKG_NAME);
 
 	// Image Display Settings
 	foreach ($formImageLists as $item => $data) {
