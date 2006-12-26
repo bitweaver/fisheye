@@ -16,7 +16,7 @@
 				<span class="left">
 					{if $gGallery->mInfo.previous_image_id}
 						<a href="{$gContent->getDisplayUrl($gGallery->mInfo.previous_image_id)|escape}">
-							{if $gallerybar_use_icons eq 'y'}
+							{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
 								{biticon ipackage="icons" iname="go-previous" iexplain=previous}
 							{else}
 								&laquo;&nbsp;{tr}previous{/tr}
@@ -32,7 +32,7 @@
 				<span class="right">
 					{if $gGallery->mInfo.next_image_id}
 						<a href="{$gContent->getDisplayUrl($gGallery->mInfo.next_image_id)|escape}">
-							{if $gallerybar_use_icons eq 'y'}
+							{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
 								{biticon ipackage="icons" iname="go-next" iexplain=next}
 							{else}
 								{tr}next{/tr}&nbsp;&raquo;
