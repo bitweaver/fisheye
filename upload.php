@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.26 2006/12/27 14:27:40 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.27 2006/12/27 14:53:52 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -55,12 +55,14 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 		$upErrors = fisheye_process_archive( $upArchives[$key], $gContent, TRUE );
 	}
 
-	$order = 100;
+	$order = 90;
 	foreach( array_keys( $upImages ) as $key ) {
-		fisheye_store_upload( $upImages[$key], $order, $upData[$key], !empty( $_REQUEST['rotate_image'] ) );
-		if( !$gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
+		if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
+			$order = NULL;
+		} else {
 			$order += 10;
 		}
+		fisheye_store_upload( $upImages[$key], $order, $upData[$key], !empty( $_REQUEST['rotate_image'] ) );
 	}
 
 	if( !is_object( $gContent ) || !$gContent->isValid() ) {
