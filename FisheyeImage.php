@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.36 2006/12/03 06:34:57 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.37 2006/12/27 18:27:00 squareing Exp $
  * @package fisheye
  */
 
@@ -248,8 +248,10 @@ class FisheyeImage extends FisheyeBase {
 		$ret = NULL;
 		if( function_exists( 'exif_read_data' ) ) {
 			$pExifField = strtolower( $pExifField );
-			if( empty( $this->mExif ) ) {
-				$this->mExif = array_change_key_case( exif_read_data( $this->getSourceFile() ), CASE_LOWER );
+			$file = $this->getSourceFile();
+			// only attempt to get exif data from jpg or tiff files - chokes otherwise
+			if( empty( $this->mExif ) && preg_match( "!\.(jpe?g|tif{1,2})$!", $file ) ) {
+				$this->mExif = array_change_key_case( exif_read_data( $file ), CASE_LOWER );
 			}
 			if( !empty( $this->mExif[$pExifField] ) ) {
 				$ret = $this->mExif[$pExifField];
@@ -327,17 +329,41 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
 			$fileHash['name'] = $this->mInfo['image_file']['filename'];
 			$fileHash['max_height'] = $fileHash['max_width'] = $pResizeOriginal;
-			$resizeFunc = ($gBitSystem->getConfig( 'image_processor' ) == 'magickwand' ) ? 'liberty_magickwand_resize_image' : 'liberty_gd_resize_image';
+			// make a copy of the fileHash that we can compare output after processing
+			$preResize = $fileHash;
+			$resizeFunc = ( $gBitSystem->getConfig( 'image_processor' ) == 'magickwand' ) ? 'liberty_magickwand_resize_image' : 'liberty_gd_resize_image';
 			if( !$resizeFunc( $fileHash ) ) {
 				$this->mErrors['upload'] = $fileHash['errors'];
+			} else {
+				// Ack this is evil direct bashing of the liberty tables! XOXO spiderr
+				// should be a cleaner way eventually
+
+				// we need to update the souce_file in case it's changed from a non jpg to a jpg
+				if( $fileHash['name'] != $preResize['name'] ) {
+					$fileHash['source_file'] = dirname( $fileHash['source_file'] ).'/'.$fileHash['name'];
+					// make absolutely certain that we have 2 image files and that they are different, then remove the original
+					if( $fileHash['source_file'] != $preResize['source_file'] && is_file( $fileHash['source_file'] ) && is_file( $preResize['source_file'] ) ) {
+						@unlink( $preResize['source_file'] );
+					}
+				}
+				$details = $this->getImageDetails( $fileHash['source_file'] );
+				// store all the values that might have changed due to the resize
+				$storeHash = array(
+					'file_size'    => $details['size'],
+					'mime_type'    => $details['mime'],
+					'storage_path' => str_replace( BIT_ROOT_PATH, "", $fileHash['source_file'] ),
+				);
+				$this->mDb->associateUpdate( BIT_DB_PREFIX."liberty_files", $storeHash, array( 'file_id' => $this->mInfo['image_file']['file_id'] ) );
+				//$query = "UPDATE `".BIT_DB_PREFIX."liberty_files` SET `file_size`=? WHERE `file_id`=?";
+				//$this->mDb->query( $query, array( $details['size'], $this->mInfo['image_file']['file_id'] ) );
+				$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
+				$this->mDb->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );
+				// if we've come this far, we can try removing the original if it's different to the resized image
+				// make absolutely certain that we have 2 image files and that they are different, then remove the original
+				if( $fileHash['source_file'] != $preResize['source_file'] && is_file( $fileHash['source_file'] ) && is_file( $preResize['source_file'] ) ) {
+					@unlink( $preResize['source_file'] );
+				}
 			}
-			// Ack this is evil direct bashing of the liberty tables! XOXO spiderr
-			// should be a cleaner way eventually
-			$details = $this->getImageDetails( $fileHash['source_file'] );
-			$query = "UPDATE `".BIT_DB_PREFIX."liberty_files` SET `file_size`=? WHERE `file_id`=?";
-			$this->mDb->query( $query, array( $details['size'], $this->mInfo['image_file']['file_id'] ) );
-			$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
-			$this->mDb->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );
 		}
 		return (count($this->mErrors) == 0);
 	}

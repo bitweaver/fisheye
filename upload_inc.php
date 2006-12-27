@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.16 2006/11/30 02:24:05 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.17 2006/12/27 18:27:00 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -51,12 +51,19 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array(),
 		$storeHash['upload'] = &$pFileHash;
 		$storeHash['upload']['process_storage'] = STORAGE_IMAGE;
 		$storeHash['purge_from_galleries'] = TRUE;
+		// store the image
 		if( !$image->store( $storeHash ) ) {
 			array_merge( $upErrors, array_values( $image->mErrors ) );
+		} else {
+			// play with image some more if user has requested it
 			if( $pAutoRotate ) {
 				$image->rotateImage( 'auto' );
 			}
+			if( !empty( $pFileHash['resize'] ) && is_numeric( $pFileHash['resize'] ) ) {
+				$image->resizeOriginal( $pFileHash['resize'] );
+			}
 		}
+
 		$image->addToGalleries( $_REQUEST['galleryAdditions'], $pOrder );
 
 		// when we're using xupload, we need to remove temp files manually
