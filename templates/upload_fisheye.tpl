@@ -185,7 +185,7 @@
 
 			<div class="row submit">
 				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
-				<input type="submit" id="submitbutton" value="Upload File(s)" {if $submitClick}onclick="{$submitClick}"{/if}/>
+				<input type="submit" id="submitbutton" value="{tr}Upload File(s){/tr}" {if $submitClick}onclick="{$submitClick}"{/if}/>
 			</div>
 		{/form}
 	</div> <!-- end .body -->
