@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.25 2006/12/24 22:25:06 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.26 2006/12/27 14:27:40 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -82,13 +82,16 @@ $gContent->invokeServices( 'content_edit_function' );
 // Get a list of all existing galleries
 $gFisheyeGallery = new FisheyeGallery();
 $listHash = array(
-	'user_id' => $gBitUser->mUserId,
-	'max_records'=>-1,
-	'no_thumbnails'=>TRUE,
-	'sort_mode'=>'title_asc',
-	'show_empty' => TRUE,
+	'user_id'       => $gBitUser->mUserId,
+	'max_records'   => -1,
+	'no_thumbnails' => TRUE,
+	'sort_mode'     => 'title_asc',
+	'show_empty'    => TRUE,
 );
-if( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
+// modify listHash according to global preferences
+if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_editors' ) && $gBitUser->hasPermission( 'p_fisheye_edit' ) ) {
+	unset( $listHash['user_id'] );
+} elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
 	$listHash['show_public'] = TRUE;
 }
 $galleryList = $gFisheyeGallery->getList( $listHash );

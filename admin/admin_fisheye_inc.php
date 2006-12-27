@@ -23,6 +23,11 @@ $formGalleryGeneral = array(
 		'note' => 'Enable this if you want to have all public galleries visible when uploading files. This might cause problems on large sites with many public galleries.',
 		'type' => 'checkbox'
 	),
+	"fisheye_show_all_to_editors" => array(
+		'label' => 'Show all Galleries to Editors',
+		'note' => 'This will allow gallery editors to upload and move around images in all galleries. This might cause problems on large sites with many galleries.',
+		'type' => 'checkbox'
+	),
 );
 if( !$gBitSystem->isPackageActive( 'gigaupload' ) ) {
 	$formGalleryGeneral["fisheye_extended_upload_slots"] = array(

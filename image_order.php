@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.18 2006/12/23 09:29:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.19 2006/12/27 14:27:40 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -180,8 +180,20 @@ if( !empty( $_SESSION['image_order_feedback'] ) ) {
 	unset( $_SESSION['image_order_feedback'] );
 }
 
-// Get a list of all existing galleries
-$listHash = array( 'user_id' => $gBitUser->mUserId, 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode' => 'title_asc', 'show_empty' => TRUE );
+// Get a list of usable galleries
+$listHash = array(
+	'user_id'       => $gBitUser->mUserId,
+	'max_records'   => -1,
+	'no_thumbnails' => TRUE,
+	'sort_mode'     => 'title_asc',
+	'show_empty'    => TRUE
+);
+// modify listHash according to global preferences
+if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_editors' ) && $gBitUser->hasPermission( 'p_fisheye_edit' ) ) {
+	unset( $listHash['user_id'] );
+} elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
+	$listHash['show_public'] = TRUE;
+}
 $galleryList = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 $gContent->loadImages();
@@ -189,6 +201,5 @@ $gContent->loadImages();
 $gBitSmarty->assign_by_ref('formfeedback', $feedback);
 
 $gBitSmarty->assign( 'loadAjax', 'prototype' );
-$gBitSystem->display( 'bitpackage:fisheye/image_order.tpl', 'Edit Gallery Images: '.$gContent->getTitle() );
-
+$gBitSystem->display( 'bitpackage:fisheye/image_order.tpl', tra( 'Edit Gallery Images' ).': '.$gContent->getTitle() );
 ?>
