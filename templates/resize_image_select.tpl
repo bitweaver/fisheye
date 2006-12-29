@@ -1,7 +1,7 @@
 	{formlabel label="Reduce Original Size" for="resize"}
 	{forminput}
 		<select name="resize" id="resize">
-			<option value="">Don't Resize</option>
+			<option value="">{tr}Don't Resize{/tr}</option>
 			<option value="640">1/3 MegaPixel ( 640 x 480 )</option>
 			<option value="1024">3/4 MegaPixel ( 1024 x 768 )</option>
 			<option value="1280">1 MegaPixel ( 1280 x 1024 )</option>
