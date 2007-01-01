@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.18 2006/12/23 09:29:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.19 2007/01/01 16:22:40 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -98,7 +98,20 @@ $gBitSmarty->assign( 'loadAjax', 'prototype' );
 
 $gallery = $gContent->getParentGalleries();
 $gBitSmarty->assign_by_ref( 'parentGalleries', $gallery );
-$getHash = array( 'user_id' => $gBitUser->mUserId, 'contain_item' => $gContent->mContentId, 'max_records' => -1, 'no_thumbnails' => TRUE, 'sort_mode'=>'title_asc', 'show_empty'=>TRUE );
+$getHash = array(
+	'user_id'       => $gBitUser->mUserId,
+	'contain_item'  => $gContent->mContentId,
+	'max_records'   => -1,
+	'no_thumbnails' => TRUE,
+	'sort_mode'     => 'title_asc',
+	'show_empty'    => TRUE,
+);
+// modify listHash according to global preferences
+if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
+	unset( $getHash['user_id'] );
+} elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
+	$getHash['show_public'] = TRUE;
+}
 $galleryList = $gContent->getList( $getHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
 
