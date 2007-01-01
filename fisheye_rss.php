@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.2 2006/12/10 15:15:09 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.3 2007/01/01 12:53:27 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -9,12 +9,13 @@
  * Initialization
  */
 require_once( "../bit_setup_inc.php" );
-require_once( RSS_PKG_PATH."rss_inc.php" );
-require_once( FISHEYE_PKG_PATH."FisheyeImage.php" );
 
 $gBitSystem->verifyPackage( 'fisheye' );
 $gBitSystem->verifyPackage( 'rss' );
 $gBitSystem->verifyFeature( 'fisheye_rss' );
+
+require_once( FISHEYE_PKG_PATH."FisheyeImage.php" );
+require_once( RSS_PKG_PATH."rss_inc.php" );
 
 $rss->title = $gBitSystem->getConfig( 'fisheye_rss_title', $gBitSystem->getConfig( 'site_title' ).' - '.tra( 'Image Galleries' ) );
 $rss->description = $gBitSystem->getConfig( 'fisheye_rss_description', $gBitSystem->getConfig( 'site_title' ).' - '.tra( 'RSS Feed' ) );
