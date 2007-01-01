@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.28 2006/12/27 18:27:00 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.29 2007/01/01 16:20:46 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -95,7 +95,7 @@ $listHash = array(
 	'show_empty'    => TRUE,
 );
 // modify listHash according to global preferences
-if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_editors' ) && $gBitUser->hasPermission( 'p_fisheye_edit' ) ) {
+if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
 	unset( $listHash['user_id'] );
 } elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
 	$listHash['show_public'] = TRUE;
