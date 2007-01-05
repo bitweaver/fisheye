@@ -15,7 +15,7 @@
 					<h2>{$galItem->mInfo.title|escape}</h2>
 				{/if}
 				{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_descriptions' )}
-					<p>{$galItem->mInfo.data}</p>
+					<p>{$galItem->mInfo.data|escape}</p>
 				{/if}
 			{/box}
 		{foreachelse}
@@ -46,7 +46,7 @@
 						<h2>{$galItem->mInfo.title|escape}</h2>
 					{/if}
 					{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_descriptions' )}
-						<p>{$galItem->mInfo.data}</p>
+						<p>{$galItem->mInfo.data|escape}</p>
 					{/if}
 				{/box}
 			</td> <!-- End Image Cell -->

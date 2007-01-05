@@ -14,7 +14,7 @@
 	<div class="row">
 		{formlabel label="Description" for="image-desc"}
 		{forminput}
-			<textarea name="edit" id="image-desc" rows="4" cols="40">{$gContent->mInfo.data}</textarea>
+			<textarea name="edit" id="image-desc" rows="4" cols="40">{$gContent->mInfo.data|escape}</textarea>
 		{/forminput}
 	</div>
 

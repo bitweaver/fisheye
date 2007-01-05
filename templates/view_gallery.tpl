@@ -21,7 +21,7 @@
 		<h1>{$gContent->getTitle()|escape}</h1>
 
 		{if $gContent->mInfo.data}
-			<p>{$gContent->mInfo.data}</p>
+			<p>{$gContent->mInfo.data|escape}</p>
 		{/if}
 	</div>
 

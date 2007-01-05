@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.tpl,v 1.4 2006/03/25 20:48:56 squareing Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.tpl,v 1.5 2007/01/05 08:31:21 squareing Exp $ *}
 {strip}
 {if $gBitSystem->isPackageActive( 'fisheye' ) && $modImages}
 	{bitmodule title="$moduleTitle" name="fisheye_images"}
@@ -21,9 +21,9 @@
 					{if $module_params.description}
 						<br />
 						{if $maxlendesc gt 0}
-							{$modImg.data|truncate:$maxlendesc:"...":true}
+							{$modImg.data|escape|truncate:$maxlendesc:"...":true}
 						{else}
-							{$modImg.data}
+							{$modImg.data|escape}
 						{/if}
 					{/if}
 				</li>
