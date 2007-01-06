@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.46 2006/12/24 13:39:02 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.47 2007/01/06 09:46:13 squareing Exp $
  * @package fisheye
  */
 
@@ -190,7 +190,7 @@ class FisheyeGallery extends FisheyeBase {
 		$rows = $offset = NULL;
 
 		if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
-			$orderSql = ", ".$this->mDb->convert_sortmode( $gBitSystem->getConfig( 'fisheye_gallery_default_sort_mode' ) );
+			$orderSql = ", ".$this->mDb->convertSortmode( $gBitSystem->getConfig( 'fisheye_gallery_default_sort_mode' ) );
 		} else {
 			$orderSql = ", fgim.`item_content_id`";
 		}
@@ -367,7 +367,7 @@ class FisheyeGallery extends FisheyeBase {
 					$query = "SELECT fgim.`item_content_id`, lc.`content_type_guid`
 							FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( fgim.`item_content_id`=lc.`content_id` )
 							WHERE fgim.`gallery_content_id` = ?
-							ORDER BY ".$this->mDb->convert_sortmode('random');
+							ORDER BY ".$this->mDb->convertSortmode('random');
 					$rs = $this->mDb->query($query, array( $pContentId ), 1);
 					$pThumbnailContentId = $rs->fields['item_content_id'];
 					$pThumbnailContentType = $rs->fields['content_type_guid'];
@@ -635,7 +635,7 @@ vd( $this->mErrors );
 
 		if ( !empty( $pListHash['sort_mode'] ) ) {
 			//converted in prepGetList()
-			$sortSql .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
+			$sortSql .= " ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] )." ";
 		}
 		// Putting in the below hack because mssql cannot select distinct on a text blob column.
 		$selectSql .= $gBitDbType == 'mssql' ? " ,CAST(lc.`data` AS VARCHAR(250)) as `data` " : " ,lc.`data` ";
