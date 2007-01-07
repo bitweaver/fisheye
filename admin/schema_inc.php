@@ -104,4 +104,9 @@ $gBitInstaller->registerUserPermissions( FISHEYE_PKG_NAME, array(
 	array('p_fisheye_create_public_gal', 'Can create public galleries any user can load images into', 'editors', FISHEYE_PKG_NAME),
 ) );
 
+if( defined( 'RSS_PKG_NAME' )) {
+	$gBitInstaller->registerPreferences( FISHEYE_PKG_NAME, array(
+		array( RSS_PKG_NAME, FISHEYE_PKG_NAME.'_rss', 'y'),
+	));
+}
 ?>
