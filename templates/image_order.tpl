@@ -69,7 +69,7 @@
 				{/foreach}
 				<tr>
 					<td colspan="4" align="right">
-						{tr}Use Random Gallery Image{/tr} <input type="radio" name="gallery_preview_content_id" id="gallery_preview_content_id" value="" {if $gContent->mInfo.preview_content_id == ""}checked="checked"{/if} /><br/>
+						<label>{tr}Use Random Gallery Image{/tr} <input type="radio" name="gallery_preview_content_id" id="gallery_preview_content_id" value="" {if $gContent->mInfo.preview_content_id == ""}checked="checked"{/if} /></label><br/>
 						<script type="text/javascript">/* <![CDATA[ */
 							document.write("<label>{tr}Batch select all images{/tr} <input name=\"switcher\" id=\"switcher\" type=\"checkbox\" onclick=\"switchCheckboxes(this.form.id,'batch[]','switcher')\" /></label>");
 						/* ]]> */</script>
