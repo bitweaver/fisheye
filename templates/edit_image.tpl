@@ -37,7 +37,7 @@
 
 						<div class="row">
 							{if $gContent->mInfo.image_file.source_url}
-							{formfeedback warning="{tr}Uploading a new image will replace the currently existing one.{/tr}"}
+								{formfeedback warning="{tr}Uploading a new image will replace the currently existing one.{/tr}"}
 								{assign var=repl value=Replacement}
 							{/if}
 							{formlabel label="Upload $repl Image" for="image-upload"}
