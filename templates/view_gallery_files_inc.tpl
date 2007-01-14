@@ -49,7 +49,7 @@
 				<br />
 				File Type {$gContent->mItems[ix]->mStorage.$item_id.mime_type}
 				<br />
-				Size {$gContent->mItems[ix]->mStorage.$item_id.size|kbsize}
+				Size {$gContent->mItems[ix]->mStorage.$item_id.size|display_bytes}
 			</td>
 		<tr>
 	{sectionelse}
