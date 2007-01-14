@@ -4,7 +4,7 @@
 	<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php">{biticon ipackage="icons" iname="applications-internet" iexplain="upload new image"}</a>
 </div>
 
-<div class="admin fisheye">
+<div class="edit fisheye">
 	<div class="header">
 		<h1>{if $gContent->mInfo.image_id}{tr}Edit Image{/tr}: {$gContent->mInfo.title|escape} {else}{tr}Add New Image{/tr} {/if}</h1>
 	</div>
