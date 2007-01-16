@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.29 2007/01/01 16:20:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.30 2007/01/16 11:33:40 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -48,7 +48,11 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 
 	// No gallery was specified, let's try to find one or create one.
 	if( empty( $_REQUEST['galleryAdditions'] ) ) {
-		$_REQUEST['galleryAdditions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
+		if( $gBitUser->hasPermission( 'p_fisheye_create' )) {
+			$_REQUEST['galleryAdditions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
+		} else {
+			$gBitSystem->fatalError( tra( "You don't have permissions to create a new gallery. Please select an existing one to insert your images to." ));
+		}
 	}
 
 	foreach( array_keys( $upArchives ) as $key ) {
