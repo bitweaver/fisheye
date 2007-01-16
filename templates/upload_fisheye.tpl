@@ -148,7 +148,7 @@
 
 					<div class="row">
 						{if !$gBitUser->hasPermission( 'p_fisheye_create' )}
-							{formhelp warning="Please make sure you select a gallery to load your images into, otherwise your images will be discarded"}
+							{formfeedback warning="Please make sure you select a gallery to load your images into, otherwise your images will be discarded"}
 						{/if}
 						{formlabel label="Add File(s) to these Galleries"}
 						{forminput}
