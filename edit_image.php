@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.15 2007/01/01 16:20:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.16 2007/01/17 00:00:29 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -37,9 +37,22 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 	if (isset($_FILES['imageFile']) && is_uploaded_file($_FILES['imageFile']['tmp_name'])) {
 			$_REQUEST['upload'] = &$_FILES['imageFile'];
 			$_REQUEST['upload']['process_storage'] = STORAGE_IMAGE;
+			$replaceOriginal=$gContent->getSourceFile();
+			if( file_exists( dirname( $replaceOriginal ).'/original.jpg' ) ) {
+				unlink( dirname( $replaceOriginal ).'/original.jpg' );
+			}
 	}
+
 	$_REQUEST['purge_from_galleries'] = TRUE;
 	if( $gContent->store($_REQUEST) ) {
+		// refresh all hashes
+		$gContent->load();
+
+		// if user uploaded a file with a different name, delete the previous original file
+		if( $replaceOriginal != $gContent->getSourceFile() && file_exists( $replaceOriginal ) ) {
+			unlink( $replaceOriginal );
+		}
+	
 		// maybe we need to resize the original and generate thumbnails
 		if( !empty( $_REQUEST['resize'] ) ) {
 			$gContent->resizeOriginal( $_REQUEST['resize'] );
