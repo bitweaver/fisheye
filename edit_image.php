@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.16 2007/01/17 00:00:29 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.17 2007/01/21 11:05:32 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -49,7 +49,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		$gContent->load();
 
 		// if user uploaded a file with a different name, delete the previous original file
-		if( $replaceOriginal != $gContent->getSourceFile() && file_exists( $replaceOriginal ) ) {
+		if( !empty( $replaceOriginal ) && $replaceOriginal != $gContent->getSourceFile() && file_exists( $replaceOriginal ) ) {
 			unlink( $replaceOriginal );
 		}
 	
