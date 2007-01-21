@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.4 2007/01/07 10:48:31 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.5 2007/01/21 15:21:20 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -21,7 +21,7 @@ $rss->title = $gBitSystem->getConfig( 'fisheye_rss_title', $gBitSystem->getConfi
 $rss->description = $gBitSystem->getConfig( 'fisheye_rss_description', $gBitSystem->getConfig( 'site_title' ).' - '.tra( 'RSS Feed' ) );
 
 // check permission to view fisheye images
-if( !$gBitUser->hasPermission( 'p_fisheye_view_page' ) ) {
+if( !$gBitUser->hasPermission( 'p_fisheye_view' ) ) {
 	require_once( RSS_PKG_PATH."rss_error.php" );
 } else {
 	$listHash = array(
