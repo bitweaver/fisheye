@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.38 2007/01/06 09:46:13 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.39 2007/01/22 22:07:29 squareing Exp $
  * @package fisheye
  */
 
@@ -80,11 +80,13 @@ class FisheyeImage extends FisheyeBase {
 			$sql = "SELECT fi.*, lc.* $gateSql $selectSql
 						, uue.`login` AS `modifier_user`, uue.`real_name` AS `modifier_real_name`
 						, uuc.`login` AS `creator_user`, uuc.`real_name` AS `creator_real_name`, ufm.`favorite_content_id` AS `is_favorite`
+						, lch.`hits`
 					FROM `".BIT_DB_PREFIX."fisheye_image` fi
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (lc.`content_id` = fi.`content_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = lc.`modifier_user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = lc.`user_id`)
-						LEFT JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON (ufm.`favorite_content_id`=lc.`content_id` AND ufm.`user_id`=uuc.`user_id`) $joinSql
+						LEFT JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON (ufm.`favorite_content_id`=lc.`content_id` AND ufm.`user_id`=uuc.`user_id`)
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_hits` lch ON ( lch.`content_id` = lc.`content_id` ) $joinSql
 					$whereSql";
 			if( $this->mInfo = $this->mDb->getRow( $sql, array( $bindVars ) ) ) {
 				$this->mImageId = $this->mInfo['image_id'];

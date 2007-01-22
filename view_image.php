@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.8 2006/12/19 21:49:31 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.9 2007/01/22 22:07:29 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -41,6 +41,7 @@ if( is_object( $gGallery ) && $gGallery->getPreference('allow_comments') == 'y' 
 	include_once( LIBERTY_PKG_PATH.'comments_inc.php' );
 }
 
-require_once( FISHEYE_PKG_PATH.'display_fisheye_image_inc.php' );
+$gContent->addHit();
 
+require_once( FISHEYE_PKG_PATH.'display_fisheye_image_inc.php' );
 ?>
