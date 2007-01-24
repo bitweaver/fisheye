@@ -8,12 +8,10 @@
 		<div class="clear"></div>
 
 		<div class="body">
-			{foreach from=$thumbnailList key=galleryId item=gal}
-				{if $fisheye_list_thumbnail eq 'y'}
-					<a href="{$gal.display_url}">
-						<img class="thumb" src="{$gal.thumbnail_url}" alt="{$gal.title|escape}" title="{$gal.title|escape}" />
-					</a>
-				{/if}
+			{foreach from=$thumbnailList key=galleryId item=img}
+				<a href="{$img.display_url}">
+					<img class="thumb" src="{$img.thumbnail_url}" alt="{$img.title|escape}" title="{$img.title|escape}" />
+				</a>
 			{foreachelse}
 				{tr}No records found{/tr}
 			{/foreach}
