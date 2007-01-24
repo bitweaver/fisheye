@@ -2,7 +2,7 @@
 {if $thumbnailList or $showEmpty}
 	<div class="listing fisheye">
 		<div class="header">
-			<h1>{tr}Random Images{/tr}</h1>
+			<h1>{$fisheye_center_params.title|default:"{tr}Random Images{/tr}"}</h1>
 		</div>
 
 		<div class="clear"></div>
