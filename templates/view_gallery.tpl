@@ -9,7 +9,7 @@
 				<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage="icons" iname="document-properties" iexplain="Edit"}</a>
 				<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=fisheye iname="order" iexplain="Image Order"}</a>
 			{/if}
-			{if $gContent->hasUserPermission('p_fisheye_upload') || $gContent->getPreference('is_public')}
+			{if ( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' )) || ( $gContent->hasUserPermission('p_fisheye_upload') || $gContent->getPreference('is_public'))}
 				<a title="{tr}Add Image{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage="icons" iname="go-up" iexplain="Add Image"}</a>{if $gContent->getPreference('is_public')}<span class="small">({tr}Public{/tr})</span>{/if}
 			{/if}
 			{if $gContent->hasUserPermission('p_fisheye_admin')}
