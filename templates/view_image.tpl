@@ -30,10 +30,10 @@
 			{tr}View other sizes{/tr}<br />
 			&nbsp;&bull;&nbsp;
 			{foreach key=size from=$gContent->mInfo.image_file.thumbnail_url item=url}
-				{if $url != $gContent->mInfo.display_url}<a href="{$gContent->getDisplayUrl(0,$size)|escape}">{/if}{$size}{if $url != $gContent->mInfo.display_url}</a>{/if}&nbsp;&bull;&nbsp;
+				{if $url != $gContent->mInfo.display_url}<a href="{$gContent->getDisplayUrl(0,$size)|escape}">{/if}{tr}{$size}{/tr}{if $url != $gContent->mInfo.display_url}</a>{/if}&nbsp;&bull;&nbsp;
 			{/foreach}
 			{if $gContent->hasEditPermission() || $gGallery && $gGallery->getPreference('link_original_images')}
-				<a href="{$gContent->mInfo.image_file.source_url|escape}">Original</a>
+				<a href="{$gContent->mInfo.image_file.source_url|escape}">{tr}Original{/tr}</a>
 				{if $gContent->mInfo.width && $gContent->mInfo.height}
 					&nbsp;{$gContent->mInfo.width}x{$gContent->mInfo.height}
 				{/if}
