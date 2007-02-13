@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.39 2007/01/22 22:07:29 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.40 2007/02/13 17:14:12 spiderr Exp $
  * @package fisheye
  */
 
@@ -469,8 +469,7 @@ class FisheyeImage extends FisheyeBase {
 		if( !@$this->verifyId( $pImageId ) ) {
 			$pImageId = $this->mImageId;
 		}
-
-		$size = ( !empty( $pMixed ) && isset( $this->mInfo['image_file']['thumbnail_url'][$pMixed] ) ) ? $pMixed : NULL ;
+		$size = ( is_string( $pMixed ) && isset( $this->mInfo['image_file']['thumbnail_url'][$pMixed] ) ) ? $pMixed : NULL ;
 		global $gBitSystem;
 		if( @$this->verifyId( $pImageId ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
