@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.48 2007/01/07 03:44:16 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.49 2007/02/14 05:50:14 spiderr Exp $
  * @package fisheye
  */
 
@@ -260,11 +260,11 @@ class FisheyeGallery extends FisheyeBase {
 		if( $this->loadImages() ) {
 			foreach( array_keys( $this->mItems ) as $key ) {
 				if( $pPaginate ) {
-					if( $exp = $this->mItems[$key]->exportHtml() ) {
+					if( $exp = $this->mItems[$key]->exportHtml( $pPaginate ) ) {
 						$ret['content']['page'][$this->getItemPage($key)][] = $exp;
 					}
 				} else {
-					$ret['content'][] = $this->mItems[$key]->exportHtml();
+					$ret['content'][] = $this->mItems[$key]->exportHtml( $pPaginate );
 				}
 			}
 		}
