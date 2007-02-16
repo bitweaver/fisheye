@@ -32,14 +32,6 @@ $tables = array(
 	exif_value_short C(250),
 	exif_value_long X
 	CONSTRAINT ', CONSTRAINT `fisheye_exif_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content` (`content_id`)'
-",
-
-'liberty_thumbnail_queue' => "
-	content_id I4 PRIMARY,
-	queue_date I8 NOTNULL,
-	begin_date I8,
-	end_date I8,
-	resize_original integer
 "
 );
 
