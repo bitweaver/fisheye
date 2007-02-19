@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.17 2006/12/27 18:27:00 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.18 2007/02/19 07:02:55 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -104,7 +104,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
  * Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
  */
 function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=FALSE ) {
-	global $gBitSystem;
+	global $gBitSystem, $gBitUser;
 	$errors = array();
 	if( $archiveDir = opendir( $pDestinationDir ) ) {
 		$order = 100;
@@ -141,7 +141,10 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 					} else {
 						$errors = array_merge( $errors, array_values( $newGallery->mErrors ) );
 					}
-				} else {
+				} elseif( preg_match( '/.+\/*zip*/', $scanFile['type'] ) ) {
+					//recurse down in!
+					$errors = array_merge( $errors, fisheye_process_archive( $scanFile, $pParentGallery ) );
+				} elseif( preg_match( '/^video\/*/', $scanFile['type'] ) || preg_match( '/^image\/*/', $scanFile['type'] ) || preg_match( '/pdf/i', $scanFile['type'] ) || $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) ) {
 					$newImage = new FisheyeImage();
 					$imageHash = array( 'upload' => $scanFile );
 					if( $newImage->store( $imageHash ) ) {
