@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.49 2007/02/14 05:50:14 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.50 2007/02/23 16:06:17 spiderr Exp $
  * @package fisheye
  */
 
@@ -29,7 +29,7 @@ class FisheyeGallery extends FisheyeBase {
 		FisheyeBase::FisheyeBase();		// Call base constructor
 		$this->mGalleryId = (int)$pGalleryId;		// Set member variables according to the parameters we were passed
 		$this->mContentId = (int)$pContentId;		// liberty_content.content_id which this gallery references
-		$this->mItems = NULL;					// Assume no images (if $pAutoLoad is TRUE we will populate this array later)
+		$this->mItems = array();					// Assume no images (if $pAutoLoad is TRUE we will populate this array later)
 		$this->mAdminContentPerm = 'p_fisheye_admin';
 
 		// This registers the content type for FishEye galleries
@@ -217,7 +217,7 @@ class FisheyeGallery extends FisheyeBase {
 //			$where = ' AND (cg.`security_id` IS NULL OR lc.`user_id`=?) ';
 //			$bindVars[] = $gBitUser->mUserId;
 		}
-		$this->mItems = NULL;
+		$this->mItems = array();
 
 		$query = "SELECT fgim.*, lc.`content_type_guid`, lc.`user_id`, lct.*, ufm.`favorite_content_id` AS is_favorite $selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim 
