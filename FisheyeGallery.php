@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.50 2007/02/23 16:06:17 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.51 2007/03/09 20:42:25 spiderr Exp $
  * @package fisheye
  */
 
@@ -343,7 +343,7 @@ class FisheyeGallery extends FisheyeBase {
 
 
 	function getThumbnailImage( $pContentId=NULL, $pThumbnailContentId=NULL, $pThumbnailContentType=NULL ) {
-		global $gLibertySystem;
+		global $gLibertySystem, $gBitUser;
 		$ret = NULL;
 
 		if( !@$this->verifyId( $pContentId ) ) {
@@ -357,12 +357,17 @@ class FisheyeGallery extends FisheyeBase {
 				$pThumbnailContentId = $this->mInfo['preview_content_id'];
 			} else {
 				if( $this->mDb->isAdvancedPostgresEnabled() ) {
+					$bindVars = array( $pContentId ); 
+					if( !$gBitUser->isAdmin() ) {
+						$whereSql = "  AND (cgm.`security_id` IS NULL OR lc.`user_id`=?) ";	
+						$bindVars[] = $gBitUser->mUserId;
+					}
 					$query = "SELECT COALESCE( fg.`preview_content_id`, lc.`content_id` )
 							FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
 								INNER JOIN liberty_content lc ON(content_id=cb_item_content_id)
 								LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cgm ON (cgm.`content_id`=lc.`content_id`), `".BIT_DB_PREFIX."fisheye_gallery` fg
-							WHERE lc.`content_type_guid`='fisheyeimage' AND cgm.`security_id` IS NULL AND `cb_parent_content_id`=fg.`content_id` ORDER BY RANDOM()";
-					if( $pThumbnailContentId = $this->mDb->getOne( $query, array( $pContentId ) ) ) {
+							WHERE lc.`content_type_guid`='fisheyeimage' $whereSql AND `cb_parent_content_id`=fg.`content_id` ORDER BY RANDOM()";
+					if( $pThumbnailContentId = $this->mDb->getOne( $query, $bindVars ) ) {
 						$pThumbnailContentType = 'fisheyeimage';
 					}
 				} else {
