@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.51 2007/03/09 20:42:25 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.52 2007/03/14 23:22:30 spiderr Exp $
  * @package fisheye
  */
 
@@ -357,6 +357,7 @@ class FisheyeGallery extends FisheyeBase {
 				$pThumbnailContentId = $this->mInfo['preview_content_id'];
 			} else {
 				if( $this->mDb->isAdvancedPostgresEnabled() ) {
+					$whereSql = '';
 					$bindVars = array( $pContentId ); 
 					if( !$gBitUser->isAdmin() ) {
 						$whereSql = "  AND (cgm.`security_id` IS NULL OR lc.`user_id`=?) ";	
