@@ -50,7 +50,7 @@
 							{formlabel label="Current Image"}
 							{forminput}
 								{if $gContent->mInfo.image_file.storage_path}
-									<img src="{$gContent->mInfo.image_file.thumbnail_url.medium}" alt="{$gContent->mInfo.title|escape}" />
+									<img src="{$gContent->mInfo.image_file.thumbnail_url.medium}?{math equation="1 + rand(1,9999)"}" alt="{$gContent->mInfo.title|escape}" />
 									<br />
 									<small>
 										{if $gContent->mInfo.width && $gContent->mInfo.height}
