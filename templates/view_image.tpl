@@ -49,7 +49,7 @@
 
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
 
-	{if $gGallery->getPreference('allow_comments') eq 'y'}
+	{if $gGallery && $gGallery->getPreference('allow_comments') eq 'y'}
 		{include file="bitpackage:liberty/comments.tpl"}
 	{/if}
 
