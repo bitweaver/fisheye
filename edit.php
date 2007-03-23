@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.19 2007/01/01 16:22:40 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.20 2007/03/23 21:31:53 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -20,10 +20,9 @@ include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 // Ensure the user has the permission to create new image galleries
 if (empty($_REQUEST['gallery_id'])) {
 	$gBitSystem->verifyPermission('p_fisheye_create');
-} elseif( !$gContent->hasUserPermission( 'p_fisheye_edit' ) ) {
-	// This user does not own this gallery and they have not been granted the permission to edit this gallery
-	$gBitSystem->fatalError( tra( "You cannot edit this image gallery" ) );
 }
+
+$gContent->verifyPermission( 'p_fisheye_edit' );
 
 if( $gBitUser->hasPermission( 'p_fisheye_change_thumb_size' ) ) {
 	$thumbnailSizes = array(
