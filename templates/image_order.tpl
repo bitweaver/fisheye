@@ -88,6 +88,9 @@
 							<option value="delete">{tr}Delete{/tr}</option>
 							<option value="remove">{tr}Remove{/tr} ({tr}Don't delete if in other galleries{/tr})</option>
 							<option value="thumbnail">{tr}Regenerate Thumbnails{/tr}</option>
+							{if $gBitSystem->getConfig('image_processor')=='magickwand'}
+							<option value="grayscale">{tr}Convert to Grayscale{/tr} *{tr}Cannot be undone!{/tr}*</option>
+							{/if}
 							<optgroup label="{tr}Rotate{/tr}">
 								<option value="rotate:auto">^^ {tr}Auto Rotate{/tr}</option>
 								<option value="rotate:90">&gt;&gt; {tr}Rotate Clockwise{/tr}</option>

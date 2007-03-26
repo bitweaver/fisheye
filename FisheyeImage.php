@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.40 2007/02/13 17:14:12 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.41 2007/03/26 19:53:16 spiderr Exp $
  * @package fisheye
  */
 
@@ -318,6 +318,35 @@ class FisheyeImage extends FisheyeBase {
 			}
 		}
 		return (count($this->mErrors) == 0);
+	}
+
+
+	/**
+	 * convertColorspace
+	 * 
+	 * @param string $pColorSpace - target color space, only 'grayscale' is currently supported, and only when using the MagickWand image processor
+	 * @access public
+	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+	 */
+	function convertColorspace( $pColorSpace ) {
+		$ret = FALSE;
+		if( !empty( $this->mInfo['image_file'] ) || $this->load() ) {
+			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'];
+			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
+			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
+			$fileHash['size'] = filesize( $fileHash['source_file'] );
+			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
+			$fileHash['name'] = $this->mInfo['image_file']['filename'];
+			if( $convertFunc = liberty_get_function( 'convert_colorspace' ) ) {
+				if( $ret = $convertFunc( $fileHash, $pColorSpace ) ) {
+					liberty_clear_thumbnails( $fileHash );
+					$sql = "UPDATE `".BIT_DB_PREFIX."liberty_files SET `file_size`=? WHERE `file_id` = ?";
+					$this->mDb->query( $sql, array( filesize( $fileHash['dest_file'] ), $this->mInfo['image_file']['file_id'] ) );
+					$this->generateThumbnails();
+				}
+			}
+		}
+		return $ret;
 	}
 
 

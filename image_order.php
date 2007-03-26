@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.20 2007/01/01 16:20:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.21 2007/03/26 19:53:16 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -119,6 +119,9 @@ if (!empty($_REQUEST['cancel'])) {
 						case 'thumbnail':
 							$galleryItem->generateThumbnails();
 							$feedback['success'] = tra( "Thumbnail regeneration queued" );
+							break;
+						case 'grayscale':
+							$galleryItem->convertColorspace( 'grayscale' );
 							break;
 						case 'security':
 							$storageHash['security_id'] = $batchParam;
