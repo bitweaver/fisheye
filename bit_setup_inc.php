@@ -8,8 +8,7 @@ $registerHash = array(
 );
 $gBitSystem->registerPackage( $registerHash );
 
-if( $gBitSystem->isPackageActive( 'fisheye' ) ) {
-	if( $gBitUser->hasPermission( 'p_fisheye_view' ) ) {
+if( $gBitSystem->isPackageActive( 'fisheye' ) && $gBitUser->hasPermission( 'p_fisheye_view' )) {
 
 	// Default Preferences Defines
 	define ( 'FISHEYE_DEFAULT_ROWS_PER_PAGE', 5 );
@@ -28,6 +27,5 @@ if( $gBitSystem->isPackageActive( 'fisheye' ) ) {
 	$gBitSystem->registerAppMenu( $menuHash );
 
 	include_once( FISHEYE_PKG_PATH.'FisheyeGallery.php' );
-}
 }
 ?>
