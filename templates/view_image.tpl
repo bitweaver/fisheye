@@ -28,11 +28,12 @@
 
 		<div class="pagination">
 			{tr}View other sizes{/tr}<br />
-			&nbsp;&bull;&nbsp;
-			{foreach key=size from=$gContent->mInfo.image_file.thumbnail_url item=url}
-				{if $url != $gContent->mInfo.display_url}<a href="{$gContent->getDisplayUrl(0,$size)|escape}">{/if}{tr}{$size}{/tr}{if $url != $gContent->mInfo.display_url}</a>{/if}&nbsp;&bull;&nbsp;
+			{foreach name=size key=size from=$gContent->mInfo.image_file.thumbnail_url item=url}
+				{if $url != $gContent->mInfo.display_url}<a href="{$gContent->getDisplayUrl(0,$size)|escape}">{/if}{tr}{$size}{/tr}{if $url != $gContent->mInfo.display_url}</a>{/if}
+				{if !$smarty.foreach.size.last} &nbsp;&bull;&nbsp;{/if}
 			{/foreach}
 			{if $gContent->hasEditPermission() || $gGallery && $gGallery->getPreference('link_original_images')}
+				&nbsp;&bull;&nbsp;
 				<a href="{$gContent->mInfo.image_file.source_url|escape}">{tr}Original{/tr}</a>
 				{if $gContent->mInfo.width && $gContent->mInfo.height}
 					&nbsp;{$gContent->mInfo.width}x{$gContent->mInfo.height}
@@ -42,7 +43,8 @@
 
 		{if $gBitUser->hasPermission( 'p_liberty_attach_attachments' )}
 			<p class="formhelp">
-				{tr}To include this file in a wiki page, blog post, article &hellip;, use the following string{/tr}: <strong>{ldelim}attachment&nbsp;id={$gContent->mInfo.image_file.attachment_id}{rdelim}</strong>
+				{tr}To include this file in a wiki page, blog post, article &hellip;, use the following string{/tr}: 
+				<input size="32" value="{ldelim}attachment id={$gContent->mInfo.image_file.attachment_id} {if $smarty.request.size neq "medium"}size={$smarty.request.size}{/if}{rdelim}" />
 			</p>
 		{/if}
 	</div>	<!-- end .body -->
