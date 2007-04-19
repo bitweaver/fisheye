@@ -42,9 +42,10 @@
 		</div>
 
 		{if $gBitUser->hasPermission( 'p_liberty_attach_attachments' )}
+			{assign var=reqsize value=$smarty.request.size}
 			<p class="formhelp">
 				{tr}To include this file in a wiki page, blog post, article &hellip;, use the following string{/tr}: 
-				<input size="32" value="{ldelim}attachment id={$gContent->mInfo.image_file.attachment_id} {if $smarty.request.size neq "medium"}size={$smarty.request.size}{/if}{rdelim}" />
+				<input size="32" value="{ldelim}attachment{if $reqsize neq ''} size={$reqsize}{/if} id={$gContent->mInfo.image_file.attachment_id}{rdelim}" />
 			</p>
 		{/if}
 	</div>	<!-- end .body -->
