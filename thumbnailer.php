@@ -9,7 +9,7 @@
  * suggested crontab entry runs the thumbnailer every minute:
  *		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
  *
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.8 2006/01/31 20:17:25 bitweaver Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.9 2007/04/23 09:36:31 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -38,7 +38,7 @@
 	// add some protection for arbitrary thumbail execution.
 	// if argc is present, we will trust it was exec'ed command line.
 	if( empty( $argc ) && !$gBitUser->isAdmin() ) {
-		$gBitSystem->fatalError( 'You cannot run the thumbnailer' );
+		$gBitSystem->fatalError( tra( 'You cannot run the thumbnailer' ));
 	}
 
 	$thumbCount = ( !empty( $argv[1] ) ) ? $argv[1] : ( !empty( $_REQUEST['thumbnails'] ) ? $_REQUEST['thumbnails'] : 10);
