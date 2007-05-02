@@ -22,7 +22,7 @@
 			<img src="{$gContent->mInfo.display_url}{$refresh}" alt="{$gContent->getTitle()|default:$gContent->mInfo.image_file.filename|escape}" title="{$gContent->mInfo.data|default:$gContent->mInfo.filename|escape}" />
 
 			{if $gBitSystem->isFeatureActive('fisheye_image_list_description') and $gContent->mInfo.data ne ''}
-				<p>{$gContent->mInfo.data|escape}</p>
+				<p class="description">{$gContent->mInfo.data|escape}</p>
 			{/if}
 		{/box}
 
