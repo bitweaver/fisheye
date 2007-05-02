@@ -41,13 +41,7 @@
 			{/if}
 		</div>
 
-		{if $gBitUser->hasPermission( 'p_liberty_attach_attachments' )}
-			{assign var=reqsize value=$smarty.request.size}
-			<p class="formhelp">
-				{tr}To include this file in a wiki page, blog post, article &hellip;, use the following string{/tr}: 
-				<input size="32" value="{ldelim}attachment{if $reqsize neq ''} size={$reqsize}{/if} id={$gContent->mInfo.image_file.attachment_id}{rdelim}" />
-			</p>
-		{/if}
+		{attachhelp hash=$gContent->mInfo.image_file}
 	</div>	<!-- end .body -->
 
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
