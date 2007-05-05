@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.54 2007/04/19 06:42:16 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.55 2007/05/05 05:15:29 spiderr Exp $
  * @package fisheye
  */
 
@@ -368,7 +368,7 @@ class FisheyeGallery extends FisheyeBase {
 							FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
 								INNER JOIN liberty_content lc ON(content_id=cb_item_content_id)
 								LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cgm ON (cgm.`content_id`=lc.`content_id`), `".BIT_DB_PREFIX."fisheye_gallery` fg
-							WHERE lc.`content_type_guid`='fisheyeimage' $whereSql AND `cb_parent_content_id`=fg.`content_id` ORDER BY RANDOM()";
+							WHERE lc.`content_type_guid`='fisheyeimage' $whereSql AND `cb_parent_content_id`=fg.`content_id`"; //  ORDER BY RANDOM() is DOG slow (seq scans)
 					if( $pThumbnailContentId = $this->mDb->getOne( $query, $bindVars ) ) {
 						$pThumbnailContentType = 'fisheyeimage';
 					}
