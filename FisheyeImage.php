@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.42 2007/04/23 06:49:04 bitweaver Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.43 2007/05/30 21:34:42 spiderr Exp $
  * @package fisheye
  */
 
@@ -554,11 +554,17 @@ class FisheyeImage extends FisheyeBase {
 		$this->mInfo['image_file']['gallery_thumbnail_url'] = &$this->mInfo['image_file']['thumbnail_url'][$pSize];
 	}
 
-	function getThumbnailUrl( $pSize='small' ) {
-		if( empty( $this->mInfo['image_file']['gallery_thumbnail_url'] ) ) {
-			$this->loadThumbnail( $pSize );
+	function getThumbnailUrl( $pSize='small', $pInfoHash=NULL ) {
+		$ret = NULL;
+		if( !empty( $pInfoHash ) ) {
+			// do some stuff if we are given a hash of stuff
+		} else {
+			if( empty( $this->mInfo['image_file']['gallery_thumbnail_url'] ) ) {
+				$this->loadThumbnail( $pSize );
+			}
+			$ret = $this->mInfo['image_file']['gallery_thumbnail_url'];
 		}
-		return $this->mInfo['image_file']['gallery_thumbnail_url'];
+		return $ret;
 	}
 
 	function expunge() {
