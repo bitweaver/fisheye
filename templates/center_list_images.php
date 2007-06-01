@@ -1,5 +1,6 @@
 <?php
-global $gQueryUser, $module_rows, $module_params;
+global $gQueryUser, $moduleParams;
+extract( $moduleParams );
 $gFisheyeImage = new FisheyeImage();
 
 if( !empty( $module_rows ) ) {
