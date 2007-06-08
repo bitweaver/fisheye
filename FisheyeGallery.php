@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.55 2007/05/05 05:15:29 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.56 2007/06/08 21:53:05 lsces Exp $
  * @package fisheye
  */
 
@@ -516,11 +516,11 @@ vd( $this->mErrors );
 		$ret = FALSE;
 
 		if( @$this->verifyId( $this->mGalleryId ) ) {
-			$query = "SELECT COUNT(`gallery_id`) AS `count`
+			$query = "SELECT COUNT(`gallery_id`) AS `gcount`
 					FROM `".BIT_DB_PREFIX."fisheye_gallery`
 					WHERE `gallery_id` = ?";
 			$rs = $this->mDb->query($query, array($this->mGalleryId));
-			if ($rs->fields['count'] > 0)
+			if ($rs->fields['gcount'] > 0)
 				$ret = TRUE;
 		}
 
