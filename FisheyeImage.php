@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.43 2007/05/30 21:34:42 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.44 2007/06/11 20:16:23 squareing Exp $
  * @package fisheye
  */
 
@@ -605,7 +605,7 @@ class FisheyeImage extends FisheyeBase {
 
 
 	function getList( &$pListHash ) {
-		global $gBitUser,$gBitSystem, $commentsLib;
+		global $gBitUser,$gBitSystem;
 
 		$this->prepGetList( $pListHash );
 		$bindVars = array();
@@ -683,6 +683,31 @@ class FisheyeImage extends FisheyeBase {
 			}
 		}
 // $this->debug(0);
+		return $ret;
+	}
+
+	/**
+	 * isCommentable 
+	 * 
+	 * @access public
+	 * @return TRUE on success, FALSE on failure
+	 */
+	function isCommentable() {
+		global $gGallery;
+
+		// if we have a loaded gallery, we just use that to work out if we can add comments to this image
+		if( is_object( $gGallery ) ) {
+			return $gGallery->isCommentable();
+		}
+
+		$ret = FALSE;
+		if( $parents = $this->getParentGalleries() ) {
+			// @TODO: No idea how to work out if you can add a comment to this image
+			// for now we'll take the mGalleryPath and use that gallery
+			$gal = current( $parents );
+			$query = "SELECT `pref_value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id` = ? AND `pref_name` = ?";
+			$ret = ( $this->mDb->getOne( $query, array( $gal['content_id'], 'allow_comments' )) == 'y' );
+		}
 		return $ret;
 	}
 }

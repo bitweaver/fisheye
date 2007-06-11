@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.4 2006/11/08 08:02:30 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.5 2007/06/11 20:16:23 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -28,7 +28,7 @@ if ( !$gContent->isValid() ) {
 	die;
 }
 
-if( $gContent->getPreference('allow_comments') == 'y' ) {
+if( $gContent->isCommentable() ) {
 	$commentsParentId = $gContent->mContentId;
 	$comments_vars = Array('fisheyegallery');
 	$comments_prefix_var='fisheyegallery:';

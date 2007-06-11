@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.9 2007/01/22 22:07:29 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.10 2007/06/11 20:16:23 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -32,7 +32,7 @@ include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
 global $gHideModules;
 $gHideModules = $gBitSystem->isFeatureActive( 'fisheye_image_hide_modules' );
 
-if( is_object( $gGallery ) && $gGallery->getPreference('allow_comments') == 'y' ) {
+if( is_object( $gGallery ) && $gGallery->isCommentable() ) {
 	$commentsParentId = $gContent->mContentId;
 	$comments_vars = Array('fisheyeimage');
 	$comments_prefix_var='fisheyeimage:';
