@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.56 2007/06/08 21:53:05 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.57 2007/06/11 19:05:48 squareing Exp $
  * @package fisheye
  */
 
@@ -580,7 +580,7 @@ vd( $this->mErrors );
 	}
 
 	function getList( &$pListHash ) {
-		global $gBitUser,$gBitSystem, $gBitDbType, $commentsLib;
+		global $gBitUser,$gBitSystem, $gBitDbType;
 
 		$pListHash['sort_modes'] = array( 'real_name', 'login', 'hits', 'title', 'created', 'last_modified' );
 
