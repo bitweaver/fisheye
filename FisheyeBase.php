@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.22 2007/06/13 17:33:40 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.23 2007/06/13 18:38:36 spiderr Exp $
  * @package fisheye
  */
 
@@ -57,6 +57,13 @@ class FisheyeBase extends LibertyAttachable
 	function updatePosition($pGalleryContentId, $newPosition = NULL) {
 		if( $pGalleryContentId && $newPosition && $this->verifyId($this->mContentId) ) {
 			// SQL optimization to prevent stupid updates of identical data
+			if( $radixPosition = strpos( $newPosition, '.' ) ) {
+				// clean out newPosition to be a valid float, and nuke all extra . or extra crap
+				$significand = substr( $newPosition, 0, $radixPosition );
+				$mantissa = preg_replace( '/[^0-9]/', '', substr( $newPosition, $radixPosition + 1 ) );
+				$newPosition = $significand.'.'.$mantissa;
+			} 
+			$cleanPosition = preg_replace( '/\./', '', $newPosition );
 			$sql = "UPDATE `".BIT_DB_PREFIX."fisheye_gallery_image_map` SET `item_position` = ?
 					WHERE `item_content_id` = ? AND `gallery_content_id` = ? AND (`item_position` IS NULL OR `item_position`!=?)";
 			$rs = $this->mDb->query($sql, array($newPosition, $this->mContentId, $pGalleryContentId, $newPosition));
