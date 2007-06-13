@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.45 2007/06/13 18:53:14 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.46 2007/06/13 19:47:48 nickpalmer Exp $
  * @package fisheye
  */
 
@@ -651,9 +651,10 @@ class FisheyeImage extends FisheyeBase {
 			}
 		}
 
+		$orderby = '';
 		if ( !empty( $pListHash['sort_mode'] ) ) {
 			//converted in prepGetList()
-			$mid .= " ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] )." ";
+			$orderby = " ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] )." ";
 		}
 
 		$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
@@ -666,7 +667,7 @@ class FisheyeImage extends FisheyeBase {
 					, `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."liberty_content` lc $join
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON(tfgim2.`item_content_id`=lc.`content_id`)
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fg.`content_id`=tfgim2.`gallery_content_id`) $joinSql
-				WHERE fi.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $mid $whereSql";
+				WHERE fi.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $mid $whereSql $orderby";
 
 		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] ) ) {
 			$ret = $rs->GetAssoc();
