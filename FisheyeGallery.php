@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.57 2007/06/11 19:05:48 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.58 2007/06/13 17:33:40 nickpalmer Exp $
  * @package fisheye
  */
 
@@ -134,7 +134,7 @@ class FisheyeGallery extends FisheyeBase {
 					unset( $this->mContentId );
 					unset( $this->mGalleryId );
 				}
-				if( @$this->verifyId( $pCurrentImageId ) ) {
+				if( @$this->verifyId( $pCurrentImageId ) && @$this->verifyId($this->mContentId)) {
 					// this code sucks but works - XOXO spiderr
 					$query = "SELECT fgim.*, fi.`image_id`, lf.`storage_path`
 							FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim

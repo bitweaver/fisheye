@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.21 2007/01/01 16:17:35 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.22 2007/06/13 17:33:40 nickpalmer Exp $
  * @package fisheye
  */
 
@@ -80,6 +80,9 @@ class FisheyeBase extends LibertyAttachable
 			$selectSql = '';//AS title$g, fg$g.gallery_id AS gallery_id$g";
 			$whereSql = '';
 			$bindVars = array();
+			// We need to get min_content_status_id
+			$pListHash = array();
+			$this->prepGetList($pListHash);
 			foreach( $path as $galleryId ) {
 				if( $galleryId ) {
 					$p++; $c++;
@@ -87,8 +90,9 @@ class FisheyeBase extends LibertyAttachable
 					$joinSql .= " `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim$p
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc$p ON(fgim$p.`gallery_content_id`=lc$p.`content_id`)
 						INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg$p ON(fg$p.`content_id`=lc$p.`content_id`),";
-					$whereSql .= " fg$p.`gallery_id`=? AND fgim$p.`item_content_id`=lc$c.`content_id` AND ";
+					$whereSql .= " fg$p.`gallery_id`=? AND fgim$p.`item_content_id`=lc$c.`content_id` AND lc$p.`content_status_id` > ? AND";
 					array_push( $bindVars, $galleryId );
+					array_push( $bindVars, $pListHash['min_content_status_id']);
 				}
 			}
 //			$selectSql .= " lc$c.title AS title$c ";//AS title$g, fg$g.gallery_id AS gallery_id$g";
