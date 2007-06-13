@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.44 2007/06/11 20:16:23 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.45 2007/06/13 18:53:14 nickpalmer Exp $
  * @package fisheye
  */
 
@@ -362,7 +362,8 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['max_height'] = $fileHash['max_width'] = $pResizeOriginal;
 			// make a copy of the fileHash that we can compare output after processing
 			$preResize = $fileHash;
-			$resizeFunc = ( $gBitSystem->getConfig( 'image_processor' ) == 'magickwand' ) ? 'liberty_magickwand_resize_image' : 'liberty_gd_resize_image';
+			$resizeFunc = liberty_get_function( 'resize' );
+
 			if( !$resizeFunc( $fileHash ) ) {
 				$this->mErrors['upload'] = $fileHash['errors'];
 			} else {
