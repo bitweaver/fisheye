@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.18 2007/02/19 07:02:55 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.19 2007/06/14 15:27:54 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -164,7 +164,9 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 				$order += 10;
 			}
 		}
-		rmdir( $pDestinationDir );
+		if ( !is_windows() ) {
+			rmdir( $pDestinationDir );
+		}
 	}
 	return $errors;
 }
