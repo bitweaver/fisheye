@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.46 2007/06/13 19:47:48 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.47 2007/06/14 05:27:48 lsces Exp $
  * @package fisheye
  */
 
@@ -188,7 +188,7 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	function store(&$pStorageHash) {
-		global $gBitSystem;
+		global $gBitSystem, $gLibertySystem;
 		if ($this->verifyImageData($pStorageHash)) {
 			// Save the current attachment ID for the image attached to this FisheyeImage so we can
 			// delete it after saving the new one
@@ -203,6 +203,8 @@ class FisheyeImage extends FisheyeBase {
 			if( !empty( $pStorageHash['upload'] ) ) {
 				$pStorageHash['upload']['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
 			}
+			if ( isset($gLibertySystem->mPlugins['bitimage']) ) $storage_guid = PLUGIN_GUID_BIT_IMAGE; else $storage_guid = PLUGIN_GUID_BIT_FILES;
+			$pStorageHash['storage_guid'] = $storage_guid;
 			if( LibertyAttachable::store( $pStorageHash ) ) {
 				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['image_file']['attachment_id'] ) {
 					$this->expungeAttachment($currentImageAttachmentId);
@@ -210,8 +212,8 @@ class FisheyeImage extends FisheyeBase {
 				$this->mContentId = $pStorageHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
 
-				if (!empty($pStorageHash['STORAGE']['bitfile']['upload']['source_file'])) {
-					$imageDetails = $this->getImageDetails($pStorageHash['STORAGE']['bitfile']['upload']['source_file']);
+				if (!empty($pStorageHash['STORAGE'][$storage_guid]['upload']['source_file'])) {
+					$imageDetails = $this->getImageDetails($pStorageHash['STORAGE'][$storage_guid]['upload']['source_file']);
 				} else {
 					$imageDetails = NULL;
 				}
