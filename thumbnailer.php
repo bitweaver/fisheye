@@ -9,7 +9,7 @@
  * suggested crontab entry runs the thumbnailer every minute:
  *		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
  *
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.9 2007/04/23 09:36:31 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.10 2007/06/14 12:41:18 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -45,16 +45,16 @@
 
 	$gBitSystem->mDb->StartTrans();
 
-	$sql = "SELECT tq.content_id AS hash_key, tq.*
-			FROM `".BIT_DB_PREFIX."liberty_thumbnail_queue` tq
-			WHERE tq.begin_date IS NULL
-			ORDER BY tq.queue_date";
+	$sql = "SELECT pq.content_id AS hash_key, tq.*
+			FROM `".BIT_DB_PREFIX."liberty_process_queue` pq
+			WHERE pq.begin_date IS NULL
+			ORDER BY pq.queue_date";
 	$rs = $gBitSystem->mDb->query( $sql, NULL, $thumbCount );
 
 	$processContent = array();
 	while( !$rs->EOF ) {
 		$processContent[$rs->fields['content_id']] = $rs->fields;
-		$sql2 = "UPDATE `".BIT_DB_PREFIX."liberty_thumbnail_queue` SET `begin_date`=? WHERE `content_id`=?";
+		$sql2 = "UPDATE `".BIT_DB_PREFIX."liberty_process_queue` SET `begin_date`=? WHERE `content_id`=?";
 		$rs2 = $gBitSystem->mDb->query( $sql2, array( date( 'U' ), $rs->fields['content_id'] ) );
 		$rs->MoveNext();
 	}
@@ -71,7 +71,7 @@
 		}
 		if( $image->renderThumbnails() ) {
 			$log[$contentId]['message'] = 'SUCCESS: Thumbnails created';
-			$sql3 = "UPDATE `".BIT_DB_PREFIX."liberty_thumbnail_queue` SET `begin_date`=?, `end_date`=? WHERE `content_id`=?";
+			$sql3 = "UPDATE `".BIT_DB_PREFIX."liberty_process_queue` SET `begin_date`=?, `end_date`=? WHERE `content_id`=?";
 			$rs3 = $gBitSystem->mDb->query( $sql3, array( $begin, $gBitSystem->getUTCTime(), $contentId ) );
 		} else {
 			$log[$contentId]['message'] = ' ERROR: '.$image->mErrors['thumbnail'];

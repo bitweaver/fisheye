@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.47 2007/06/14 05:27:48 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.48 2007/06/14 12:41:52 lsces Exp $
  * @package fisheye
  */
 
@@ -408,11 +408,11 @@ class FisheyeImage extends FisheyeBase {
 		$ret = FALSE;
 		// LibertyAttachable will take care of thumbnail generation of the offline thumbnailer is not active
 		if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) ) {
-			$query = "DELETE FROM `".BIT_DB_PREFIX."liberty_thumbnail_queue`
+			$query = "DELETE FROM `".BIT_DB_PREFIX."liberty_process_queue`
 					  WHERE `content_id`=?";
 			$this->mDb->query( $query, array( $this->mContentId ) );
-			$query = "INSERT INTO `".BIT_DB_PREFIX."liberty_thumbnail_queue`
-					  (`content_id`, `queue_date`, `resize_original`) VALUES (?,?,?)";
+			$query = "INSERT INTO `".BIT_DB_PREFIX."liberty_process_queue`
+					  (`content_id`, `queue_date`, `log_message`) VALUES (?,?,?)";
 			$this->mDb->query( $query, array( $this->mContentId, $gBitSystem->getUTCTime(), $pResizeOriginal ) );
 		} else {
 			$ret = $this->renderThumbnails();
