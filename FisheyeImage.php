@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.50 2007/06/15 08:13:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.51 2007/06/15 08:57:14 squareing Exp $
  * @package fisheye
  */
 
@@ -500,31 +500,39 @@ class FisheyeImage extends FisheyeBase {
     */
 	function getDisplayUrl( $pImageId=NULL, $pMixed=NULL ) {
 		$ret = '';
-		if( !@$this->verifyId( $pImageId ) ) {
+		if( !@BitBase::verifyId( $pImageId ) ) {
 			$pImageId = $this->mImageId;
 		}
-		$size = ( is_string( $pMixed ) && isset( $this->mInfo['image_file']['thumbnail_url'][$pMixed] ) ) ? $pMixed : NULL ;
+
+		// if pMixed is an array, we assume it has all the pertinent information
+		if( is_array( $pMixed )) {
+			$info = $pMixed;
+		} else {
+			$info = &$this->mInfo;
+		}
+
+		$size = ( is_string( $pMixed ) && isset( $info['image_file']['thumbnail_url'][$pMixed] ) ) ? $pMixed : NULL ;
 		global $gBitSystem;
-		if( @$this->verifyId( $pImageId ) ) {
+		if( @BitBase::verifyId( $pImageId ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
 				$ret = FISHEYE_PKG_URL.'image/'.$pImageId;
-				if( !empty( $this->mGalleryPath ) ) {
+				if( !empty( $this ) && !empty( $this->mGalleryPath ) ) {
 					$ret .= $this->mGalleryPath;
 				}
 				if( $size ) {
-					$ret .= '/'.$pMixed;
+					$ret .= '/'.$size;
 				}
 			} else {
 				$ret = FISHEYE_PKG_URL.'view_image.php?image_id='.$pImageId;
-				if( !empty( $this->mGalleryPath ) ) {
+				if( !empty( $this ) && !empty( $this->mGalleryPath ) ) {
 					$ret .= '&gallery_path='.$this->mGalleryPath;
 				}
 				if( $size ) {
-					$ret .= '&size='.$pMixed;
+					$ret .= '&size='.$size;
 				}
 			}
-		} elseif( @$this->verifyId( $pMixed['content_id'] ) ) {
-			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pMixed['content_id'];
+		} elseif( @BitBase::verifyId( $info['content_id'] ) ) {
+			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$info['content_id'];
 		}
 		return $ret;
 	}
