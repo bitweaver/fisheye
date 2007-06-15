@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.51 2007/06/15 08:57:14 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.52 2007/06/15 10:13:26 squareing Exp $
  * @package fisheye
  */
 
@@ -201,7 +201,7 @@ class FisheyeImage extends FisheyeBase {
 
 			// choose one of the available attachment plugins
 			if( isset( $gLibertySystem->mPlugins['bitimage'] )) {
-				$storage_guid = PLUGIN_GUID_BIT_IMAGE;
+				$storage_guid = PLUGIN_GUID_FISHEYE_IMAGE;
 			} else {
 				$storage_guid = PLUGIN_GUID_BIT_FILES;
 			}
