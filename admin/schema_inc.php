@@ -25,7 +25,7 @@ $tables = array(
 	width I4,
 	height I4
 ",
-/*
+
 'fisheye_exif_data' => "
 	content_id I4 NOTNULL,
 	exif_name C(250) NOTNULL,
@@ -33,7 +33,6 @@ $tables = array(
 	exif_value_long X
 	CONSTRAINT ', CONSTRAINT `fisheye_exif_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content` (`content_id`)'
 "
-*/
 );
 
 global $gBitInstaller;
