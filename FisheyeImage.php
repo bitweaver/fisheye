@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.49 2007/06/15 01:36:50 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.50 2007/06/15 08:13:07 squareing Exp $
  * @package fisheye
  */
 
@@ -198,7 +198,14 @@ class FisheyeImage extends FisheyeBase {
 			if( !empty( $pStorageHash['upload'] ) ) {
 				$pStorageHash['upload']['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
 			}
-			if ( isset($gLibertySystem->mPlugins['bitimage']) ) $storage_guid = PLUGIN_GUID_BIT_IMAGE; else $storage_guid = PLUGIN_GUID_BIT_FILES;
+
+			// choose one of the available attachment plugins
+			if( isset( $gLibertySystem->mPlugins['bitimage'] )) {
+				$storage_guid = PLUGIN_GUID_BIT_IMAGE;
+			} else {
+				$storage_guid = PLUGIN_GUID_BIT_FILES;
+			}
+
 			$pStorageHash['storage_guid'] = $storage_guid;
 			if( LibertyAttachable::store( $pStorageHash ) ) {
 				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['image_file']['attachment_id'] ) {
