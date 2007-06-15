@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.58 2007/06/13 17:33:40 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.59 2007/06/15 01:36:50 spiderr Exp $
  * @package fisheye
  */
 
@@ -212,12 +212,6 @@ class FisheyeGallery extends FisheyeBase {
 			}
 		}
 
-		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-			$selectSql .= ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
-			$joinSql .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (lc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON (ls.`security_id`=cg.`security_id` )";
-//			$where = ' AND (cg.`security_id` IS NULL OR lc.`user_id`=?) ';
-//			$bindVars[] = $gBitUser->mUserId;
-		}
 		$this->mItems = array();
 
 		$query = "SELECT fgim.*, lc.`content_type_guid`, lc.`user_id`, lct.*, ufm.`favorite_content_id` AS is_favorite $selectSql
@@ -617,15 +611,6 @@ vd( $this->mErrors );
 			$whereSql .= " OR  ( lcp.`pref_name`=? AND lcp.`pref_value`=? ) ";
 			$bindVars[] = 'is_public';
 			$bindVars[] = 'y';
-		}
-
-		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-			$selectSql .= ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
-			$joinSql .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (lc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON (ls.`security_id`=cg.`security_id` )";
-			if( !$gBitUser->isAdmin() ) {
-				$whereSql .= ' AND (cg.`security_id` IS NULL OR lc.`user_id`=?) ';
-				$bindVars[] = $gBitUser->mUserId;
-			}
 		}
 
 		$mapJoin = "";

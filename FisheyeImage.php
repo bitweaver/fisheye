@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.48 2007/06/14 12:41:52 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.49 2007/06/15 01:36:50 spiderr Exp $
  * @package fisheye
  */
 
@@ -69,11 +69,6 @@ class FisheyeImage extends FisheyeBase {
 				$whereSql = " WHERE fi.`content_id` = ?";
 				$bindVars[] = $this->mContentId;
 			}
-
-//			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-//				$gateSql = ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
-//				$whereSql = " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON ( lc.`content_id`=cg.`content_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON ( cg.`security_id`=ls.`security_id` ) ".$whereSql;
-//			}
 
 			$this->getServicesSql( 'content_load_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
@@ -638,19 +633,6 @@ class FisheyeImage extends FisheyeBase {
 		if( !empty( $pListHash['max_age'] ) && is_numeric( $pListHash['max_age'] ) ) {
 			$mid .= " AND lc.`created` > ? ";
 			$bindVars[] = $pListHash['max_age'];
-		}
-
-//  $this->debug();
-		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-			if( $this->mDb->isAdvancedPostgresEnabled() ) {
-				$mid .= " AND (SELECT ls.`security_id` FROM connectby('fisheye_gallery_image_map', 'gallery_content_id', 'item_content_id', fi.`content_id`, 0, '/')  AS t(`cb_gallery_content_id` int, `cb_item_content_id` int, level int, branch text), `".BIT_DB_PREFIX."gatekeeper_security_map` cgm,  `".BIT_DB_PREFIX."gatekeeper_security` ls
-						  WHERE ls.`security_id`=cgm.`security_id` AND cgm.`content_id`=`cb_gallery_content_id` LIMIT 1) IS NULL";
-			} else {
-				$select .= ' ,ls.`security_id`, ls.`security_description`, ls.`is_private`, ls.`is_hidden`, ls.`access_question`, ls.`access_answer` ';
-				$join .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cg ON (lc.`content_id`=cg.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ls ON (ls.`security_id`=cg.`security_id` )  LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON (fgim.`item_content_id`=lc.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` tcs2 ON (fgim.`gallery_content_id`=tcs2.`content_id`) LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security` ts2 ON (ts2.`security_id`=tcs2.`security_id` )";
-				$mid .= ' AND (tcs2.`security_id` IS NULL OR lc.`user_id`=?) ';
-				$bindVars[] = $gBitUser->mUserId;
-			}
 		}
 
 		$orderby = '';
