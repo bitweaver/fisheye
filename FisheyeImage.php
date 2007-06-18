@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.55 2007/06/16 11:17:41 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.56 2007/06/18 21:53:55 nickpalmer Exp $
  * @package fisheye
  */
 
@@ -583,7 +583,7 @@ class FisheyeImage extends FisheyeBase {
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_image` WHERE `content_id` = ?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
-			if( LibertyAttachable::expunge() ) {
+			if( LibertyAttachable::expunge(TRUE) ) {
 				$this->mDb->CompleteTrans();
 			} else {
 				$this->mDb->RollbackTrans();
