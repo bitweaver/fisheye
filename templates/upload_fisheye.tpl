@@ -62,10 +62,10 @@
 									</div>
 
 									{foreach from=$uploadSlots item=dummy key=key}
-										{assign var=slot value=$key+2}
+										{assign var=slot value=$key+1}
 
 										<script type="text/javascript">/* <![CDATA[ */
-											document.write( "<div id=\"slot{$slot-1}\" style=\"display:none;\">" );
+											document.write( "<div id=\"slot{$slot}\" style=\"display:none;\">" );
 										/* ]]> */</script>
 
 										<hr />
@@ -73,7 +73,7 @@
 										<div class="row">
 											{formlabel label="Title" for="title$slot"}
 											{forminput}
-											<input type="text" name="imagedata[{$slot}][title]" id="title{$slot}" size="50" />
+												<input type="text" name="imagedata[{$slot}][title]" id="title{$slot}" size="50" />
 												<br />
 												<input type="file" name="upload{$slot}" id="upload{$slot}" size="35" />
 											{/forminput}
@@ -82,13 +82,13 @@
 										<div class="row">
 											{formlabel label="Description" for="edit$slot"}
 											{forminput}
-											<textarea rows="2" cols="50" name="imagedata[{$slot}][edit]" id="edit{$slot}"></textarea>
+												<textarea rows="2" cols="50" name="imagedata[{$slot}][edit]" id="edit{$slot}"></textarea>
 											{/forminput}
 										</div>
 
 										<script type="text/javascript">/* <![CDATA[ */
-											{if count($uploadSlots) gt $slot-1}
-												document.write( "<input id=\"button{$slot}\" type=\"button\" onclick=\"javascript:showById('slot{$slot}');hideById('button{$slot}')\" value=\"{tr}Add slot{/tr}\" />" );
+											{if count($uploadSlots) gt $slot}
+												document.write( "<input id=\"button{$slot+1}\" type=\"button\" onclick=\"javascript:showById('slot{$slot+1}');hideById('button{$slot+1}')\" value=\"{tr}Add slot{/tr}\" />" );
 											{else}
 												document.write( "</div>" );
 											{/if}
