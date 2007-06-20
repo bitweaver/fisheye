@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.57 2007/06/20 20:14:23 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.58 2007/06/20 23:17:01 nickpalmer Exp $
  * @package fisheye
  */
 
@@ -573,7 +573,7 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	function expunge() {
+	function expunge($pExpungeAttachment = TRUE) {
 		if( $this->isValid() ) {
 			$this->mDb->StartTrans();
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE `item_content_id` = ?";
@@ -582,13 +582,21 @@ class FisheyeImage extends FisheyeBase {
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_image` WHERE `content_id` = ?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
-			if( LibertyAttachable::expunge(TRUE) ) {
+			if( LibertyAttachable::expunge($pExpungeAttachment) ) {
 				$this->mDb->CompleteTrans();
 			} else {
 				$this->mDb->RollbackTrans();
 			}
 		}
 		return( count( $this->mErrors ) == 0 );
+	}
+
+	function expungingAttachment($pAttachmentId, $pContentIdArray) {
+		foreach ($pContentIdArray as $id) {
+			$this->mContentId = $id;
+			// Vital that we call LibertyAttachable::expunge with false since the attachment is already being deleted.
+			$this->expunge(FALSE);
+		}
 	}
 
 	function isValid() {
