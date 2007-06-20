@@ -1,10 +1,10 @@
 {strip}
-{if !$preview}
+{if !$liberty_preview}
 	{include file="bitpackage:fisheye/gallery_nav.tpl"}
 {/if}
 
 <div class="display fisheye">
-	{if !$preview}
+	{if !$liberty_preview}
 		<div class="floaticon">
 			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon' serviceHash=$gContent->mInfo}
 			{if $gContent->hasUserPermission('p_fisheye_edit')}
@@ -15,11 +15,9 @@
 	{/if}
 
 	{formfeedback hash=$feedback}
-	{if !$preview}
-		<div class="header">
-			<h1>{$gContent->getTitle()|default:$gContent->mInfo.image_file.filename|escape}</h1>
-		</div>
-	{/if}
+	<div class="header">
+		<h1>{$gContent->getTitle()|default:$gContent->mInfo.image_file.filename|escape}</h1>
+	</div>
 
 	<div class="body">
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
@@ -31,7 +29,7 @@
 			{/if}
 		{/box}
 
-		{if !$preview}
+		{if !$liberty_preview}
 			<div class="pagination">
 				{tr}View other sizes{/tr}<br />
 				{foreach name=size key=size from=$gContent->mInfo.image_file.thumbnail_url item=url}
@@ -50,7 +48,7 @@
 			{attachhelp hash=$gContent->mInfo.image_file}
 		{/if}
 	</div>	<!-- end .body -->
-
+	
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
 
 	{if $gGallery && $gGallery->getPreference('allow_comments') eq 'y'}
