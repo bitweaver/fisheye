@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.56 2007/06/18 21:53:55 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.57 2007/06/20 20:14:23 lsces Exp $
  * @package fisheye
  */
 
@@ -204,12 +204,11 @@ class FisheyeImage extends FisheyeBase {
 					$this->expungeAttachment($currentImageAttachmentId);
 				}
 				// get storage format back from LibertyAttachment
-				$storage_guid = $pStorageHash['storage_guid'];
 				$this->mContentId = $pStorageHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
 
-				if (!empty($pStorageHash['STORAGE'][$storage_guid]['upload']['source_file'])) {
-					$imageDetails = $this->getImageDetails($pStorageHash['STORAGE'][$storage_guid]['upload']['source_file']);
+				if ( isset($pStorageHash['storage_guid']) && !empty($pStorageHash['STORAGE'][$pStorageHash['storage_guid']]['upload']['source_file'])) {
+					$imageDetails = $this->getImageDetails($pStorageHash['STORAGE'][$pStorageHash['storage_guid']]['upload']['source_file']);
 				} else {
 					$imageDetails = NULL;
 				}
