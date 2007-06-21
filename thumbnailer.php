@@ -9,7 +9,7 @@
  * suggested crontab entry runs the thumbnailer every minute:
  *		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
  *
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.10 2007/06/14 12:41:18 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.11 2007/06/21 06:27:35 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -45,7 +45,7 @@
 
 	$gBitSystem->mDb->StartTrans();
 
-	$sql = "SELECT pq.content_id AS hash_key, tq.*
+	$sql = "SELECT pq.content_id AS hash_key, pq.*
 			FROM `".BIT_DB_PREFIX."liberty_process_queue` pq
 			WHERE pq.begin_date IS NULL
 			ORDER BY pq.queue_date";
