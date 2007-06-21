@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.58 2007/06/20 23:17:01 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.59 2007/06/21 06:58:56 spiderr Exp $
  * @package fisheye
  */
 
@@ -407,8 +407,8 @@ class FisheyeImage extends FisheyeBase {
 					  WHERE `content_id`=?";
 			$this->mDb->query( $query, array( $this->mContentId ) );
 			$query = "INSERT INTO `".BIT_DB_PREFIX."liberty_process_queue`
-					  (`content_id`, `queue_date`, `log_message`) VALUES (?,?,?)";
-			$this->mDb->query( $query, array( $this->mContentId, $gBitSystem->getUTCTime(), $pResizeOriginal ) );
+					  (`content_id`, `queue_date`, `processor_parameters`) VALUES (?,?,?)";
+			$this->mDb->query( $query, array( $this->mContentId, $gBitSystem->getUTCTime(), serialize( array( 'resize_original' => $pResizeOriginal ) ) ) );
 		} else {
 			$ret = $this->renderThumbnails();
 		}

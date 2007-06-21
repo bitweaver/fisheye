@@ -9,7 +9,7 @@
  * suggested crontab entry runs the thumbnailer every minute:
  *		* * * * * apache php -q /path/to/bitweaver/fisheye/thumbnailer.php 20 >> /var/log/httpd/thumbnail_log
  *
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.11 2007/06/21 06:27:35 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/thumbnailer.php,v 1.12 2007/06/21 06:58:56 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -54,11 +54,11 @@
 	$processContent = array();
 	while( !$rs->EOF ) {
 		$processContent[$rs->fields['content_id']] = $rs->fields;
+		$processContent[$rs->fields['content_id']]['parameters'] = unserialize( $rs->fields['processor_parameters'] );
 		$sql2 = "UPDATE `".BIT_DB_PREFIX."liberty_process_queue` SET `begin_date`=? WHERE `content_id`=?";
 		$rs2 = $gBitSystem->mDb->query( $sql2, array( date( 'U' ), $rs->fields['content_id'] ) );
 		$rs->MoveNext();
 	}
-
 	$gBitSystem->mDb->CompleteTrans();
 
 	$log = array();
@@ -66,8 +66,8 @@
 	foreach( array_keys( $processContent ) as $contentId ) {
 		$image = new FisheyeImage( NULL, $contentId );
 		$begin = date( 'U' );
-		if( $processContent[$contentId]['resize_original'] ) {
-			$image->resizeOriginal( $processContent[$contentId]['resize_original'] );
+		if( !empty( $processContent[$contentId]['parameters']['resize_original'] ) ) {
+			$image->resizeOriginal( $processContent[$contentId]['parameters']['resize_original'] );
 		}
 		if( $image->renderThumbnails() ) {
 			$log[$contentId]['message'] = 'SUCCESS: Thumbnails created';
