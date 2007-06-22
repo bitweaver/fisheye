@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.23 2007/06/13 18:38:36 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.24 2007/06/22 11:13:41 lsces Exp $
  * @package fisheye
  */
 
@@ -11,7 +11,6 @@ require_once( LIBERTY_PKG_PATH.'LibertyAttachable.php' );		// FisheyeGallery bas
 
 /**
  * @package fisheye
- * @subpackage FisheyeBase
  */
 class FisheyeBase extends LibertyAttachable
 {

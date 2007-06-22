@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.59 2007/06/21 06:58:56 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.60 2007/06/22 11:13:41 lsces Exp $
  * @package fisheye
  */
 
@@ -13,7 +13,6 @@ define('FISHEYEIMAGE_CONTENT_TYPE_GUID', 'fisheyeimage');
 
 /**
  * @package fisheye
- * @subpackage FisheyeImage
  */
 class FisheyeImage extends FisheyeBase {
 	var $mImageId;

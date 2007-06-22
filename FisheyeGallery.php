@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.59 2007/06/15 01:36:50 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.60 2007/06/22 11:13:41 lsces Exp $
  * @package fisheye
  */
 
@@ -19,7 +19,6 @@ define( 'FISHEYE_PAGINATION_POSITION_NUMBER', 'position_number' );
  * FisheyeBase extends LibertyAttachable, which this class doesn't need, but we need a common base class
  *
  * @package fisheye
- * @subpackage FisheyeGallery
  */
 class FisheyeGallery extends FisheyeBase {
 	var $mGalleryId;		// fisheye_gallery.gallery_id
