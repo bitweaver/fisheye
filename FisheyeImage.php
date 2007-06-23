@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.60 2007/06/22 11:13:41 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.61 2007/06/23 17:29:57 squareing Exp $
  * @package fisheye
  */
 
@@ -672,13 +672,8 @@ class FisheyeImage extends FisheyeBase {
 			$ret = $rs->GetAssoc();
 			if( empty( $pListHash['no_thumbnails'] ) ) {
 				foreach( array_keys( $ret ) as $imageId ) {
-					$trailingName = dirname( $ret[$imageId]['storage_path'] )."/avatar.jpg";
-					if( file_exists( BIT_ROOT_PATH.$trailingName ) ) {
-						$ret[$imageId]['thumbnail_url'] = BIT_ROOT_URL.$trailingName;
-					} else {
-						$ret[$imageId]['thumbnail_url'] = FISHEYE_PKG_URL.'image/generating_thumbnails.png';
-					}
-					$ret[$imageId]['display_url'] = $this->getDisplayUrl( $imageId );
+					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( $ret[$imageId]['storage_path'], 'avatar', FISHEYE_PKG_URL.'image/generating_thumbnails.png' );
+					$ret[$imageId]['display_url']      = $this->getDisplayUrl( $imageId );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
 				}
 			}

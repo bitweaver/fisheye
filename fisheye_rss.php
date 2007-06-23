@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.6 2007/06/15 21:19:07 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.7 2007/06/23 17:29:57 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -49,13 +49,12 @@ if( !$gBitUser->hasPermission( 'p_fisheye_view' ) ) {
 	$rss->link = 'http://'.$_SERVER['HTTP_HOST'].FISHEYE_PKG_URL;
 
 	global $gBitSystem;
-	if( $gBitSystem->isFeatureActive( 'liberty_png_thumbnails' )) { $ext = '.png'; } else { $ext = '.jpg'; }
 	// get all the data ready for the feed creator
 	foreach( $feeds as $feed ) {
 		$item               = new FeedItem();
 		$item->title        = $feed['title'];
 		$item->link         = $feed['display_url'];
-		$item->description  = '<a href="'.$feed['display_url'].'"><img src="'.str_replace( '/avatar'.$ext, '/medium'.$ext, $feed['thumbnail_url'] ).'" /></a>';
+		$item->description  = '<a href="'.$feed['display_url'].'"><img src="'.liberty_fetch_thumbnail_url( $feed['storage_path'], 'medium' ).'" /></a>';
 		$item->description .= '<p>'.$feed['data'].'</p>';
 
 		$item->date         = ( int )$feed['last_modified'];
