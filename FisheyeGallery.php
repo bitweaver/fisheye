@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.61 2007/06/24 07:10:15 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.62 2007/06/25 20:02:30 spiderr Exp $
  * @package fisheye
  */
 
@@ -343,13 +343,14 @@ class FisheyeGallery extends FisheyeBase {
 						$whereSql = "  AND (cgm.`security_id` IS NULL OR lc.`user_id`=?) ";	
 						$bindVars[] = $gBitUser->mUserId;
 					}
-					$query = "SELECT COALESCE( fg.`preview_content_id`, lc.`content_id` )
+					$query = "SELECT COALESCE( fg.`preview_content_id`, lc.`content_id` ) AS `content_id`, lc.`content_type_guid`
 							FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
 								INNER JOIN liberty_content lc ON(content_id=cb_item_content_id)
 								LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cgm ON (cgm.`content_id`=lc.`content_id`), `".BIT_DB_PREFIX."fisheye_gallery` fg
-							WHERE lc.`content_type_guid`='fisheyeimage' $whereSql AND `cb_parent_content_id`=fg.`content_id`"; //  ORDER BY RANDOM() is DOG slow (seq scans)
-					if( $pThumbnailContentId = $this->mDb->getOne( $query, $bindVars ) ) {
-						$pThumbnailContentType = 'fisheyeimage';
+							WHERE `cb_parent_content_id`=fg.`content_id` $whereSql "; //  ORDER BY RANDOM() is DOG slow (seq scans)
+					if( $row = $this->mDb->getRow( $query, $bindVars ) ) {
+						$pThumbnailContentType = $row['content_type_guid'];
+						$pThumbnailContentId = $row['content_id'];
 					}
 				} else {
 					$query = "SELECT fgim.`item_content_id`, lc.`content_type_guid`
