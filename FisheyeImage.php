@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.62 2007/06/30 03:44:43 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.63 2007/07/01 22:45:26 spiderr Exp $
  * @package fisheye
  */
 
@@ -234,6 +234,10 @@ class FisheyeImage extends FisheyeBase {
 				if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) ) {
 					$resize = !empty( $pStorageHash['resize'] ) ? (int)$pStorageHash['resize'] : NULL;
 					$this->generateThumbnails( $resize );
+				} else {
+					if( !empty( $pStorageHash['resize'] ) && is_numeric( $pStorageHash['resize'] ) ) {
+						$this->resizeOriginal( $pStorageHash['resize'] );
+					}
 				}
 			}
 		} else {

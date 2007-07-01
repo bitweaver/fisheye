@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.19 2007/06/14 15:27:54 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.20 2007/07/01 22:45:26 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -58,9 +58,6 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array(),
 			// play with image some more if user has requested it
 			if( $pAutoRotate ) {
 				$image->rotateImage( 'auto' );
-			}
-			if( !empty( $pFileHash['resize'] ) && is_numeric( $pFileHash['resize'] ) ) {
-				$image->resizeOriginal( $pFileHash['resize'] );
 			}
 		}
 
