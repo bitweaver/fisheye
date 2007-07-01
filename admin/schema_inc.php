@@ -73,6 +73,7 @@ $gBitInstaller->registerPreferences( FISHEYE_PKG_NAME, array(
 	array( FISHEYE_PKG_NAME, 'fisheye_menu_text','Image Galleries'),
 	// more intuitive if we can see all galleries we can upload images to
 	array( FISHEYE_PKG_NAME, 'fisheye_show_public_on_upload','y'),
+    array( FISHEYE_PKG_NAME, 'fisheye_show_all_to_admins','y'),
 ) );
 
 // ### Default User Permissions
