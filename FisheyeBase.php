@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.24 2007/06/22 11:13:41 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.25 2007/07/05 20:22:36 spiderr Exp $
  * @package fisheye
  */
 
@@ -197,8 +197,10 @@ class FisheyeBase extends LibertyAttachable
 	/**
 	* Overloaded function that determines if this content can be edited by the current gBitUser
 	* @return the fully specified path to file to be included
-	*/
-	function hasUserPermission( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL ) {
+
+	REMOVED now that LC::hasUserPermission properly handles content permissions - spiderr
+
+	function hasUserPermission( $pPermName, $pVerifyAccessControl=TRUE ) {
 		$ret = FALSE;
 		if( $pPermName == 'p_fisheye_edit' || $pPermName == 'p_fisheye_upload' ) {
 			if( !($ret = $this->isOwner()) ) {
@@ -220,5 +222,6 @@ class FisheyeBase extends LibertyAttachable
 
 		return( $ret );
 	}
+	*/
 }
 ?>
