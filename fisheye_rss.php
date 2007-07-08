@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.7 2007/06/23 17:29:57 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.8 2007/07/08 07:56:40 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -32,7 +32,7 @@ if( !$gBitUser->hasPermission( 'p_fisheye_view' ) ) {
 	);
 
 	// check if we want to use the cache file
-	$cacheFile = TEMP_PKG_PATH.RSS_PKG_NAME.'/'.FISHEYE_PKG_NAME.'_'."g{$listHash['gallery_id']}_u{$listHash['user_id']}_".$rss_version_name.'.xml';
+	$cacheFile = TEMP_PKG_PATH.RSS_PKG_NAME.'/'.FISHEYE_PKG_NAME.'/'."g{$listHash['gallery_id']}u{$listHash['user_id']}".$cacheFileTail;
 	$rss->useCached( $rss_version_name, $cacheFile, $gBitSystem->getConfig( 'rssfeed_cache_time' ));
 
 	// if we have a gallery we can work with - load it
