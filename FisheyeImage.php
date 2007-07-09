@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.63 2007/07/01 22:45:26 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.64 2007/07/09 21:03:32 gravyface Exp $
  * @package fisheye
  */
 
@@ -610,13 +610,16 @@ class FisheyeImage extends FisheyeBase {
 	function imageExistsInDatabase() {
 		$ret = FALSE;
 		if( $this->isValid() && $this->mImageId ) {
-			$sql = "SELECT COUNT(`image_id`)
+			$query = "SELECT COUNT(`image_id`)
 					FROM `".BIT_DB_PREFIX."fisheye_image`
 					WHERE `image_id` = ?";
-			$rs = $this->mDb->query($sql, array($this->mImageId));
+					
+			$bindVars = array($this->mImageId);
+			
+			if($this->mDb->getOne($query, $bindVars) > 0){
+				$ret = TRUE;
+			}
 
-			if ($rs->fields['count'] > 0)
-					$ret = TRUE;
 		}
 		return $ret;
 	}
