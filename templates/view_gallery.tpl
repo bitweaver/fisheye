@@ -1,7 +1,7 @@
 {strip}
 {include file="bitpackage:fisheye/gallery_nav.tpl"}
 
-<div class="listing fisheye">
+<div class="display fisheye">
 	<div class="header">
 		<div class="floaticon">
 			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon' serviceHash=$gContent->mInfo}
