@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.20 2007/03/23 21:31:53 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.21 2007/07/09 22:03:18 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -93,7 +93,7 @@ $errors = (!empty($gContent->mErrors) ? $gContent->mErrors : array());
 $gBitSmarty->assign_by_ref('errors', $errors);
 
 $gBitSystem->setOnloadScript( 'updateGalleryPagination();' );
-$gBitSmarty->assign( 'loadAjax', 'prototype' );
+$gBitSystem->loadAjax( 'prototype' );
 
 $gallery = $gContent->getParentGalleries();
 $gBitSmarty->assign_by_ref( 'parentGalleries', $gallery );
