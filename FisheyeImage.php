@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.64 2007/07/09 21:03:32 gravyface Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.65 2007/07/10 00:08:14 squareing Exp $
  * @package fisheye
  */
 
