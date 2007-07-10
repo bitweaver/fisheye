@@ -1,5 +1,5 @@
 {strip}
-{if $gBitSystem->mAjax == 'prototype'}
+{if $gBitThemes->mAjax == 'prototype'}
 	<script type="text/javascript">/*<![CDATA[*/ show_spinner('spinner'); /*]]>*/</script>
 {/if}
 <div class="admin fisheye">
