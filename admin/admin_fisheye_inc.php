@@ -135,14 +135,7 @@ $sortOptions = array(
 	'lc.last_modified_asc'  => tra( 'Last Modified' ).' - '.tra( 'ascending' ),
 );
 $gBitSmarty->assign( 'sortOptions', $sortOptions );
-
-$imageSizes = array(
-	'avatar' => tra( 'Avatar ( 100 x 75 pixels )' ),
-	'small'  => tra( 'Small ( 160 x 120 pixels )' ),
-	'medium' => tra( 'Medium ( 400 x 300 pixels )' ),
-	'large'  => tra( 'Large ( 800 x 600 pixels )' ),
-);
-$gBitSmarty->assign( 'imageSizes', $imageSizes );
+$gBitSmarty->assign( 'imageSizes', get_image_size_options( FALSE ));
 
 //vd($_REQUEST);
 if (!empty($_REQUEST['fisheyeAdminSubmit'])) {
