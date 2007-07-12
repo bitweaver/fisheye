@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.65 2007/07/10 00:08:14 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.66 2007/07/12 09:12:02 squareing Exp $
  * @package fisheye
  */
 
@@ -197,6 +197,9 @@ class FisheyeImage extends FisheyeBase {
 			if( !empty( $pStorageHash['upload'] ) ) {
 				$pStorageHash['upload']['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
 			}
+
+			// we have already done all the permission checking needed for this user to upload an image
+			$pStorageHash['no_perm_check'] = TRUE;
 
 			if( LibertyAttachable::store( $pStorageHash ) ) {
 				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['image_file']['attachment_id'] ) {
