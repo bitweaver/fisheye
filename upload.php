@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.30 2007/01/16 11:33:40 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.31 2007/07/12 08:18:15 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -70,7 +70,7 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 		if( !empty( $_REQUEST['resize'] ) ) {
 			$upImages[$key]['resize'] = $_REQUEST['resize'];
 		}
-		fisheye_store_upload( $upImages[$key], $order, $upData[$key], !empty( $_REQUEST['rotate_image'] ) );
+		$upErrors = array_merge( $upErrors, fisheye_store_upload( $upImages[$key], $order, $upData[$key], !empty( $_REQUEST['rotate_image'] )));
 	}
 
 	if( !is_object( $gContent ) || !$gContent->isValid() ) {
@@ -78,8 +78,7 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 		$gContent->load();
 	}
 	if( empty( $upErrors ) ) {
-		header( 'Location: '.$gContent->getDisplayUrl() );
-		die;
+		bit_redirect( $gContent->getDisplayUrl() );
 	} else {
 		$gBitSmarty->assign( 'errors', $upErrors );
 	}

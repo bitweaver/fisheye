@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.20 2007/07/01 22:45:26 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.21 2007/07/12 08:18:15 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -43,6 +43,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
  */
 function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array(), $pAutoRotate=TRUE ) {
 	global $gBitSystem;
+	$ret = array();
 	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && is_file( $pFileHash['tmp_name'] ) ) {
 		// make a copy for each image we need to store
 		$storeHash = array_merge( $_REQUEST, $pImageData );
@@ -53,19 +54,19 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array(),
 		$storeHash['purge_from_galleries'] = TRUE;
 		// store the image
 		if( !$image->store( $storeHash ) ) {
-			array_merge( $upErrors, array_values( $image->mErrors ) );
+			$ret = $image->mErrors;
 		} else {
 			// play with image some more if user has requested it
 			if( $pAutoRotate ) {
 				$image->rotateImage( 'auto' );
 			}
 		}
-
 		$image->addToGalleries( $_REQUEST['galleryAdditions'], $pOrder );
 
 		// when we're using xupload, we need to remove temp files manually
 		@unlink( $pFileHash['tmp_name'] );
 	}
+	return $ret;
 }
 
 /**
@@ -89,7 +90,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 	} else {
 		global $gBitUser;
 		if( $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) ) {
-			fisheye_store_upload( $pFileHash );
+			$errors = array_merge( $errors, fisheye_store_upload( $pFileHash ));
 		} else {
 			$errors['upload'] = tra( 'Your upload could not be processed because it was determined to be a non-image and you only have permission to upload images.' );
 		}
