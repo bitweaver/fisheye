@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.66 2007/07/12 09:12:02 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.67 2007/07/16 15:27:20 squareing Exp $
  * @package fisheye
  */
 
@@ -21,15 +21,20 @@ class FisheyeImage extends FisheyeBase {
 		FisheyeBase::FisheyeBase();
 		$this->mImageId = (int)$pImageId;
 		$this->mContentId = (int)$pContentId;
-		$this->mAdminContentPerm = 'p_fisheye_admin';
 
-		$this->registerContentType(FISHEYEIMAGE_CONTENT_TYPE_GUID, array('content_type_guid' => FISHEYEIMAGE_CONTENT_TYPE_GUID,
+		$this->registerContentType(
+			FISHEYEIMAGE_CONTENT_TYPE_GUID, array( 'content_type_guid' => FISHEYEIMAGE_CONTENT_TYPE_GUID,
 				'content_description' => 'Image',
 				'handler_class' => 'FisheyeImage',
 				'handler_package' => 'fisheye',
 				'handler_file' => 'FisheyeImage.php',
 				'maintainer_url' => 'http://www.bitweaver.org'
-			) );
+		));
+
+		// Permission setup
+		$this->mViewContentPerm  = 'p_fisheye_view';
+		$this->mEditContentPerm  = 'p_fisheye_edit';
+		$this->mAdminContentPerm = 'p_fisheye_admin';
 	}
 
 	function lookup( $pLookupHash ) {

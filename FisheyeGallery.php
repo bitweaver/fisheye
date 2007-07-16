@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.62 2007/06/25 20:02:30 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.63 2007/07/16 15:27:20 squareing Exp $
  * @package fisheye
  */
 
@@ -33,13 +33,19 @@ class FisheyeGallery extends FisheyeBase {
 
 		// This registers the content type for FishEye galleries
 		// FYI: Any class which uses a table which inherits from liberty_content should create their own content type(s)
-		$this->registerContentType(FISHEYEGALLERY_CONTENT_TYPE_GUID, array('content_type_guid' => FISHEYEGALLERY_CONTENT_TYPE_GUID,
+		$this->registerContentType(
+			FISHEYEGALLERY_CONTENT_TYPE_GUID, array( 'content_type_guid' => FISHEYEGALLERY_CONTENT_TYPE_GUID,
 				'content_description' => 'Image Gallery',
 				'handler_class' => 'FisheyeGallery',
 				'handler_package' => 'fisheye',
 				'handler_file' => 'FisheyeGallery.php',
 				'maintainer_url' => 'http://www.bitweaver.org'
-			) );
+		));
+
+		// Permission setup
+		$this->mViewContentPerm  = 'p_fisheye_view';
+		$this->mEditContentPerm  = 'p_fisheye_edit';
+		$this->mAdminContentPerm = 'p_fisheye_admin';
 	}
 
 	function isValid() {
