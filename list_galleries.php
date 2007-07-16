@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.9 2006/03/22 14:19:30 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.10 2007/07/16 21:46:50 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -31,6 +31,7 @@ if (!empty($_REQUEST['user_id']) && is_numeric($_REQUEST['user_id'])) {
 
 $_REQUEST['thumbnail_size'] = $gBitSystem->getConfig( 'fisheye_list_thumbnail_size', 'small' );
 $galleryList = $gFisheyeGallery->getList( $_REQUEST );
+$gFisheyeGallery->invokeServices( 'content_list_function', $_REQUEST );
 
 // pagination
 $offset = !empty( $_REQUEST['offset'] ) ? $_REQUEST['offset'] : 0;
