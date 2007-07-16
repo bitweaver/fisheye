@@ -89,9 +89,8 @@
 										<script type="text/javascript">/* <![CDATA[ */
 											{if count($uploadSlots) gt $slot}
 												document.write( "<input id=\"button{$slot+1}\" type=\"button\" onclick=\"javascript:showById('slot{$slot+1}');hideById('button{$slot+1}')\" value=\"{tr}Add slot{/tr}\" />" );
-											{else}
-												document.write( "</div>" );
-											{/if}
+											{/if}											
+											document.write( "</div>" );
 										/* ]]> */</script>
 									{/foreach}
 								{else}
