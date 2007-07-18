@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.8 2006/11/03 01:26:08 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.9 2007/07/18 20:02:09 gravyface Exp $
  * @package fisheye
  * @subpackage modules
  */
 
-global $gQueryUserId, $module_rows, $module_params, $module_title, $gContent;
+global $gBitSystem, $gQueryUserId, $module_rows, $module_params, $module_title, $gContent;
 
 /**
  * required setup
@@ -17,6 +17,7 @@ $image = new FisheyeImage();
 $display = TRUE;
 
 $listHash = $module_params;
+
 if( !empty( $gContent ) && $gContent->getField( 'content_type_guid' ) == FISHEYEGALLERY_CONTENT_TYPE_GUID ) {
 	$displayCount = empty( $gContent->mItems ) ? 0 : count( $gContent->mItems );
 	$thumbCount = $gContent->mInfo['rows_per_page'] * $gContent->mInfo["cols_per_page"];
@@ -24,9 +25,10 @@ if( !empty( $gContent ) && $gContent->getField( 'content_type_guid' ) == FISHEYE
 	$display = $displayCount >= $thumbCount;
 }
 
+
 if( $display ) {
 
-	$listHash['max_records'] = $module_rows;
+	$listHash['max_records'] = empty( $listHash['rows'] ) ? $gBitSystem->getConfig( 'max_records' ) : $listHash['rows'];
 	if( $gQueryUserId ) {
 		$listHash['user_id'] = $gQueryUserId;
 	} elseif( !empty( $_REQUEST['user_id'] ) ) {
