@@ -1,11 +1,14 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.9 2007/07/18 20:02:09 gravyface Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.10 2007/07/19 05:05:39 squareing Exp $
  * @package fisheye
  * @subpackage modules
  */
 
-global $gBitSystem, $gQueryUserId, $module_rows, $module_params, $module_title, $gContent;
+global $gQueryUserId, $gContent, $moduleParams;
+
+// makes things in older modules easier
+extract( $moduleParams );
 
 /**
  * required setup
@@ -27,8 +30,7 @@ if( !empty( $gContent ) && $gContent->getField( 'content_type_guid' ) == FISHEYE
 
 
 if( $display ) {
-
-	$listHash['max_records'] = empty( $listHash['rows'] ) ? $gBitSystem->getConfig( 'max_records' ) : $listHash['rows'];
+	$listHash['max_records'] = $module_rows;
 	if( $gQueryUserId ) {
 		$listHash['user_id'] = $gQueryUserId;
 	} elseif( !empty( $_REQUEST['user_id'] ) ) {
