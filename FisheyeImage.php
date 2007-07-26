@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.67 2007/07/16 15:27:20 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.68 2007/07/26 16:42:46 spiderr Exp $
  * @package fisheye
  */
 
@@ -374,7 +374,7 @@ class FisheyeImage extends FisheyeBase {
 			$resizeFunc = liberty_get_function( 'resize' );
 
 			if( !$resizeFunc( $fileHash ) ) {
-				$this->mErrors['upload'] = $fileHash['errors'];
+				$this->mErrors['upload'] = $fileHash['error'];
 			} else {
 				// Ack this is evil direct bashing of the liberty tables! XOXO spiderr
 				// should be a cleaner way eventually
