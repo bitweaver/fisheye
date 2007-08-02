@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.68 2007/07/26 16:42:46 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.69 2007/08/02 03:20:22 spiderr Exp $
  * @package fisheye
  */
 
@@ -162,6 +162,67 @@ class FisheyeImage extends FisheyeBase {
 
 		if ( empty($pStorageHash['purge_from_galleries']) ) {
 			$pStorageHash['purge_from_galleries'] = FALSE;
+		}
+
+		// This should probably be moved to a separate method, probably into LibertyAttachable::extractMetaData()
+		if( function_exists( 'exif_read_data' ) && !empty( $pStorageHash['upload']['tmp_name'] ) && stripos( $pStorageHash['upload']['type'], 'jpeg' ) !== FALSE ) {
+			$exifHash = exif_read_data( $pStorageHash['upload']['tmp_name'], 0, true);
+//vd( $exifHash );
+
+			include UTIL_PKG_PATH.'jpeg_metadata_tk/JPEG.php';                     // Change: Allow this example file to be easily relocatable - as of version 1.11
+			include UTIL_PKG_PATH.'jpeg_metadata_tk/JFIF.php';
+			include UTIL_PKG_PATH.'jpeg_metadata_tk/PictureInfo.php';
+			include UTIL_PKG_PATH.'jpeg_metadata_tk/XMP.php';
+			include UTIL_PKG_PATH.'jpeg_metadata_tk/EXIF.php';
+
+			// Retrieve the header information from the JPEG file
+			$jpeg_header_data = get_jpeg_header_data( $pStorageHash['upload']['tmp_name'] );
+
+			// Retrieve EXIF information from the JPEG file
+			$Exif_array = get_EXIF_JPEG( $pStorageHash['upload']['tmp_name'] );
+
+			// Retrieve XMP information from the JPEG file
+			$XMP_array = read_XMP_array_from_text( get_XMP_text( $jpeg_header_data ) );
+
+			// Retrieve Photoshop IRB information from the JPEG file
+			$IRB_array = get_Photoshop_IRB( $jpeg_header_data );
+
+			if( !empty( $exifHash['IFD0']['Software'] ) && preg_match( '/photoshop/i', $exifHash['IFD0']['Software'] ) ) {
+				include UTIL_PKG_PATH.'jpeg_metadata_tk/Photoshop_File_Info.php';
+				// Retrieve Photoshop File Info from the three previous arrays
+				$psFileInfo = get_photoshop_file_info( $Exif_array, $XMP_array, $IRB_array );
+
+				if( !empty( $psFileInfo['headline'] ) ) {
+					if( empty( $pStorageHash['title'] ) ) {
+						$pStorageHash['title'] = $psFileInfo['headline'];
+					} elseif( empty( $pStorageHash['edit'] ) && !$this->getField( 'data' ) && $pStorageHash['title'] != $psFileInfo['headline'] ) {
+						$pStorageHash['edit'] = $psFileInfo['headline'];
+					}
+				}
+				if( !empty( $psFileInfo['caption'] ) ) {
+					if( empty( $pStorageHash['title'] ) ) {
+						$pStorageHash['title'] = $psFileInfo['caption'];
+					} elseif( empty( $pStorageHash['edit'] ) && !$this->getField( 'data' ) && $pStorageHash['title'] != $psFileInfo['caption'] ) {
+						$pStorageHash['edit'] = $psFileInfo['caption'];
+					}
+				}
+			}
+
+			if( !empty( $exifHash['EXIF']['DateTimeOriginal'] ) ) {
+				$pStorageHash['event_time'] = strtotime( $exifHash['EXIF']['DateTimeOriginal'] );
+			}
+
+			if( !empty( $exifHash['IFD0']['ImageDescription'] ) ) {
+				if( empty( $pStorageHash['title'] ) ) {
+					$pStorageHash['title'] = $exifHash['IFD0']['ImageDescription'];
+				} elseif( empty( $pStorageHash['edit'] ) && !$this->getField( 'data' ) && $pStorageHash['title'] != $exifHash['IFD0']['ImageDescription'] ) {
+					$pStorageHash['edit'] = $exifHash['IFD0']['ImageDescription'];
+				}
+			}
+		}
+
+		if( !empty( $pStorageHash['title'] ) ) {
+			$pStorageHash['title'] = trim( $pStorageHash['title'] );
 		}
 
 		// let's add a default title
