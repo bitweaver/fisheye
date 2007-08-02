@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.23 2007/07/10 18:59:40 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.24 2007/08/02 19:20:41 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -53,6 +53,11 @@ if (!empty($_REQUEST['cancel'])) {
 
 	if( !empty( $_REQUEST['reorder_gallery'] ) ) {
 		switch( $_REQUEST['reorder_gallery'] ){
+			case 'photo_date':
+				foreach( array_keys( $gContent->mItems ) as $imageId ) {
+					$reorder[$gContent->mItems[$imageId]->mContentId] = $gContent->mItems[$imageId]->mInfo['event_time'];
+				}
+				break;
 			case 'upload_date':
 				foreach( array_keys( $gContent->mItems ) as $imageId ) {
 					$reorder[$gContent->mItems[$imageId]->mContentId] = $gContent->mItems[$imageId]->mInfo['created'];

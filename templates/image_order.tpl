@@ -42,6 +42,9 @@
 						<td>
 							<input type="text" name="image_title[{$galItem->mContentId}]" value="{$galItem->getTitle()|escape:html}" /><br />
 							{if $galItem->isContentType( FISHEYEIMAGE_CONTENT_TYPE_GUID )}
+							{if $galItem->mInfo.event_time}
+							<strong>{tr}Photo Date{/tr}</strong>: {$galItem->mInfo.event_time|bit_short_datetime}<br />
+							{/if}
 							<strong>{tr}Uploaded{/tr}</strong>: {$galItem->mInfo.created|bit_short_datetime}<br />
 							<strong>{tr}File name{/tr}</strong>: {$galItem->mInfo.image_file.filename} <br />
 								{if $galItem->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
@@ -128,6 +131,7 @@
 				{forminput}
 					<select name="reorder_gallery" id="reorder_gallery">
 						<option value=""></option>
+						<option value="photo_date">{tr}Photo Date{/tr}</option>
 						<option value="upload_date">{tr}Date Uploaded{/tr}</option>
 						<option value="caption">{tr}Image Title{/tr}</option>
 						<option value="file_name">{tr}File Name{/tr}</option>
