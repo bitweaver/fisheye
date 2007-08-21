@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.24 2007/08/02 19:20:41 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.25 2007/08/21 03:21:32 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -79,8 +79,8 @@ if (!empty($_REQUEST['cancel'])) {
 				}
 				break;
 		}
-		asort( $reorder );
-		$sortPos = 100;
+		natcasesort( $reorder );
+		$sortPos = 10;
 		foreach( $reorder as $conId => $sortVal ) {
 			$newOrder[$conId] = $sortPos;
 			$sortPos += 10;
