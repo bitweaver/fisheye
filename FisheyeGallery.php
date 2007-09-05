@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.63 2007/07/16 15:27:20 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.64 2007/09/05 01:25:24 spiderr Exp $
  * @package fisheye
  */
 
@@ -463,12 +463,11 @@ class FisheyeGallery extends FisheyeBase {
 		if( $this->isValid() ) {
 			$this->mDb->StartTrans();
 
-
 			if( $this->loadImages() ) {
 				foreach( array_keys( $this->mItems ) as $key ) {
 					if( $pRecursiveDelete ) {
 						$this->mItems[$key]->expunge( $pRecursiveDelete );
-					} elseif( $this->mItems[$key]->mInfo['content_type_guid'] == FISHEYEIMAGE_CONTENT_TYPE_GUID ) {
+					} elseif( is_subclass_of( $this->mItems[$key], 'FisheyeImage' ) ) {
 						$query = "SELECT COUNT(`item_content_id`) AS `other_gallery`
 								  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
 								  WHERE `item_content_id`=? AND `gallery_content_id`!=?";
@@ -480,7 +479,6 @@ class FisheyeGallery extends FisheyeBase {
 					}
 				}
 			}
-
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE `gallery_content_id`=?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ) );
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE `item_content_id`=?";
