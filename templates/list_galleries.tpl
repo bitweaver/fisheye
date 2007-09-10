@@ -44,16 +44,16 @@
 						{if $gal.access_answer}
 							{tr}Password{/tr}
 						{/if}
-						{* if $galleryList[ix]->hasUserPermission('p_fisheye_edit')}
+						{* if $galleryList[ix]->hasEditPermission()}
 							<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="document-properties" iexplain="Edit"}</a>
 						{/if}
-						{if $galleryList[ix]->hasUserPermission('p_fisheye_edit')}
+						{if $galleryList[ix]->hasEditPermission()}
 						 	<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="emblem-default" iexplain="Item Order"}</a>
 						{/if}
-						{if $galleryList[ix]->hasUserPermission('p_fisheye_upload')}
+						{if $galleryList[ix]->hasUserPermission('p_fisheye_upload', TRUE, FALSE)}
 							<a title="{tr}Add Image{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="go-up" iexplain="Add Image"}</a>
 						{/if}
-						{if $galleryList[ix]->hasUserPermission('p_fisheye_admin')}
+						{if $galleryList[ix]->hasAdminPermission()}
 							<a title="{tr}User Permissions{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_gallery_perms.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="emblem-shared" iexplain="User Permissions"}</a>
 						{/if *}
 					</div>
