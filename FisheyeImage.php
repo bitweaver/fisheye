@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.70 2007/08/02 20:54:20 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.71 2007/09/13 15:29:53 spiderr Exp $
  * @package fisheye
  */
 
@@ -103,7 +103,8 @@ class FisheyeImage extends FisheyeBase {
 							  WHERE fgim.`item_content_id`=?";
 					$grs = $this->mDb->query($query, array( $this->mContentId ) );
 					if( $grs && $grs->RecordCount() ) {
-						$this->mInfo = array_merge( $this->mInfo, $grs->fields );
+						// order matters here
+						$this->mInfo = array_merge( $grs->fields, $this->mInfo );
 					}
 				}
 
