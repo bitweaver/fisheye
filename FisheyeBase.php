@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.25 2007/07/05 20:22:36 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.26 2007/09/13 15:31:05 spiderr Exp $
  * @package fisheye
  */
 
@@ -133,7 +133,7 @@ class FisheyeBase extends LibertyAttachable
 							$galleries[$galleryId]->load();
 						}
 						if( $galleries[$galleryId]->isValid() ) {
-							if( $galleries[$galleryId]->hasUserPermission( 'p_fisheye_admin' ) || $galleries[$galleryId]->isPublic() ) {
+							if( $galleries[$galleryId]->hasUserPermission( 'p_fisheye_upload', TRUE, FALSE ) || $galleries[$galleryId]->isPublic() ) {
 								$galleries[$galleryId]->addItem( $this->mContentId, $pPosition );
 							} else {
 								$this->mErrors[] = "You do not have permission to attach ".$this->getTitle()." to ".$galleries[$galleryId]->getTitle();
@@ -194,34 +194,5 @@ class FisheyeBase extends LibertyAttachable
 		return $ret;
 	}
 
-	/**
-	* Overloaded function that determines if this content can be edited by the current gBitUser
-	* @return the fully specified path to file to be included
-
-	REMOVED now that LC::hasUserPermission properly handles content permissions - spiderr
-
-	function hasUserPermission( $pPermName, $pVerifyAccessControl=TRUE ) {
-		$ret = FALSE;
-		if( $pPermName == 'p_fisheye_edit' || $pPermName == 'p_fisheye_upload' ) {
-			if( !($ret = $this->isOwner()) ) {
-				global $gBitUser;
-				if( !($ret = $gBitUser->isAdmin()) ) {
-					if( $this->loadPermissions() ) {
-						$userPerms = $this->getUserPermissions( $gBitUser->mUserId );
-						$ret = isset( $userPerms[$pPermName]['user_id'] ) && ( $userPerms[$pPermName]['user_id'] == $gBitUser->mUserId );
-					}
-				}
-			}
-		} else {
-			$ret = LibertyContent::hasUserPermission( $pPermName, $pFatalMessage );
-		}
-		if( !$ret && $pFatalIfFalse ) {
-			global $gBitSystem;
-			$gBitSystem->fatalPermission( $pPermName, $pFatalIfFalse=FALSE, $pFatalMessage=NULL );
-		}
-
-		return( $ret );
-	}
-	*/
 }
 ?>

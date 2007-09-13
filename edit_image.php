@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.18 2007/03/23 21:31:54 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.19 2007/09/13 15:31:05 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -15,15 +15,9 @@ require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 
 global $gBitSystem;
 
-include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
 
-if ( (!empty($gContent->mImageId)) && ($gContent->getField( 'user_id' ) != $gBitUser->mUserId && !$gBitUser->isAdmin()) ) {
-	// This user does not own this image and they are not an Administrator
-	$gBitSmarty->assign( 'msg', tra( "You do not own this image!" ) );
-	$gBitSystem->display( "error.tpl" );
-	die;
-}
+$gContent->verifyEditPermission();
 
 if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] ) ) {
 	if (empty($_REQUEST['gallery_id']) && empty($_REQUEST['image_id'])) {
