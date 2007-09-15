@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.65 2007/09/14 07:06:33 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.66 2007/09/15 06:18:04 spiderr Exp $
  * @package fisheye
  */
 
@@ -144,8 +144,7 @@ class FisheyeGallery extends FisheyeBase {
 					$query = "SELECT fgim.*, fi.`image_id`, lf.`storage_path`
 							FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
 								INNER JOIN `".BIT_DB_PREFIX."fisheye_image` fi ON ( fi.`content_id`=fgim.`item_content_id` )
-								INNER JOIN `".BIT_DB_PREFIX."liberty_attachments_map` lam ON ( lam.`content_id`=fi.`content_id` )
-								INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON ( la.`attachment_id`=lam.`attachment_id` )
+								INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON ( fi.`content_id`=la.`content_id` )
 								INNER JOIN `".BIT_DB_PREFIX."liberty_files` lf ON ( lf.`file_id`=la.`foreign_id` )
 							WHERE fgim.`gallery_content_id` = ?
 							ORDER BY fgim.`item_position`, fi.`content_id` ";
