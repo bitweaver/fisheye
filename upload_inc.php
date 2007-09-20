@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.21 2007/07/12 08:18:15 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.22 2007/09/20 06:47:03 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -144,7 +144,8 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 					$errors = array_merge( $errors, fisheye_process_archive( $scanFile, $pParentGallery ) );
 				} elseif( preg_match( '/^video\/*/', $scanFile['type'] ) || preg_match( '/^image\/*/', $scanFile['type'] ) || preg_match( '/pdf/i', $scanFile['type'] ) || $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) ) {
 					$newImage = new FisheyeImage();
-					$imageHash = array( 'upload' => $scanFile );
+					unset( $_FILES );
+					$imageHash = array( '_files_override' => array( $scanFile ) );
 					if( $newImage->store( $imageHash ) ) {
 						if( $pRoot ) {
 							$newImage->addToGalleries( $_REQUEST['galleryAdditions'] );
