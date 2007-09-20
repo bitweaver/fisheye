@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.22 2007/09/20 06:47:03 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.23 2007/09/20 07:33:05 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -49,8 +49,8 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array(),
 		$storeHash = array_merge( $_REQUEST, $pImageData );
 		$image = new FisheyeImage();
 		// Store/Update the image
-		$storeHash['upload'] = &$pFileHash;
-		$storeHash['upload']['process_storage'] = STORAGE_IMAGE;
+		$storeHash['_files_override'] = array( $pFileHash );
+		$storeHash['process_storage'] = STORAGE_IMAGE;
 		$storeHash['purge_from_galleries'] = TRUE;
 		// store the image
 		if( !$image->store( $storeHash ) ) {
