@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.23 2007/09/20 07:33:05 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.24 2007/09/21 00:25:49 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -124,27 +124,31 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 				}
 
 				if( is_dir( $pDestinationDir.'/'.$fileName ) ) {
-					// We found a new Gallery!
-					$newGallery = new FisheyeGallery();
-					$galleryHash = array( 'title' => str_replace( '_', ' ', $fileName ) );
-					if( $newGallery->store( $galleryHash ) ) {
-						if( $pRoot ) {
-							$newGallery->addToGalleries( $_REQUEST['galleryAdditions'] );
-						}
-						if( is_object( $pParentGallery ) ) {
-							$pParentGallery->addItem( $newGallery->mContentId, $order );
-						}
-						//recurse down in!
-						$errors = array_merge( $errors, fisheye_process_archive( $scanFile, $newGallery ) );
+					if( $fileName == '__MACOSX' ) {
+						// Mac OS resources file
+						unlink_r( $pDestinationDir.'/'.$fileName );
 					} else {
-						$errors = array_merge( $errors, array_values( $newGallery->mErrors ) );
+						// We found a new Gallery!
+						$newGallery = new FisheyeGallery();
+						$galleryHash = array( 'title' => str_replace( '_', ' ', $fileName ) );
+						if( $newGallery->store( $galleryHash ) ) {
+							if( $pRoot ) {
+								$newGallery->addToGalleries( $_REQUEST['galleryAdditions'] );
+							}
+							if( is_object( $pParentGallery ) ) {
+								$pParentGallery->addItem( $newGallery->mContentId, $order );
+							}
+							//recurse down in!
+							$errors = array_merge( $errors, fisheye_process_archive( $scanFile, $newGallery ) );
+						} else {
+							$errors = array_merge( $errors, array_values( $newGallery->mErrors ) );
+						}
 					}
 				} elseif( preg_match( '/.+\/*zip*/', $scanFile['type'] ) ) {
 					//recurse down in!
 					$errors = array_merge( $errors, fisheye_process_archive( $scanFile, $pParentGallery ) );
 				} elseif( preg_match( '/^video\/*/', $scanFile['type'] ) || preg_match( '/^image\/*/', $scanFile['type'] ) || preg_match( '/pdf/i', $scanFile['type'] ) || $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) ) {
 					$newImage = new FisheyeImage();
-					unset( $_FILES );
 					$imageHash = array( '_files_override' => array( $scanFile ) );
 					if( $newImage->store( $imageHash ) ) {
 						if( $pRoot ) {
