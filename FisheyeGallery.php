@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.66 2007/09/15 06:18:04 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.67 2007/09/21 01:08:20 spiderr Exp $
  * @package fisheye
  */
 
@@ -466,18 +466,17 @@ class FisheyeGallery extends FisheyeBase {
 				foreach( array_keys( $this->mItems ) as $key ) {
 					if( $pRecursiveDelete ) {
 						$this->mItems[$key]->expunge( $pRecursiveDelete );
-					} elseif( is_subclass_of( $this->mItems[$key], 'FisheyeImage' ) ) {
+					} elseif( is_a( $this->mItems[$key], 'FisheyeImage' ) ) {
 						$query = "SELECT COUNT(`item_content_id`) AS `other_gallery`
 								  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
 								  WHERE `item_content_id`=? AND `gallery_content_id`!=?";
-						if( $rs = $this->mDb->query($query, array($this->mItems[$key]->mContentId, $this->mContentId ) ) ) {
-							if( empty( $rs->fields['other_gallery'] ) ) {
-								$this->mItems[$key]->expunge();
-							}
+						if( !($inOtherGallery = $this->mDb->getOne($query, array($this->mItems[$key]->mContentId, $this->mContentId ) )) ) {
+							$this->mItems[$key]->expunge();
 						}
 					}
 				}
 			}
+
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE `gallery_content_id`=?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ) );
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE `item_content_id`=?";
