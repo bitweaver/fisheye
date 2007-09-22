@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.73 2007/09/22 17:27:29 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.74 2007/09/22 18:00:43 spiderr Exp $
  * @package fisheye
  */
 
@@ -192,7 +192,7 @@ class FisheyeImage extends FisheyeBase {
 		if ($this->verifyImageData($pStorageHash)) {
 			// Save the current attachment ID for the image attached to this FisheyeImage so we can
 			// delete it after saving the new one
-			if (!empty($this->mInfo['image_file']) && !empty($this->mInfo['image_file']['attachment_id']) && !empty($pStorageHash['upload'])) {
+			if (!empty($this->mInfo['image_file']) && !empty($this->mInfo['image_file']['attachment_id']) && !empty($pStorageHash['_files_override'][0])) {
 				$currentImageAttachmentId = $this->mInfo['image_file']['attachment_id'];
 				$pStorageHash['attachment_id'] = $currentImageAttachmentId;
 			} else {
@@ -200,8 +200,8 @@ class FisheyeImage extends FisheyeBase {
 			}
 
 			// LibertyAttachable will take care of thumbnail generation of the offline thumbnailer is not active
-			if( !empty( $pStorageHash['upload'] ) ) {
-				$pStorageHash['upload']['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
+			if( !empty( $pStorageHash['_files_override'][0] ) ) {
+				$pStorageHash['_files_override'][0]['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
 			}
 
 			// we have already done all the permission checking needed for this user to upload an image
@@ -215,8 +215,8 @@ class FisheyeImage extends FisheyeBase {
 				$this->mContentId = $pStorageHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
 
-				if ( isset($pStorageHash['storage_guid']) && !empty($pStorageHash['STORAGE'][$pStorageHash['storage_guid']]['upload']['source_file'])) {
-					$imageDetails = $this->getImageDetails($pStorageHash['STORAGE'][$pStorageHash['storage_guid']]['upload']['source_file']);
+				if ( isset($pStorageHash['storage_guid']) && !empty($pStorageHash['STORAGE'][$pStorageHash['storage_guid']]['_files_override'][0]['source_file'])) {
+					$imageDetails = $this->getImageDetails($pStorageHash['STORAGE'][$pStorageHash['storage_guid']]['_files_override'][0]['source_file']);
 				} else {
 					$imageDetails = NULL;
 				}
@@ -375,7 +375,7 @@ class FisheyeImage extends FisheyeBase {
 			$resizeFunc = liberty_get_function( 'resize' );
 
 			if( !$resizeFunc( $fileHash ) ) {
-				$this->mErrors['upload'] = $fileHash['error'];
+				$this->mErrors['resize'] = $fileHash['error'];
 			} else {
 				// Ack this is evil direct bashing of the liberty tables! XOXO spiderr
 				// should be a cleaner way eventually
