@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.72 2007/09/15 06:18:04 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.73 2007/09/22 17:27:29 spiderr Exp $
  * @package fisheye
  */
 
@@ -166,8 +166,23 @@ class FisheyeImage extends FisheyeBase {
 		}
 
 		if( !empty( $pStorageHash['resize'] ) ) {
-			$pStorageHash['upload']['max_height'] = $pStorageHash['upload']['max_width'] = $pStorageHash['resize'];
+			$pStorageHash['_files_override'][0]['max_height'] = $pStorageHash['_files_override'][0]['max_width'] = $pStorageHash['resize'];
 		}
+
+		// let's add a default title
+		if( empty( $pStorageHash['title'] ) && !empty( $pStorageHash['_files_override'][0]['name'] ) ) {
+				if( preg_match( '/^[A-Z]:\\\/', $pStorageHash['_files_override'][0]['name'] ) ) {
+						// MSIE shit file names if passthrough via gigaupload, etc.
+						// basename will not work - see http://us3.php.net/manual/en/function.basename.php
+						$tmp = preg_split("[\\\]",$pStorageHash['_files_override'][0]['name']);
+						$defaultName = $tmp[count($tmp) - 1];
+				} elseif( strpos( '.', $pStorageHash['_files_override'][0]['name'] ) ) {
+						list( $defaultName, $ext ) = explode( '.', $pStorageHash['_files_override'][0]['name'] );
+				} else {
+						$defaultName = $pStorageHash['_files_override'][0]['name'];
+				}
+				$pStorageHash['title'] = str_replace( '_', ' ', substr( $defaultName, 0, strrpos( $defaultName, '.' ) ) );
+	  }
 
 		return (count($this->mErrors) == 0);
 	}
