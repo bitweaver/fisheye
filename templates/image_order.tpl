@@ -88,6 +88,9 @@
 							<option value="delete">{tr}Delete{/tr}</option>
 							<option value="remove">{tr}Remove{/tr} ({tr}Don't delete if in other galleries{/tr})</option>
 							<option value="thumbnail">{tr}Regenerate Thumbnails{/tr}</option>
+							{if $gBitUser->hasPermission('p_fisheye_admin')}
+							<option value="filenametoimagename">{tr}Rename Images Based on File Name{/tr} *{tr}Cannot be undone!{/tr}*</option>
+							{/if}
 							{if $gBitSystem->getConfig('image_processor')=='magickwand'}
 							<option value="grayscale">{tr}Convert to Grayscale{/tr} *{tr}Cannot be undone!{/tr}*</option>
 							{/if}

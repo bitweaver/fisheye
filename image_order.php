@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.25 2007/08/21 03:21:32 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.26 2007/09/22 21:36:55 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -149,6 +149,15 @@ if (!empty($_REQUEST['cancel'])) {
 								$feedback['success'][] = $galleryItem->getTitle().' '.tra( "added to" ).' '.$destGallery->getTitle();
 							} else {
 								$feedback['error'][] = $galleryItem->getTitle().' '.tra( "could not be added to" ).' '.$destGallery->getTitle();
+							}
+							break;
+						case 'filenametoimagename':
+							$renameHash = array();
+							if( !empty( $galleryItem->mInfo['image_file']['filename'] ) ) {
+								$renameHash['title'] = file_name_to_title( $galleryItem->mInfo['image_file']['filename'] );
+								$galleryItem->store( $renameHash );
+								// update to prevent renaming value in text input
+								$_REQUEST['image_title'][$contentId] = $renameHash['title'];
 							}
 							break;
 					}
