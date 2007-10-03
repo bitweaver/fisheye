@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.67 2007/09/21 01:08:20 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.68 2007/10/03 16:01:20 spiderr Exp $
  * @package fisheye
  */
 
@@ -194,8 +194,11 @@ class FisheyeGallery extends FisheyeBase {
 						  WHERE gallery_content_id=?
 						  ORDER BY floor(item_position)";
 				$mantissa = $this->mDb->getOne( $query, array( $this->mContentId ), 1, ($pPage - 1) );
-				$whereSql .= " AND floor(item_position)=? ";
-				array_push( $bindVars, $mantissa );
+				// gallery image order with no positions set will have NULL mantissa, and all images will be shown
+				if( !is_null( $mantissa ) ) {
+					$whereSql .= " AND floor(item_position)=? ";
+					array_push( $bindVars, $mantissa );
+				}
 			} else {
 				$rows = $this->getField( 'rows_per_page' ) * $this->getField( 'cols_per_page' );
 				$offset = $rows * ($pPage - 1);
