@@ -4,8 +4,9 @@ function updateGalleryPagination() {
 	$('fixed_grid-pagination').style.display = 'none';
 	$('auto_flow-pagination').style.display = 'none';
 	$('position_number-pagination').style.display = 'none';
-	var select;
-	select = $F('gallery-pagination');
+	var input = $('editGalleryForm').gallery_pagination;
+    var i  = input.selectedIndex;
+    var select = input.options[i].value;
 	$(select+'-pagination').style.display = 'block';
 }
 //]]></script>
