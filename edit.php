@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.23 2007/08/21 03:22:04 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.24 2007/10/10 12:10:20 nickpalmer Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -112,7 +112,7 @@ if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->h
 	$getHash['show_public'] = TRUE;
 }
 $galleryList = $gContent->getList( $getHash );
-$gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
+$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
 
 $gContent->invokeServices( 'content_edit_function' );
 

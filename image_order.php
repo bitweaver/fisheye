@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.26 2007/09/22 21:36:55 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.27 2007/10/10 12:10:20 nickpalmer Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -212,7 +212,7 @@ if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->h
 	$listHash['show_public'] = TRUE;
 }
 $galleryList = $gContent->getList( $listHash );
-$gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
+$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
 $gContent->loadImages();
 
 $gBitSmarty->assign_by_ref('formfeedback', $feedback);

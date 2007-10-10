@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.24 2007/09/21 00:25:49 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.25 2007/10/10 12:10:20 nickpalmer Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -13,8 +13,8 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	$gal = new FisheyeGallery();
 	$getHash = array( 'user_id' => $pUserId, 'max_records' => 1, 'sort_mode' => 'created_desc' );
 	$upList = $gal->getList( $getHash );
-	if( !empty( $upList['data'] ) ) {
-		$ret = key( $upList['data'] );
+	if( !empty( $upList ) ) {
+		$ret = key( $upList );
 	} else { // if( $gBitUser->hasPermission( 'p_fisheye_create' ) ) {
 		$galleryHash = array( 'title' => $pNewName );
 		if( $gal->store( $galleryHash ) ) {
@@ -24,8 +24,8 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	} else {
 		$getHash = array( 'max_records' => 1, 'sort_mode' => 'created_desc' );
 		$upList = $gal->getList( $getHash );
-		if( !empty( $upList['data'] ) ) {
-			$ret = key( $upList['data'] );
+		if( !empty( $upList ) ) {
+			$ret = key( $upList );
 		}
 */
 	}

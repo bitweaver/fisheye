@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.10 2007/07/16 21:46:50 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.11 2007/10/10 12:10:20 nickpalmer Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -32,17 +32,9 @@ if (!empty($_REQUEST['user_id']) && is_numeric($_REQUEST['user_id'])) {
 $_REQUEST['thumbnail_size'] = $gBitSystem->getConfig( 'fisheye_list_thumbnail_size', 'small' );
 $galleryList = $gFisheyeGallery->getList( $_REQUEST );
 $gFisheyeGallery->invokeServices( 'content_list_function', $_REQUEST );
-
-// pagination
-$offset = !empty( $_REQUEST['offset'] ) ? $_REQUEST['offset'] : 0;
-$gBitSmarty->assign( 'curPage', $page = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : 1 );
-$offset = ( $page - 1 ) * $gBitSystem->getConfig( 'max_records' );
-
-// calculate page number
-$numPages = ceil( $galleryList['cant'] / $gBitSystem->getConfig( 'max_records', 10 ) );
-$gBitSmarty->assign( 'numPages', $numPages );
-
-$gBitSmarty->assign( 'galleryList', $galleryList['data'] );
+// Pagination Data
+$gBitSmarty->assign_by_ref( 'listInfo', $_REQUEST['listInfo'] );
+$gBitSmarty->assign( 'galleryList', $galleryList );
 
 // Display the template
 $gDefaultCenter = "bitpackage:fisheye/$template";

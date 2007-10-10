@@ -25,7 +25,7 @@ if ( !empty( $module_params['sort_mode'] ) ) {
 }
 
 $galleryList = $gFisheyeGallery->getList( $listHash );
-$gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
+$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
 
 /* Process the input parameters this page accepts */
 if (!empty($gQueryUser) && $gQueryUser->isRegistered()) {

@@ -101,7 +101,7 @@
 		</ul>
 
 		<div class="clear"></div>
-		{libertypagination page=$curPage numPages=$numPages find=$find}
+		{pagination}
 	</div>	<!-- end .body -->
 </div>	<!-- end .fisheye -->
 {/strip}

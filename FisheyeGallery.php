@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.68 2007/10/03 16:01:20 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.69 2007/10/10 12:10:20 nickpalmer Exp $
  * @package fisheye
  */
 
@@ -672,9 +672,10 @@ vd( $this->mErrors );
 				$whereSql";
 		$cant = $this->mDb->getOne( $query_c, $bindVars );
 
-		$ret['cant'] = $cant;
-		$ret['data'] = $data;
-		return $ret;
+		// add all pagination info to $ret
+		$pListHash['cant'] = $cant;
+		LibertyContent::postGetList( $pListHash );
+		return $data;
 	}
 }
 
