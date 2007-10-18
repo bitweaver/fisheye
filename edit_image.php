@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.20 2007/10/10 12:10:20 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.21 2007/10/18 01:35:08 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -29,12 +29,12 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 
 	// Store/Update the image
 	if (isset($_FILES['imageFile']) && is_uploaded_file($_FILES['imageFile']['tmp_name'])) {
-			$_REQUEST['upload'] = &$_FILES['imageFile'];
-			$_REQUEST['upload']['process_storage'] = STORAGE_IMAGE;
-			$replaceOriginal=$gContent->getSourceFile();
-			if( file_exists( dirname( $replaceOriginal ).'/original.jpg' ) ) {
-				unlink( dirname( $replaceOriginal ).'/original.jpg' );
-			}
+		$_REQUEST['_files_override'] = &$_FILES['imageFile'];
+		$_REQUEST['_files_override']['process_storage'] = STORAGE_IMAGE;
+		$replaceOriginal=$gContent->getSourceFile();
+		if( file_exists( dirname( $replaceOriginal ).'/original.jpg' ) ) {
+			unlink( dirname( $replaceOriginal ).'/original.jpg' );
+		}
 	}
 
 	$_REQUEST['purge_from_galleries'] = TRUE;
