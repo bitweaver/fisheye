@@ -9,7 +9,7 @@
 			{box class="box `$gContent->mInfo.thumbnail_size`-thmb `$galItem->mInfo.content_type_guid`"}
 				{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$galItem->mInfo type=mini}
 				<a href="{$galItem->getDisplayUrl()|escape}">
-					<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
+					<img class="thumb" src="{$galItem->getThumbnailUri()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
 				</a>
 				{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
 					<h2>{$galItem->mInfo.title|escape}</h2>
@@ -40,7 +40,7 @@
 				{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$galItem->mInfo type=mini}
 				{box class="box `$galItem->mInfo.content_type_guid`"}
 					<a href="{$galItem->getDisplayUrl()|escape}">
-						<img class="thumb" src="{$galItem->getThumbnailUrl()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
+						<img class="thumb" src="{$galItem->getThumbnailUri()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
 					</a>
 					{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
 						<h2>{$galItem->mInfo.title|escape}</h2>

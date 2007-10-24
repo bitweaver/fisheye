@@ -27,7 +27,7 @@
 			{assign var=item_id value=$gContent->mItems[ix]->mImageId}
 			<td>
 				<a href="{$smarty.const.BIT_ROOT_URL}{$gContent->mItems[ix]->mStorage.$item_id.storage_path}">
-					<img class="thumb" src="{$gContent->mItems[ix]->getThumbnailUrl()}" alt="{$gContent->mItems[ix]->mInfo.title|escape|default:'image'}" />
+					<img class="thumb" src="{$gContent->mItems[ix]->getThumbnailUri()}" alt="{$gContent->mItems[ix]->mInfo.title|escape|default:'image'}" />
 				</a>
 			</td>
 
