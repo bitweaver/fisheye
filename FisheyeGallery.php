@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.70 2007/10/24 04:38:16 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.71 2007/10/25 17:14:14 nickpalmer Exp $
  * @package fisheye
  */
 
@@ -490,7 +490,7 @@ class FisheyeGallery extends FisheyeBase {
 				$this->mDb->CompleteTrans();
 			} else {
 				$this->mDb->RollbackTrans();
-vd( $this->mErrors );
+				error_log( "Error expunging fisheye gallery: " . vc($this->mErrors ) );
 			}
 		}
 		return( count( $this->mErrors ) == 0 );
