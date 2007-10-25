@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.32 2007/09/13 15:31:05 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.33 2007/10/25 17:39:41 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -104,14 +104,14 @@ if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->h
 	$listHash['show_public'] = TRUE;
 }
 $galleryList = $gFisheyeGallery->getList( $listHash );
-if( @BitBase::verifyId( $_REQUEST['gallery_id'] ) && empty( $galleryList['data'][$_REQUEST['gallery_id']] ) ) {
+if( @BitBase::verifyId( $_REQUEST['gallery_id'] ) && empty( $galleryList[$_REQUEST['gallery_id']] ) ) {
 	$addGallery = new FisheyeGallery( $_REQUEST['gallery_id'] );
 	if( $addGallery->load() && $addGallery->hasViewPermission() ) {
-		$galleryList['data'][$_REQUEST['gallery_id']] = $addGallery->mInfo;
+		$galleryList[$_REQUEST['gallery_id']] = $addGallery->mInfo;
 	}
 }
 
-$gBitSmarty->assign_by_ref( 'galleryList', $galleryList['data'] );
+$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
 
 if( $gBitSystem->isPackageActive( 'gigaupload' ) ) {
 	gigaupload_smarty_setup( FISHEYE_PKG_URL.'upload.php' );
