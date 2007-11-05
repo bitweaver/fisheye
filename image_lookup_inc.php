@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_lookup_inc.php,v 1.5 2006/11/16 17:39:46 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_lookup_inc.php,v 1.6 2007/11/05 06:23:10 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -25,7 +25,7 @@ if( !empty( $_REQUEST['gallery_path'] ) ) {
 if( empty( $_REQUEST['gallery_id'] ) ) {
 	if( $parents = $gContent->getParentGalleries() ) {
 		$gal = current( $parents );
-	$gContent->setGalleryPath( '/'.$gal['gallery_id'] );
+		$gContent->setGalleryPath( '/'.$gal['gallery_id'] );
 		$_REQUEST['gallery_id'] = $gal['gallery_id'];
 	}
 }
@@ -37,10 +37,8 @@ if( !empty($_REQUEST['gallery_id']) && is_numeric($_REQUEST['gallery_id']) ) {
 	$gBitSmarty->assign_by_ref('galleryId', $_REQUEST['gallery_id']);
 }
 
-if( $gContent->isProtected() && !$gContent->hasEditPermission() ) {
-	// This user does not own this gallery and they have not been granted the permission to edit this gallery
-	$gBitSystem->fatalError( tra( "You cannot view this image" ) );
-}
+// This user does not own this gallery and they have not been granted the permission to edit this gallery
+$gContent->verifyViewPermission();
 
 $gBitSmarty->assign_by_ref('gContent', $gContent);
 $gBitSmarty->assign_by_ref('imageId', $gContent->mImageId );
