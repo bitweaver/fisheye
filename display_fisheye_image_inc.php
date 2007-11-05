@@ -1,12 +1,13 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.8 2007/04/23 09:36:31 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.9 2007/11/05 06:23:38 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
 
 if( !$gContent->isValid() ) {
-	$gBitSystem->fatalError( tra( "No image exists with the given ID" ));
+	$gBitSystem->setHttpStatus( 404 );
+	$gBitSystem->fatalError( tra( "No image exists with the given ID" ) ,'error.tpl', '' );
 }
 
 $displayHash = array( 'perm_name' => 'p_fisheye_view' );
