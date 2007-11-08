@@ -6,8 +6,6 @@
 
 	<style type="text/css"><!--
 		{if $gBitSystem->mStyles.styleSheet}@import url({$gBitSystem->mStyles.styleSheet});{/if}
-		{if $gBitSystem->mStyles.browserStyleSheet}@import url({$gBitSystem->mStyles.browserStyleSheet});{/if}
-		{if $gBitSystem->mStyles.customStyleSheet}@import url({$gBitSystem->mStyles.customStyleSheet});{/if}
 	--></style>
 
 	{literal}
