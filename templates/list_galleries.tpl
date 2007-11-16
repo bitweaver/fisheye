@@ -76,7 +76,7 @@
 						<p>{$gal.data|truncate:200}</p>
 					{/if}
 						
-					{if $gBitSystem->isFeatureActive('fisheye_list_created' ) or if $gBitSystem->isFeatureActive('fisheye_list_lastmodif' )}
+					{if $gBitSystem->isFeatureActive('fisheye_list_created' ) or $gBitSystem->isFeatureActive('fisheye_list_lastmodif' )}
 						<div class="date">
 							{if $gBitSystem->isFeatureActive('fisheye_list_created' ) }
 								Created: {$gal.created|bit_short_date}<br />
