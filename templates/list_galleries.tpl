@@ -75,15 +75,17 @@
 					{if $gBitSystem->isFeatureActive('fisheye_list_description')}
 						<p>{$gal.data|truncate:200}</p>
 					{/if}
-
-					<div class="date">
-						{if $gBitSystem->isFeatureActive('fisheye_list_created' ) }
-							Created: {$gal.created|bit_short_date}<br />
-						{/if}
-						{if $gBitSystem->isFeatureActive('fisheye_list_lastmodif' )}
-							Modified: {$gal.last_modified|bit_short_date}<br />
-						{/if}
-					</div>
+						
+					{if $gBitSystem->isFeatureActive('fisheye_list_created' ) or if $gBitSystem->isFeatureActive('fisheye_list_lastmodif' )}
+						<div class="date">
+							{if $gBitSystem->isFeatureActive('fisheye_list_created' ) }
+								Created: {$gal.created|bit_short_date}<br />
+							{/if}
+							{if $gBitSystem->isFeatureActive('fisheye_list_lastmodif' )}
+								Modified: {$gal.last_modified|bit_short_date}<br />
+							{/if}
+						</div>
+					{/if}
 
 					{if $gBitSystem->isFeatureActive('fisheye_list_hits')}
 						{tr}Hits{/tr}: {$gal.hits}<br />
