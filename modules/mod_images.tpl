@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.tpl,v 1.5 2007/01/05 08:31:21 squareing Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.tpl,v 1.6 2007/11/20 01:36:25 spiderr Exp $ *}
 {strip}
 {if $gBitSystem->isPackageActive( 'fisheye' ) && $modImages}
 	{bitmodule title="$moduleTitle" name="fisheye_images"}
@@ -25,6 +25,9 @@
 						{else}
 							{$modImg.data|escape}
 						{/if}
+					{/if}
+					{if !$userGallery}
+						<br/>{tr}By{/tr} {displayname hash=$modImg}
 					{/if}
 				</li>
 			{foreachelse}
