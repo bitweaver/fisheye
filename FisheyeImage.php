@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.77 2007/11/20 03:22:24 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.78 2007/11/20 03:56:51 spiderr Exp $
  * @package fisheye
  */
 
@@ -639,11 +639,8 @@ class FisheyeImage extends FisheyeBase {
 			$whereSql .= " AND lc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
 		} elseif( !empty( $pListHash['recent_users'] )) {
-			$distinct = " DISTINCT ON ( uu.`user_id` ) ";
+			$distinct = " DISTINCT ON ( lc.created/86400, uu.`user_id` ) ";
 			$pListHash['sort_mode'] = 'uu.user_id_desc';
-		} else {
-			// default to distinct users if no user_id set since one user easily can monopolize list
-			$distinct = " DISTINCT ON ( uu.`user_id` ) ";
 		}
 
 		if( @$this->verifyId( $pListHash['gallery_id'] ) ) {
@@ -668,7 +665,11 @@ class FisheyeImage extends FisheyeBase {
 		}
 
 		$orderby = '';
-		if ( !empty( $pListHash['sort_mode'] ) ) {
+		if( $pListHash['recent_images'] ) {
+			// get images from recent user truncated by day. This is necessary because DISTINCT ON expressions must match initial ORDER BY expressions
+			$distinct = " DISTINCT ON ( lc.`created`/86400, uu.`user_id` ) ";
+			$orderby = " ORDER BY lc.`created`/86400 DESC, uu.`user_id`";
+		} elseif ( !empty( $pListHash['sort_mode'] ) ) {
 			//converted in prepGetList()
 			$orderby = " ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] )." ";
 		}
@@ -690,9 +691,10 @@ class FisheyeImage extends FisheyeBase {
 				$whereSql $orderby";
 
 		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] ) ) {
-			$ret = $rs->GetAssoc();
-			if( empty( $pListHash['no_thumbnails'] ) ) {
-				foreach( array_keys( $ret ) as $imageId ) {
+			while( $row = $rs->fetchRow() ) {
+				$ret[$row['hash_key']] = $row;
+				$imageId = $row['image_id'];
+				if( empty( $pListHash['no_thumbnails'] ) ) {
 					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( $ret[$imageId]['storage_path'], 'avatar', FISHEYE_PKG_URL.'image/generating_thumbnails.png' );
 					$ret[$imageId]['display_url']      = $this->getDisplayUrl( $imageId );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
