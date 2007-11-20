@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.76 2007/11/20 01:35:28 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.77 2007/11/20 03:22:24 spiderr Exp $
  * @package fisheye
  */
 
@@ -641,6 +641,9 @@ class FisheyeImage extends FisheyeBase {
 		} elseif( !empty( $pListHash['recent_users'] )) {
 			$distinct = " DISTINCT ON ( uu.`user_id` ) ";
 			$pListHash['sort_mode'] = 'uu.user_id_desc';
+		} else {
+			// default to distinct users if no user_id set since one user easily can monopolize list
+			$distinct = " DISTINCT ON ( uu.`user_id` ) ";
 		}
 
 		if( @$this->verifyId( $pListHash['gallery_id'] ) ) {
