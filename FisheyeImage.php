@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.75 2007/09/22 21:36:55 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.76 2007/11/20 01:35:28 spiderr Exp $
  * @package fisheye
  */
 
@@ -628,14 +628,15 @@ class FisheyeImage extends FisheyeBase {
 		global $gBitUser,$gBitSystem;
 
 		$this->prepGetList( $pListHash );
+
 		$bindVars = array();
 		$distinct = '';
 		$select = '';
-		$mid = '';
-		$join = '';
+		$whereSql = '';
+		$joinSql = '';
 
 		if( @$this->verifyId( $pListHash['user_id'] ) ) {
-			$mid .= " AND lc.`user_id` = ? ";
+			$whereSql .= " AND lc.`user_id` = ? ";
 			$bindVars[] = $pListHash['user_id'];
 		} elseif( !empty( $pListHash['recent_users'] )) {
 			$distinct = " DISTINCT ON ( uu.`user_id` ) ";
@@ -643,18 +644,24 @@ class FisheyeImage extends FisheyeBase {
 		}
 
 		if( @$this->verifyId( $pListHash['gallery_id'] ) ) {
-			$mid .= " AND fg.`gallery_id` = ? ";
+			$whereSql .= " AND fg.`gallery_id` = ? ";
 			$bindVars[] = $pListHash['gallery_id'];
 		}
 
 		if( !empty( $pListHash['search'] ) ) {
-			$mid .= " AND UPPER(lc.`title`) LIKE ? ";
+			$whereSql .= " AND UPPER(lc.`title`) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['search'] ).'%';
 		}
 
 		if( !empty( $pListHash['max_age'] ) && is_numeric( $pListHash['max_age'] ) ) {
-			$mid .= " AND lc.`created` > ? ";
+			$whereSql .= " AND lc.`created` > ? ";
 			$bindVars[] = $pListHash['max_age'];
+		}
+
+		if( @$this->verifyId( $pListHash['group_id'] ) ) {
+			$joinSql .= " INNER JOIN `".BIT_DB_PREFIX."users_groups_map` ugm ON (ugm.`user_id`=uu.`user_id`) ";
+			$whereSql .= " AND ugm.`group_id` = ? ";
+			$bindVars[] = $pListHash['group_id'];
 		}
 
 		$orderby = '';
@@ -665,14 +672,19 @@ class FisheyeImage extends FisheyeBase {
 
 		$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
+		if( !empty( $whereSql ) ) {
+			$whereSql = substr_replace( $whereSql, ' WHERE ', 0, 4 );
+		}
+
 		$query = "SELECT $distinct fi.`image_id` AS `hash_key`, fi.*, lf.*, lc.*, fg.`gallery_id`, uu.`login`, uu.`real_name` $select $selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_image` fi
 					INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON(la.`content_id`=fi.`content_id`)
 					INNER JOIN `".BIT_DB_PREFIX."liberty_files` lf ON(la.`foreign_id`=lf.`file_id`)
-					, `".BIT_DB_PREFIX."users_users` uu, `".BIT_DB_PREFIX."liberty_content` lc $join
+					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(fi.`content_id` = lc.`content_id`)
+					INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON(uu.`user_id` = lc.`user_id`) $joinSql
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON(tfgim2.`item_content_id`=lc.`content_id`)
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fg.`content_id`=tfgim2.`gallery_content_id`) $joinSql
-				WHERE fi.`content_id` = lc.`content_id` AND uu.`user_id` = lc.`user_id` $mid $whereSql $orderby";
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fg.`content_id`=tfgim2.`gallery_content_id`)
+				$whereSql $orderby";
 
 		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] ) ) {
 			$ret = $rs->GetAssoc();
