@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.78 2007/11/20 03:56:51 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.79 2007/11/21 11:30:06 squareing Exp $
  * @package fisheye
  */
 
@@ -629,7 +629,7 @@ class FisheyeImage extends FisheyeBase {
 
 		$this->prepGetList( $pListHash );
 
-		$bindVars = array();
+		$ret = $bindVars = array();
 		$distinct = '';
 		$select = '';
 		$whereSql = '';
@@ -665,7 +665,7 @@ class FisheyeImage extends FisheyeBase {
 		}
 
 		$orderby = '';
-		if( $pListHash['recent_images'] ) {
+		if( !empty( $pListHash['recent_images'] )) {
 			// get images from recent user truncated by day. This is necessary because DISTINCT ON expressions must match initial ORDER BY expressions
 			$distinct = " DISTINCT ON ( lc.`created`/86400, uu.`user_id` ) ";
 			$orderby = " ORDER BY lc.`created`/86400 DESC, uu.`user_id`";
