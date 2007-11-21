@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_fisheye/templates/header_inc.tpl,v 1.9 2007/11/05 06:30:33 spiderr Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_fisheye/templates/header_inc.tpl,v 1.10 2007/11/21 09:32:33 squareing Exp $ *}
 {strip}
 {if $gContent}
 	{if $gGallery->mInfo.previous_image_id}
@@ -7,9 +7,6 @@
 	{if $gGallery->mInfo.next_image_id}
 		<link rel="next" title="{tr}Next{/tr}" href="{$gContent->getDisplayUrl($gGallery->mInfo.next_image_id)|escape}" />
 	{/if}
-{/if}
-{if $gBitSystem->isFeatureActive( 'fisheye_gallery_div_layout' )}
-	<link rel="stylesheet" title="{$style}" type="text/css" href="{$smarty.const.FISHEYE_PKG_URL}div_layout.css" media="all" />
 {/if}
 {if $gBitSystem->isPackageActive( 'rss' ) and $gBitSystem->isFeatureActive( 'fisheye_rss' ) and $smarty.const.ACTIVE_PACKAGE eq 'fisheye' and $gBitUser->hasPermission( 'p_fisheye_view' )}
 	{if $gGallery}

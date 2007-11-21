@@ -1,5 +1,5 @@
 <?php
-global $gBitSystem, $gBitUser, $gBitSmarty;
+global $gBitSystem, $gBitUser, $gBitSmarty, $gBitThemes;
 
 $registerHash = array(
 	'package_name' => 'fisheye',
@@ -27,5 +27,10 @@ if( $gBitSystem->isPackageActive( 'fisheye' ) && $gBitUser->hasPermission( 'p_fi
 	$gBitSystem->registerAppMenu( $menuHash );
 
 	include_once( FISHEYE_PKG_PATH.'FisheyeGallery.php' );
+
+	// load div layout css if we are using it
+	if( $gBitSystem->isFeatureActive( 'fisheye_gallery_div_layout' )) {
+		$gBitThemes->loadCss( FISHEYE_PKG_PATH."div_layout.css" );
+	}
 }
 ?>
