@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_fisheye/templates/center_image_comments.tpl,v 1.1 2007/11/25 04:42:56 spiderr Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_fisheye/templates/center_image_comments.tpl,v 1.2 2007/11/25 04:59:24 spiderr Exp $ *}
 {strip}
 {if $modLastComments}
 <div class="listing fisheye">
@@ -10,9 +10,7 @@
 		<ul class="comment">
 			{section name=ix loop=$modLastComments}
 				<li class="post">
-						<a href="{$gal.display_url}">
-							<img class="thumb" src="{$modLastComments[ix].object->getThumbnailUrl($moduleParams.module_params.thumb_size)}" alt="{$modLastComments[ix].object->getTitle()|escape}" title="{$modLastComments[ix].object->getTitle()|escape}" />
-						</a>
+						<a href="{$modLastComments[ix].object->getDisplayUrl()}"><img class="thumb" src="{$modLastComments[ix].object->getThumbnailUrl($moduleParams.module_params.thumb_size)}" alt="{$modLastComments[ix].object->getTitle()|escape}" title="{$modLastComments[ix].object->getTitle()|escape}" /></a>
 
 					<div class="header">
 					<h3>{$modLastComments[ix].object->getTitle()|escape}:&nbsp;{$modLastComments[ix].display_link}</h3>
