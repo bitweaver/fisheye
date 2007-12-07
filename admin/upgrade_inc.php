@@ -24,6 +24,12 @@ array( 'DATADICT' => array(
 	)),
 )),
 
+// query: create a fisheye_image_id_seq and bring the table up to date with the current max image_id used in the fisheye_image table - this basically for mysql
+array( 'PHP' => '
+	$query = $gBitDb->getOne("SELECT MAX(image_id) FROM `'.BIT_DB_PREFIX.'fisheye_image`");
+	$tempId = $gBitDb->mDb->GenID("`'.BIT_DB_PREFIX.'fisheye_image_id_seq`", $query);
+' ),
+
 // Queries
 array( 'QUERY' =>
 	array( 'SQL92' => array(
