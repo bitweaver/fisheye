@@ -22,21 +22,36 @@
 	<div class="body">
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
 		{box class="box image"}
-			<img src="{$gContent->getThumbnailUri()}{$refresh}" alt="{$gContent->getTitle()|default:$gContent->mInfo.image_file.filename|escape}" title="{$gContent->mInfo.data|default:$gContent->mInfo.filename|escape}" />
+			{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
+				{if $gContent->hasEditPermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )}
+					<a href="{$gContent->mInfo.image_file.source_url|escape}">
+				{else}
+					<a href="{$gContent->mInfo.image_file.thumbnail_url.large}">
+				{/if}
+			{/if}
 
-			{if $gBitSystem->isFeatureActive('fisheye_image_list_description') and $gContent->mInfo.data ne ''}
-				<p class="description">{$gContent->mInfo.data|escape}</p>
+				<img src="{$gContent->getThumbnailUri()}{$refresh}" alt="{$gContent->getTitle()|default:$gContent->mInfo.image_file.filename|escape}" title="{$gContent->mInfo.data|default:$gContent->mInfo.filename|escape}" />
+
+				{if $gBitSystem->isFeatureActive('fisheye_image_list_description') and $gContent->mInfo.data ne ''}
+					<p class="description">{$gContent->mInfo.data|escape}</p>
+				{/if}
+
+			{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
+				</a>
 			{/if}
 		{/box}
 
 		{if !$liberty_preview}
 			<div class="pagination">
-				{tr}View other sizes{/tr}<br />
-				{foreach name=size key=size from=$gContent->mInfo.image_file.thumbnail_url item=url}
-					{if $url != $gContent->mInfo.display_url}<a href="{$gContent->getDisplayUrl(0,$size)|escape}">{/if}{tr}{$size}{/tr}{if $url != $gContent->mInfo.display_url}</a>{/if}
-					{if !$smarty.foreach.size.last} &nbsp;&bull;&nbsp;{/if}
-				{/foreach}
-				{if $gContent->hasEditPermission() || $gGallery && $gGallery->getPreference('link_original_images')}
+				{if !$gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
+					{tr}View other sizes{/tr}<br />
+					{foreach name=size key=size from=$gContent->mInfo.image_file.thumbnail_url item=url}
+						{if $url != $gContent->mInfo.display_url}<a href="{$gContent->getDisplayUrl(0,$size)|escape}">{/if}{tr}{$size}{/tr}{if $url != $gContent->mInfo.display_url}</a>{/if}
+						{if !$smarty.foreach.size.last} &nbsp;&bull;&nbsp;{/if}
+					{/foreach}
+				{/if}
+
+				{if ( $gContent->hasEditPermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )) && !$gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
 					&nbsp;&bull;&nbsp;
 					<a href="{$gContent->mInfo.image_file.source_url|escape}">{tr}Original{/tr}</a>
 					{if $gContent->mInfo.width && $gContent->mInfo.height}
