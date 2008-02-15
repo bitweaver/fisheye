@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.26 2008/01/14 21:30:35 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.27 2008/02/15 18:47:15 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -98,6 +98,13 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 	return $errors;
 }
 
+if( !function_exists( 'fisheye_verify_upload_item' ) ) {
+// Possible override
+function fisheye_verify_upload_item( $pDestinationDir, $pScanFile ) {
+	return preg_match( '/^video\/*/', $pScanFile['type'] ) || preg_match( '/^image\/*/', $pScanFile['type'] ) || preg_match( '/pdf/i', $pScanFile['type'] );
+}
+}
+
 /**
  * Recursively builds a tree where each directory represents a gallery, and files are assumed to be images.
  */
@@ -149,7 +156,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 				} elseif( preg_match( '/.+\/*zip*/', $scanFile['type'] ) ) {
 					//recurse down in!
 					$errors = array_merge( $errors, fisheye_process_archive( $scanFile, $pParentGallery ) );
-				} elseif( preg_match( '/^video\/*/', $scanFile['type'] ) || preg_match( '/^image\/*/', $scanFile['type'] ) || preg_match( '/pdf/i', $scanFile['type'] ) || $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) ) {
+				} elseif( $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) || fisheye_verify_upload_item( $pDestinationDir, $scanFile ) ) {
 					$newImage = new FisheyeImage();
 					$imageHash = array( '_files_override' => array( $scanFile ) );
 					if( $newImage->store( $imageHash ) ) {
