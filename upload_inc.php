@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.27 2008/02/15 18:47:15 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.28 2008/02/19 03:03:19 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -44,7 +44,8 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array(), $pAutoRotate=TRUE ) {
 	global $gBitSystem;
 	$ret = array();
-	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && is_file( $pFileHash['tmp_name'] ) ) {
+
+	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && is_file( $pFileHash['tmp_name'] ) && fisheye_verify_upload_item(  $pFileHash ) ) {
 		// make a copy for each image we need to store
 		$storeHash = array_merge( $_REQUEST, $pImageData );
 		$image = new FisheyeImage();
@@ -60,8 +61,8 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array(),
 			if( $pAutoRotate ) {
 				$image->rotateImage( 'auto' );
 			}
+			$image->addToGalleries( $_REQUEST['galleryAdditions'], $pOrder );
 		}
-		$image->addToGalleries( $_REQUEST['galleryAdditions'], $pOrder );
 
 		// when we're using xupload, we need to remove temp files manually
 		@unlink( $pFileHash['tmp_name'] );
@@ -100,8 +101,8 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 
 if( !function_exists( 'fisheye_verify_upload_item' ) ) {
 // Possible override
-function fisheye_verify_upload_item( $pDestinationDir, $pScanFile ) {
-	return preg_match( '/^video\/*/', $pScanFile['type'] ) || preg_match( '/^image\/*/', $pScanFile['type'] ) || preg_match( '/pdf/i', $pScanFile['type'] );
+function fisheye_verify_upload_item( $pScanFile ) {
+	return $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) || preg_match( '/^video\/*/', $pScanFile['type'] ) || preg_match( '/^image\/*/', $pScanFile['type'] ) || preg_match( '/pdf/i', $pScanFile['type'] );
 }
 }
 
@@ -156,7 +157,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 				} elseif( preg_match( '/.+\/*zip*/', $scanFile['type'] ) ) {
 					//recurse down in!
 					$errors = array_merge( $errors, fisheye_process_archive( $scanFile, $pParentGallery ) );
-				} elseif( $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) || fisheye_verify_upload_item( $pDestinationDir, $scanFile ) ) {
+				} elseif( fisheye_verify_upload_item( $scanFile ) ) {
 					$newImage = new FisheyeImage();
 					$imageHash = array( '_files_override' => array( $scanFile ) );
 					if( $newImage->store( $imageHash ) ) {
