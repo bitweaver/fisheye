@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.28 2008/02/19 03:03:19 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.29 2008/02/24 18:35:44 pppspoonman Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -102,6 +102,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 if( !function_exists( 'fisheye_verify_upload_item' ) ) {
 // Possible override
 function fisheye_verify_upload_item( $pScanFile ) {
+	global $gBitUser;
 	return $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) || preg_match( '/^video\/*/', $pScanFile['type'] ) || preg_match( '/^image\/*/', $pScanFile['type'] ) || preg_match( '/pdf/i', $pScanFile['type'] );
 }
 }
