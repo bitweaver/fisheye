@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.81 2008/03/29 19:29:51 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.82 2008/03/29 19:34:36 spiderr Exp $
  * @package fisheye
  */
 
@@ -680,8 +680,6 @@ class FisheyeImage extends FisheyeBase {
 			$whereSql = substr_replace( $whereSql, ' WHERE ', 0, 4 );
 		}
 
-$this->debug();
-
 		$query = "SELECT $distinct fi.`image_id` AS `hash_key`, fi.*, lf.*, lc.*, fg.`gallery_id`, uu.`login`, uu.`real_name` $select $selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_image` fi
 					INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON(la.`content_id`=fi.`content_id`)
@@ -691,7 +689,6 @@ $this->debug();
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim2 ON(tfgim2.`item_content_id`=lc.`content_id`)
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fg.`content_id`=tfgim2.`gallery_content_id`)
 				$whereSql $orderby";
-vd( $pListHash ); die;
 		if( $rs = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'], $pListHash['query_cache_time'] ) ) {
 			while( $row = $rs->fetchRow() ) {
 				$ret[$row['hash_key']] = $row;
@@ -703,8 +700,7 @@ vd( $pListHash ); die;
 				}
 			}
 		}
-$this->debug(0);
-die;
+
 		return $ret;
 	}
 
