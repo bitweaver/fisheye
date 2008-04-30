@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.11 2007/11/20 01:36:25 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.12 2008/04/30 14:24:04 bitweaver Exp $
  * @package fisheye
  * @subpackage modules
  */
@@ -77,7 +77,7 @@ if( $display ) {
 		$listHash['sort_mode'] = $sort_mode;
 		$gBitSmarty->assign( 'moduleTitle', $moduleTitle );
 	} else {
-		$gBitSmarty->assign( 'moduleTitle', $module_title );
+		$gBitSmarty->assign( 'moduleTitle', (!empty( $module_title ) ? $module_title : '') );
 	}
 
 	$gBitSmarty->assign( 'imageSort', $sort_mode );
