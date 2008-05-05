@@ -2,7 +2,7 @@
 
 {form}
 	{jstabs}
-		{jstab title="General Settings"}
+		{jstab title="Settings"}
 			{legend legend="General Settings"}
 				<div class="row">
 					{formhelp note="To change the Image Processing engine, you need to change the setting in Liberty Settings" link="kernel/admin/index.php?page=liberty/Liberty Settings"}
@@ -24,7 +24,7 @@
 			{/legend}
 		{/jstab}
 
-		{jstab title="List Settings"}
+		{jstab title="List"}
 			{legend legend="Gallery List Options"}
 				<div class="row">
 					{formhelp note="The options below determine what information is shown on the List Galleries page."}
@@ -49,7 +49,7 @@
 			{/legend}
 		{/jstab}
 
-		{jstab title="Gallery Display Settings"}
+		{jstab title="Galleries"}
 			{legend legend="Gallery Display Settings"}
 				<input type="hidden" name="page" value="{$page}" />
 				<div class="row">
@@ -105,7 +105,7 @@
 			{/legend}
 		{/jstab}
 
-		{jstab title="Image Display Settings"}
+		{jstab title="Images"}
 			{legend legend="Image Display Settings"}
 				<div class="row">
 					{formhelp note="The options below determine what information is displayed on the image display page."}
