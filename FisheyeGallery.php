@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.71 2007/10/25 17:14:14 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.72 2008/06/16 03:06:01 spiderr Exp $
  * @package fisheye
  */
 
@@ -562,6 +562,50 @@ class FisheyeGallery extends FisheyeBase {
 			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pImageId['content_id'];
 		}
 		return $ret;
+	}
+
+	function getTree( $pListHash ) {
+		global $gBitDb;
+		$bindVars = array();
+		$whereSql = '';
+		foreach( $pListHash as $key=>$val ) {
+			$whereSql .= " $key=? AND ";
+			$bindVars[] = $val;
+		}
+		$query =   "SELECT lc.`content_id` AS `hash_key, fg.*, lc.*
+					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg 
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(fg.`content_id`=lc.`content_id`) 
+					WHERE $whereSql NOT EXISTS (SELECT gallery_content_id FROM fisheye_gallery_image_map tfgim2 WHERE tfgim2.item_content_id=lc.content_id) 
+					ORDER BY lc.title";
+		$rootContent = $gBitDb->GetAssoc( $query, $bindVars );
+
+		$ret = array();
+		foreach( array_keys( $rootContent ) as $conId ) {
+			FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( "SELECT branch AS hash_key, * FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text) INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id) INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) ORDER BY branch, lc.`title`", $conId ) );
+		}
+		return( $ret );
+	}
+
+	function splitConnectByTree( &$pRet, $pTreeHash ) {
+		if( $pTreeHash ) {
+			foreach( array_keys( $pTreeHash ) as $conId ) {
+				$path = split( '/', $conId );
+				FisheyeGallery::recurseConnectByPath( $pRet, $pTreeHash[$conId], $path );
+			}
+		}
+	}
+
+	function recurseConnectByPath( &$pRet, $pTreeHash, $pPath ) {
+		$popId = array_shift( $pPath );
+		if( count( $pPath ) > 0 ) {
+			if( empty( $pRet[$popId]['children'] ) ) {
+				$pRet[$popId]['children'] = array();
+			}
+			FisheyeGallery::recurseConnectByPath( $pRet[$popId]['children'], $pTreeHash, $pPath );
+		} else {
+			
+			$pRet[$popId]['content'] = $pTreeHash;
+		}
 	}
 
 	function getList( &$pListHash ) {

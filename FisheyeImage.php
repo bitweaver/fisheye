@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.82 2008/03/29 19:34:36 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.83 2008/06/16 03:06:01 spiderr Exp $
  * @package fisheye
  */
 
@@ -572,6 +572,7 @@ class FisheyeImage extends FisheyeBase {
 				$this->loadThumbnail( $pSize );
 			}
 			$ret = $this->mInfo['image_file']['gallery_thumbnail_url'];
+$ret = $this->mInfo['image_file']['thumbnail_url'][$pSize];
 		}
 		return $ret;
 	}
