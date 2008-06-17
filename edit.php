@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.25 2007/10/10 18:07:15 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.26 2008/06/17 17:05:16 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -34,7 +34,8 @@ if( $gBitUser->hasPermission( 'p_fisheye_change_thumb_size' ) ) {
 	$gBitSmarty->assign( 'thumbnailSizes', $thumbnailSizes );
 }
 
-$gBitSmarty->assign( 'galleryPaginationTypes', array( FISHEYE_PAGINATION_FIXED_GRID => 'Fixed Grid', FISHEYE_PAGINATION_AUTO_FLOW => 'Auto-Flow Images', FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number' ) );
+$gBitSmarty->assign( 'galleryPaginationTypes', array( FISHEYE_PAGINATION_FIXED_GRID => 'Fixed Grid', FISHEYE_PAGINATION_AUTO_FLOW => 'Auto-Flow Images',
+					 FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number', FISHEYE_PAGINATION_SIMPLE_LIST => 'Simple List' ) );
 
 if( !empty( $_REQUEST['savegallery'] ) ) {
 

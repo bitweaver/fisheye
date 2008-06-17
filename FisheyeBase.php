@@ -1,18 +1,18 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.26 2007/09/13 15:31:05 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.27 2008/06/17 17:05:16 lsces Exp $
  * @package fisheye
  */
 
 /**
  * required setup
  */
-require_once( LIBERTY_PKG_PATH.'LibertyAttachable.php' );		// FisheyeGallery base class
+require_once( LIBERTY_PKG_PATH.'LibertyMime.php' );		// FisheyeGallery base class
 
 /**
  * @package fisheye
  */
-class FisheyeBase extends LibertyAttachable
+class FisheyeBase extends LibertyMime
 {
 	// Path of gallery images to get breadcrumbs
 	var $mGalleryPath;
@@ -22,7 +22,7 @@ class FisheyeBase extends LibertyAttachable
 		if( get_class( $this ) == 'fisheyegallery' ) {
 			LibertyContent::LibertyContent();
 		} else {
-			LibertyAttachable::LibertyAttachable();
+			LibertyMime::LibertyMime();
 		}
 	}
 

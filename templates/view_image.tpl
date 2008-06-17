@@ -16,7 +16,7 @@
 
 	{formfeedback hash=$feedback}
 	<div class="header">
-		<h1>{$gContent->getTitle()|default:$gContent->mInfo.image_file.filename|escape}</h1>
+		<h1>{$gContent->getTitle()|default:$gContent->mInfo.filename|escape}</h1>
 	</div>
 
 	<div class="body">
@@ -24,44 +24,25 @@
 		{box class="box image"}
 			{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
 				{if $gContent->hasEditPermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )}
-					<a href="{$gContent->mInfo.image_file.source_url|escape}">
+					<a href="{$gContent->mInfo.source_url|escape}">
 				{else}
-					<a href="{$gContent->mInfo.image_file.thumbnail_url.large}">
+					<a href="{$gContent->mInfo.thumbnail_url.large}">
 				{/if}
 			{/if}
 
-				<img src="{$gContent->getThumbnailUri()}{$refresh}" alt="{$gContent->getTitle()|default:$gContent->mInfo.image_file.filename|escape}" title="{$gContent->mInfo.data|default:$gContent->mInfo.filename|escape}" />
+				{include file=$gLibertySystem->getMimeTemplate('view',$gContent->mInfo.attachment_plugin_guid) attachment=$gContent->mInfo}
 
 				{if $gBitSystem->isFeatureActive('fisheye_image_list_description') and $gContent->mInfo.data ne ''}
-					<p class="description">{$gContent->mInfo.data|escape}</p>
+					<p class="description">{$gContent->mInfo.parsed_data}</p>
 				{/if}
 
 			{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
 				</a>
 			{/if}
+	</div><!-- end .body -->
+
 		{/box}
 
-		{if !$liberty_preview}
-			<div class="pagination">
-				{if !$gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
-					{tr}View other sizes{/tr}<br />
-					{foreach name=size key=size from=$gContent->mInfo.image_file.thumbnail_url item=url}
-						{if $url != $gContent->mInfo.display_url}<a href="{$gContent->getDisplayUrl(0,$size)|escape}">{/if}{tr}{$size}{/tr}{if $url != $gContent->mInfo.display_url}</a>{/if}
-						{if !$smarty.foreach.size.last} &nbsp;&bull;&nbsp;{/if}
-					{/foreach}
-				{/if}
-
-				{if ( $gContent->hasEditPermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )) && !$gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
-					&nbsp;&bull;&nbsp;
-					<a href="{$gContent->mInfo.image_file.source_url|escape}">{tr}Original{/tr}</a>
-					{if $gContent->mInfo.width && $gContent->mInfo.height}
-						&nbsp;{$gContent->mInfo.width}x{$gContent->mInfo.height}
-					{/if}
-				{/if}
-			</div>
-
-			{attachhelp hash=$gContent->mInfo.image_file}
-		{/if}
 	</div>	<!-- end .body -->
 	
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}

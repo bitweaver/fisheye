@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.72 2008/06/16 03:06:01 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.73 2008/06/17 17:05:16 lsces Exp $
  * @package fisheye
  */
 
@@ -14,9 +14,10 @@ define('FISHEYEGALLERY_CONTENT_TYPE_GUID', 'fisheyegallery' );
 define( 'FISHEYE_PAGINATION_FIXED_GRID', 'fixed_grid' );
 define( 'FISHEYE_PAGINATION_AUTO_FLOW', 'auto_flow' );
 define( 'FISHEYE_PAGINATION_POSITION_NUMBER', 'position_number' );
+define( 'FISHEYE_PAGINATION_SIMPLE_LIST', 'simple_list' );
 
 /**
- * FisheyeBase extends LibertyAttachable, which this class doesn't need, but we need a common base class
+ * FisheyeBase extends LibertyMime, which this class doesn't need, but we need a common base class
  *
  * @package fisheye
  */
@@ -154,11 +155,11 @@ class FisheyeGallery extends FisheyeBase {
 							if( $rows[$i]['image_id'] == $pCurrentImageId ) {
 								if( $i > 0 ) {
 									$this->mInfo['previous_image_id'] = $rows[$i-1]['image_id'];
-									$this->mInfo['previous_image_avatar'] = liberty_fetch_thumbnail_url( $rows[$i-1]['storage_path'], 'avatar' );
+									$this->mInfo['previous_image_avatar'] = liberty_fetch_thumbnail_url( $rows[$i-1]['storage_path'], 'icon', NULL, TRUE );
 								}
 								if( $i + 1  < count( $rows ) ) {
 									$this->mInfo['next_image_id'] = $rows[$i+1]['image_id'];
-									$this->mInfo['next_image_avatar'] = liberty_fetch_thumbnail_url( $rows[$i+1]['storage_path'], 'avatar' );
+									$this->mInfo['next_image_avatar'] = liberty_fetch_thumbnail_url( $rows[$i+1]['storage_path'], 'icon', NULL, TRUE );
 								}
 							}
 						}

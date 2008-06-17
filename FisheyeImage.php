@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.83 2008/06/16 03:06:01 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.84 2008/06/17 17:05:16 lsces Exp $
  * @package fisheye
  */
 
@@ -59,7 +59,7 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	function load() {
+	function load( $pPluginParams = NULL ) {
 		if( $this->isValid() ) {
 			global $gBitSystem;
 			$gateSql = NULL;
@@ -108,10 +108,19 @@ class FisheyeImage extends FisheyeBase {
 					}
 				}
 
-				LibertyAttachable::load();
+				$this->mInfo['title']        = $this->getTitle();
+				$this->mInfo['display_url']  = $this->getDisplayUrl();
+				// LibertyMime will load the attachment details
+				LibertyMime::load( NULL, $pPluginParams );
 
-				if (!empty($this->mStorage) && count($this->mStorage) > 0) {
-					reset($this->mStorage);
+				// parse the data after parent load so we have our html prefs
+				$this->mInfo['parsed_data'] = $this->parseData();
+
+				// copy mStorage to mInfo for easy access
+				// Duplicate copy to mInfo['image_file'] for legacy tpl's
+				if( !empty( $this->mStorage ) && count( $this->mStorage ) > 0 ) {
+					reset( $this->mStorage );
+					$this->mInfo = array_merge( current( $this->mStorage ), $this->mInfo );
 					$this->mInfo['image_file'] = current($this->mStorage);
 				} else {
 					$this->mInfo['image_file'] = NULL;
@@ -130,7 +139,7 @@ class FisheyeImage extends FisheyeBase {
 //			$pData = $this->mInfo['data'];
 //		}
 //		$ret = FisheyeBase::parseData( $pData );
-//		$ret .= '<img src="'.$this->mInfo['image_file']['source_url'].'" width="400" height="300" />';
+//		$ret .= '<img src="'.$this->mInfo['source_url'].'" width="400" height="300" />';
 		$ret = NULL;
 		// make sure we have a valid image file.
 		if( $this->isValid() && ($details = $this->getImageDetails() ) ) {
@@ -182,14 +191,14 @@ class FisheyeImage extends FisheyeBase {
 		if ($this->verifyImageData($pStorageHash)) {
 			// Save the current attachment ID for the image attached to this FisheyeImage so we can
 			// delete it after saving the new one
-			if (!empty($this->mInfo['image_file']) && !empty($this->mInfo['image_file']['attachment_id']) && !empty($pStorageHash['_files_override'][0])) {
-				$currentImageAttachmentId = $this->mInfo['image_file']['attachment_id'];
+			if (!empty($this->mInfo['attachment_id']) && !empty($pStorageHash['_files_override'][0])) {
+				$currentImageAttachmentId = $this->mInfo['attachment_id'];
 				$pStorageHash['attachment_id'] = $currentImageAttachmentId;
 			} else {
 				$currentImageAttachmentId = NULL;
 			}
 
-			// LibertyAttachable will take care of thumbnail generation of the offline thumbnailer is not active
+			// LibertyMime will take care of thumbnail generation of the offline thumbnailer is not active
 			if( !empty( $pStorageHash['_files_override'][0] ) ) {
 				$pStorageHash['_files_override'][0]['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
 			}
@@ -197,11 +206,11 @@ class FisheyeImage extends FisheyeBase {
 			// we have already done all the permission checking needed for this user to upload an image
 			$pStorageHash['no_perm_check'] = TRUE;
 
-			if( LibertyAttachable::store( $pStorageHash ) ) {
-				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['image_file']['attachment_id'] ) {
+			if( LibertyMime::store( $pStorageHash ) ) {
+				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['attachment_id'] ) {
 					$this->expungeAttachment($currentImageAttachmentId);
 				}
-				// get storage format back from LibertyAttachment
+				// get storage format back from LibertyMime
 				$this->mContentId = $pStorageHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
 
@@ -222,7 +231,7 @@ class FisheyeImage extends FisheyeBase {
 							WHERE `image_id` = ?";
 					$bindVars = array($this->mContentId, $imageDetails['width'], $imageDetails['height'], $this->mImageId);
 				} else {
-					$this->mImageId = $this->mDb->GenID('fisheye_image_id_seq');
+					$this->mImageId = defined( 'LINKED_ATTACHMENTS' ) ? $this->mContentId : $this->mDb->GenID('fisheye_image_id_seq');
 					$this->mInfo['image_id'] = $this->mImageId;
 					$sql = "INSERT INTO `".BIT_DB_PREFIX."fisheye_image` (`image_id`, `content_id`, `width`, `height`) VALUES (?,?,?,?)";
 					$bindVars = array($this->mImageId, $this->mContentId, $imageDetails['width'], $imageDetails['height']);
@@ -264,13 +273,13 @@ class FisheyeImage extends FisheyeBase {
 
 	function rotateImage( $pDegrees ) {
 		global $gBitSystem;
-		if( !empty( $this->mInfo['image_file'] ) || $this->load() ) {
-			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'];
+		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
+			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['storage_path'];
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
-			$fileHash['name'] = $this->mInfo['image_file']['filename'];
+			$fileHash['dest_path'] = dirname( $this->mInfo['storage_path'] ).'/';
+			$fileHash['name'] = $this->mInfo['filename'];
 			if( $pDegrees == 'auto' ) {
 				if( $exifOrientation = $this->getExifField( 'orientation' ) ) {
 					switch( $exifOrientation ) {
@@ -330,18 +339,18 @@ class FisheyeImage extends FisheyeBase {
 	 */
 	function convertColorspace( $pColorSpace ) {
 		$ret = FALSE;
-		if( !empty( $this->mInfo['image_file'] ) || $this->load() ) {
-			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'];
+		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
+			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['storage_path'];
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
-			$fileHash['name'] = $this->mInfo['image_file']['filename'];
+			$fileHash['dest_path'] = dirname( $this->mInfo['storage_path'] ).'/';
+			$fileHash['name'] = $this->mInfo['filename'];
 			if( $convertFunc = liberty_get_function( 'convert_colorspace' ) ) {
 				if( $ret = $convertFunc( $fileHash, $pColorSpace ) ) {
 					liberty_clear_thumbnails( $fileHash );
 					$sql = "UPDATE `".BIT_DB_PREFIX."liberty_files SET `file_size`=? WHERE `file_id` = ?";
-					$this->mDb->query( $sql, array( filesize( $fileHash['dest_file'] ), $this->mInfo['image_file']['file_id'] ) );
+					$this->mDb->query( $sql, array( filesize( $fileHash['dest_file'] ), $this->mInfo['file_id'] ) );
 					$this->generateThumbnails();
 				}
 			}
@@ -352,13 +361,13 @@ class FisheyeImage extends FisheyeBase {
 
 	function resizeOriginal( $pResizeOriginal ) {
 		global $gBitSystem;
-		if( !empty( $this->mInfo['image_file'] ) || $this->load() ) {
-			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'];
+		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
+			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['storage_path'];
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
-			$fileHash['name'] = $this->mInfo['image_file']['filename'];
+			$fileHash['dest_path'] = dirname( $this->mInfo['storage_path'] ).'/';
+			$fileHash['name'] = $this->mInfo['filename'];
 			$fileHash['max_height'] = $fileHash['max_width'] = $pResizeOriginal;
 			// make a copy of the fileHash that we can compare output after processing
 			$preResize = $fileHash;
@@ -385,9 +394,9 @@ class FisheyeImage extends FisheyeBase {
 					'mime_type'    => $details['mime'],
 					'storage_path' => str_replace( BIT_ROOT_PATH, "", $fileHash['source_file'] ),
 				);
-				$this->mDb->associateUpdate( BIT_DB_PREFIX."liberty_files", $storeHash, array( 'file_id' => $this->mInfo['image_file']['file_id'] ) );
+				$this->mDb->associateUpdate( BIT_DB_PREFIX."liberty_files", $storeHash, array( 'file_id' => $this->mInfo['file_id'] ) );
 				//$query = "UPDATE `".BIT_DB_PREFIX."liberty_files` SET `file_size`=? WHERE `file_id`=?";
-				//$this->mDb->query( $query, array( $details['size'], $this->mInfo['image_file']['file_id'] ) );
+				//$this->mDb->query( $query, array( $details['size'], $this->mInfo['file_id'] ) );
 				$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
 				$this->mDb->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );
 				// if we've come this far, we can try removing the original if it's different to the resized image
@@ -404,7 +413,7 @@ class FisheyeImage extends FisheyeBase {
 	function generateThumbnails( $pResizeOriginal=NULL ) {
 		global $gBitSystem;
 		$ret = FALSE;
-		// LibertyAttachable will take care of thumbnail generation of the offline thumbnailer is not active
+		// LibertyMime will take care of thumbnail generation of the offline thumbnailer is not active
 		if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) ) {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."liberty_process_queue`
 					  WHERE `content_id`=?";
@@ -420,12 +429,12 @@ class FisheyeImage extends FisheyeBase {
 
 
 	function renderThumbnails( $pThumbSizes=NULL ) {
-		if( !empty( $this->mInfo['image_file'] ) || $this->load() ) {
-			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'];
+		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
+			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['storage_path'];
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->mInfo['image_file']['storage_path'] ).'/';
-			$fileHash['name'] = $this->mInfo['image_file']['filename'];
+			$fileHash['dest_path'] = dirname( $this->mInfo['storage_path'] ).'/';
+			$fileHash['name'] = $this->mInfo['filename'];
 			$fileHash['thumbnail_sizes'] = $pThumbSizes;
 			// just generate thumbnails
 			liberty_generate_thumbnails( $fileHash );
@@ -438,16 +447,16 @@ class FisheyeImage extends FisheyeBase {
 
 	function getSourceUrl() {
 		$ret = NULL;
-		if( !empty( $this->mInfo['image_file']['storage_path'] ) ) {
-			 $ret =  BIT_ROOT_URL.dirname( $this->mInfo['image_file']['storage_path'] ).'/'.rawurlencode( basename( $this->mInfo['image_file']['storage_path'] ) );
+		if( !empty( $this->mInfo['storage_path'] ) ) {
+			 $ret =  BIT_ROOT_URL.dirname( $this->mInfo['storage_path'] ).'/'.rawurlencode( basename( $this->mInfo['storage_path'] ) );
 		}
 		return $ret;
 	}
 
 	function getSourceFile() {
 		$ret = NULL;
-		if( !empty( $this->mInfo['image_file']['storage_path'] ) ) {
-			 $ret = BIT_ROOT_PATH.$this->mInfo['image_file']['storage_path'];
+		if( !empty( $this->mInfo['storage_path'] ) ) {
+			 $ret = BIT_ROOT_PATH.$this->mInfo['storage_path'];
 		}
 		return $ret;
 	}
@@ -507,7 +516,7 @@ class FisheyeImage extends FisheyeBase {
 			$info = &$this->mInfo;
 		}
 
-		$size = ( is_string( $pMixed ) && isset( $info['image_file']['thumbnail_url'][$pMixed] ) ) ? $pMixed : NULL ;
+		$size = ( is_string( $pMixed ) && isset( $info['thumbnail_url'][$pMixed] ) ) ? $pMixed : NULL ;
 		global $gBitSystem;
 		if( @BitBase::verifyId( $pImageId ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
@@ -560,7 +569,7 @@ class FisheyeImage extends FisheyeBase {
 
 
 	function loadThumbnail( $pSize='small' ) {
-		$this->mInfo['image_file']['gallery_thumbnail_url'] = &$this->mInfo['image_file']['thumbnail_url'][$pSize];
+		$this->mInfo['gallery_thumbnail_url'] = &$this->mInfo['thumbnail_url'][$pSize];
 	}
 
 	function getThumbnailUrl( $pSize='small', $pInfoHash=NULL ) {
@@ -568,11 +577,10 @@ class FisheyeImage extends FisheyeBase {
 		if( !empty( $pInfoHash ) ) {
 			// do some stuff if we are given a hash of stuff
 		} else {
-			if( empty( $this->mInfo['image_file']['gallery_thumbnail_url'] ) ) {
+			if( empty( $this->mInfo['gallery_thumbnail_url'] ) ) {
 				$this->loadThumbnail( $pSize );
 			}
-			$ret = $this->mInfo['image_file']['gallery_thumbnail_url'];
-$ret = $this->mInfo['image_file']['thumbnail_url'][$pSize];
+			$ret = $this->mInfo['gallery_thumbnail_url'];
 		}
 		return $ret;
 	}
@@ -586,7 +594,7 @@ $ret = $this->mInfo['image_file']['thumbnail_url'][$pSize];
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_image` WHERE `content_id` = ?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
-			if( LibertyAttachable::expunge($pExpungeAttachment) ) {
+			if( LibertyMime::expunge($pExpungeAttachment) ) {
 				$this->mDb->CompleteTrans();
 			} else {
 				$this->mDb->RollbackTrans();
@@ -598,7 +606,7 @@ $ret = $this->mInfo['image_file']['thumbnail_url'][$pSize];
 	function expungingAttachment($pAttachmentId, $pContentIdArray) {
 		foreach ($pContentIdArray as $id) {
 			$this->mContentId = $id;
-			// Vital that we call LibertyAttachable::expunge with false since the attachment is already being deleted.
+			// Vital that we call LibertyMime::expunge with false since the attachment is already being deleted.
 			$this->expunge(FALSE);
 		}
 	}

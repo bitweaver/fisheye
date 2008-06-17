@@ -46,7 +46,7 @@
 							<strong>{tr}Photo Date{/tr}</strong>: {$galItem->mInfo.event_time|bit_short_datetime}<br />
 							{/if}
 							<strong>{tr}Uploaded{/tr}</strong>: {$galItem->mInfo.created|bit_short_datetime}<br />
-							<strong>{tr}File name{/tr}</strong>: {$galItem->mInfo.image_file.filename} <br />
+							<strong>{tr}File name{/tr}</strong>: {$galItem->mInfo.filename} <br />
 								{if $galItem->mInfo.user_id == $gBitUser->mUserId || $gBitUser->isAdmin()}
 								<strong>{tr}Edit Image{/tr}</strong>: <a href="javascript:void(0);" onclick="BitAjax.updater( 'imgedit', '{$smarty.const.FISHEYE_PKG_URL}edit_image.php', 'ajax=true&amp;content_id={$galItem->mInfo.content_id}&amp;gallery_id={$gContent->mGalleryId}' );">{biticon ipackage="icons" iname="accessories-text-editor" iexplain="Edit Details"}</a>
 								<noscript><div><a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}">{biticon ipackage="icons" iname="accessories-text-editor" iexplain="Edit Image"}</a></div></noscript>

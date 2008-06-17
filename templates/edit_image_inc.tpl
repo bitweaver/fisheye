@@ -21,14 +21,14 @@
 	<div class="row">
 		{formlabel label="Current Image"}
 		{forminput}
-			{if $gContent->mInfo.image_file.storage_path}
-				<img src="{$gContent->mInfo.image_file.thumbnail_url.medium}" alt="{$gContent->mInfo.title|escape}" />
+			{if $gContent->mInfo.storage_path}
+				<img src="{$gContent->mInfo.thumbnail_url.medium}" alt="{$gContent->mInfo.title|escape}" />
 				<br />
 				<small>
 					{if $gContent->mInfo.width && $gContent->mInfo.height}
-						{tr}Full size{/tr} - <a href="{$gContent->mInfo.image_file.source_url}">{$gContent->mInfo.width} x {$gContent->mInfo.height}</a>
-					{elseif $gContent->mInfo.image_file.source_url}
-						<a href="{$gContent->mInfo.image_file.source_url}">{tr}Full size{/tr}</a>
+						{tr}Full size{/tr} - <a href="{$gContent->mInfo.source_url}">{$gContent->mInfo.width} x {$gContent->mInfo.height}</a>
+					{elseif $gContent->mInfo.source_url}
+						<a href="{$gContent->mInfo.source_url}">{tr}Full size{/tr}</a>
 					{/if}
 				</small>
 			{else}

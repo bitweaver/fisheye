@@ -83,6 +83,10 @@ function updateGalleryPagination() {
 									{formhelp note="This option allows you to designate each specific image on each page. The image order number entered on the Image Order page will determine the exact location of each image. Fractional numbers indicate PAGE.POSITION and will specifiy variable images per page, such as: 1.1, 1.2, 2.1, 3.1, 3.2, 3.3"}
 								</div>
 								
+								<div id="simple_list-pagination">
+									{formhelp note="This option allows a single column display of images with mime details where available."}
+								</div>
+								
 							{/forminput}
 						</div>
 

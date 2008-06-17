@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.28 2007/10/10 18:07:15 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.29 2008/06/17 17:05:16 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -70,7 +70,7 @@ if (!empty($_REQUEST['cancel'])) {
 				break;
 			case 'file_name':
 				foreach( array_keys( $gContent->mItems ) as $imageId ) {
-					$reorder[$gContent->mItems[$imageId]->mContentId] = $gContent->mItems[$imageId]->mInfo['image_file']['filename'];
+					$reorder[$gContent->mItems[$imageId]->mContentId] = $gContent->mItems[$imageId]->mInfo['filename'];
 				}
 				break;
 			case 'random':
@@ -153,8 +153,8 @@ if (!empty($_REQUEST['cancel'])) {
 							break;
 						case 'filenametoimagename':
 							$renameHash = array();
-							if( !empty( $galleryItem->mInfo['image_file']['filename'] ) ) {
-								$renameHash['title'] = file_name_to_title( $galleryItem->mInfo['image_file']['filename'] );
+							if( !empty( $galleryItem->mInfo['filename'] ) ) {
+								$renameHash['title'] = file_name_to_title( $galleryItem->mInfo['filename'] );
 								$galleryItem->store( $renameHash );
 								// update to prevent renaming value in text input
 								$_REQUEST['image_title'][$contentId] = $renameHash['title'];
