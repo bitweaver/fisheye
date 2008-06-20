@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.84 2008/06/17 17:05:16 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.85 2008/06/20 07:43:02 lsces Exp $
  * @package fisheye
  */
 
@@ -183,6 +183,12 @@ class FisheyeImage extends FisheyeBase {
 			$pStorageHash['title'] = file_name_to_title( $pStorageHash['_files_override'][0]['name'] );
 		}
 
+		// Make sure we know what to update
+		if( $this->isValid() ) {
+			// these 2 entries will inform LibertyContent and LibertyMime that this is an update
+			$pStorageHash['content_id'] = $this->mContentId;
+			$pStorageHash['_files_override'][0]['attachment_id'] = $this->mInfo['attachment_id'];
+		}
 		return (count($this->mErrors) == 0);
 	}
 
