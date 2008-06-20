@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.73 2008/06/17 17:05:16 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.74 2008/06/20 13:17:58 spiderr Exp $
  * @package fisheye
  */
 
@@ -607,6 +607,71 @@ class FisheyeGallery extends FisheyeBase {
 			
 			$pRet[$popId]['content'] = $pTreeHash;
 		}
+	}
+
+	
+
+	// Generate a nested ul list of listed galleries
+	function generateList( $pListHash, $pOptions ) {
+		$ret = '';
+		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {	
+			$ret = "<ul ";
+			foreach( array( 'class', 'name', 'id', 'onchange' ) as $key ) {
+				if( !empty( $pOptions[$key] ) ) {
+					$ret .= " $key=\"$pOptions[$key]\" ";
+				}
+			}
+			$ret .= ">";
+			$ret .= FisheyeGallery::generateListItems( $hash, !empty( $pOptions['item_attributes'] ) ? $pOptions['item_attributes'] : array() );
+			$ret .= "</select>";
+		}
+		return $ret;
+	}
+
+	// Helper method for generateMenu. See that method. Is Recursive
+	function generateListItems( &$pHash, $pAttributes=array() ) {
+		$ret = '';
+		foreach( array_keys( $pHash ) as $conId ) {
+			$ret .= '<li gallery_id="'.$pHash[$conId]['content']['gallery_id'].'" ';
+			foreach( $pAttributes as $key=>$value ) {
+				$ret .= " $key=\"$value\" ";
+			}
+			$ret .= ' >'.$pHash[$conId]['content']['title'].'</li>';
+			if( !empty( $pHash[$conId]['children'] ) ) {
+				$ret .= '<ul>'.FisheyeGallery::generateListItems( $pHash[$conId]['children'], $pAttributes ).'</ul>';
+			}
+		}
+		return $ret;
+	}
+
+	// Generate a select drop menu of listed galleries
+	function generateMenu( $pListHash, $pOptions ) {
+		$ret = '';
+		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {	
+			$ret = "<select ";
+			foreach( array( 'class', 'name', 'id', 'onchange' ) as $key ) {
+				if( !empty( $pOptions[$key] ) ) {
+					$ret .= " $key=\"$pOptions[$key]\" ";
+				}
+			}
+			$ret .= ">";
+			$ret .= !empty( $pOptions['first_option'] ) ? $pOptions['first_option'] : '';
+			$ret .= FisheyeGallery::generateMenuOptions( $hash );
+			$ret .= "</select>";
+		}
+		return $ret;
+	}
+
+	// Helper method for generateMenu. See that method. Is Recursive
+	function generateMenuOptions( &$pHash, $pPrefix='' ) {
+		$ret = '';
+		foreach( array_keys( $pHash ) as $conId ) {
+			$ret .= '<option value="'.$pHash[$conId]['content']['gallery_id'].'">'.$pPrefix.' '.$pHash[$conId]['content']['title'].'</option>';
+			if( !empty( $pHash[$conId]['children'] ) ) {
+				$ret .= FisheyeGallery::generateMenuOptions( $pHash[$conId]['children'], $pPrefix.'&nbsp;&nbsp;&nbsp;' );
+			}
+		}
+		return $ret;
 	}
 
 	function getList( &$pListHash ) {
