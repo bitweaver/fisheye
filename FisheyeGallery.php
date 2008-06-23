@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.75 2008/06/23 02:03:51 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.76 2008/06/23 21:56:12 squareing Exp $
  * @package fisheye
  */
 
@@ -155,11 +155,19 @@ class FisheyeGallery extends FisheyeBase {
 							if( $rows[$i]['image_id'] == $pCurrentImageId ) {
 								if( $i > 0 ) {
 									$this->mInfo['previous_image_id'] = $rows[$i-1]['image_id'];
-									$this->mInfo['previous_image_avatar'] = liberty_fetch_thumbnail_url( $rows[$i-1]['storage_path'], 'icon', NULL, TRUE );
+									$this->mInfo['previous_image_avatar'] = liberty_fetch_thumbnail_url( array(
+										'storage_path' => $rows[$i-1]['storage_path'],
+										'mime_image'   => TRUE,
+										'size'         => 'icon',
+									));
 								}
 								if( $i + 1  < count( $rows ) ) {
 									$this->mInfo['next_image_id'] = $rows[$i+1]['image_id'];
-									$this->mInfo['next_image_avatar'] = liberty_fetch_thumbnail_url( $rows[$i+1]['storage_path'], 'icon', NULL, TRUE );
+									$this->mInfo['next_image_avatar'] = liberty_fetch_thumbnail_url( array(
+										'storage_path' => $rows[$i+1]['storage_path'],
+										'mime_image'   => TRUE,
+										'size'         => 'icon',
+									));
 								}
 							}
 						}

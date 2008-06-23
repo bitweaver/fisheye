@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.85 2008/06/20 07:43:02 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.86 2008/06/23 21:56:12 squareing Exp $
  * @package fisheye
  */
 
@@ -709,9 +709,13 @@ class FisheyeImage extends FisheyeBase {
 				$ret[$row['hash_key']] = $row;
 				$imageId = $row['image_id'];
 				if( empty( $pListHash['no_thumbnails'] ) ) {
-					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( $ret[$imageId]['storage_path'], 'avatar', FISHEYE_PKG_URL.'image/generating_thumbnails.png' );
 					$ret[$imageId]['display_url']      = $this->getDisplayUrl( $imageId );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
+					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( array(
+						'storage_path'  => $ret[$imageId]['storage_path'],
+						'default_image' => FISHEYE_PKG_URL.'image/generating_thumbnails.png',
+						'size'          => 'avatar',
+					));
 				}
 			}
 		}

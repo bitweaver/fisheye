@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.8 2007/07/08 07:56:40 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.9 2008/06/23 21:56:12 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -54,7 +54,7 @@ if( !$gBitUser->hasPermission( 'p_fisheye_view' ) ) {
 		$item               = new FeedItem();
 		$item->title        = $feed['title'];
 		$item->link         = $feed['display_url'];
-		$item->description  = '<a href="'.$feed['display_url'].'"><img src="'.liberty_fetch_thumbnail_url( $feed['storage_path'], 'medium' ).'" /></a>';
+		$item->description  = '<a href="'.$feed['display_url'].'"><img src="'.liberty_fetch_thumbnail_url( array( 'storage_path' => $feed['storage_path'], 'size' => 'medium' )).'" /></a>';
 		$item->description .= '<p>'.$feed['data'].'</p>';
 
 		$item->date         = ( int )$feed['last_modified'];
