@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.74 2008/06/20 13:17:58 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.75 2008/06/23 02:03:51 spiderr Exp $
  * @package fisheye
  */
 
@@ -623,7 +623,7 @@ class FisheyeGallery extends FisheyeBase {
 			}
 			$ret .= ">";
 			$ret .= FisheyeGallery::generateListItems( $hash, !empty( $pOptions['item_attributes'] ) ? $pOptions['item_attributes'] : array() );
-			$ret .= "</select>";
+			$ret .= "</ul>";
 		}
 		return $ret;
 	}
