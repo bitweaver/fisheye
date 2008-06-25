@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.35 2007/11/08 21:59:34 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.36 2008/06/25 22:21:09 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -121,5 +121,5 @@ if( $gBitSystem->isPackageActive( 'gigaupload' ) ) {
 	$gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/multifile.js', TRUE );
 }
 
-$gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' );
+$gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' , array( 'display_mode' => 'display' ));
 ?>

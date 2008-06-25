@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.7 2006/11/08 08:02:53 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.8 2008/06/25 22:21:09 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -33,6 +33,6 @@ $gContent->loadImages( $page );
 $gContent->addHit();
 
 $gBitSystem->setBrowserTitle( $gContent->getTitle().' '.tra('Gallery') );
-$gBitSystem->display( $gContent->getRenderTemplate() );
+$gBitSystem->display( $gContent->getRenderTemplate() , NULL, array( 'display_mode' => 'display' ));
 
 ?>

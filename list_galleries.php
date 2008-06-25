@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.11 2007/10/10 12:10:20 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/list_galleries.php,v 1.12 2008/06/25 22:21:09 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -39,6 +39,6 @@ $gBitSmarty->assign( 'galleryList', $galleryList );
 // Display the template
 $gDefaultCenter = "bitpackage:fisheye/$template";
 $gBitSmarty->assign_by_ref( 'gDefaultCenter', $gDefaultCenter );
-$gBitSystem->display( 'bitpackage:kernel/dynamic.tpl', 'List Galleries' );
+$gBitSystem->display( 'bitpackage:kernel/dynamic.tpl', 'List Galleries' , array( 'display_mode' => 'list' ));
 
 ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.22 2007/10/18 01:41:06 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.23 2008/06/25 22:21:09 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -23,7 +23,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 	if (empty($_REQUEST['gallery_id']) && empty($_REQUEST['image_id'])) {
 		// We have no way to know what gallery to add an image to or what image to edit!
 		$gBitSmarty->assign( 'msg', tra( "No gallery or image was specified" ) );
-		$gBitSystem->display( "error.tpl" );
+		$gBitSystem->display( "error.tpl" , NULL, array( 'display_mode' => 'edit' ));
 		die;
 	}
 
@@ -118,6 +118,6 @@ $gContent->invokeServices( 'content_edit_function' );
 if( !empty( $_REQUEST['ajax'] ) ) {
 	echo $gBitSmarty->fetch( 'bitpackage:fisheye/edit_image_inc.tpl', 'Edit Image: '.$gContent->getTitle() );
 } else {
-	$gBitSystem->display( 'bitpackage:fisheye/edit_image.tpl', 'Edit Image: '.$gContent->getTitle() );
+	$gBitSystem->display( 'bitpackage:fisheye/edit_image.tpl', 'Edit Image: '.$gContent->getTitle() , array( 'display_mode' => 'edit' ));
 }
 ?>
