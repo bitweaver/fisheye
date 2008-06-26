@@ -30,11 +30,11 @@
 				{/if}
 			{/if}
 
-				{include file=$gLibertySystem->getMimeTemplate('view',$gContent->mInfo.attachment_plugin_guid) attachment=$gContent->mInfo}
+			{include file=$gLibertySystem->getMimeTemplate('view',$gContent->mInfo.attachment_plugin_guid) attachment=$gContent->mInfo}
 
-				{if $gBitSystem->isFeatureActive('fisheye_image_list_description') and $gContent->mInfo.data ne ''}
-					<p class="description">{$gContent->mInfo.parsed_data}</p>
-				{/if}
+			{if $gBitSystem->isFeatureActive('fisheye_image_list_description') and $gContent->mInfo.data ne ''}
+				<p class="description">{$gContent->mInfo.parsed_data}</p>
+			{/if}
 
 			{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
 				</a>
