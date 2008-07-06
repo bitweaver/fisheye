@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.8 2008/06/25 22:21:09 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.9 2008/07/06 09:09:56 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -32,6 +32,9 @@ $gBitSmarty->assign_by_ref('cols_per_page', $gContent->mInfo['cols_per_page']);
 $gContent->loadImages( $page );
 $gContent->addHit();
 
+if(( $pagination = $gContent->getPreference( 'gallery_pagination' )) && $pagination == 'auto_flow' ) {
+	$gBitThemes->loadCss( FISHEYE_PKG_PATH."div_layout.css", TRUE );
+}
 $gBitSystem->setBrowserTitle( $gContent->getTitle().' '.tra('Gallery') );
 $gBitSystem->display( $gContent->getRenderTemplate() , NULL, array( 'display_mode' => 'display' ));
 
