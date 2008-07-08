@@ -21,7 +21,7 @@
 
 	<div class="body">
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
-		{box class="box image"}
+		<div class="image">
 			{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
 				{if $gContent->hasEditPermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )}
 					<a href="{$gContent->mInfo.source_url|escape}">
@@ -39,12 +39,9 @@
 			{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
 				</a>
 			{/if}
-	</div><!-- end .body -->
-
-		{/box}
-
+		</div>
 	</div>	<!-- end .body -->
-	
+
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
 
 	{if $gGallery && $gGallery->getPreference('allow_comments') eq 'y'}
