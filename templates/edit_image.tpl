@@ -85,6 +85,8 @@
 							{/forminput}
 						</div>
 
+						{include file=$gLibertySystem->getMimeTemplate('edit',$gContent->mInfo.attachment_plugin_guid) attachment=$gContent->mInfo}
+
 						<div class="row">
 							{include file="bitpackage:fisheye/resize_image_select.tpl"}
 						</div>
