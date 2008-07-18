@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.76 2008/06/23 21:56:12 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.77 2008/07/18 14:23:07 lsces Exp $
  * @package fisheye
  */
 
@@ -158,7 +158,7 @@ class FisheyeGallery extends FisheyeBase {
 									$this->mInfo['previous_image_avatar'] = liberty_fetch_thumbnail_url( array(
 										'storage_path' => $rows[$i-1]['storage_path'],
 										'mime_image'   => TRUE,
-										'size'         => 'icon',
+										'size'         => 'avatar',
 									));
 								}
 								if( $i + 1  < count( $rows ) ) {
@@ -166,7 +166,7 @@ class FisheyeGallery extends FisheyeBase {
 									$this->mInfo['next_image_avatar'] = liberty_fetch_thumbnail_url( array(
 										'storage_path' => $rows[$i+1]['storage_path'],
 										'mime_image'   => TRUE,
-										'size'         => 'icon',
+										'size'         => 'avatar',
 									));
 								}
 							}
