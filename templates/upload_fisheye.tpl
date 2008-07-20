@@ -73,8 +73,8 @@
 						<div class="row">
 							{formlabel label="Process Archive(s)" for="process_archive"}
 							{forminput}
-								<input type="checkbox" id="process_archive" name="process_archive" value="false" checked="unchecked" />
-								{formhelp note="If you want to have archived files processed and extracted, please check the above box."}
+								<input type="checkbox" id="process_archive" name="process_archive" value="true" checked="checked" />
+								{formhelp note="If you don't want to have archived files processed and extracted, please uncheck the above box."}
 							{/forminput}
 						</div>
 					{else}
