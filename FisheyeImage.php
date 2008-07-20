@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.86 2008/06/23 21:56:12 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.87 2008/07/20 14:12:58 lsces Exp $
  * @package fisheye
  */
 
@@ -212,6 +212,7 @@ class FisheyeImage extends FisheyeBase {
 			// we have already done all the permission checking needed for this user to upload an image
 			$pStorageHash['no_perm_check'] = TRUE;
 
+			$this->mDb->StartTrans();
 			if( LibertyMime::store( $pStorageHash ) ) {
 				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['attachment_id'] ) {
 					$this->expungeAttachment($currentImageAttachmentId);
@@ -253,6 +254,9 @@ class FisheyeImage extends FisheyeBase {
 						$this->resizeOriginal( $pStorageHash['resize'] );
 					}
 				}
+				$this->mDb->CompleteTrans();
+			} else {
+				$this->mDb->RollbackTrans();
 			}
 		} else {
 			$this->mErrors[] = "There were errors while attempting to save this gallery image";
