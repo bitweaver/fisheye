@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.87 2008/07/20 14:12:58 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.88 2008/07/24 08:33:27 squareing Exp $
  * @package fisheye
  */
 
@@ -238,7 +238,7 @@ class FisheyeImage extends FisheyeBase {
 							WHERE `image_id` = ?";
 					$bindVars = array($this->mContentId, $imageDetails['width'], $imageDetails['height'], $this->mImageId);
 				} else {
-					$this->mImageId = defined( 'LINKED_ATTACHMENTS' ) ? $this->mContentId : $this->mDb->GenID('fisheye_image_id_seq');
+					$this->mImageId = $this->mDb->GenID( 'fisheye_image_id_seq' );
 					$this->mInfo['image_id'] = $this->mImageId;
 					$sql = "INSERT INTO `".BIT_DB_PREFIX."fisheye_image` (`image_id`, `content_id`, `width`, `height`) VALUES (?,?,?,?)";
 					$bindVars = array($this->mImageId, $this->mContentId, $imageDetails['width'], $imageDetails['height']);
