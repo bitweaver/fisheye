@@ -101,7 +101,7 @@
 							</optgroup>
 							{if $gBitSystem->isPackageActive( 'gatekeeper' ) }
 								<optgroup label="{tr}Set Security to{/tr}">
-									<option value="security:">~~ {tr}Publically Visible{/tr} ~~</option>
+									<option value="security:">{tr}None (publically visible){/tr}</option>
 									{foreach from=$securities key=secId item=sec}
 										<option value="security:{$secId}">{tr}Set Security to{/tr} "{$sec.security_description}"</option>
 									{/foreach}
