@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.77 2008/07/18 14:23:07 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.78 2008/08/30 05:13:35 spiderr Exp $
  * @package fisheye
  */
 
@@ -640,13 +640,14 @@ class FisheyeGallery extends FisheyeBase {
 	function generateListItems( &$pHash, $pAttributes=array() ) {
 		$ret = '';
 		foreach( array_keys( $pHash ) as $conId ) {
-			$ret .= '<li gallery_id="'.$pHash[$conId]['content']['gallery_id'].'" ';
+			$ret .= '<li id="fisheyegallery'.$pHash[$conId]['content']['gallery_id'].'" gallery_id="'.$pHash[$conId]['content']['gallery_id'].'" ';
 			foreach( $pAttributes as $key=>$value ) {
 				$ret .= " $key=\"$value\" ";
 			}
-			$ret .= ' >'.$pHash[$conId]['content']['title'].'</li>';
+			$ret .= ' >'.htmlspecialchars( $pHash[$conId]['content']['title'] );
+			$ret .= '</li>';
 			if( !empty( $pHash[$conId]['children'] ) ) {
-				$ret .= '<ul>'.FisheyeGallery::generateListItems( $pHash[$conId]['children'], $pAttributes ).'</ul>';
+				$ret .= '<li><ul>'.FisheyeGallery::generateListItems( $pHash[$conId]['children'], $pAttributes ).'</ul></li>';
 			}
 		}
 		return $ret;
