@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.88 2008/07/24 08:33:27 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.89 2008/09/14 17:22:37 spiderr Exp $
  * @package fisheye
  */
 
@@ -135,11 +135,6 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	function exportHtml( $pData = NULL ) {
-//		if( empty( $pData ) ) {
-//			$pData = $this->mInfo['data'];
-//		}
-//		$ret = FisheyeBase::parseData( $pData );
-//		$ret .= '<img src="'.$this->mInfo['source_url'].'" width="400" height="300" />';
 		$ret = NULL;
 		// make sure we have a valid image file.
 		if( $this->isValid() && ($details = $this->getImageDetails() ) ) {
@@ -471,6 +466,10 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
+	function getPreviewHash() {
+		return $this->mInfo;
+	}
+
 	// Get resolution, etc
 	function getImageDetails($pFilePath = NULL) {
 		$info = NULL;
@@ -580,6 +579,10 @@ class FisheyeImage extends FisheyeBase {
 
 	function loadThumbnail( $pSize='small' ) {
 		$this->mInfo['gallery_thumbnail_url'] = &$this->mInfo['thumbnail_url'][$pSize];
+	}
+
+	function getThumbnailContentId() {
+		return( $this->getField( 'content_id' ) );
 	}
 
 	function getThumbnailUrl( $pSize='small', $pInfoHash=NULL ) {

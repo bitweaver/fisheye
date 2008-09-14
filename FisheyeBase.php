@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.27 2008/06/17 17:05:16 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.28 2008/09/14 17:22:37 spiderr Exp $
  * @package fisheye
  */
 
@@ -73,6 +73,9 @@ class FisheyeBase extends LibertyMime
 		$this->mGalleryPath = rtrim( $pPath, '/' );
 	}
 
+	function getThumbnailContentId() {
+		// PURE VIRTUAL
+	}
 
 	// THis is a function that creates a mack daddy function to get a breadcrumb path with a single query.
 	// Do not muck with this query unless you really, truly understand what is going on.

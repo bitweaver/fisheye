@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.78 2008/08/30 05:13:35 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.79 2008/09/14 17:22:37 spiderr Exp $
  * @package fisheye
  */
 
@@ -279,6 +279,16 @@ class FisheyeGallery extends FisheyeBase {
 		return $ret;
 	}
 
+	function getPreviewHash() {
+		$ret = array();
+		if( !empty( $this->mInfo['preview_content'] ) ) {
+			$ret =  $this->mInfo['preview_content']->mInfo;
+		}
+		// override  $this->mInfo['preview_content']->mInfo['display_url'] so we don't drive directly to the image
+		$ret['display_url'] = $this->getDisplayUrl();
+		return $ret;
+	}
+
 	function getImageCount() {
 		$ret = 0;
 
@@ -328,6 +338,13 @@ class FisheyeGallery extends FisheyeBase {
 	}
 
 
+	function getThumbnailContentId() {
+		if( !$this->getField( 'thumbnail_content_id' ) ) {
+			$this->getThumbnailImage();
+		}
+		return( $this->getField( 'thumbnail_content_id' ) );
+	}
+
 	function getThumbnailUrl( $pSize='small' ) {
 		if( empty( $this->mInfo['preview_content'] ) ) {
 			$this->loadThumbnail();
@@ -347,8 +364,6 @@ class FisheyeGallery extends FisheyeBase {
 			$pContentId = $this->mContentId;
 		}
 
-
-
 		if( !@$this->verifyId( $pThumbnailContentId ) ) {
 			if( @$this->verifyId( $this->mInfo['preview_content_id'] ) ) {
 				$pThumbnailContentId = $this->mInfo['preview_content_id'];
@@ -360,11 +375,11 @@ class FisheyeGallery extends FisheyeBase {
 						$whereSql = "  AND (cgm.`security_id` IS NULL OR lc.`user_id`=?) ";	
 						$bindVars[] = $gBitUser->mUserId;
 					}
-					$query = "SELECT COALESCE( fg.`preview_content_id`, lc.`content_id` ) AS `content_id`, lc.`content_type_guid`
-							FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
+					$query =   "SELECT COALESCE( fg.`preview_content_id`, lc.`content_id` ) AS `content_id`, lc.`content_type_guid`
+								FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(`cb_item_content_id` int, `cb_parent_content_id` int, `level` int, `branch` text)
 								INNER JOIN liberty_content lc ON(content_id=cb_item_content_id)
 								LEFT OUTER JOIN `".BIT_DB_PREFIX."gatekeeper_security_map` cgm ON (cgm.`content_id`=lc.`content_id`), `".BIT_DB_PREFIX."fisheye_gallery` fg
-							WHERE `cb_parent_content_id`=fg.`content_id` $whereSql "; //  ORDER BY RANDOM() is DOG slow (seq scans)
+								WHERE `cb_parent_content_id`=fg.`content_id` $whereSql "; //  ORDER BY RANDOM() is DOG slow (seq scans)
 					if( $row = $this->mDb->getRow( $query, $bindVars ) ) {
 						$pThumbnailContentType = $row['content_type_guid'];
 						$pThumbnailContentId = $row['content_id'];
@@ -383,9 +398,13 @@ class FisheyeGallery extends FisheyeBase {
 
 		if( @$this->verifyId( $pThumbnailContentId ) ) {
 			$ret = $gLibertySystem->getLibertyObject( $pThumbnailContentId, $pThumbnailContentType );
-			if( strtolower( get_class( $ret ) ) == 'fisheyegallery' ) {
+			if( is_a( $ret, 'FisheyeGallery' ) ) {
 				//recurse down in to find the first image
-				$ret = $ret->getThumbnailImage();
+				if( $ret = $ret->getThumbnailImage() ) {
+					$this->mInfo['thumbnail_content_id'] = $ret->getField( 'content_id' );
+				}
+			} else {	
+				$this->mInfo['thumbnail_content_id'] = $pThumbnailContentId;
 			}
 		}
 		return $ret;
@@ -395,6 +414,7 @@ class FisheyeGallery extends FisheyeBase {
 	function loadThumbnail( $pSize='small', $pContentId=NULL ) {
 		$this->mPreviewImage = $this->getThumbnailImage( $pContentId );
 		$this->mInfo['preview_content'] = &$this->mPreviewImage;
+		$this->mInfo['image_file'] = &$this->mPreviewImage->mInfo['image_file'];
 	}
 
 
