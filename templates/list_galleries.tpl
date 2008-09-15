@@ -31,7 +31,7 @@
 		<ul class="clear data">
 			{foreach from=$galleryList key=galleryId item=gal}
 				<li class="item {cycle values='odd,even'} {$gal.content_type_guid}">
-					<div class="floaticon">
+					<div class="security">
 						{if $gal.is_hidden=='y' || $gal.is_private=='y' || $gal.access_answer}
 							{biticon ipackage="icons" iname="emblem-readonly" iexplain="Security" label=TRUE}
 						{/if}
@@ -44,18 +44,6 @@
 						{if $gal.access_answer}
 							{tr}Password{/tr}
 						{/if}
-						{* if $galleryList[ix]->hasEditPermission()}
-							<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="document-properties" iexplain="Edit"}</a>
-						{/if}
-						{if $galleryList[ix]->hasEditPermission()}
-						 	<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="emblem-default" iexplain="Item Order"}</a>
-						{/if}
-						{if $galleryList[ix]->hasUserPermission('p_fisheye_upload', TRUE, FALSE)}
-							<a title="{tr}Add Image{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="go-up" iexplain="Add Image"}</a>
-						{/if}
-						{if $galleryList[ix]->hasAdminPermission()}
-							<a title="{tr}User Permissions{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_gallery_perms.php?gallery_id={$galleryId}">{biticon ipackage="icons" iname="emblem-shared" iexplain="User Permissions"}</a>
-						{/if *}
 					</div>
 
 					<h2><a href="{$gal.display_url}">{if $gBitSystem->isFeatureActive('fisheye_list_title')}{$gal.title|escape}{else}Gallery {$gal.gallery_id}{/if}</a></h2>
