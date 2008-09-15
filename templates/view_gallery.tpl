@@ -20,15 +20,15 @@
 
 		<h1>{$gContent->getTitle()|escape}</h1>
 
-		{if $gContent->mInfo.data}
-			<p>{$gContent->mInfo.data|escape}</p>
-		{/if}
 	</div>
 
 	<div class="body">
 		{formfeedback success=$fisheyeSuccess error=$fisheyeErrors warning=$fisheyeWarnings}
 
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
+		{if $gContent->mInfo.data}
+			<p>{$gContent->mInfo.data|escape}</p>
+		{/if}
 		{assign var=galLayout value=$gContent->getLayout()}
 		{include file='`$smarty.const.FISHEYE_PKG_PATH`gallery_views/`$galLayout`/fisheye_`$galLayout`_inc.tpl" }
 	</div>	<!-- end .body -->
