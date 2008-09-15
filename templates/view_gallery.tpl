@@ -29,8 +29,8 @@
 		{formfeedback success=$fisheyeSuccess error=$fisheyeErrors warning=$fisheyeWarnings}
 
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
-		{include file="bitpackage:fisheye/view_gallery_images_inc.tpl"}
-		{*include file="bitpackage:fisheye/view_gallery_files_inc.tpl"*}
+		{assign var=galLayout value=$gContent->getLayout()}
+		{include file='`$smarty.const.FISHEYE_PKG_PATH`gallery_views/`$galLayout`/fisheye_`$galLayout`_inc.tpl" }
 	</div>	<!-- end .body -->
 
 	{libertypagination numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}
