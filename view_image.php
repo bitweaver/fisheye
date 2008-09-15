@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.11 2008/06/17 17:05:16 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.12 2008/09/15 01:51:28 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -44,6 +44,5 @@ if( is_object( $gGallery ) && $gGallery->isCommentable() ) {
 $gContent->addHit();
 
 $gContent->mInfo['original'] = TRUE;
-// vd($gContent->mInfo);
 require_once( FISHEYE_PKG_PATH.'display_fisheye_image_inc.php' );
 ?>
