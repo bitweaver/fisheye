@@ -6,7 +6,7 @@
 		{foreach from=$gContent->mItems item=galItem key=itemContentId}
 			{box class="box `$gContent->mInfo.thumbnail_size`-thmb `$galItem->mInfo.content_type_guid`"}
 				{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$galItem->mInfo type=mini}
-				{include file=$gLibertySystem->getMimeTemplate('inline',$galItem->mInfo.attachment_plugin_guid) attachment=$galItem->mInfo}
+				{include file=$gLibertySystem->getMimeTemplate('inline',$galItem->mInfo.attachment_plugin_guid) attachment=$galItem->mInfo.image_file}
 				{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
 					<h2>{$galItem->mInfo.title|escape}</h2>
 				{/if}
