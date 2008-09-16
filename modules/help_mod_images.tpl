@@ -7,7 +7,7 @@
 <dl>
 	<dt class="param"><kbd>sort_mode</kbd></dt>
 	<dd><em>{tr}String{/tr}</em></dd>
-	<dd><abbr title="default" class="default">{tr}random{/tr}</abbr>, created, hits</dd>
+	<dd><abbr title="default" class="default">random</abbr>, created, hits</dd>
 
 	<dt class="param"><kbd>maxlen</kbd></dt>
 	<dd><em>{tr}Boolean{/tr}</em></dd>
