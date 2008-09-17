@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.89 2008/09/14 17:22:37 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.90 2008/09/17 06:54:04 squareing Exp $
  * @package fisheye
  */
 
@@ -110,18 +110,22 @@ class FisheyeImage extends FisheyeBase {
 
 				$this->mInfo['title']        = $this->getTitle();
 				$this->mInfo['display_url']  = $this->getDisplayUrl();
-				// LibertyMime will load the attachment details
+
+				// LibertyMime will load the attachment details in $this->mStorage
 				LibertyMime::load( NULL, $pPluginParams );
 
 				// parse the data after parent load so we have our html prefs
 				$this->mInfo['parsed_data'] = $this->parseData();
 
-				// copy mStorage to mInfo for easy access
-				// Duplicate copy to mInfo['image_file'] for legacy tpl's
+				// Copy mStorage to mInfo['image_file'] for easy access
 				if( !empty( $this->mStorage ) && count( $this->mStorage ) > 0 ) {
+					// it seems that this is not necessary and causes confusing copies of the same stuff all over the place
+					//$this->mInfo = array_merge( current( $this->mStorage ), $this->mInfo );
+					// copy the image data by reference to reduce memory
 					reset( $this->mStorage );
-					$this->mInfo = array_merge( current( $this->mStorage ), $this->mInfo );
-					$this->mInfo['image_file'] = current($this->mStorage);
+					$this->mInfo['image_file'] =& current( $this->mStorage );
+					// override original display_url that mime knows where we keep the image
+					$this->mInfo['image_file']['display_url'] = $this->getDisplayUrl();
 				} else {
 					$this->mInfo['image_file'] = NULL;
 				}
