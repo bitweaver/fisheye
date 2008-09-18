@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.12 2008/09/15 01:38:34 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_image_inc.php,v 1.13 2008/09/18 04:23:16 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -18,8 +18,8 @@ reset($gContent->mStorage);
 $imageStorage = current($gContent->mStorage);
 
 $thumbSize = (!empty( $_REQUEST['size'] ) ? $_REQUEST['size'] :
-				(!empty( $_COOKIE['fisheyeviewsize'] ) ? $_COOKIE['fisheyeviewsize'] :
-				$gBitSystem->getConfig('fisheye_image_default_thumbnail_size', FISHEYE_DEFAULT_THUMBNAIL_SIZE)));
+//				(!empty( $_COOKIE['fisheyeviewsize'] ) ? $_COOKIE['fisheyeviewsize'] :
+				$gBitSystem->getConfig('fisheye_image_default_thumbnail_size', FISHEYE_DEFAULT_THUMBNAIL_SIZE));
 // This is handled by LM so we can probably trim
 $gContent->mInfo['display_url'] = $gContent->getThumbnailUrl( $thumbSize );
 

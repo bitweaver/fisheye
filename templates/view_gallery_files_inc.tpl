@@ -43,7 +43,7 @@
 			<td>
 				{$gContent->mItems[ix]->mInfo.data}
 				<br />
-				Created: {$gContent->mItems[ix]->mInfo.created|bit_short_datetime} by {displayname login=$gContent->mItems[ix]->mInfo.creator_user real_name=$gContent->mItems[ix]->mInfo.creator_real_name}
+				{tr}Created{/tr}: {$gContent->mItems[ix]->mInfo.created|bit_short_datetime} by {displayname login=$gContent->mItems[ix]->mInfo.creator_user real_name=$gContent->mItems[ix]->mInfo.creator_real_name}
 				<br />
 				Last Modified: {$gContent->mItems[ix]->mInfo.last_modified|bit_short_datetime} by {displayname login=$gContent->mItems[ix]->mInfo.modifier_user real_name=$gContent->mItems[ix]->mInfo.modifier_real_name}
 				<br />

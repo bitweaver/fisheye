@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.90 2008/09/17 06:54:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.91 2008/09/18 04:23:16 spiderr Exp $
  * @package fisheye
  */
 
@@ -120,7 +120,7 @@ class FisheyeImage extends FisheyeBase {
 				// Copy mStorage to mInfo['image_file'] for easy access
 				if( !empty( $this->mStorage ) && count( $this->mStorage ) > 0 ) {
 					// it seems that this is not necessary and causes confusing copies of the same stuff all over the place
-					//$this->mInfo = array_merge( current( $this->mStorage ), $this->mInfo );
+					$this->mInfo = array_merge( current( $this->mStorage ), $this->mInfo );
 					// copy the image data by reference to reduce memory
 					reset( $this->mStorage );
 					$this->mInfo['image_file'] =& current( $this->mStorage );

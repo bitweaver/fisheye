@@ -67,10 +67,10 @@
 					{if $gBitSystem->isFeatureActive('fisheye_list_created' ) or $gBitSystem->isFeatureActive('fisheye_list_lastmodif' )}
 						<div class="date">
 							{if $gBitSystem->isFeatureActive('fisheye_list_created' ) }
-								Created: {$gal.created|bit_short_date}<br />
+								{tr}Created{/tr}: {$gal.created|bit_short_date}<br />
 							{/if}
 							{if $gBitSystem->isFeatureActive('fisheye_list_lastmodif' )}
-								Modified: {$gal.last_modified|bit_short_date}<br />
+								{tr}Modified{/tr}: {$gal.last_modified|bit_short_date}<br />
 							{/if}
 						</div>
 					{/if}
