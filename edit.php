@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.27 2008/06/25 22:21:09 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.28 2008/09/19 01:34:36 laetzer Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -73,7 +73,12 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 			'<label><input name="recurse" value="" type="radio" checked="checked" /> '.tra( 'Delete only images in this gallery. Sub-galleries will not be removed.' ).'</label>',
 			'<label><input name="recurse" value="all" type="radio" /> '.tra( 'Permanently delete all contents, even if they appear in other galleries.' ).'</label>',
 		);
-		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the gallery '.$gContent->getTitle().'?', 'error' => 'This cannot be undone!' ) );
+		$gBitSystem->confirmDialog( $formHash, 
+			array( 
+				'warning' => tra('Are you sure you want to delete this gallery?') . ' ' . $gContent->getTitle(),
+				'error' => tra('This cannot be undone!'),
+			)
+		);
 	} else {
 		$userId = $gContent->getField( 'user_id' );
 
@@ -116,6 +121,6 @@ $gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
 
 $gContent->invokeServices( 'content_edit_function' );
 
-$gBitSystem->display( 'bitpackage:fisheye/edit_gallery.tpl', 'Edit Gallery: '.$gContent->getTitle() , array( 'display_mode' => 'edit' ));
+$gBitSystem->display( 'bitpackage:fisheye/edit_gallery.tpl', tra('Edit Gallery: ').$gContent->getTitle() , array( 'display_mode' => 'edit' ));
 
 ?>

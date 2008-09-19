@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.23 2008/06/25 22:21:09 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.24 2008/09/19 01:34:36 laetzer Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -78,7 +78,12 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 	} elseif( empty( $_REQUEST['confirm'] ) ) {
 		$formHash['delete'] = TRUE;
 		$formHash['image_id'] = $gContent->mImageId;
-		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the image '.$gContent->getTitle().'? <p> It will be removed from all galleries to which it belongs.</p>' ) );
+		$gBitSystem->confirmDialog( $formHash, 
+			array( 
+				'warning' => tra('Are you sure you want to delete this image?') . ' (' . $gContent->getTitle() . ') ' . tra('It will be removed from all galleries to which it belongs.'),
+				'error' => tra('This cannot be undone!'),
+			)
+		);
 	} else {
 		if( $gContent->expunge() ) {
 			$url = ( is_object( $gGallery ) ? $gGallery->getDisplayUrl() : FISHEYE_PKG_URL );
@@ -116,8 +121,8 @@ $gBitSmarty->assign('requested_gallery', !empty($_REQUEST['gallery_id']) ? $_REQ
 $gContent->invokeServices( 'content_edit_function' );
 
 if( !empty( $_REQUEST['ajax'] ) ) {
-	echo $gBitSmarty->fetch( 'bitpackage:fisheye/edit_image_inc.tpl', 'Edit Image: '.$gContent->getTitle() );
+	echo $gBitSmarty->fetch( 'bitpackage:fisheye/edit_image_inc.tpl', tra('Edit Image: ').$gContent->getTitle() );
 } else {
-	$gBitSystem->display( 'bitpackage:fisheye/edit_image.tpl', 'Edit Image: '.$gContent->getTitle() , array( 'display_mode' => 'edit' ));
+	$gBitSystem->display( 'bitpackage:fisheye/edit_image.tpl', tra('Edit Image: ').$gContent->getTitle() , array( 'display_mode' => 'edit' ));
 }
 ?>
