@@ -18,6 +18,25 @@
 						<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 
 						<div class="row">
+							{formlabel label="Current Image"}
+							{forminput}
+								{if $gContent->mInfo.storage_path}
+									<img src="{$gContent->mInfo.thumbnail_url.medium}?{math equation="1 + rand(1,9999)"}" alt="{$gContent->mInfo.title|escape}" />
+									<br />
+									<small>
+										{if $gContent->mInfo.width && $gContent->mInfo.height}
+											{tr}Full size{/tr} - <a href="{$gContent->mInfo.source_url}">{$gContent->mInfo.width} x {$gContent->mInfo.height}</a>
+										{elseif $gContent->mInfo.source_url}
+											<a href="{$gContent->mInfo.source_url}">{tr}Full size{/tr}</a>
+										{/if}
+									</small>
+								{else}
+									<img src="{$smarty.const.FISHEYE_PKG_URL}image/no_image.png" alt="{$gContent->mInfo.title|escape}" />
+								{/if}
+							{/forminput}
+						</div>
+
+						<div class="row">
 							{formlabel label="Title" for="image-title"}
 							{forminput}
 								<input type="text" name="title" id="image-title" value="{$gContent->mInfo.title|escape}" maxlength="160" size="50"/>
@@ -39,25 +58,6 @@
 							{formlabel label="Upload $repl Image" for="image-upload"}
 							{forminput}
 								<input type="file" name="imageFile" id="image-upload"/>
-							{/forminput}
-						</div>
-
-						<div class="row">
-							{formlabel label="Current Image"}
-							{forminput}
-								{if $gContent->mInfo.storage_path}
-									<img src="{$gContent->mInfo.thumbnail_url.medium}?{math equation="1 + rand(1,9999)"}" alt="{$gContent->mInfo.title|escape}" />
-									<br />
-									<small>
-										{if $gContent->mInfo.width && $gContent->mInfo.height}
-											{tr}Full size{/tr} - <a href="{$gContent->mInfo.source_url}">{$gContent->mInfo.width} x {$gContent->mInfo.height}</a>
-										{elseif $gContent->mInfo.source_url}
-											<a href="{$gContent->mInfo.source_url}">{tr}Full size{/tr}</a>
-										{/if}
-									</small>
-								{else}
-									<img src="{$smarty.const.FISHEYE_PKG_URL}image/no_image.png" alt="{$gContent->mInfo.title|escape}" />
-								{/if}
 							{/forminput}
 						</div>
 
