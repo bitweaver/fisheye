@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.80 2008/09/14 18:24:26 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.81 2008/09/27 19:06:39 spiderr Exp $
  * @package fisheye
  */
 
@@ -116,7 +116,7 @@ class FisheyeGallery extends FisheyeBase {
 
 					// Set some basic defaults for how to display a gallery if they're not already set
 					if (empty($this->mInfo['thumbnail_size'])) {
-						$this->mInfo['thumbnail_size'] = $this->getPreference('fisheye_gallery_default_thumbnail_size',FISHEYE_DEFAULT_THUMBNAIL_SIZE);
+						$this->mInfo['thumbnail_size'] = $this->getPreference( 'fisheye_gallery_default_thumbnail_size', NULL );
 					}
 					if (empty($this->mInfo['rows_per_page'])) {
 						$this->mInfo['rows_per_page'] = $this->getPreference('fisheye_gallery_default_rows_per_page', FISHEYE_DEFAULT_ROWS_PER_PAGE);
