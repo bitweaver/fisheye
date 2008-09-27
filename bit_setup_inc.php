@@ -15,10 +15,6 @@ if( $gBitSystem->isPackageActive( 'fisheye' ) && $gBitUser->hasPermission( 'p_fi
 	define ( 'FISHEYE_DEFAULT_COLS_PER_PAGE', 2 );
 	define ( 'FISHEYE_DEFAULT_THUMBNAIL_SIZE', 'large' );
 
-	$gBitSmarty->assign( 'FISHEYE_DEFAULT_ROWS_PER_PAGE', FISHEYE_DEFAULT_ROWS_PER_PAGE );
-	$gBitSmarty->assign( 'FISHEYE_DEFAULT_COLS_PER_PAGE', FISHEYE_DEFAULT_COLS_PER_PAGE );
-	$gBitSmarty->assign( 'FISHEYE_DEFAULT_THUMBNAIL_SIZE', FISHEYE_DEFAULT_THUMBNAIL_SIZE );
-
 	$menuHash = array(
 		'package_name'  => FISHEYE_PKG_NAME,
 		'index_url'     => FISHEYE_PKG_URL.'index.php',

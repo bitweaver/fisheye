@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.81 2008/09/27 19:06:39 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.82 2008/09/27 19:21:48 spiderr Exp $
  * @package fisheye
  */
 
@@ -314,7 +314,7 @@ class FisheyeGallery extends FisheyeBase {
 		}
 
 		if (empty($pStorageHash['thumbnail_size'])) {
-			$pStorageHash['thumbnail_size'] = $gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size', (!empty($this->mInfo['thumbnail_size']) ? $this->mInfo['thumbnail_size'] : FISHEYE_DEFAULT_THUMBNAIL_SIZE));
+			$pStorageHash['thumbnail_size'] = $gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size', (!empty($this->mInfo['thumbnail_size']) ? $this->mInfo['thumbnail_size'] : NULL ));
 		}
 
 		if (empty($pStorageHash['title'])) {
