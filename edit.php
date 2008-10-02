@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.28 2008/09/19 01:34:36 laetzer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.29 2008/10/02 16:10:50 wjames5 Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -22,7 +22,7 @@ if (empty($_REQUEST['gallery_id'])) {
 	$gBitSystem->verifyPermission('p_fisheye_create');
 }
 
-$gContent->verifyPermission( 'p_fisheye_edit' );
+$gContent->verifyEditPermission();
 
 if( $gBitUser->hasPermission( 'p_fisheye_change_thumb_size' ) ) {
 	$thumbnailSizes = array(
