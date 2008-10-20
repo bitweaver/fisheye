@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.25 2008/10/02 16:17:15 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.26 2008/10/20 21:40:10 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -17,7 +17,7 @@ global $gBitSystem;
 
 include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
 
-$gContent->verifyEditPermission();
+$gContent->verifyUpdatePermission();
 
 if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] ) ) {
 	if (empty($_REQUEST['gallery_id']) && empty($_REQUEST['image_id'])) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.83 2008/10/03 17:20:15 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.84 2008/10/20 21:40:10 spiderr Exp $
  * @package fisheye
  */
 
@@ -46,7 +46,7 @@ class FisheyeGallery extends FisheyeBase {
 		// Permission setup
 		$this->mViewContentPerm  = 'p_fisheye_view';
 		$this->mCreateContentPerm  = 'p_fisheye_create';
-		$this->mEditContentPerm  = 'p_fisheye_edit';
+		$this->mUpdateContentPerm  = 'p_fisheye_update';
 		$this->mAdminContentPerm = 'p_fisheye_admin';
 	}
 

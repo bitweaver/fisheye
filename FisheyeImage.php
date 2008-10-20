@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.91 2008/09/18 04:23:16 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.92 2008/10/20 21:40:10 spiderr Exp $
  * @package fisheye
  */
 
@@ -33,7 +33,7 @@ class FisheyeImage extends FisheyeBase {
 
 		// Permission setup
 		$this->mViewContentPerm  = 'p_fisheye_view';
-		$this->mEditContentPerm  = 'p_fisheye_edit';
+		$this->mUpdateContentPerm  = 'p_fisheye_update';
 		$this->mAdminContentPerm = 'p_fisheye_admin';
 	}
 

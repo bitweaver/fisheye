@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.30 2008/10/03 17:20:15 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.31 2008/10/20 21:40:10 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -19,7 +19,7 @@ include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 
 // Ensure the user has the permission to create new image galleries
 if( $gContent->isValid() ){
-	$gContent->verifyEditPermission();
+	$gContent->verifyUpdatePermission();
 }else{
 	$gContent->verifyCreatePermission();
 }

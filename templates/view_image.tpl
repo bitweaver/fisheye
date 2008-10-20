@@ -7,7 +7,7 @@
 	{if !$liberty_preview}
 		<div class="floaticon">
 			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon' serviceHash=$gContent->mInfo}
-			{if $gContent->hasEditPermission()}
+			{if $gContent->hasUpdatePermission()}
 				<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}">{biticon ipackage="icons" iname="accessories-text-editor" iexplain="Edit Image"}</a>
 				<a title="{tr}Delete{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}&amp;delete=1">{biticon ipackage="icons" iname="edit-delete" iexplain="Delete Image"}</a>
 			{/if}
@@ -23,7 +23,7 @@
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
 		<div class="image">
 			{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
-				{if $gContent->hasEditPermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )}
+				{if $gContent->hasUpdatePermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )}
 					<a href="{$gContent->mInfo.source_url|escape}">
 				{else}
 					<a href="{$gContent->mInfo.thumbnail_url.large}">
