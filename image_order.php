@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.31 2008/10/20 21:40:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.32 2008/10/21 02:39:49 wjames5 Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -23,7 +23,7 @@ if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 }
 
 // Ensure the user has the permission to create new image galleries
-$gContent->verifyEditPermission();
+$gContent->verifyUpdatePermission();
 
 if (!empty($_REQUEST['cancel'])) {
 	header( 'Location: '.$gContent->getDisplayUrl() );
