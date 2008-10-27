@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.92 2008/10/20 21:40:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.93 2008/10/27 03:50:21 spiderr Exp $
  * @package fisheye
  */
 
@@ -8,6 +8,8 @@
  * required setup
  */
 require_once( FISHEYE_PKG_PATH.'FisheyeBase.php' );
+// Needed for getting event_time and possible image title and data
+require_once( LIBERTY_PKG_PATH.'plugins/mime.image.php' );
 
 define('FISHEYEIMAGE_CONTENT_TYPE_GUID', 'fisheyeimage');
 
@@ -166,62 +168,109 @@ class FisheyeImage extends FisheyeBase {
 		return( !empty( $this->mInfo['width'] ) && !empty( $this->mInfo['height'] ) && ($this->mInfo['width'] > $this->mInfo['height']) );
 	}
 
-	function verifyImageData(&$pStorageHash) {
-		$pStorageHash['content_type_guid'] = $this->getContentType();
+	function verifyImageData(&$pParamHash) {
+		$pParamHash['content_type_guid'] = $this->getContentType();
 
-		if ( empty($pStorageHash['purge_from_galleries']) ) {
-			$pStorageHash['purge_from_galleries'] = FALSE;
+		if ( empty($pParamHash['purge_from_galleries']) ) {
+			$pParamHash['purge_from_galleries'] = FALSE;
 		}
 
-		if( !empty( $pStorageHash['resize'] ) ) {
-			$pStorageHash['_files_override'][0]['max_height'] = $pStorageHash['_files_override'][0]['max_width'] = $pStorageHash['resize'];
-		}
-
-		// let's add a default title
-		if( empty( $pStorageHash['title'] ) && !empty( $pStorageHash['_files_override'][0]['name'] ) ) {
-			$pStorageHash['title'] = file_name_to_title( $pStorageHash['_files_override'][0]['name'] );
+		if( !empty( $pParamHash['resize'] ) ) {
+			$pParamHash['_files_override'][0]['max_height'] = $pParamHash['_files_override'][0]['max_width'] = $pParamHash['resize'];
 		}
 
 		// Make sure we know what to update
 		if( $this->isValid() ) {
 			// these 2 entries will inform LibertyContent and LibertyMime that this is an update
-			$pStorageHash['content_id'] = $this->mContentId;
-			$pStorageHash['_files_override'][0]['attachment_id'] = $this->mInfo['attachment_id'];
+			$pParamHash['content_id'] = $this->mContentId;
+			$pParamHash['_files_override'][0]['attachment_id'] = $this->mInfo['attachment_id'];
 		}
+
+		if( function_exists( 'mime_image_get_exif_data' ) ) {
+vd( 'mime_image_get_exif_data' );
+			$exifFile['source_file'] = $pParamHash['_files_override'][0]['tmp_name'];
+			$exifFile['type'] =  $pParamHash['_files_override'][0]['type'];
+			$exifHash = mime_image_get_exif_data( $pParamHash['_files_override'][0] );
+
+			// Set some default values based on the Exif data
+			if( !empty( $exifHash['IFD0']['ImageDescription'] ) ) {
+				if( empty( $pParamHash['title'] ) ) {
+					$pParamHash['title'] = $exifHash['IFD0']['ImageDescription'];
+				} elseif( empty( $pParamHash['edit'] ) && !$this->getField( 'data' ) && $pParamHash['title'] != $exifHash['IFD0']['ImageDescription'] ) {
+					$pParamHash['edit'] = $exifHash['IFD0']['ImageDescription'];
+				}
+			}
+
+			// These come from Photoshop
+			if( !empty( $exifHash['headline'] ) ) {
+				if( empty( $pParamHash['title'] ) ) {
+					$pParamHash['title'] = $exifFile['headline'];
+				} elseif( empty( $pParamHash['edit'] ) && !$this->getField( 'data' ) && $pParamHash['title'] != $exifFile['headline'] ) {
+					$pParamHash['edit'] = $exifFile['headline'];
+				}
+			}
+			if( !empty( $exifFile['caption'] ) ) {
+				if( empty( $pParamHash['title'] ) ) {
+					$pParamHash['title'] = $exifFile['caption'];
+				} elseif( empty( $pParamHash['edit'] ) && !$this->getField( 'data' ) && $pParamHash['title'] != $exifFile['caption'] ) {
+					$pParamHash['edit'] = $exifFile['caption'];
+				}
+			}
+
+			if( empty( $pParamHash['event_time'] ) && !$this->getField( 'event_time' ) && !empty( $exifHash['EXIF']['DateTimeOriginal'] ) ) {
+				$pParamHash['event_time'] = strtotime( $exifHash['EXIF']['DateTimeOriginal'] );
+			}
+
+		}
+
+		// let's add a default title if we still don't have one
+		if( empty( $pParamHash['title'] ) && !empty( $pParamHash['_files_override'][0]['name'] ) ) {
+			if( preg_match( '/^[A-Z]:\\\/', $pParamHash['_files_override'][0]['name'] ) ) {
+				// MSIE shit file names if passthrough via gigaupload, etc.
+				// basename will not work - see http://us3.php.net/manual/en/function.basename.php
+				$tmp = preg_split("[\\\]", $pParamHash['_files_override'][0]['name'] );
+				$defaultName = $tmp[count($tmp) - 1];
+				$pParamHash['_files_override'][0]['name'] = $defaultName;
+			} else {
+				$defaultName = $pParamHash['_files_override'][0]['name'];
+			}
+
+			if( strpos( $pParamHash['_files_override'][0]['name'], '.' ) ) {
+				list( $defaultName, $ext ) = explode( '.', $pParamHash['_files_override'][0]['name'] );
+			}
+
+			$pParamHash['title'] = str_replace( '_', ' ', $defaultName );
+		}
+
 		return (count($this->mErrors) == 0);
 	}
 
-	function store(&$pStorageHash) {
+	function store(&$pParamHash) {
 		global $gBitSystem, $gLibertySystem;
-		if ($this->verifyImageData($pStorageHash)) {
+		if ($this->verifyImageData($pParamHash)) {
 			// Save the current attachment ID for the image attached to this FisheyeImage so we can
 			// delete it after saving the new one
-			if (!empty($this->mInfo['attachment_id']) && !empty($pStorageHash['_files_override'][0])) {
+			if (!empty($this->mInfo['attachment_id']) && !empty($pParamHash['_files_override'][0])) {
 				$currentImageAttachmentId = $this->mInfo['attachment_id'];
-				$pStorageHash['attachment_id'] = $currentImageAttachmentId;
+				$pParamHash['attachment_id'] = $currentImageAttachmentId;
 			} else {
 				$currentImageAttachmentId = NULL;
 			}
 
-			// LibertyMime will take care of thumbnail generation of the offline thumbnailer is not active
-			if( !empty( $pStorageHash['_files_override'][0] ) ) {
-				$pStorageHash['_files_override'][0]['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
-			}
-
 			// we have already done all the permission checking needed for this user to upload an image
-			$pStorageHash['no_perm_check'] = TRUE;
+			$pParamHash['no_perm_check'] = TRUE;
 
 			$this->mDb->StartTrans();
-			if( LibertyMime::store( $pStorageHash ) ) {
+			if( LibertyMime::store( $pParamHash ) ) {
 				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['attachment_id'] ) {
 					$this->expungeAttachment($currentImageAttachmentId);
 				}
 				// get storage format back from LibertyMime
-				$this->mContentId = $pStorageHash['content_id'];
+				$this->mContentId = $pParamHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
 
-				if ( isset($pStorageHash['storage_guid']) && !empty($pStorageHash['STORAGE'][$pStorageHash['storage_guid']]['_files_override'][0]['source_file'])) {
-					$imageDetails = $this->getImageDetails($pStorageHash['STORAGE'][$pStorageHash['storage_guid']]['_files_override'][0]['source_file']);
+				if ( isset($pParamHash['storage_guid']) && !empty($pParamHash['STORAGE'][$pParamHash['storage_guid']]['_files_override'][0]['source_file'])) {
+					$imageDetails = $this->getImageDetails($pParamHash['STORAGE'][$pParamHash['storage_guid']]['_files_override'][0]['source_file']);
 				} else {
 					$imageDetails = NULL;
 				}
@@ -246,11 +295,11 @@ class FisheyeImage extends FisheyeBase {
 
 				// check to see if we need offline thumbnailing
 				if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) ) {
-					$resize = !empty( $pStorageHash['resize'] ) ? (int)$pStorageHash['resize'] : NULL;
+					$resize = !empty( $pParamHash['resize'] ) ? (int)$pParamHash['resize'] : NULL;
 					$this->generateThumbnails( $resize );
 				} else {
-					if( !empty( $pStorageHash['resize'] ) && is_numeric( $pStorageHash['resize'] ) ) {
-						$this->resizeOriginal( $pStorageHash['resize'] );
+					if( !empty( $pParamHash['resize'] ) && is_numeric( $pParamHash['resize'] ) ) {
+						$this->resizeOriginal( $pParamHash['resize'] );
 					}
 				}
 				$this->mDb->CompleteTrans();
