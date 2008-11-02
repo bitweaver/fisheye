@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.94 2008/10/27 06:27:13 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.95 2008/11/02 03:44:06 spiderr Exp $
  * @package fisheye
  */
 
@@ -186,7 +186,7 @@ class FisheyeImage extends FisheyeBase {
 			$pParamHash['_files_override'][0]['attachment_id'] = $this->mInfo['attachment_id'];
 		}
 
-		if( function_exists( 'mime_image_get_exif_data' ) ) {
+		if( function_exists( 'mime_image_get_exif_data' ) && !empty( $pParamHash['_files_override'][0]['tmp_name'] ) ) {
 			$exifFile['source_file'] = $pParamHash['_files_override'][0]['tmp_name'];
 			$exifFile['type'] =  $pParamHash['_files_override'][0]['type'];
 			$exifHash = mime_image_get_exif_data( $pParamHash['_files_override'][0] );
