@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.84 2008/10/20 21:40:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.85 2008/11/06 22:20:47 spiderr Exp $
  * @package fisheye
  */
 
@@ -246,6 +246,35 @@ class FisheyeGallery extends FisheyeBase {
 			}
 		}
 		return count( $this->mItems );
+	}
+
+	function getImageList() {
+		global $gLibertySystem, $gBitSystem, $gBitUser;
+		$ret = NULL;
+		if( $this->isValid() ) {
+			$bindVars = array($this->mContentId);
+			$whereSql = $selectSql = $joinSql = $orderSql = '';
+			$rows = $offset = NULL;
+
+			if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
+				$orderSql = ", ".$this->mDb->convertSortmode( $gBitSystem->getConfig( 'fisheye_gallery_default_sort_mode' ) );
+			} else {
+				$orderSql = ", fgim.`item_content_id`";
+			}
+
+			$this->mItems = array();
+
+			$query = "SELECT lc.`content_id` AS `has_key`, fgim.*, lc.*, lct.*, ufm.`favorite_content_id` AS is_favorite $selectSql
+					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim 
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` ) 
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` ) 
+						$joinSql
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
+					WHERE fgim.`gallery_content_id` = ? $whereSql
+					ORDER BY fgim.`item_position` $orderSql";
+			$ret = $this->mDb->getAssoc($query, $bindVars, $rows, $offset);
+		}
+		return $ret;
 	}
 
 	function exportHtml( $pPaginate = FALSE ) {
