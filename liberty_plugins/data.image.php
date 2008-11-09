@@ -1,7 +1,7 @@
 <?php
 /**
- * @version  $Revision: 1.1 $
- * $Header: /cvsroot/bitweaver/_bit_fisheye/liberty_plugins/data.image.php,v 1.1 2008/07/08 07:13:57 squareing Exp $
+ * @version  $Revision: 1.2 $
+ * $Header: /cvsroot/bitweaver/_bit_fisheye/liberty_plugins/data.image.php,v 1.2 2008/11/09 09:08:55 squareing Exp $
  * @package  liberty
  * @subpackage plugins_storage
  */
@@ -20,7 +20,6 @@ $pluginParams = array (
 	'auto_activate' => TRUE,
 	'requires_pair' => FALSE,
 	'syntax'        => '{image id= }',
-	'path'          => LIBERTY_PKG_PATH.'plugins/data.image.php',
 	'plugin_type'   => DATA_PLUGIN,
 
 	// display icon in quicktags bar
