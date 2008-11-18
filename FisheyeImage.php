@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.95 2008/11/02 03:44:06 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.96 2008/11/18 00:05:48 spiderr Exp $
  * @package fisheye
  */
 
@@ -260,6 +260,7 @@ class FisheyeImage extends FisheyeBase {
 			$pParamHash['no_perm_check'] = TRUE;
 
 			$this->mDb->StartTrans();
+			$pParamHash['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
 			if( LibertyMime::store( $pParamHash ) ) {
 				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['attachment_id'] ) {
 					$this->expungeAttachment($currentImageAttachmentId);
