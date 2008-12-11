@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.86 2008/12/11 17:36:02 pppspoonman Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.87 2008/12/11 17:37:56 pppspoonman Exp $
  * @package fisheye
  */
 
@@ -217,7 +217,7 @@ class FisheyeGallery extends FisheyeBase {
 
 		$this->mItems = array();
 
-		$query = "SELECT fgim.*, lc.`content_type_guid`, lc.`user_id`, lct.*, ufm.`favorite_content_id` AS is_favorite $selectSql
+		$query = "SELECT fgim.*, lc.`user_id`, lct.*, ufm.`favorite_content_id` AS is_favorite $selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim 
 					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` ) 
 					INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` ) 
