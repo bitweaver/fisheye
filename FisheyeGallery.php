@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.85 2008/11/06 22:20:47 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.86 2008/12/11 17:36:02 pppspoonman Exp $
  * @package fisheye
  */
 
@@ -804,7 +804,7 @@ class FisheyeGallery extends FisheyeBase {
 		}
 
 		$query = "SELECT fg.`gallery_id` AS `hash_key`, fg.*, 
-					lc.`content_id`, lc.`user_id`, lc.`modifier_user_id`, lc.`created`, lc.`last_modified`,
+					lc.`user_id`, lc.`modifier_user_id`, lc.`created`, lc.`last_modified`,
 					lc.`content_type_guid`, lc.`format_guid`, lch.`hits`, lch.`last_hit`, lc.`event_time`, lc.`version`,
 					lc.`lang_code`, lc.`title`, lc.`ip`, uu.`login`, uu.`real_name`, plc.`content_type_guid` AS `preview_content_type_guid`
 					$selectSql
