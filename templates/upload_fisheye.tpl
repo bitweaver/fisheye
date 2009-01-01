@@ -69,64 +69,63 @@
 					{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_upload_tab_tpl}
 				{/jstabs}
 
-					{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
-						<div class="row">
-							{formlabel label="Process Archive(s)" for="process_archive"}
-							{forminput}
-								<input type="checkbox" id="process_archive" name="process_archive" value="true" checked="checked" />
-								{formhelp note="If you don't want to have archived files processed and extracted, please uncheck the above box."}
-							{/forminput}
-						</div>
-					{else}
-						<input type="hidden" name="process_archive" value="true" />
-					{/if}
-
-					{if function_exists('exif_read_data')}
-						<div class="row">
-							{formlabel label="Auto-Rotate Images" for="rotate_image"}
-							{forminput}
-								<input type="checkbox" id="rotate_image" name="rotate_image" value="auto" checked="checked" />
-								{formhelp note="If your camera was turned sideways when the image was taken, this will attempt to orient the image correctly."}
-							{/forminput}
-						</div>
-					{/if}
-
+				{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
 					<div class="row">
-						{if !$gBitUser->hasPermission( 'p_fisheye_create' )}
-							{formfeedback warning="Please make sure you select a gallery to load your images into, otherwise your images will be discarded"}
-						{/if}
-						{formlabel label="Add File(s) to these Galleries"}
+						{formlabel label="Process Archive(s)" for="process_archive"}
 						{forminput}
-							{foreach from=$galleryList key=galId item=gal}
-								<input type="checkbox" name="galleryAdditions[]" value="{$galId}"
-									{if  $gContent->mGalleryId == $galId}
-										checked="checked"
-									{else}
-										{section name=gx loop=$gContent->mInfo.parent_galleries}
-											{if ($gContent->mInfo.parent_galleries[gx].gallery_id == $galId)}
-												checked="checked"
-											{/if}
-										{/section}
-									{/if}
-								/>
-								<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title|escape}</a>
-								<br />
-							{foreachelse}
-								<p class="norecords">
-									{tr}No Galleries Found{/tr}.<br />
-									{tr}The following gallery will automatically be created for you{/tr}: <strong>{displayname hash=$gBitUser->mInfo nolink=1}'s Gallery</strong>
-								</p>
-							{/foreach}
+							<input type="checkbox" id="process_archive" name="process_archive" value="true" checked="checked" />
+							{formhelp note="If you don't want to have archived files processed and extracted, please uncheck the above box."}
 						{/forminput}
 					</div>
+				{else}
+					<input type="hidden" name="process_archive" value="true" />
+				{/if}
 
+				{if function_exists('exif_read_data')}
 					<div class="row">
-						{include file="bitpackage:fisheye/resize_image_select.tpl"}
+						{formlabel label="Auto-Rotate Images" for="rotate_image"}
+						{forminput}
+							<input type="checkbox" id="rotate_image" name="rotate_image" value="auto" checked="checked" />
+							{formhelp note="If your camera was turned sideways when the image was taken, this will attempt to orient the image correctly."}
+						{/forminput}
 					</div>
+				{/if}
+
+				<div class="row">
+					{if !$gBitUser->hasPermission( 'p_fisheye_create' )}
+						{formfeedback warning="Please make sure you select a gallery to load your images into, otherwise your images will be discarded"}
+					{/if}
+					{formlabel label="Add File(s) to these Galleries"}
+					{forminput}
+						{foreach from=$galleryList key=galId item=gal}
+							<input type="checkbox" name="galleryAdditions[]" value="{$galId}"
+								{if  $gContent->mGalleryId == $galId}
+									checked="checked"
+								{else}
+									{section name=gx loop=$gContent->mInfo.parent_galleries}
+										{if ($gContent->mInfo.parent_galleries[gx].gallery_id == $galId)}
+											checked="checked"
+										{/if}
+									{/section}
+								{/if}
+							/>
+							<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title|escape}</a>
+							<br />
+						{foreachelse}
+							<p class="norecords">
+								{tr}No Galleries Found{/tr}.<br />
+								{tr}The following gallery will automatically be created for you{/tr}: <strong>{displayname hash=$gBitUser->mInfo nolink=1}'s Gallery</strong>
+							</p>
+						{/foreach}
+					{/forminput}
 				</div>
 
-				{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_mini_tpl}
+				<div class="row">
+					{include file="bitpackage:fisheye/resize_image_select.tpl"}
+				</div>
 			</div>
+
+			{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_mini_tpl}
 
 			{if $gBitSystem->isPackageActive( 'gigaupload' )}
 				{include file="bitpackage:gigaupload/progress_container_inc.tpl"}
