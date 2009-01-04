@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.36 2008/06/25 22:21:09 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.37 2009/01/04 22:51:25 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -22,6 +22,7 @@ require_once( FISHEYE_PKG_PATH.'upload_inc.php');
 $gBitSystem->verifyPermission( 'p_fisheye_upload' );
 
 if( !empty( $_REQUEST['save_image'] ) ) {
+
 	// first of all set the execution time for this process to unlimited
 	set_time_limit(0);
 
@@ -60,6 +61,9 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 	}
 
 	$order = 90;
+
+	usort( $upImages, 'fisheye_sort_uploads' );
+
 	foreach( array_keys( $upImages ) as $key ) {
 		if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
 			$order = NULL;

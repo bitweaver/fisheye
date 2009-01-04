@@ -1,9 +1,13 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.29 2008/02/24 18:35:44 pppspoonman Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.30 2009/01/04 22:51:25 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
+
+function fisheye_sort_uploads( $a, $b ) {
+	return strnatcmp( $a['name'], $b['name'] );
+}
 
 /**
  * fisheye_get_default_gallery_id
