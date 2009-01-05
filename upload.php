@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.37 2009/01/04 22:51:25 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.38 2009/01/05 04:49:55 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -29,8 +29,10 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 	$upImages = array();
 	$upArchives = array();
 	$upErrors = array();
+	$upData = array();
 
 	$i = 0;
+	usort( $_FILES, 'fisheye_sort_uploads' );
 	foreach( array_keys( $_FILES ) as $key ) {
 		if( preg_match( '/(^image|pdf)/i', $_FILES[$key]['type'] ) ) {
 			$upImages[$key] = $_FILES[$key];
@@ -45,12 +47,12 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 		$i++;
 	}
 
-	$galleryAdditions = array();
+	$gallery_additions = array();
 
 	// No gallery was specified, let's try to find one or create one.
-	if( empty( $_REQUEST['galleryAdditions'] ) ) {
+	if( empty( $_REQUEST['gallery_additions'] ) ) {
 		if( $gBitUser->hasPermission( 'p_fisheye_create' )) {
-			$_REQUEST['galleryAdditions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
+			$_REQUEST['gallery_additions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
 		} else {
 			$gBitSystem->fatalError( tra( "You don't have permissions to create a new gallery. Please select an existing one to insert your images to." ));
 		}
@@ -60,25 +62,16 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 		$upErrors = fisheye_process_archive( $upArchives[$key], $gContent, TRUE );
 	}
 
-	$order = 90;
-
-	usort( $upImages, 'fisheye_sort_uploads' );
-
 	foreach( array_keys( $upImages ) as $key ) {
-		if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
-			$order = NULL;
-		} else {
-			$order += 10;
-		}
 		// resize original if we the user requests it
 		if( !empty( $_REQUEST['resize'] ) ) {
 			$upImages[$key]['resize'] = $_REQUEST['resize'];
 		}
-		$upErrors = array_merge( $upErrors, fisheye_store_upload( $upImages[$key], $order, $upData[$key], !empty( $_REQUEST['rotate_image'] )));
+		$upErrors = array_merge( $upErrors, fisheye_store_upload( $upImages[$key], $upData[$key], !empty( $_REQUEST['rotate_image'] )));
 	}
 
 	if( !is_object( $gContent ) || !$gContent->isValid() ) {
-		$gContent = new FisheyeGallery( $_REQUEST['galleryAdditions'][0] );
+		$gContent = new FisheyeGallery( $_REQUEST['gallery_additions'][0] );
 		$gContent->load();
 	}
 	if( empty( $upErrors ) ) {
