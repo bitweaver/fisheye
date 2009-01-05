@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.30 2009/01/04 22:51:25 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.31 2009/01/05 04:55:56 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -45,7 +45,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 /**
  * fisheye_store_upload
  */
-function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array(), $pAutoRotate=TRUE ) {
+function fisheye_store_upload( &$pFileHash, $pImageData = array(), $pAutoRotate=TRUE ) {
 	global $gBitSystem;
 	$ret = array();
 
@@ -65,7 +65,7 @@ function fisheye_store_upload( &$pFileHash, $pOrder = 10, $pImageData = array(),
 			if( $pAutoRotate ) {
 				$image->rotateImage( 'auto' );
 			}
-			$image->addToGalleries( $_REQUEST['galleryAdditions'], $pOrder );
+			$image->addToGalleries( $_REQUEST['gallery_additions'] );
 		}
 
 		// when we're using xupload, we need to remove temp files manually
@@ -148,7 +148,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 						$galleryHash = array( 'title' => str_replace( '_', ' ', $fileName ) );
 						if( $newGallery->store( $galleryHash ) ) {
 							if( $pRoot ) {
-								$newGallery->addToGalleries( $_REQUEST['galleryAdditions'] );
+								$newGallery->addToGalleries( $_REQUEST['gallery_additions'] );
 							}
 							if( is_object( $pParentGallery ) ) {
 								$pParentGallery->addItem( $newGallery->mContentId, $order );
@@ -167,7 +167,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 					$imageHash = array( '_files_override' => array( $scanFile ) );
 					if( $newImage->store( $imageHash ) ) {
 						if( $pRoot ) {
-							$newImage->addToGalleries( $_REQUEST['galleryAdditions'] );
+							$newImage->addToGalleries( $_REQUEST['gallery_additions'] );
 						}
 						if( !is_object( $pParentGallery ) ) {
 							global $gBitUser;
@@ -195,8 +195,8 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 // archives can be processed or simply added to the galleries.
 function fisheye_process_ftp_directory( $pProcessDir ) {
 	global $gBitSystem, $gBitUser;
-	if( empty( $_REQUEST['galleryAdditions'] ) ) {
-		$_REQUEST['galleryAdditions'] = array();
+	if( empty( $_REQUEST['gallery_additions'] ) ) {
+		$_REQUEST['gallery_additions'] = array();
 	}
 
 	$errors = array();
@@ -223,7 +223,7 @@ function fisheye_process_ftp_directory( $pProcessDir ) {
 					$dirGallery = new FisheyeGallery();
 					$galleryHash = array( 'title' => str_replace( '_', ' ', $fileName ) );
 					if( $dirGallery->store( $galleryHash ) ) {
-						$dirGallery->addToGalleries( $_REQUEST['galleryAdditions'] );
+						$dirGallery->addToGalleries( $_REQUEST['gallery_additions'] );
 						$errors = array_merge( $errors, fisheye_process_directory( $pProcessDir.'/'.$fileName, $dirGallery ) );
 					} else {
 						$errors = array_merge( $errors, array_values( $dirGallery->mErrors ) );
@@ -235,12 +235,12 @@ function fisheye_process_ftp_directory( $pProcessDir ) {
 						$newImage = new FisheyeImage();
 						$imageHash = array( 'upload' => $scanFile );
 						if( $newImage->store( $imageHash ) ) {
-							$newImage->addToGalleries( $_REQUEST['galleryAdditions'] );
+							$newImage->addToGalleries( $_REQUEST['gallery_additions'] );
 
 							// if we have a gallery to add these images to, load one of them
-							if( !empty( $_REQUEST['galleryAdditions'][0] ) && @!is_object( $imageGallery ) ) {
+							if( !empty( $_REQUEST['gallery_additions'][0] ) && @!is_object( $imageGallery ) ) {
 								$imageGallery = new FisheyeGallery();
-								$imageGallery->mGalleryId = $_REQUEST['galleryAdditions'][0];
+								$imageGallery->mGalleryId = $_REQUEST['gallery_additions'][0];
 								$imageGallery->load();
 							}
 
