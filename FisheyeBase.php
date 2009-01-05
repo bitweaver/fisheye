@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.28 2008/09/14 17:22:37 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.29 2009/01/05 04:48:11 spiderr Exp $
  * @package fisheye
  */
 
@@ -123,7 +123,8 @@ class FisheyeBase extends LibertyMime
 	}
 
 
-	function addToGalleries( $pGalleryArray, $pPosition=NULL ) {
+	function addToGalleries( $pGalleryArray ) {
+		global $gBitSystem;
 		if( $this->isValid() ) {
 			$inGalleries = $this->mDb->getAssoc( "SELECT `gallery_id`,`gallery_content_id` FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fgim.`gallery_content_id`=fg.`content_id`) WHERE `item_content_id` = ?", array( $this->mContentId ) );
 			$galleries = array();
@@ -137,7 +138,17 @@ class FisheyeBase extends LibertyMime
 						}
 						if( $galleries[$galleryId]->isValid() ) {
 							if( $galleries[$galleryId]->hasUserPermission( 'p_fisheye_upload', TRUE, FALSE ) || $galleries[$galleryId]->isPublic() ) {
-								$galleries[$galleryId]->addItem( $this->mContentId, $pPosition );
+								if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
+									$pos = NULL;
+								} else {
+									$query = "SELECT MAX(`item_position`) 
+											  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim 
+												INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fgim.`gallery_content_id`=fg.`content_id`) 
+											  WHERE fg.`gallery_id`=?";
+									$pos = $this->mDb->getOne( $query, array( $galleryId ) ) + 10; 
+								}
+
+								$galleries[$galleryId]->addItem( $this->mContentId, $pos );
 							} else {
 								$this->mErrors[] = "You do not have permission to attach ".$this->getTitle()." to ".$galleries[$galleryId]->getTitle();
 							}
