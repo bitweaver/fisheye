@@ -22,22 +22,10 @@
 	<div class="body">
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
 		<div class="image">
-			{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
-				{if $gContent->hasUpdatePermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )}
-					<a href="{$gContent->mInfo.source_url|escape}">
-				{else}
-					<a href="{$gContent->mInfo.thumbnail_url.large}">
-				{/if}
-			{/if}
-
 			{include file=$gLibertySystem->getMimeTemplate('view',$gContent->mInfo.attachment_plugin_guid) attachment=$gContent->mInfo.image_file}
 
 			{if $gBitSystem->isFeatureActive('fisheye_image_list_description') and $gContent->mInfo.data ne ''}
 				<p class="description">{$gContent->mInfo.parsed_data}</p>
-			{/if}
-
-			{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
-				</a>
 			{/if}
 		</div>
 	</div>	<!-- end .body -->

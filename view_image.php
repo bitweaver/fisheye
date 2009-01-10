@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.13 2008/09/17 06:54:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.14 2009/01/10 07:55:30 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -43,6 +43,10 @@ if( is_object( $gGallery ) && $gGallery->isCommentable() ) {
 
 $gContent->addHit();
 
-$gContent->mInfo['image_file']['original'] = TRUE;
+// this will let LibertyMime know that we want to display the original image
+if( $gContent->hasUpdatePermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )) {
+	$gContent->mInfo['image_file']['original'] = TRUE;
+}
+
 require_once( FISHEYE_PKG_PATH.'display_fisheye_image_inc.php' );
 ?>
