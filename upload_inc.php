@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.31 2009/01/05 04:55:56 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.32 2009/01/10 22:17:18 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -51,14 +51,13 @@ function fisheye_store_upload( &$pFileHash, $pImageData = array(), $pAutoRotate=
 
 	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && is_file( $pFileHash['tmp_name'] ) && fisheye_verify_upload_item(  $pFileHash ) ) {
 		// make a copy for each image we need to store
-		$storeHash = array_merge( $_REQUEST, $pImageData );
 		$image = new FisheyeImage();
 		// Store/Update the image
-		$storeHash['_files_override'] = array( $pFileHash );
-		$storeHash['process_storage'] = STORAGE_IMAGE;
-		$storeHash['purge_from_galleries'] = TRUE;
+		$pImageData['_files_override'] = array( $pFileHash );
+		$pImageData['process_storage'] = STORAGE_IMAGE;
+		$pImageData['purge_from_galleries'] = TRUE;
 		// store the image
-		if( !$image->store( $storeHash ) ) {
+		if( !$image->store( $pImageData ) ) {
 			$ret = $image->mErrors;
 		} else {
 			// play with image some more if user has requested it
