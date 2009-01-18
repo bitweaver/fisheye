@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.96 2008/11/18 00:05:48 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.97 2009/01/18 05:23:19 spiderr Exp $
  * @package fisheye
  */
 
@@ -183,13 +183,15 @@ class FisheyeImage extends FisheyeBase {
 		if( $this->isValid() ) {
 			// these 2 entries will inform LibertyContent and LibertyMime that this is an update
 			$pParamHash['content_id'] = $this->mContentId;
-			$pParamHash['_files_override'][0]['attachment_id'] = $this->mInfo['attachment_id'];
+			if( !empty(  $this->mInfo['attachment_id'] ) ) {
+				$pParamHash['_files_override'][0]['attachment_id'] = $this->mInfo['attachment_id'];
+			}
 		}
 
 		if( function_exists( 'mime_image_get_exif_data' ) && !empty( $pParamHash['_files_override'][0]['tmp_name'] ) ) {
 			$exifFile['source_file'] = $pParamHash['_files_override'][0]['tmp_name'];
 			$exifFile['type'] =  $pParamHash['_files_override'][0]['type'];
-			$exifHash = mime_image_get_exif_data( $pParamHash['_files_override'][0] );
+			$exifHash = mime_image_get_exif_data( $exifFile );
 
 			// Set some default values based on the Exif data
 			if( !empty( $exifHash['IFD0']['ImageDescription'] ) ) {
