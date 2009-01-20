@@ -33,7 +33,7 @@
 			<p>{$gContent->mInfo.data|escape}</p>
 		{/if}
 		{assign var=galLayout value=$gContent->getLayout()}
-		{include file='`$smarty.const.FISHEYE_PKG_PATH`gallery_views/`$galLayout`/fisheye_`$galLayout`_inc.tpl" }
+		{include file="`$smarty.const.FISHEYE_PKG_PATH`gallery_views/`$galLayout`/fisheye_`$galLayout`_inc.tpl" }
 	</div>	<!-- end .body -->
 
 	{libertypagination numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}
