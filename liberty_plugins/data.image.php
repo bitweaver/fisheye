@@ -1,7 +1,7 @@
 <?php
 /**
- * @version  $Revision: 1.2 $
- * $Header: /cvsroot/bitweaver/_bit_fisheye/liberty_plugins/data.image.php,v 1.2 2008/11/09 09:08:55 squareing Exp $
+ * @version  $Revision: 1.3 $
+ * $Header: /cvsroot/bitweaver/_bit_fisheye/liberty_plugins/data.image.php,v 1.3 2009/01/23 18:00:31 squareing Exp $
  * @package  liberty
  * @subpackage plugins_storage
  */
@@ -17,7 +17,7 @@ $pluginParams = array (
 	'description'   => tra( "Display an image in other content. This plugin only works with files that have been uploaded using fisheye." ),
 	'help_page'     => 'DataPluginImage',
 
-	'auto_activate' => TRUE,
+	'auto_activate' => FALSE,
 	'requires_pair' => FALSE,
 	'syntax'        => '{image id= }',
 	'plugin_type'   => DATA_PLUGIN,
