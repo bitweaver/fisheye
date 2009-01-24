@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.31 2008/10/20 21:40:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.32 2009/01/24 15:23:13 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -52,7 +52,7 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 		// make sure var is fully stuffed with current data
 		$gContent->load();
 		// set the mappings, or if nothing checked, nuke them all
-		$gContent->addToGalleries( !empty( $_REQUEST['galleryAdditions'] ) ? $_REQUEST['galleryAdditions'] : NULL );
+		$gContent->addToGalleries( !empty( $_REQUEST['gallery_additions'] ) ? $_REQUEST['gallery_additions'] : NULL );
 
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();

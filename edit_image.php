@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.26 2008/10/20 21:40:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.27 2009/01/24 15:23:13 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -60,7 +60,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 			header( 'Location: '.FISHEYE_PKG_URL."image_order.php?refresh=1&gallery_id=".$_REQUEST['gallery_id'] );
 			die;
 		}
-		$gContent->addToGalleries( $_REQUEST['galleryAdditions'] );
+		$gContent->addToGalleries( $_REQUEST['gallery_additions'] );
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();
 		}

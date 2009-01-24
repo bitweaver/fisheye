@@ -91,7 +91,7 @@
 							{formlabel label="Add This Image to These Galleries"}
 							{forminput}
 								{foreach from=$galleryList item=gal key=galleryId}
-										<input type="checkbox" name="galleryAdditions[]" value="{$galleryId}"
+										<input type="checkbox" name="gallery_additions[]" value="{$galleryId}"
 											{if $requested_gallery == $galleryId}
 												checked="checked"
 											{else}

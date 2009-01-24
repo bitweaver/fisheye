@@ -130,7 +130,7 @@ function updateGalleryPagination() {
 								{forminput}
 									{foreach from=$galleryList key=galId item=gal}
 										{if $galId != $gContent->mGalleryId}
-										<input type="checkbox" name="galleryAdditions[]" value="{$gal.gallery_id}"
+										<input type="checkbox" name="gallery_additions[]" value="{$gal.gallery_id}"
 											{if $gal.in_gallery}
 												checked="checked"
 											{/if}
