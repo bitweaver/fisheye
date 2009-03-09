@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.32 2009/01/24 15:23:13 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.33 2009/03/09 06:56:07 squareing Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -25,20 +25,19 @@ if( $gContent->isValid() ){
 }
 
 if( $gBitUser->hasPermission( 'p_fisheye_change_thumb_size' ) ) {
-	$thumbnailSizes = array(
-		'avatar' => tra( 'Avatar (100x100 pixels)' ),
-		'small'  => tra( 'Small (160x120 pixels)' ),
-		'medium' => tra( 'Medium (400x300 pixels)' ),
-		'large'  => tra( 'Large (800x600 pixels)' ),
-	);
-	$gBitSmarty->assign( 'thumbnailSizes', $thumbnailSizes );
+	$gBitSmarty->assign( 'thumbnailSizes', get_image_size_options( NULL ));
 }
 
-$gBitSmarty->assign( 'galleryPaginationTypes', array( FISHEYE_PAGINATION_FIXED_GRID => 'Fixed Grid', FISHEYE_PAGINATION_AUTO_FLOW => 'Auto-Flow Images',
-					 FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number', FISHEYE_PAGINATION_SIMPLE_LIST => 'Simple List' ) );
+$gBitSmarty->assign( 'galleryPaginationTypes',
+	array(
+		FISHEYE_PAGINATION_FIXED_GRID      => 'Fixed Grid',
+		FISHEYE_PAGINATION_AUTO_FLOW       => 'Auto-Flow Images',
+		FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number',
+		FISHEYE_PAGINATION_SIMPLE_LIST     => 'Simple List'
+	)
+);
 
 if( !empty( $_REQUEST['savegallery'] ) ) {
-
 	if( $_REQUEST['gallery_pagination'] == 'auto_flow' ) {
 		$_REQUEST['rows_per_page'] = $_REQUEST['total_per_page'];
 		$_REQUEST['cols_per_page'] = '1';

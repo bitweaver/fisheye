@@ -73,36 +73,33 @@ function updateGalleryPagination() {
 									<input type="text" id="gallery-cols-per-page" name="cols_per_page" size="2" maxlength="2" value="{$gContent->mInfo.cols_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_cols_per_page')}"/> {tr}Columns per page{/tr}
 									{formhelp note="The images will be displayed in a fixed grid. You can specify the number of thumbnails to display per page.<br /><strong>[rows] * [columns] = [number of images]</strong>."}
 								</div>
-		
+
 								<div id="auto_flow-pagination">
 									<input type="text" id="gallery-cols-per-page" name="total_per_page" size="2" maxlength="2" value="{$gContent->getField('rows_per_page',$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page'))}"/> {tr}Total images per page{/tr}
 									{formhelp note="The layout of the images on each gallery page will automatically adjust to the browsers width. You can specify the total number of thumbnails to display per page."}
 								</div>
-		
+
 								<div id="position_number-pagination">
 									{formhelp note="This option allows you to designate each specific image on each page. The image order number entered on the Image Order page will determine the exact location of each image. Fractional numbers indicate PAGE.POSITION and will specifiy variable images per page, such as: 1.1, 1.2, 2.1, 3.1, 3.2, 3.3"}
 								</div>
-								
+
 								<div id="simple_list-pagination">
 									{formhelp note="This option allows a single column display of images with mime details where available."}
 								</div>
-								
+
 							{/forminput}
 						</div>
 
-
-
-
 						{if $thumbnailSizes}
 							<div class="row">
-								{formlabel label="Thumbnail Size"}
+								{formlabel label="Thumbnail Size" for="thumbnail_size"}
 								{forminput}
 									{if $gContent->mInfo.thumbnail_size}
 										{assign var=thumb_size value=$gContent->mInfo.thumbnail_size}
 									{else}
 										{assign var=thumb_size value=$gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size')}
 									{/if}
-									{html_radios options=$thumbnailSizes name="thumbnail_size" checked=$thumb_size separator="<br />"}
+									{html_options values=$thumbnailSizes options=$thumbnailSizes name="thumbnail_size" id="thumbnail_size" selected=$thumb_size}
 								{/forminput}
 							</div>
 						{/if}
