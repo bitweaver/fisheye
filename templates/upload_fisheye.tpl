@@ -127,6 +127,7 @@
 
 			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}
 
+			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_mini_tpl"}
 			{if $gBitSystem->isPackageActive( 'gigaupload' )}
 				{include file="bitpackage:gigaupload/progress_container_inc.tpl"}
 			{/if}
