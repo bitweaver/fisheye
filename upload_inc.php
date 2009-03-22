@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.32 2009/01/10 22:17:18 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.33 2009/03/22 06:23:51 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -46,7 +46,7 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
  * fisheye_store_upload
  */
 function fisheye_store_upload( &$pFileHash, $pImageData = array(), $pAutoRotate=TRUE ) {
-	global $gBitSystem;
+	global $gBitSystem, $gFisheyeUploads;
 	$ret = array();
 
 	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && is_file( $pFileHash['tmp_name'] ) && fisheye_verify_upload_item(  $pFileHash ) ) {
@@ -65,6 +65,7 @@ function fisheye_store_upload( &$pFileHash, $pImageData = array(), $pAutoRotate=
 				$image->rotateImage( 'auto' );
 			}
 			$image->addToGalleries( $_REQUEST['gallery_additions'] );
+			$gFisheyeUploads[] = $image;
 		}
 
 		// when we're using xupload, we need to remove temp files manually

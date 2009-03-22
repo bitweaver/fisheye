@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.38 2009/01/05 04:49:55 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.39 2009/03/22 06:23:51 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -14,7 +14,7 @@ require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 
 global $gBitSystem;
-global $fisheyeErrors, $fisheyeWarnings, $fisheyeSuccess;
+global $fisheyeErrors, $fisheyeWarnings, $fisheyeSuccess, $gFisheyeUploads;
 
 include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 require_once( FISHEYE_PKG_PATH.'upload_inc.php');
@@ -75,6 +75,8 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 		$gContent->load();
 	}
 	if( empty( $upErrors ) ) {
+		$_REQUEST['uploaded_objects'] = &$gFisheyeUploads;
+		$gContent->invokeServices( "content_post_upload_function", $_REQUEST );
 		bit_redirect( $gContent->getDisplayUrl() );
 	} else {
 		$gBitSmarty->assign( 'errors', $upErrors );
