@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.88 2009/03/23 01:48:32 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.89 2009/03/23 02:05:04 spiderr Exp $
  * @package fisheye
  */
 
@@ -390,7 +390,7 @@ class FisheyeGallery extends FisheyeBase {
 		global $gLibertySystem, $gBitUser;
 		$ret = NULL;
 
-		if( !@$this->verifyId( $pContentId ) ) {
+		if( !@$this->verifyId( $pContentId ) && !empty( $this->mContentId ) ) {
 			$pContentId = $this->mContentId;
 		}
 
