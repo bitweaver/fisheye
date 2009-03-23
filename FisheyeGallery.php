@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.87 2008/12/11 17:37:56 pppspoonman Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.88 2009/03/23 01:48:32 spiderr Exp $
  * @package fisheye
  */
 
@@ -821,6 +821,7 @@ class FisheyeGallery extends FisheyeBase {
 				$thumbsize = !empty( $pListHash['thumbnail_size'] ) ? $pListHash['thumbnail_size'] : 'small';
 				foreach( array_keys( $data ) as $galleryId ) {
 					$data[$galleryId]['display_url'] = $this->getDisplayUrl( $galleryId );
+					$data[$galleryId]['display_uri'] = $this->getDisplayUri( $galleryId );
 					if( $thumbImage = $this->getThumbnailImage( $data[$galleryId]['content_id'], $data[$galleryId]['preview_content_id'], $data[$galleryId]['preview_content_type_guid'] ) ) {
 						$data[$galleryId]['thumbnail_url'] = $thumbImage->getThumbnailUrl( $thumbsize );
 						$data[$galleryId]['thumbnail_uri'] = $thumbImage->getThumbnailUri( $thumbsize );
