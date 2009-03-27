@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.89 2009/03/23 02:05:04 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.90 2009/03/27 19:53:23 spiderr Exp $
  * @package fisheye
  */
 
@@ -512,10 +512,13 @@ class FisheyeGallery extends FisheyeBase {
     * @return boolean wheter or not the item was added
     */
 	function addItem( $pContentId, $pPosition=NULL ) {
+		global $gBitSystem;
 		$ret = FALSE;
 		if( @$this->verifyId( $this->mContentId ) && @$this->verifyId( $pContentId ) && ( $this->mContentId != $pContentId ) && !$this->isInGallery( $this->mContentId, $pContentId  )  && !$this->isInGallery( $pContentId, $this->mContentId ) ) {
 			$query = "INSERT INTO `".BIT_DB_PREFIX."fisheye_gallery_image_map` (`item_content_id`, `gallery_content_id`, `item_position`) VALUES (?,?,?)";
 			$rs = $this->mDb->query($query, array($pContentId, $this->mContentId, $pPosition ) );
+			$query = "UPDATE `".BIT_DB_PREFIX."liberty_content` SET `last_modified`=? WHERE `content_id`=?";
+			$rs = $this->mDb->query( $query, array( $gBitSystem->getUTCTime(), $this->mContentId ) );
 			$ret = TRUE;
 		}
 		return $ret;
