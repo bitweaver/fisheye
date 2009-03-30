@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.97 2009/01/18 05:23:19 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.98 2009/03/30 03:47:28 spiderr Exp $
  * @package fisheye
  */
 
@@ -757,6 +757,8 @@ class FisheyeImage extends FisheyeBase {
 			$whereSql = substr_replace( $whereSql, ' WHERE ', 0, 4 );
 		}
 
+		$thumbSize = (!empty( $pListHash['size'] ) ? $pListHash['size'] : 'avatar' );
+
 		$query = "SELECT $distinct fi.`image_id` AS `hash_key`, fi.*, lf.*, lc.*, fg.`gallery_id`, uu.`login`, uu.`real_name` $select $selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_image` fi
 					INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON(la.`content_id`=fi.`content_id`)
@@ -776,7 +778,7 @@ class FisheyeImage extends FisheyeBase {
 					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( array(
 						'storage_path'  => $ret[$imageId]['storage_path'],
 						'default_image' => FISHEYE_PKG_URL.'image/generating_thumbnails.png',
-						'size'          => 'avatar',
+						'size'          => $thumbSize,
 					));
 				}
 			}
