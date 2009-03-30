@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.34 2009/03/30 13:23:01 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.35 2009/03/30 15:02:44 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -41,6 +41,12 @@ $gBitSmarty->assign( 'galleryPaginationTypes',
 if( !empty( $_REQUEST['savegallery'] ) ) {
 	if( $_REQUEST['gallery_pagination'] == 'auto_flow' ) {
 		$_REQUEST['rows_per_page'] = $_REQUEST['total_per_page'];
+		$_REQUEST['cols_per_page'] = '1';
+	} elseif ( $_REQUEST['gallery_pagination'] == 'simple_list' ) {
+		$_REQUEST['rows_per_page'] = $_REQUEST['lines_per_page'];
+		$_REQUEST['cols_per_page'] = '1';
+	} elseif ( $_REQUEST['gallery_pagination'] == 'ajax_scroller' ) {
+		$_REQUEST['rows_per_page'] = $_REQUEST['images_per_page'];
 		$_REQUEST['cols_per_page'] = '1';
 	}
 

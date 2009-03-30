@@ -4,6 +4,8 @@ function updateGalleryPagination() {
 	$('fixed_grid-pagination').style.display = 'none';
 	$('auto_flow-pagination').style.display = 'none';
 	$('position_number-pagination').style.display = 'none';
+	$('simple_list-pagination').style.display = 'none';
+	$('ajax_scroller-pagination').style.display = 'none';
 	var input = $('editGalleryForm').gallery_pagination;
     var i  = input.selectedIndex;
     var select = input.options[i].value;
@@ -75,7 +77,7 @@ function updateGalleryPagination() {
 								</div>
 
 								<div id="auto_flow-pagination">
-									<input type="text" id="gallery-cols-per-page" name="total_per_page" size="2" maxlength="2" value="{$gContent->getField('rows_per_page',$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page'))}"/> {tr}Total images per page{/tr}
+									<input type="text" id="gallery-rows-per-page" name="total_per_page" size="2" maxlength="2" value="{$gContent->mInfo.rows_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/> {tr}Total images per page{/tr}
 									{formhelp note="The layout of the images on each gallery page will automatically adjust to the browsers width. You can specify the total number of thumbnails to display per page."}
 								</div>
 
@@ -84,10 +86,12 @@ function updateGalleryPagination() {
 								</div>
 
 								<div id="simple_list-pagination">
+									<input type="text" id="gallery-rows-per-page" name="lines_per_page" size="2" maxlength="2" value="{$gContent->mInfo.rows_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/> {tr}Total lines per page{/tr}
 									{formhelp note="This option allows a single column display of images with mime details where available."}
 								</div>
 
 								<div id="ajax_scroller-pagination">
+									<input type="text" id="gallery-rows-per-page" name="images_per_page" size="2" maxlength="2" value="{$gContent->mInfo.rows_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/> {tr}Total images per page{/tr}
 									{formhelp note="This option provides an ajax powered scrolling display using the mbGallery jquery library."}
 								</div>
 
