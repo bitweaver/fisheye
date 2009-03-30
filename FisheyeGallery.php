@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.90 2009/03/27 19:53:23 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.91 2009/03/30 13:23:01 lsces Exp $
  * @package fisheye
  */
 
@@ -15,6 +15,7 @@ define( 'FISHEYE_PAGINATION_FIXED_GRID', 'fixed_grid' );
 define( 'FISHEYE_PAGINATION_AUTO_FLOW', 'auto_flow' );
 define( 'FISHEYE_PAGINATION_POSITION_NUMBER', 'position_number' );
 define( 'FISHEYE_PAGINATION_SIMPLE_LIST', 'simple_list' );
+define( 'FISHEYE_PAGINATION_AJAX_SCROLLER', 'ajax_scroller' );
 
 /**
  * FisheyeBase extends LibertyMime, which this class doesn't need, but we need a common base class

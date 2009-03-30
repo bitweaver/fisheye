@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.9 2008/07/06 09:09:56 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/display_fisheye_gallery_inc.php,v 1.10 2009/03/30 13:23:01 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -32,8 +32,14 @@ $gBitSmarty->assign_by_ref('cols_per_page', $gContent->mInfo['cols_per_page']);
 $gContent->loadImages( $page );
 $gContent->addHit();
 
-if(( $pagination = $gContent->getPreference( 'gallery_pagination' )) && $pagination == 'auto_flow' ) {
-	$gBitThemes->loadCss( FISHEYE_PKG_PATH."div_layout.css", TRUE );
+if( $pagination = $gContent->getPreference( 'gallery_pagination' ) ) {
+	if ( $pagination == 'auto_flow' ) {
+		$gBitThemes->loadCss( FISHEYE_PKG_PATH."div_layout.css", TRUE );
+	}
+	else if ( $pagination == 'ajax_scroller' ) {
+		$gBitThemes->loadCss( FISHEYE_PKG_PATH."mb_layout.css", TRUE );
+		$gBitThemes->loadAjax( 'jquery', array( UTIL_PKG_PATH.'/javascript/libs/jquery/plugins/mbgallery/mbGallery.js', UTIL_PKG_PATH.'/javascript/libs/jquery/plugins/mbgallery/mbGalleryBox.js' ) );
+	}
 }
 $gBitSystem->setBrowserTitle( $gContent->getTitle().' '.tra('Gallery') );
 $gBitSystem->display( $gContent->getRenderTemplate() , NULL, array( 'display_mode' => 'display' ));

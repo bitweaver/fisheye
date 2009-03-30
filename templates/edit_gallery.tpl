@@ -87,6 +87,10 @@ function updateGalleryPagination() {
 									{formhelp note="This option allows a single column display of images with mime details where available."}
 								</div>
 
+								<div id="ajax_scroller-pagination">
+									{formhelp note="This option provides an ajax powered scrolling display using the mbGallery jquery library."}
+								</div>
+
 							{/forminput}
 						</div>
 

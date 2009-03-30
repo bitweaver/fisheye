@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.33 2009/03/09 06:56:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.34 2009/03/30 13:23:01 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -33,7 +33,8 @@ $gBitSmarty->assign( 'galleryPaginationTypes',
 		FISHEYE_PAGINATION_FIXED_GRID      => 'Fixed Grid',
 		FISHEYE_PAGINATION_AUTO_FLOW       => 'Auto-Flow Images',
 		FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number',
-		FISHEYE_PAGINATION_SIMPLE_LIST     => 'Simple List'
+		FISHEYE_PAGINATION_SIMPLE_LIST     => 'Simple List',
+		FISHEYE_PAGINATION_AJAX_SCROLLER   => 'Ajax Scroller'
 	)
 );
 
