@@ -1,0 +1,49 @@
+body{
+    background-color:#666;
+}
+.gallery{
+    padding:35px;
+}
+.galleryCont{
+    display:none;
+}
+.descriptionBox{
+    font-size:10px;
+    background-color:#333333;
+    color:white;
+}
+
+.nextProject{
+    font-family:Arial, Helvetica, sans-serif;
+    color:#FFFFFF;
+    font-size:40px;
+}
+.desc{
+    font-family:Arial, Helvetica, sans-serif;
+    color:#000000;
+    font-size:14px;
+}
+
+.menu td{
+    padding:10px;
+    background-color:#FFFFFF;
+    font-family:Arial, Helvetica, sans-serif;
+    color:#CC0000;
+    font-size:14px;
+}
+.menu td a{
+    font-family:Arial, Helvetica, sans-serif;
+    text-decoration:none;
+    color:#CC0000;
+}
+.menu td a:hover{
+    font-family:Arial, Helvetica, sans-serif;
+    text-decoration:none;
+    color:#000000;
+}
+.imgDesc{
+    font-family:Arial, Helvetica, sans-serif;
+    color:#fff;
+    font-size:10px;
+
+}
