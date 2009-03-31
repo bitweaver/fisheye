@@ -1,10 +1,13 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.33 2009/03/22 06:23:51 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.34 2009/03/31 05:50:38 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
 
+/**
+ * fisheye_sort_upload
+ */
 function fisheye_sort_uploads( $a, $b ) {
 	return strnatcmp( $a['name'], $b['name'] );
 }
