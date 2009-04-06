@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.98 2009/03/30 03:47:28 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.99 2009/04/06 18:05:54 spiderr Exp $
  * @package fisheye
  */
 
@@ -196,7 +196,10 @@ class FisheyeImage extends FisheyeBase {
 			// Set some default values based on the Exif data
 			if( !empty( $exifHash['IFD0']['ImageDescription'] ) ) {
 				if( empty( $pParamHash['title'] ) ) {
-					$pParamHash['title'] = $exifHash['IFD0']['ImageDescription'];
+					$exifTitle = trim( $exifHash['IFD0']['ImageDescription'] );
+					if( !empty( $exifTitle ) ) {
+						$pParamHash['title'] = $exifTitle;
+					}
 				} elseif( empty( $pParamHash['edit'] ) && !$this->getField( 'data' ) && $pParamHash['title'] != $exifHash['IFD0']['ImageDescription'] ) {
 					$pParamHash['edit'] = $exifHash['IFD0']['ImageDescription'];
 				}
@@ -239,7 +242,6 @@ class FisheyeImage extends FisheyeBase {
 			if( strpos( $pParamHash['_files_override'][0]['name'], '.' ) ) {
 				list( $defaultName, $ext ) = explode( '.', $pParamHash['_files_override'][0]['name'] );
 			}
-
 			$pParamHash['title'] = str_replace( '_', ' ', $defaultName );
 		}
 
