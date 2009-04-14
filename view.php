@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.5 2007/06/11 20:16:23 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.6 2009/04/14 16:47:20 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -23,8 +23,10 @@ global $gHideModules;
 $gHideModules = $gBitSystem->isFeatureActive( 'fisheye_gallery_hide_modules' );
 
 if ( !$gContent->isValid() ) {
+	$gBitSystem->setHttpStatus( '404' );
 	// No gallery was indicated so we will redirect to the browse galleries page
-	header("location: ".FISHEYE_PKG_URL."list_galleries.php");
+	header( "HTTP/1.0 404 Not Found" );
+	header( "location: ".FISHEYE_PKG_URL."list_galleries.php" );
 	die;
 }
 
