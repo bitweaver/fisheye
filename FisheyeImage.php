@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.99 2009/04/06 18:05:54 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.100 2009/04/16 04:38:08 spiderr Exp $
  * @package fisheye
  */
 
@@ -208,9 +208,9 @@ class FisheyeImage extends FisheyeBase {
 			// These come from Photoshop
 			if( !empty( $exifHash['headline'] ) ) {
 				if( empty( $pParamHash['title'] ) ) {
-					$pParamHash['title'] = $exifFile['headline'];
-				} elseif( empty( $pParamHash['edit'] ) && !$this->getField( 'data' ) && $pParamHash['title'] != $exifFile['headline'] ) {
-					$pParamHash['edit'] = $exifFile['headline'];
+					$pParamHash['title'] = $exifHash['headline'];
+				} elseif( empty( $pParamHash['edit'] ) && !$this->getField( 'data' ) && $pParamHash['title'] != $exifHash['headline'] ) {
+					$pParamHash['edit'] = $exifHash['headline'];
 				}
 			}
 			if( !empty( $exifFile['caption'] ) ) {
