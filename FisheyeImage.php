@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.100 2009/04/16 04:38:08 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.101 2009/04/22 22:06:06 spiderr Exp $
  * @package fisheye
  */
 
@@ -666,6 +666,8 @@ class FisheyeImage extends FisheyeBase {
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
 			if( LibertyMime::expunge($pExpungeAttachment) ) {
 				$this->mDb->CompleteTrans();
+				$this->mImageId = NULL;
+				$this->mContentId = NULL;
 			} else {
 				$this->mDb->RollbackTrans();
 			}
