@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.101 2009/04/22 22:06:06 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.102 2009/04/27 16:57:02 spiderr Exp $
  * @package fisheye
  */
 
@@ -622,8 +622,13 @@ class FisheyeImage extends FisheyeBase {
 			$pTitle = $this->getTitle();
 		}
 
+		$pTitle = trim( $pTitle );
 		if( empty( $pMixed ) && !empty( $this ) ) {
 			$pMixed = $this->mInfo;
+		}
+
+		if( empty( $pTitle ) ) {
+			$pTitle = tra( "Image" )." ".$pMixed['image_id'];
 		}
 
 		$ret = $pTitle;
