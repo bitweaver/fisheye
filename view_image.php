@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.14 2009/01/10 07:55:30 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.15 2009/05/05 22:32:33 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -14,8 +14,6 @@ require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 
 global $gBitSystem, $gDebug;
-
-//$gDebug = TRUE;
 
 if( !empty( $_REQUEST['size'] ) ) {
 	// nuke old values if set
