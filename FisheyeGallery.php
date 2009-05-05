@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.91 2009/03/30 13:23:01 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.92 2009/05/05 22:32:54 spiderr Exp $
  * @package fisheye
  */
 
@@ -186,7 +186,6 @@ class FisheyeGallery extends FisheyeBase {
 		if( !$this->isValid() ) {
 			return NULL;
 		}
-
 		$bindVars = array($this->mContentId);
 		$whereSql = $selectSql = $joinSql = $orderSql = '';
 		$rows = $offset = NULL;
@@ -265,10 +264,11 @@ class FisheyeGallery extends FisheyeBase {
 
 			$this->mItems = array();
 
-			$query = "SELECT lc.`content_id` AS `has_key`, fgim.*, lc.*, lct.*, ufm.`favorite_content_id` AS is_favorite $selectSql
+			$query = "SELECT lc.`content_id` AS `has_key`, fgim.*, lc.*, lct.*, fi.`image_id`, ufm.`favorite_content_id` AS is_favorite $selectSql
 					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim 
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` ) 
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` ) 
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."` fisheye_image fi ON ( fgim.`item_content_id`=fi.`content_id` )
 						$joinSql
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
 					WHERE fgim.`gallery_content_id` = ? $whereSql
@@ -284,6 +284,7 @@ class FisheyeGallery extends FisheyeBase {
 						'landscape' => FALSE,
 						'url' => $this->getDisplayUrl(),
 						'content_id' => $this->mContentId,
+t
 					);
 		if( $this->loadImages() ) {
 			foreach( array_keys( $this->mItems ) as $key ) {
@@ -841,7 +842,7 @@ class FisheyeGallery extends FisheyeBase {
 		// count galleries
 		$query_c = "SELECT COUNT( fg.`gallery_id` )
 					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
-						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (fg.`content_id` = lc.`content_id`)
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (fg.`content_id` = lc.`content_id` )
 						INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id` = lc.`user_id`)
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` ptc ON( fg.`preview_content_id`=ptc.`content_id` )
 				$mapJoin $joinSql
