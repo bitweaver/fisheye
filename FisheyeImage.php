@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.102 2009/04/27 16:57:02 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.103 2009/05/05 22:29:00 spiderr Exp $
  * @package fisheye
  */
 
@@ -110,9 +110,6 @@ class FisheyeImage extends FisheyeBase {
 					}
 				}
 
-				$this->mInfo['title']        = $this->getTitle();
-				$this->mInfo['display_url']  = $this->getDisplayUrl();
-
 				// LibertyMime will load the attachment details in $this->mStorage
 				LibertyMime::load( NULL, $pPluginParams );
 
@@ -131,6 +128,10 @@ class FisheyeImage extends FisheyeBase {
 				} else {
 					$this->mInfo['image_file'] = NULL;
 				}
+
+				$this->mInfo['title']        = $this->getTitle();
+				$this->mInfo['display_url']  = $this->getDisplayUrl();
+
 			}
 		} else {
 			// We don't have an image_id or a content_id so there is no way to know what to load
@@ -618,9 +619,6 @@ class FisheyeImage extends FisheyeBase {
 	 */
 	function getDisplayLink( $pTitle=NULL, $pMixed=NULL ) {
 		global $gBitSystem;
-		if( empty( $pTitle ) && !empty( $this ) ) {
-			$pTitle = $this->getTitle();
-		}
 
 		$pTitle = trim( $pTitle );
 		if( empty( $pMixed ) && !empty( $this ) ) {
@@ -628,7 +626,7 @@ class FisheyeImage extends FisheyeBase {
 		}
 
 		if( empty( $pTitle ) ) {
-			$pTitle = tra( "Image" )." ".$pMixed['image_id'];
+			FisheyeImage::getTitle( $pMixed );
 		}
 
 		$ret = $pTitle;
@@ -638,6 +636,24 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
+	function getTitle( $pHash=NULL ) {
+		if( empty( $pHash ) && !empty( $this ) ) {
+			$pMixed = $this->mInfo;
+		}
+		$ret = trim( parent::getTitle( $pHash ) );
+		if( empty( $ret ) ) {
+			$storage = (!empty( $this->mStorage ) ? current( $this->mStorage ) : NULL);
+			if( !empty( $storage['filename'] ) ) {
+				$ret = $storage['filename'];
+			} elseif( !empty( $pHash['image_id'] ) ) {
+				$ret = tra( $pHash['content_description'] )." ".$pHash['image_id'];
+			} else {
+				$ret =  tra( $pHash['content_description'] );
+			}
+		}
+		return $ret;
+	}
+		
 
 	function loadThumbnail( $pSize='small' ) {
 		$this->mInfo['gallery_thumbnail_url'] = &$this->mInfo['thumbnail_url'][$pSize];
