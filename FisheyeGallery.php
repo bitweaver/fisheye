@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.92 2009/05/05 22:32:54 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.93 2009/05/06 18:36:12 spiderr Exp $
  * @package fisheye
  */
 
@@ -284,7 +284,6 @@ class FisheyeGallery extends FisheyeBase {
 						'landscape' => FALSE,
 						'url' => $this->getDisplayUrl(),
 						'content_id' => $this->mContentId,
-t
 					);
 		if( $this->loadImages() ) {
 			foreach( array_keys( $this->mItems ) as $key ) {
