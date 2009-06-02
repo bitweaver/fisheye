@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.39 2009/03/22 06:23:51 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.40 2009/06/02 15:43:51 tekimaki_admin Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -36,10 +36,11 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 	foreach( array_keys( $_FILES ) as $key ) {
 		if( preg_match( '/(^image|pdf)/i', $_FILES[$key]['type'] ) ) {
 			$upImages[$key] = $_FILES[$key];
+			// clone the request data so edit service values are passed into store process
+			$upData[$key] = $_REQUEST;
+			// add the form data for each upload
 			if( !empty( $_REQUEST['imagedata'][$i] ) ) {
-				$upData[$key] = $_REQUEST['imagedata'][$i];
-			} else {
-				$upData[$key] = array();
+				array_merge( $upData[$key], $_REQUEST['imagedata'][$i] );
 			}
 		} elseif( !empty( $_FILES[$key]['tmp_name'] ) && !empty( $_FILES[$key]['name'] ) ) {
 			$upArchives[$key] = $_FILES[$key];
@@ -74,9 +75,13 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 		$gContent = new FisheyeGallery( $_REQUEST['gallery_additions'][0] );
 		$gContent->load();
 	}
-	if( empty( $upErrors ) ) {
+
+	if( !empty( $gFisheyeUploads ) ){
 		$_REQUEST['uploaded_objects'] = &$gFisheyeUploads;
 		$gContent->invokeServices( "content_post_upload_function", $_REQUEST );
+	}
+
+	if( empty( $upErrors ) ) {
 		bit_redirect( $gContent->getDisplayUrl() );
 	} else {
 		$gBitSmarty->assign( 'errors', $upErrors );
@@ -120,5 +125,5 @@ if( $gBitSystem->isPackageActive( 'gigaupload' ) ) {
 	$gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/multifile.js', TRUE );
 }
 
-$gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' , array( 'display_mode' => 'display' ));
+$gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' , array( 'display_mode' => 'edit' ));
 ?>
