@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.104 2009/05/15 06:59:29 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.105 2009/06/02 15:44:41 tekimaki_admin Exp $
  * @package fisheye
  */
 
@@ -244,6 +244,10 @@ class FisheyeImage extends FisheyeBase {
 				list( $defaultName, $ext ) = explode( '.', $pParamHash['_files_override'][0]['name'] );
 			}
 			$pParamHash['title'] = str_replace( '_', ' ', $defaultName );
+		}
+
+		if( count( $this->mErrors ) > 0 ){
+			parent::verify( $pParamHash );
 		}
 
 		return (count($this->mErrors) == 0);
