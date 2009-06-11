@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.27 2009/01/24 15:23:13 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.28 2009/06/11 19:02:03 tylerbello Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -19,7 +19,30 @@ include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
 
 $gContent->verifyUpdatePermission();
 
+//Utility function, maybe should be moved for use elsewhere. Seems like it has a multitude of possible hook points
+function convertSmartQuotes($string) 
+{ 
+//UTF-8
+$search = array("\xe2\x80\x98", "\xe2\x80\x99", "\xe2\x80\x9c", "\xe2\x80\x9d", "\xe2\x80\x93", "\xe2\x80\x94", "\xe2\x80\xa6");
+$replace= array("'", "'", '"', '"', '-', '--', '...');
+
+$string = str_replace($search, $replace, $string); 
+
+//Windows
+$search = array(chr(145), chr(146), chr(147), chr(148), chr(150), chr(151), chr(133));
+$replace=  array("'", "'", '"', '"', '-', '--', '...');
+	
+$string = str_replace($search, $replace, $string); 
+
+return $string; 
+} 	
+if( !empty($_REQUEST['edit'])){
+	global $gBitContent;
+	$_REQUEST['edit'] = convertSmartQuotes($_REQUEST['edit']);
+}
+
 if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] ) ) {
+	
 	if (empty($_REQUEST['gallery_id']) && empty($_REQUEST['image_id'])) {
 		// We have no way to know what gallery to add an image to or what image to edit!
 		$gBitSmarty->assign( 'msg', tra( "No gallery or image was specified" ) );
