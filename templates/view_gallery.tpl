@@ -9,7 +9,7 @@
 				<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage="icons" iname="document-properties" iexplain="Edit"}</a>
 				<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage=fisheye iname="order" iexplain="Image Order"}</a>
 			{/if}
-			{if $gContent->hasUserPermission('p_fisheye_upload', 1, 0) || $gContent->getPreference('is_public')}
+			{if $gContent->hasUpdatePermission() || $gContent->getPreference('is_public')}
 				<a title="{tr}Add Image{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">{biticon ipackage="icons" iname="go-up" iexplain="Add Image"}</a>
 			{/if}
 			{if $gContent->getPreference('is_public')}

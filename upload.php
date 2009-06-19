@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.40 2009/06/02 15:43:51 tekimaki_admin Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.41 2009/06/19 18:41:08 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -108,10 +108,12 @@ if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->h
 	$listHash['show_public'] = TRUE;
 }
 $galleryList = $gFisheyeGallery->getList( $listHash );
+
 if( @BitBase::verifyId( $_REQUEST['gallery_id'] ) && empty( $galleryList[$_REQUEST['gallery_id']] ) ) {
-	$addGallery = new FisheyeGallery( $_REQUEST['gallery_id'] );
-	if( $addGallery->load() && $addGallery->hasViewPermission() ) {
-		$galleryList[$_REQUEST['gallery_id']] = $addGallery->mInfo;
+	if( $addGallery = new FisheyeGallery( $_REQUEST['gallery_id'] ) ) {
+		if( $addGallery->load() && $addGallery->hasUpdatePermission() ) {
+			$galleryList[$_REQUEST['gallery_id']] = $addGallery->mInfo;
+		}
 	}
 }
 
