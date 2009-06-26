@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.105 2009/06/02 15:44:41 tekimaki_admin Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.106 2009/06/26 20:46:14 spiderr Exp $
  * @package fisheye
  */
 
@@ -659,10 +659,6 @@ class FisheyeImage extends FisheyeBase {
 	}
 		
 
-	function loadThumbnail( $pSize='small' ) {
-		$this->mInfo['gallery_thumbnail_url'] = &$this->mInfo['thumbnail_url'][$pSize];
-	}
-
 	function getThumbnailContentId() {
 		return( $this->getField( 'content_id' ) );
 	}
@@ -672,10 +668,7 @@ class FisheyeImage extends FisheyeBase {
 		if( !empty( $pInfoHash ) ) {
 			// do some stuff if we are given a hash of stuff
 		} else {
-			if( empty( $this->mInfo['gallery_thumbnail_url'] ) ) {
-				$this->loadThumbnail( $pSize );
-			}
-			$ret = $this->mInfo['gallery_thumbnail_url'];
+			$ret = $this->mInfo['thumbnail_url'][$pSize];
 		}
 		return $ret;
 	}
