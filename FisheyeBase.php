@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.29 2009/01/05 04:48:11 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.30 2009/06/30 20:03:50 spiderr Exp $
  * @package fisheye
  */
 
@@ -75,6 +75,10 @@ class FisheyeBase extends LibertyMime
 
 	function getThumbnailContentId() {
 		// PURE VIRTUAL
+	}
+
+	function loadThumbnail( $pSize='small', $pContentId=NULL ) {
+		// Default does nothing
 	}
 
 	// THis is a function that creates a mack daddy function to get a breadcrumb path with a single query.
