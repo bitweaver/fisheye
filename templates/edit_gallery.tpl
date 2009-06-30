@@ -1,15 +1,15 @@
 {literal}
 <script type="text/javascript">//<![CDATA[
 function updateGalleryPagination() {
-	$('fixed_grid-pagination').style.display = 'none';
-	$('auto_flow-pagination').style.display = 'none';
-	$('position_number-pagination').style.display = 'none';
-	$('simple_list-pagination').style.display = 'none';
-	$('ajax_scroller-pagination').style.display = 'none';
-	var input = $('editGalleryForm').gallery_pagination;
+	document.getElementById('fixed_grid-pagination').style.display = 'none';
+	document.getElementById('auto_flow-pagination').style.display = 'none';
+	document.getElementById('position_number-pagination').style.display = 'none';
+	document.getElementById('simple_list-pagination').style.display = 'none';
+	document.getElementById('ajax_scroller-pagination').style.display = 'none';
+	var input = document.getElementById('editGalleryForm').gallery_pagination;
     var i  = input.selectedIndex;
     var select = input.options[i].value;
-	$(select+'-pagination').style.display = 'block';
+	document.getElementById(select+'-pagination').style.display = 'block';
 }
 //]]></script>
 {/literal}
