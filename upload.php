@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.41 2009/06/19 18:41:08 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.42 2009/07/01 19:54:10 tylerbello Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -13,14 +13,14 @@ require_once( '../bit_setup_inc.php' );
 require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 
-global $gBitSystem;
+global $gBitSystem,$gBitThemes;
 global $fisheyeErrors, $fisheyeWarnings, $fisheyeSuccess, $gFisheyeUploads;
 
 include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
 require_once( FISHEYE_PKG_PATH.'upload_inc.php');
 
-$gBitSystem->verifyPermission( 'p_fisheye_upload' );
 
+$gBitSystem->verifyPermission( 'p_fisheye_upload' );
 if( !empty( $_REQUEST['save_image'] ) ) {
 
 	// first of all set the execution time for this process to unlimited
@@ -118,14 +118,21 @@ if( @BitBase::verifyId( $_REQUEST['gallery_id'] ) && empty( $galleryList[$_REQUE
 }
 
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
+/*
+
+I'm commenting this out because both things are now unnecessary
 
 if( $gBitSystem->isPackageActive( 'gigaupload' ) ) {
-	gigaupload_smarty_setup( FISHEYE_PKG_URL.'upload.php' );
+//	gigaupload_smarty_setup( FISHEYE_PKG_URL.'upload.php' );
 } elseif( $gBitSystem->isFeatureActive( 'fisheye_extended_upload_slots' ) ) {
-	$gBitThemes->loadAjax( 'mochikit' );
+//	$gBitThemes->loadAjax( 'mochikit' );
 } else {
-	$gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/multifile.js', TRUE );
-}
+*/
+	
+	$gBitThemes->loadAjax( 'jquery' );
+	$gBitThemes->loadJavascript( APACHEUPLOAD_PKG_PATH.'multifile.js', TRUE );
+	
+//}
 
 $gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' , array( 'display_mode' => 'edit' ));
 ?>
