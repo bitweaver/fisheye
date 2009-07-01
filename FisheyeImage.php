@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.106 2009/06/26 20:46:14 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.107 2009/07/01 11:03:40 spiderr Exp $
  * @package fisheye
  */
 
@@ -649,10 +649,11 @@ class FisheyeImage extends FisheyeBase {
 			$storage = (!empty( $this->mStorage ) ? current( $this->mStorage ) : NULL);
 			if( !empty( $storage['filename'] ) ) {
 				$ret = $storage['filename'];
-			} elseif( !empty( $pHash['image_id'] ) ) {
-				$ret = tra( $pHash['content_description'] )." ".$pHash['image_id'];
 			} else {
-				$ret =  tra( $pHash['content_description'] );
+				$ret = tra( $this->getContentTypeDescription( $pHash['content_type_guid'] ) );
+				if( !empty( $pHash['image_id'] ) ) {
+					$ret .= " ".$pHash['image_id'];
+				}
 			}
 		}
 		return $ret;
