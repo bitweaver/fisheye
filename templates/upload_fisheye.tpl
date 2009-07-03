@@ -1,5 +1,5 @@
-{if $gBitSystem->isPackageActive('gigaupload')}
-	{include file="bitpackage:gigaupload/js_inc.tpl"}
+{if $gLibertySystem->hasService('upload')}
+	{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_js_tpl"}
 {else}
 	{assign var=onSubmit value="javascript:disableSubmit('submitbutton');"}
 	{assign var=id value=fishid}
@@ -8,7 +8,7 @@
 {strip}
 <div class="admin fisheye">
 	<div class="header">
-		<h1>{tr}Upload Files{/tr}</h1>
+		<h1>{biticon ipackage="icons" iname="go-up" iexplain="^"} {tr}Upload Photos{/tr}</h1>
 	</div>
 
 	<div class="body">
@@ -16,52 +16,53 @@
 			<div id="uploadblock">
 				{jstabs}
 					{jstab title="Upload Files"}
-						{legend legend="Upload Files"}
-							{formfeedback note=$quotaMessage}
+						{formfeedback note=$quotaMessage}
 
-							<p class="warning">{biticon ipackage="icons" iname="dialog-warning" iexplain=Warning iforce=icon} {tr}The maximum file size you can upload is {$uploadMax} Megabytes{/tr}</p>
-							{formfeedback error=$errors}
+						<p class="warning">{biticon ipackage="icons" iname="dialog-warning" iexplain=Warning iforce=icon} {tr}The maximum file size you can upload is {$uploadMax} Megabytes{/tr}</p>
+						{formfeedback error=$errors}
 
-							{formhelp note="Here you can upload files. You can upload single files, or you can upload archived files (.zip's, .tar's, etc. NOTE: .sitx on Mac OS X generally does not work) Archived uploads will automatically be decompressed, and a gallery will created for every gallery in it. If you have nested folders, the hierarchy will be maintained for you with nested galleries." force=true}
-							{if $gBrowserInfo.platform=='mac'}
-								{formhelp note="Mac Users: The newer .sitx format is not supported currently because the makers of the StuffIt application have not released new versions of their software for servers. Please use DropZip or similar for best results." force=true}
-							{/if}
+						{formhelp note="Here you can upload files. You can upload single files, or you can upload archived files (.zip's, .tar's, etc. NOTE: .sitx on Mac OS X generally does not work) Archived uploads will automatically be decompressed, and a gallery will created for every gallery in it. If you have nested folders, the hierarchy will be maintained for you with nested galleries." force=true}
+						{if $gBrowserInfo.platform=='mac'}
+							{formhelp note="Mac Users: The newer .sitx format is not supported currently because the makers of the StuffIt application have not released new versions of their software for servers. Please use DropZip or similar for best results." force=true}
+						{/if}
 
-							<input type="hidden" name="gallery_id" value="{$galleryId|escape}"/>
-							<input type="hidden" name="save_image" value="save" />
-							<input type="hidden" name="image_id" value="{$imageId}"/>
-							<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
+						<input type="hidden" name="gallery_id" value="{$galleryId|escape}"/>
+						<input type="hidden" name="save_image" value="save" />
+						<input type="hidden" name="image_id" value="{$imageId}"/>
+						<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 
-								{if $gBitSystem->isPackageActive( 'gigaupload' )}
-									{$gigaPopup}
-									{include file="bitpackage:gigaupload/form_inc.tpl"}
-								{elseif $gBitSystem->isFeatureActive( 'fisheye_extended_upload_slots' )}
-									<br />
-									<h2>{tr}Upload Images{/tr}</h2>
-									{include file="bitpackage:kernel/upload_slot_inc.tpl" hash_key=imagedata}
-								{else}
-									<div class="row">
-										{formlabel label="Select File(s)"}
-										{forminput}
-											<input type="file" name="file0" id="fileupload" />
-											{formhelp note="To upload more than one file, please click on choose repeatedly<br />(javascript has to be enabled for this to work)."}
-										{/forminput}
-									</div>
+						<p>
+						{if $gLibertySystem->hasService('upload')}
+							{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_form_tpl"}
+						{elseif $gBitSystem->isFeatureActive( 'fisheye_extended_upload_slots' )}
+							<br />
+							<h2>{tr}Upload Images{/tr}</h2>
+							{include file="bitpackage:kernel/upload_slot_inc.tpl" hash_key=imagedata}
+						{else}
+							
+							<div class="row">
+								{formlabel label="Select File(s)"}
+								{forminput}
+									<input type="file" name="file0" id="fileupload" />
+									{formhelp note="To upload more than one file, click on choose repeatedly."}
+								{/forminput}
+							</div>
 
-									<div class="row">
-										{formlabel label="Selected File(s)" for=""}
-										{forminput}
-											<div id="fileslist"></div>
-											<div class="clear"></div>
-											{formhelp note="These files will be uploaded when you hit the upload button below."}
-											<script type="text/javascript">/* <![CDATA[ Multi file upload */
-												var multi_selector = new MultiSelector( document.getElementById( 'fileslist' ), 10 );
-												multi_selector.addElement( document.getElementById( 'fileupload' ) );
-											/* ]]> */</script>
-										{/forminput}
-									</div>
-								{/if}
-						{/legend}
+							<div class="row">
+								{formlabel label="Selected File(s)" for=""}
+								{forminput}
+									<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/libs/multifile.js"></script>
+									<div id="fileslist"></div>
+									<div class="clear"></div>
+									{formhelp note="These files will be uploaded when you hit the upload button below."}
+									<script type="text/javascript">/* <![CDATA[ Multi file upload */
+										var multi_selector = new MultiSelector( document.getElementById( 'fileslist' ), 10 );
+										multi_selector.addElement( document.getElementById( 'fileupload' ) );
+									/* ]]> */</script>
+								{/forminput}
+							</div>
+						{/if}
+						</p>
 					{/jstab}
 
 					{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_tab_tpl"}
@@ -128,9 +129,6 @@
 			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}
 
 			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_mini_tpl"}
-			{if $gBitSystem->isPackageActive( 'gigaupload' )}
-				{include file="bitpackage:gigaupload/progress_container_inc.tpl"}
-			{/if}
 
 			<div class="row submit">
 				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
