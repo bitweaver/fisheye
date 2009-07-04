@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.32 2008/10/21 02:39:49 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.33 2009/07/04 17:36:46 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -115,8 +115,10 @@ if (!empty($_REQUEST['cancel'])) {
 							$galleryItem = NULL;
 							break;
 						case 'rotate':
-							$galleryItem->rotateImage( $batchParam );
-							$feedback['success'] = tra( "Images rotated" );
+							if( is_a( $galleryItem, 'FisheyeImage' ) ) {
+								$galleryItem->rotateImage( $batchParam );
+								$feedback['success'] = tra( "Images rotated" );
+							}
 							break;
 						case 'thumbnail':
 							$galleryItem->generateThumbnails();
