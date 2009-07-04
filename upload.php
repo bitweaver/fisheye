@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.43 2009/07/01 19:56:12 tylerbello Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.44 2009/07/04 13:35:21 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -119,8 +119,8 @@ if( @BitBase::verifyId( $_REQUEST['gallery_id'] ) && empty( $galleryList[$_REQUE
 
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
 
-if( $gBitSystem->isPackageActive( 'gigaupload' ) ) {
-	gigaupload_smarty_setup( FISHEYE_PKG_URL.'upload.php' );
+if( $gLibertySystem->hasService( 'upload' ) ) {
+	$gContent->invokeServices( "content_pre_upload_function", $_REQUEST );
 } elseif( $gBitSystem->isFeatureActive( 'fisheye_extended_upload_slots' ) ) {
 	$gBitThemes->loadAjax( 'mochikit' );
 } else {
