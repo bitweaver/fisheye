@@ -85,6 +85,13 @@
 				{/if}
 
 				<div class="row">
+					{formlabel label="Use Filenames" for="use_filenames"}
+					{forminput}
+						<input type="checkbox" id="use_filenames" name="use_filenames" value="true"/>
+						{formhelp note="If you would like to name your images based upon their filenames rather than their EXIF data."}
+					{/forminput}
+				</div>
+				<div class="row">
 					{if !$gBitUser->hasPermission( 'p_fisheye_create' )}
 						{formfeedback warning="Please make sure you select a gallery to load your images into, otherwise your images will be discarded"}
 					{/if}

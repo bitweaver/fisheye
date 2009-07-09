@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.107 2009/07/01 11:03:40 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.108 2009/07/09 18:42:14 tylerbello Exp $
  * @package fisheye
  */
 
@@ -228,8 +228,8 @@ class FisheyeImage extends FisheyeBase {
 
 		}
 
-		// let's add a default title if we still don't have one
-		if( empty( $pParamHash['title'] ) && !empty( $pParamHash['_files_override'][0]['name'] ) ) {
+		// let's add a default title if we still don't have one or the user has chosen to use filename over exif data
+		if( (empty( $pParamHash['title'] ) || !empty($_REQUEST['use_filenames'])) && !empty( $pParamHash['_files_override'][0]['name'] ) ) {
 			if( preg_match( '/^[A-Z]:\\\/', $pParamHash['_files_override'][0]['name'] ) ) {
 				// MSIE shit file names if passthrough via gigaupload, etc.
 				// basename will not work - see http://us3.php.net/manual/en/function.basename.php
