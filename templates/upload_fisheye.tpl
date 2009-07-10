@@ -1,3 +1,8 @@
+{if !$gLibertySystem->hasService('upload')}
+	{assign var=onSubmit value="javascript:disableSubmit('submitbutton');"}
+	{assign var=id value=fishid}
+{/if}
+
 {strip}
 <div class="admin fisheye">
 	<div class="header">
@@ -24,7 +29,7 @@
 						<input type="hidden" name="image_id" value="{$imageId}"/>
 						<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 
-						<p>
+						<br/>
 						{if $gLibertySystem->hasService('upload')}
 							{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_form_tpl"}
 						{elseif $gBitSystem->isFeatureActive( 'fisheye_extended_upload_slots' )}
@@ -54,7 +59,6 @@
 								{/forminput}
 							</div>
 						{/if}
-						</p>
 					{/jstab}
 
 					{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_tab_tpl"}
@@ -140,8 +144,5 @@
 
 {if $gLibertySystem->hasService('upload')}
 	{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_js_tpl"}
-{else}
-	{assign var=onSubmit value="javascript:disableSubmit('submitbutton');"}
-	{assign var=id value=fishid}
 {/if}
 
