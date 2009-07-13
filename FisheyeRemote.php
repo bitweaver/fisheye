@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.1 2009/07/12 12:46:00 spiderr Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.2 2009/07/13 18:10:13 spiderr Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -54,24 +54,27 @@ class FisheyeRemote {
 		return '2.13';
 	}
 
-    function processRequest($pParamHash) {
+
+	// separate out pPostData and pParamhash data since some plugins can populate _POST['g2_form'] and _GET['g2_form'] differently.
+	// weird but true. ubermind is an example
+    function processRequest( $pGetData, $pPostData ) {
 		
-		if(!empty($pParamHash)){
-			switch ($pParamHash['cmd']) {
+		if(!empty($pGetData)){
+			switch ($pGetData['cmd']) {
 				case 'login':
-					$response = $this->cmdLogin( $pParamHash );
+					$response = $this->cmdLogin( $pPostData );
 					break;
 
 				case 'fetch-albums':
-					$response = $this->cmdFetchAlbums( $pParamHash );
+					$response = $this->cmdFetchAlbums( $pPostData );
 					break;
 
 				case 'fetch-albums-prune':
-					$response = $this->cmdFetchAlbums( $pParamHash );
+					$response = $this->cmdFetchAlbums( $pPostData );
 					break;
 
 				case 'add-item':
-					$response = $this->cmdAddItem( $pParamHash );
+					$response = $this->cmdAddItem( $pPostData );
 					break;
 
 				case 'album-properties':
@@ -79,7 +82,7 @@ class FisheyeRemote {
 					break;
 
 				case 'new-album':
-					$response = $this->cmdNewAlbum( $pParamHash );
+					$response = $this->cmdNewAlbum( $pPostData );
 					break;
 
 				case 'fetch-album-images':
@@ -99,11 +102,12 @@ class FisheyeRemote {
 					break;
 
 				case 'no-op':
+					$response = $this->cmdNoOp( $pPostData );
 					// not implemented yet
 					break;
 
 				default:
-					$response = $this->createResponse( FEG2REMOTE_UNKNOWN_COMMAND, "Command unknown: ".$pParamHash['cmd'] );
+					$response = $this->createResponse( FEG2REMOTE_UNKNOWN_COMMAND, "Command unknown: ".$pGetData['cmd'] );
 					break;
 			}
 		} else {
@@ -115,6 +119,13 @@ class FisheyeRemote {
 		}
     }
 
+
+    function cmdNoOp( $pParamHash ) {
+		global $gBitUser;
+	
+		$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'Ping.' );
+		return $response;
+    }
 
     function cmdLogin( $pParamHash ) {
 		global $gBitUser;
