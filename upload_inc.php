@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.34 2009/03/31 05:50:38 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.35 2009/07/14 19:39:11 tylerbello Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -52,6 +52,8 @@ function fisheye_store_upload( &$pFileHash, $pImageData = array(), $pAutoRotate=
 	global $gBitSystem, $gFisheyeUploads;
 	$ret = array();
 
+	// verifyMimeType to make sure we are working with the proper file type assumptions
+	$pFileHash['type'] = $gBitSystem->verifyMimeType($pFileHash['tmp_name']);	
 	if( !empty( $pFileHash ) && ( $pFileHash['size'] > 0 ) && is_file( $pFileHash['tmp_name'] ) && fisheye_verify_upload_item(  $pFileHash ) ) {
 		// make a copy for each image we need to store
 		$image = new FisheyeImage();
