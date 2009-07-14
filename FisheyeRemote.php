@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.3 2009/07/14 18:48:24 tylerbello Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.4 2009/07/14 19:39:43 tylerbello Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -207,10 +207,10 @@ class FisheyeRemote {
 		
 
 			$_REQUEST['gallery_additions'] = array($parentGallery->mGalleryId);
-			if(fisheye_store_upload( $uploadFile , $storeHash )){
-				$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'Image added', array( 'item_name'=>$uploadFile['name'] ) );
-			} else {
+			if( $errors = fisheye_store_upload( $uploadFile , $storeHash ) ){
 			 	$response = $this->createResponse( FEG2REMOTE_UPLOAD_PHOTO_FAIL, 'Export Failed' );
+			} else {
+				$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'Image added', array( 'item_name'=>$uploadFile['name'] ) );
 			}
 		}
 		

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.35 2009/03/30 15:02:44 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.36 2009/07/14 19:39:43 tylerbello Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -49,7 +49,6 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 		$_REQUEST['rows_per_page'] = $_REQUEST['images_per_page'];
 		$_REQUEST['cols_per_page'] = '1';
 	}
-
 	if( $gContent->store( $_REQUEST ) ) {
 		$gContent->storePreference( 'is_public', !empty( $_REQUEST['is_public'] ) ? $_REQUEST['is_public'] : NULL );
 		$gContent->storePreference( 'allow_comments', !empty( $_REQUEST['allow_comments'] ) ? $_REQUEST['allow_comments'] : NULL );
