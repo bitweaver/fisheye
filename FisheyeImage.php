@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.108 2009/07/09 18:42:14 tylerbello Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.109 2009/08/17 17:27:23 spiderr Exp $
  * @package fisheye
  */
 
@@ -668,7 +668,7 @@ class FisheyeImage extends FisheyeBase {
 		$ret = NULL;
 		if( !empty( $pInfoHash ) ) {
 			// do some stuff if we are given a hash of stuff
-		} else {
+		} elseif( isset( $this->mInfo['thumbnail_url'][$pSize] ) ) {
 			$ret = $this->mInfo['thumbnail_url'][$pSize];
 		}
 		return $ret;
