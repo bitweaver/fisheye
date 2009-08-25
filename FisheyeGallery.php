@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.93 2009/05/06 18:36:12 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.94 2009/08/25 17:40:59 spiderr Exp $
  * @package fisheye
  */
 
@@ -89,7 +89,7 @@ class FisheyeGallery extends FisheyeBase {
 			$whereSql = " WHERE fg.`content_id` = ?";
 			$bindVars = array($this->mContentId);
 		} else {
-			$whereSql = $bindVars = NULL;
+			$whereSql = NULL;
 		}
 
 		if ($whereSql) {	// If we have some way to know what fisheye_gallery row to load...
