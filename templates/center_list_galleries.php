@@ -23,13 +23,55 @@ if ( !empty( $module_params['sort_mode'] ) ) {
 } else {
 	$listHash['sort_mode'] = 'title';
 }
+if( !empty( $module_params['nav_bar'] ) ){
+	$gBitSmarty->assign('navBar', $module_params['nav_bar']);
+}else{
+	$gBitSmarty->assign('navBar',true);
+}
+if( !empty( $module_params['max_records'] ) ){
+	$listHash['max_records'] = $module_params['max_records'];
+}
+
+
 
 $galleryList = $gFisheyeGallery->getList( $listHash );
-$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
+if( !empty( $moduleParams['module_params']['columns'] ) ){
+	// support for tabled listing of galleries
+	$columnCount  = $moduleParams['module_params']['columns'];
+
+	$num_gallery_count = count( $galleryList );
+
+	if( $num_gallery_count < $columnCount  ) {
+		$col_width = 100/$num_gallery_count;
+	} else {
+		$col_width = 100/$columnCount;
+	}
+
+	$gBitSmarty->assign( 'listColWidth', $col_width );
+
+	$row = 0;
+	$col = 0;
+
+	foreach( $galleryList as $gallery ) {
+		$listBoxContents[$row][$col] = $gallery;
+		$col ++;
+		if ($col > ($columnCount - 1)) {
+			$col = 0;
+			$row ++;
+		}
+	}
+	
+	$gBitSmarty->assign_by_ref( 'listBoxContents', $listBoxContents );
+} else {
+	// support for div/ul/li listing of galleries
+	$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
+}
+
+
 
 /* Process the input parameters this page accepts */
 if (!empty($gQueryUser) && $gQueryUser->isRegistered()) {
-	$gBitSmarty->assign_by_ref('gQuerUserId', $gQueryUser->mUserId);
+	$gBitSmarty->assign_by_ref('gQueryUserId', $gQueryUser->mUserId);
 	$template = 'user_galleries.tpl';
 } else {
 	$template = 'list_galleries.tpl';
