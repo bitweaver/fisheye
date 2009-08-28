@@ -12,10 +12,10 @@ if( !empty( $module_params['gallery_id'] ) && is_numeric( $module_params['galler
 }*/
 if ($gQueryUserId) {
 	$listHash['user_id'] = $gQueryUserId;
-} elseif( !empty( $module_params['user_id'] ) && is_numeric( $module_params['user_id'] ) ) {
+} elseif( !empty( $module_params['user_id'] ) && BitBase::verifyId( $module_params['user_id'] ) ) {
 	$listHash['user_id'] = $module_params['user_id'];
 }
-if( !empty( $module_params['contain_item'] ) && is_numeric( $module_params['contain_item'] ) ) {
+if( !empty( $module_params['contain_item'] ) && BitBase::verifyId( $module_params['contain_item'] ) ) {
 	$listHash['contain_item'] = $module_params['contain_item'];
 }
 if ( !empty( $module_params['sort_mode'] ) ) {
@@ -33,39 +33,9 @@ if( !empty( $module_params['max_records'] ) ){
 }
 
 
-
 $galleryList = $gFisheyeGallery->getList( $listHash );
-if( !empty( $moduleParams['module_params']['columns'] ) ){
-	// support for tabled listing of galleries
-	$columnCount  = $moduleParams['module_params']['columns'];
-
-	$num_gallery_count = count( $galleryList );
-
-	if( $num_gallery_count < $columnCount  ) {
-		$col_width = 100/$num_gallery_count;
-	} else {
-		$col_width = 100/$columnCount;
-	}
-
-	$gBitSmarty->assign( 'listColWidth', $col_width );
-
-	$row = 0;
-	$col = 0;
-
-	foreach( $galleryList as $gallery ) {
-		$listBoxContents[$row][$col] = $gallery;
-		$col ++;
-		if ($col > ($columnCount - 1)) {
-			$col = 0;
-			$row ++;
-		}
-	}
-	
-	$gBitSmarty->assign_by_ref( 'listBoxContents', $listBoxContents );
-} else {
-	// support for div/ul/li listing of galleries
-	$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
-}
+// support for div/ul/li listing of galleries
+$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
 
 
 
