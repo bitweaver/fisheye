@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.44 2009/07/04 13:35:21 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload.php,v 1.45 2009/09/25 19:51:44 tylerbello Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -22,7 +22,6 @@ require_once( FISHEYE_PKG_PATH.'upload_inc.php');
 $gBitSystem->verifyPermission( 'p_fisheye_upload' );
 
 if( !empty( $_REQUEST['save_image'] ) ) {
-
 	// first of all set the execution time for this process to unlimited
 	set_time_limit(0);
 
@@ -88,6 +87,13 @@ if( !empty( $_REQUEST['save_image'] ) ) {
 	}
 }
 
+if ( !empty($_REQUEST['on_complete'])){
+	if($_REQUEST['on_complete'] == 'refreshparent'){	
+		$gBitSmarty->assign('onComplete','window.opener.location.reload(true);self.close();');
+	}
+
+}
+
 require_once( LIBERTY_PKG_PATH.'calculate_max_upload_inc.php' );
 
 $gContent->invokeServices( 'content_edit_function' );
@@ -127,5 +133,8 @@ if( $gLibertySystem->hasService( 'upload' ) ) {
 	$gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/multifile.js', TRUE );
 }
 
-$gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' , array( 'display_mode' => 'edit' ));
+$displayMode = !empty($_REQUEST['display_mode']) ? $_REQUEST['display_mode'] : 'edit';
+
+$gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' , array( 'display_mode' => $displayMode ));
+
 ?>
