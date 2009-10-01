@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.5 2009/10/01 13:45:34 wjames5 Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.6 2009/10/01 14:16:59 wjames5 Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -11,7 +11,7 @@
 // +----------------------------------------------------------------------+
 // | Copyright (c) 2004, bitweaver.org
 // +----------------------------------------------------------------------+
-// | All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// | All Rights Reserved. See below for details and a complete list of authors.
 // | Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
 // |
 // | For comments, please use phpdocu.sourceforge.net documentation standards!!!
