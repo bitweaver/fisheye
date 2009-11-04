@@ -10,7 +10,7 @@
 	</div>
 
 	<div class="body">
-		{form enctype="multipart/form-data" onsubmit=$onSubmit id=$id target=$target action=$action}
+		{form enctype="multipart/form-data" onsubmit=$onSubmit id=$id|default:photoupload target=$target action=$action}
 			<div id="uploadblock">
 				{jstabs}
 					{jstab title="Upload Files"}
