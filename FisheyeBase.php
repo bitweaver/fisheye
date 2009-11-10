@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.32 2009/11/04 01:04:53 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.33 2009/11/10 18:48:07 tylerbello Exp $
  * @package fisheye
  */
 
@@ -117,7 +117,7 @@ class FisheyeBase extends LibertyMime
 			if( !empty( $rs->fields ) ) {
 				$path = '';
 				for( $i = 1; $i <= (count( $rs->fields ) / 2); $i++ ) {
-					$ret .= ' <a href="'.FisheyeGallery::getDisplayUrl( $rs->fields['gallery_id'.$i], $path ).'" >'.$rs->fields['title'.$i].'</a> &raquo; ';
+					$ret .= ' <a class="breadcrumb" href="'.FisheyeGallery::getDisplayUrl( $rs->fields['gallery_id'.$i], $path ).'" gallery_id = "'.$rs->fields['gallery_id'.$i].'" >'.$rs->fields['title'.$i].'</a> &raquo; ';
 					$path .= '/'.$rs->fields['gallery_id'.$i];
 				}
 			}
