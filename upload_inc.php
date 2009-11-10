@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.35 2009/07/14 19:39:11 tylerbello Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.36 2009/11/10 19:45:28 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -131,9 +131,11 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 		foreach( $sortedNames as $fileName ) {
 			if( $fileName == 'Thumbs.db' ) {
 				unlink( "$pDestinationDir/$fileName" );
-			} if( !preg_match( '/^\./', $fileName ) && ( $fileName != 'Thumbs.db' ) ) {
+			}
+			if( !preg_match( '/^\./', $fileName ) && ( $fileName != 'Thumbs.db' ) ) {
+				$mimeResults = $gBitSystem->verifyFileExtension( $pDestinationDir.'/'.$fileName );
 				$scanFile = array(
-					'type' => $gBitSystem->lookupMimeType( substr( $fileName, ( strrpos( $fileName, '.' ) + 1 )  ) ),
+					'type' => $mimeResults[1],
 					'name' => $fileName,
 					'size' => filesize( "$pDestinationDir/$fileName" ),
 					'tmp_name' => "$pDestinationDir/$fileName",
