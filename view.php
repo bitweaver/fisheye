@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.8 2009/12/03 20:39:18 tylerbello Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.9 2009/12/03 20:45:16 tylerbello Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -41,6 +41,7 @@ if (!empty($_REQUEST['download'])){
 
 	//Checked against global users group assignment so that feature can be restricted on a group level. If content was checked, user would always
 	//have permission to do this.
+	$gContent->verifyUpdatePermission();
 	$gBitSystem->verifyPermission('p_fisheye_download_gallery_archive');
 	$gContent->download();
 }
