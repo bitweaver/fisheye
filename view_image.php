@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.15 2009/05/05 22:32:33 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view_image.php,v 1.16 2009/12/03 20:39:18 tylerbello Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -45,6 +45,5 @@ $gContent->addHit();
 if( $gContent->hasUpdatePermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )) {
 	$gContent->mInfo['image_file']['original'] = TRUE;
 }
-
 require_once( FISHEYE_PKG_PATH.'display_fisheye_image_inc.php' );
 ?>

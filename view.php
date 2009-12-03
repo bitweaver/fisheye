@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.7 2009/04/14 17:16:15 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/view.php,v 1.8 2009/12/03 20:39:18 tylerbello Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -35,6 +35,14 @@ if( $gContent->isCommentable() ) {
 	$comments_object_var='fisheyegallery';
 	$comments_return_url = $_SERVER['PHP_SELF']."?gallery_id=".$gContent->mGalleryId;
 	include_once( LIBERTY_PKG_PATH.'comments_inc.php' );
+}
+
+if (!empty($_REQUEST['download'])){			
+
+	//Checked against global users group assignment so that feature can be restricted on a group level. If content was checked, user would always
+	//have permission to do this.
+	$gBitSystem->verifyPermission('p_fisheye_download_gallery_archive');
+	$gContent->download();
 }
 
 require_once( FISHEYE_PKG_PATH.'display_fisheye_gallery_inc.php' );

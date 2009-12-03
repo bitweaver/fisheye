@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.94 2009/08/25 17:40:59 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.95 2009/12/03 20:39:18 tylerbello Exp $
  * @package fisheye
  */
 
@@ -853,6 +853,49 @@ class FisheyeGallery extends FisheyeBase {
 		LibertyContent::postGetList( $pListHash );
 		return $data;
 	}
-}
+
+	function download(){
+		if($this->isValid()){
+			$zip = new ZipArchive();
+			
+			$filename = tempnam(TEMP_PKG_PATH,"galleryzip");
+			$path = '/';
+			if( $zip->open ($filename, ZIPARCHIVE::OVERWRITE) !== TRUE ){
+				$this->mErrors['download'] = "Unable to create zip file";
+			}else{
+				addGalleryRecursive( $this->mGalleryId , $path, $zip);
+			}
+				$zip->close();
+			
+				//escape backslashes
+				$outputFileTitle = str_replace("\\",'\\\\',$this->getTitle());	
+				//escape double quotes
+				$outputFileTitle = str_replace('"','\\"',$outputFileTitle);
+
+				Header("Content-type: application/octet-stream");
+				Header ("Content-disposition: attachment; filename=\"".$outputFileTitle.".zip\"");
+				Header ("Expires:  0");
+				readfile($filename);
+				unlink($filename);
+			}
+		}
+	}
+
+	function addGalleryRecursive( $pGalleryId , $pPath = '/', &$pZip ){
+
+		$gallery = new FisheyeGallery($pGalleryId);
+		$gallery->load();
+		$gallery->loadImages();
+		$pPath .= $gallery->getTitle().'/';
+		foreach ( $gallery->mItems as $item ){
+			if( is_a( $item , 'FisheyeImage' ) ){
+				$sourcePath = $item->getSourceFile();
+				$title = $item->getTitle();
+				$pZip->addFile($sourcePath, $pPath.$title.substr($sourcePath,strrpos($sourcePath,'.')) );
+			}elseif ( is_a( $item , 'FisheyeGallery' ) ){
+				addGalleryRecursive($item->mGalleryId,$pPath,$pZip);
+			}
+		}
+	}
 
 ?>
