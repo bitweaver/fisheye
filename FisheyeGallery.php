@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.95 2009/12/03 20:39:18 tylerbello Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.96 2010/01/09 13:18:38 spiderr Exp $
  * @package fisheye
  */
 
@@ -874,6 +874,7 @@ class FisheyeGallery extends FisheyeBase {
 
 				Header("Content-type: application/octet-stream");
 				Header ("Content-disposition: attachment; filename=\"".$outputFileTitle.".zip\"");
+				Header ("Content-Length: ".filesize( $filename ) );
 				Header ("Expires:  0");
 				readfile($filename);
 				unlink($filename);
