@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.36 2009/11/10 19:45:28 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.37 2010/01/28 04:14:31 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -185,12 +185,15 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 					} else {
 						$errors = array_merge( $errors, array_values( $newImage->mErrors ) );
 					}
+				} else {
+					// unknown file type, let's be tidy and clean it up
+					unlink( $scanFile );
 				}
 				$order += 10;
 			}
 		}
 		if ( !is_windows() ) {
-			rmdir( $pDestinationDir );
+			unlink_r( $pDestinationDir );
 		}
 	}
 	return $errors;
