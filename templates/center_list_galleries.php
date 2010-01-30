@@ -21,7 +21,7 @@ if( !empty( $module_params['contain_item'] ) && BitBase::verifyId( $module_param
 if ( !empty( $module_params['sort_mode'] ) ) {
 	$listHash['sort_mode'] = $module_params['sort_mode'];
 } else {
-	$listHash['sort_mode'] = 'title';
+	$listHash['sort_mode'] = 'created_desc';
 }
 if( !empty( $module_params['nav_bar'] ) ){
 	$gBitSmarty->assign('navBar', $module_params['nav_bar']);
@@ -46,7 +46,6 @@ if (!empty($gQueryUser) && $gQueryUser->isRegistered()) {
 } else {
 	$template = 'list_galleries.tpl';
 }
-
 if (!empty($_REQUEST['offset']) && is_numeric($_REQUEST['offset'])) {
 	$gBitSmarty->assign_by_ref('iMaxRows', $iMaxRows);
 }
