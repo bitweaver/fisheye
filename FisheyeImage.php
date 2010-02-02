@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.109 2009/08/17 17:27:23 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.110 2010/02/02 22:01:41 spiderr Exp $
  * @package fisheye
  */
 
@@ -128,10 +128,6 @@ class FisheyeImage extends FisheyeBase {
 				} else {
 					$this->mInfo['image_file'] = NULL;
 				}
-
-				$this->mInfo['title']        = $this->getTitle();
-				$this->mInfo['display_url']  = $this->getDisplayUrl();
-
 			}
 		} else {
 			// We don't have an image_id or a content_id so there is no way to know what to load
@@ -640,12 +636,12 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	function getTitle( $pHash=NULL ) {
+	function getTitle( $pHash=NULL, $pDefault=TRUE ) {
 		if( empty( $pHash ) && !empty( $this ) ) {
 			$pMixed = $this->mInfo;
 		}
-		$ret = trim( parent::getTitle( $pHash ) );
-		if( empty( $ret ) ) {
+		$ret = trim( parent::getTitle( $pHash, $pDefault ) );
+		if( empty( $ret ) && $pDefault ) {
 			$storage = (!empty( $this->mStorage ) ? current( $this->mStorage ) : NULL);
 			if( !empty( $storage['filename'] ) ) {
 				$ret = $storage['filename'];
