@@ -17,8 +17,8 @@ function updateGalleryPagination() {
 <div class="edit fisheye">
 	<div class="header">
 		<h1>
-			{if $gContent->mInfo.title}
-				{tr}Edit Gallery{/tr}: {$gContent->mInfo.title|escape}
+			{if $gContent->getTitle()}
+				{tr}Edit Gallery{/tr}: {$gContent->getTitle()|escape}
 			{else}
 				{tr}Create Image Gallery{/tr}
 			{/if}
@@ -37,7 +37,7 @@ function updateGalleryPagination() {
 						<div class="row">
 							{formlabel label="Title" for="gallery-title" mandatory="y"}
 							{forminput}
-								<input type="text" name="title" id="gallery-title" value="{$gContent->mInfo.title|escape}" maxlength="160" size="50"/>
+								<input type="text" name="title" id="gallery-title" value="{$gContent->getTitle()|escape}" maxlength="160" size="50"/>
 							{/forminput}
 						</div>
 

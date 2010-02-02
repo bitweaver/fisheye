@@ -1,7 +1,7 @@
 {strip}
 <div class="admin fisheye">
 	<div class="header">
-		<h1>{tr}Gallery Images{/tr}: <a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}">{$gContent->mInfo.title|escape}</a></h1>
+		<h1>{tr}Gallery Images{/tr}: <a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}">{$gContent->getTitle()|escape}</a></h1>
 	</div>
 
 	<div class="body">
@@ -36,7 +36,7 @@
 					<tr class="{$pageClass}">
 						{counter name=imageCount print=false}
 						<td class="{$galItem->mType.content_type_guid}">
-							<a href="{$galItem->getDisplayUrl()|escape}"><img class="thumb" src="{$gContent->mItems.$itemContentId->getThumbnailUri()|replace:"&":"&amp;"}{if $batchEdit.$itemContentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galItem->mInfo.title|escape}" /></a>
+							<a href="{$galItem->getDisplayUrl()|escape}"><img class="thumb" src="{$gContent->mItems.$itemContentId->getThumbnailUri()|replace:"&":"&amp;"}{if $batchEdit.$itemContentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galItem->getTitle()|escape}" /></a>
 						</td>
 
 						<td>

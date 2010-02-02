@@ -27,13 +27,13 @@
 			{assign var=item_id value=$gContent->mItems[ix]->mImageId}
 			<td>
 				<a href="{$smarty.const.BIT_ROOT_URL}{$gContent->mItems[ix]->mStorage.$item_id.storage_path}">
-					<img class="thumb" src="{$gContent->mItems[ix]->getThumbnailUri()}" alt="{$gContent->mItems[ix]->mInfo.title|escape|default:'image'}" />
+					<img class="thumb" src="{$gContent->mItems[ix]->getThumbnailUri()}" alt="{$gContent->mItems[ix]->getTitle()|escape|default:'image'}" />
 				</a>
 			</td>
 
 			<td>
 				{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
-					<h2>{$gContent->mItems[ix]->mInfo.title|escape}</h2>
+					<h2>{$gContent->mItems[ix]->getTitle()|escape}</h2>
 				{/if}
 				<a href="{$smarty.const.BIT_ROOT_URL}{$gContent->mItems[ix]->mStorage.$item_id.storage_path}">
 					{$gContent->mItems[ix]->mStorage.$item_id.filename}

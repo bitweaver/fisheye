@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_lookup_inc.php,v 1.6 2007/11/05 06:23:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_lookup_inc.php,v 1.7 2010/02/02 22:02:21 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -9,7 +9,7 @@ global $gContent, $gGallery;
 
 
 if( $gContent = FisheyeImage::lookup( $_REQUEST ) ) {
-	$gContent->load();
+	// nothing to do. ::lookup will do a full load
 } else {
 	$gContent = new FisheyeImage();
 	$imageId = NULL;

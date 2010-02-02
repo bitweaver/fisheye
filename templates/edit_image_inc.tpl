@@ -7,7 +7,7 @@
 	<div class="row">
 		{formlabel label="Title" for="image-title"}
 		{forminput}
-			<input type="text" name="title" id="image-title" value="{$gContent->mInfo.title|escape}" maxlength="160" size="40"/>
+			<input type="text" name="title" id="image-title" value="{$gContent->getTitle()|escape}" maxlength="160" size="40"/>
 		{/forminput}
 	</div>
 
@@ -22,7 +22,7 @@
 		{formlabel label="Current Image"}
 		{forminput}
 			{if $gContent->mInfo.storage_path}
-				<img src="{$gContent->mInfo.thumbnail_url.medium}" alt="{$gContent->mInfo.title|escape}" />
+				<img src="{$gContent->mInfo.thumbnail_url.medium}" alt="{$gContent->getTitle()|escape}" />
 				<br />
 				<small>
 					{if $gContent->mInfo.width && $gContent->mInfo.height}
@@ -32,7 +32,7 @@
 					{/if}
 				</small>
 			{else}
-				<img src="{$smarty.const.FISHEYE_PKG_URL}image/no_image.png" alt="{$gContent->mInfo.title|escape}" />
+				<img src="{$smarty.const.FISHEYE_PKG_URL}image/no_image.png" alt="{$gContent->getTitle()|escape}" />
 			{/if}
 		{/forminput}
 	</div>

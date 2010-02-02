@@ -2,7 +2,7 @@
 
 <div class="edit fisheye">
 	<div class="header">
-		<h1>{if $gContent->mInfo.image_id}{tr}Edit Image{/tr}: {$gContent->mInfo.title|escape} {else}{tr}Add New Image{/tr} {/if}</h1>
+		<h1>{if $gContent->mInfo.image_id}{tr}Edit Image{/tr}: {$gContent->getTitle()|escape} {else}{tr}Add New Image{/tr} {/if}</h1>
 	</div>
 
 	<div class="body">
@@ -21,7 +21,7 @@
 							{formlabel label="Current Image"}
 							{forminput}
 								{if $gContent->mInfo.storage_path}
-									<img src="{$gContent->mInfo.thumbnail_url.medium}?{math equation="1 + rand(1,9999)"}" alt="{$gContent->mInfo.title|escape}" />
+									<img src="{$gContent->mInfo.thumbnail_url.medium}?{math equation="1 + rand(1,9999)"}" alt="{$gContent->getTitle()|escape}" />
 									<br />
 									<small>
 										{if $gContent->mInfo.width && $gContent->mInfo.height}
@@ -31,7 +31,7 @@
 										{/if}
 									</small>
 								{else}
-									<img src="{$smarty.const.FISHEYE_PKG_URL}image/no_image.png" alt="{$gContent->mInfo.title|escape}" />
+									<img src="{$smarty.const.FISHEYE_PKG_URL}image/no_image.png" alt="{$gContent->getTitle()|escape}" />
 								{/if}
 							{/forminput}
 						</div>
@@ -39,7 +39,7 @@
 						<div class="row">
 							{formlabel label="Title" for="image-title"}
 							{forminput}
-								<input type="text" name="title" id="image-title" value="{$gContent->mInfo.title|escape}" maxlength="160" size="50"/>
+								<input type="text" name="title" id="image-title" value="{$gContent->getTitle()|escape}" maxlength="160" size="50"/>
 							{/forminput}
 						</div>
 
