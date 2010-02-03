@@ -35,19 +35,19 @@
 									<a href="{$galItem->mInfo.thumbnail_url.large}">
 								{/if}
 							{/if}
-							<img src="{$galItem->mInfo.thumbnail_url.$thumbsize}" alt="{$galItem->mInfo.title|escape}" title="{$galItem->mInfo.title|escape}" />
+							<img src="{$galItem->mInfo.thumbnail_url.$thumbsize}" alt="{$galItem->getTitle()|escape}" title="{$galItem->getTitle()|escape}" />
 							{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
 								</a>
 							{/if}
 						{else}
 							<a href="{$galItem->getDisplayUrl()|escape}">
-								<img class="thumb" src="{$galItem->getThumbnailUri()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
+								<img class="thumb" src="{$galItem->getThumbnailUri()}" alt="{$galItem->getTitle()|escape|default:'image'}" />
 							</a>				
 						{/if}
 					</td>
 				{/if}
 				<td>
-					<h3><a href="{$galItem->mInfo.display_url}">{$galItem->mInfo.title|escape}</a></h3>
+					<h3><a href="{$galItem->getDisplayUrl()}">{$galItem->getTitle()|escape}</a></h3>
 					{if $gBitSystem->isFeatureActive( 'fisheye_item_list_desc' ) && $galItem->mInfo.data}
 						{$galItem->mInfo.parsed_data}
 					{/if}
@@ -58,7 +58,7 @@
 					{if $gBitSystem->isFeatureActive( 'fisheye_item_list_name' )}
 						{if $br}<br />{/if}
 						{if $gBitUser->hasPermission( 'p_treasury_view_item' )}
-							<a href="{$galItem->mInfo.display_url}">
+							<a href="{$galItem->getDisplayUrl()}">
 						{/if}
 						{$galItem->mInfo.filename} <small>({$galItem->mInfo.mime_type})</small>
 						{if $gBitUser->hasPermission( 'p_treasury_view_item' )}
@@ -97,7 +97,7 @@
 							<a href="{$galItem->mInfo.download_url}">{biticon ipackage="icons" iname="emblem-downloads" iexplain="Download File"}</a>
 						{/if}
 						{if $gBitUser->hasPermission( 'p_treasury_view_item' )}
-							<a href="{$galItem->mInfo.display_url}">{biticon ipackage="icons" iname="document-open" iexplain="View File"}</a>
+							<a href="{$galItem->getDisplayUrl()}">{biticon ipackage="icons" iname="document-open" iexplain="View File"}</a>
 						{/if}
 						{if $gContent->isOwner( $galItem->mInfo ) || $gBitUser->isAdmin()}
 							<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}&amp;action=edit">{biticon ipackage="icons" iname="accessories-text-editor" iexplain="Edit File"}</a>
