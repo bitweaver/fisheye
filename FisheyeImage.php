@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.111 2010/02/03 16:03:07 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.112 2010/02/03 18:29:53 spiderr Exp $
  * @package fisheye
  */
 
@@ -135,9 +135,6 @@ class FisheyeImage extends FisheyeBase {
 					$this->mInfo['height'] = $details['height'];
 					$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?", array( $this->mInfo['width'], $this->mInfo['height'], $this->mContentId ) );
 				}
-
-				$this->mInfo['title']        = $this->getTitle();
-				$this->mInfo['display_url']  = $this->getDisplayUrl();
 			}
 		} else {
 			// We don't have an image_id or a content_id so there is no way to know what to load
