@@ -40,7 +40,7 @@
 						</td>
 
 						<td>
-							<input type="text" name="image_title[{$galItem->mContentId}]" value="{$galItem->getTitle()|escape:html}" /><br />
+							<input type="text" name="image_title[{$galItem->mContentId}]" value="{$galItem->getTitle('',0)|escape:html}" /><br />
 							{if $galItem->isContentType( FISHEYEIMAGE_CONTENT_TYPE_GUID )}
 							{if $galItem->mInfo.event_time}
 							<strong>{tr}Photo Date{/tr}</strong>: {$galItem->mInfo.event_time|bit_short_datetime}<br />
