@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/main.php,v 1.6 2009/10/23 21:11:26 spiderr Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/main.php,v 1.7 2010/02/08 21:27:22 wjames5 Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -22,7 +22,7 @@
 
 chdir( dirname( __FILE__ ) );
 
-require_once( '../../bit_setup_inc.php' );
+require_once( '../../kernel/setup_inc.php' );
 
 //Point of access for FisheyeRemote requests
 require_once( 'FisheyeRemote.php' );

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/find_user.php,v 1.6 2007/11/08 21:59:34 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/find_user.php,v 1.7 2010/02/08 21:27:22 wjames5 Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -8,7 +8,7 @@
 /**
  * required setup
  */
-include_once( "../bit_setup_inc.php" );
+include_once( "../kernel/setup_inc.php" );
 
 if (empty($gBitThemes->mStyles['styleSheet'])) {
 	$gBitThemes->mStyles['styleSheet'] = $gBitThemes->getStyleCss();

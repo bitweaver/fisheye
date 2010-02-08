@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.9 2008/06/23 21:56:12 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/fisheye_rss.php,v 1.10 2010/02/08 21:27:22 wjames5 Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -8,7 +8,7 @@
 /**
  * Initialization
  */
-require_once( "../bit_setup_inc.php" );
+require_once( "../kernel/setup_inc.php" );
 
 $gBitSystem->verifyPackage( 'fisheye' );
 $gBitSystem->verifyPackage( 'rss' );
