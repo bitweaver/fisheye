@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.6 2009/10/01 14:16:59 wjames5 Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.7 2010/02/09 03:32:04 spiderr Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -51,7 +51,7 @@ class FisheyeRemote {
 	var $mResponse = array();
 
 	function getApiVersion() {
-		return '2.13';
+		return '2.14';
 	}
 
 
@@ -123,14 +123,19 @@ class FisheyeRemote {
     function cmdNoOp( $pParamHash ) {
 		global $gBitUser;
 	
-		$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'Ping.' );
+		$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'No-op successful' );
 		return $response;
     }
 
     function cmdLogin( $pParamHash ) {
-		global $gBitUser;
+		global $gBitUser, $gBitSystem;
 		$url = $gBitUser->login( $pParamHash['uname'], $pParamHash['password'] );
 		if( $gBitUser->isRegistered() ) {
+			$cookieTime =  ( int )( time() + $gBitSystem->getConfig( 'users_remember_time', 86400 ));
+			$cookiePath = $gBitSystem->getConfig( 'cookie_path', BIT_ROOT_URL );
+			$cookieDomain = $gBitSystem->getConfig( 'cookie_domain', "" );
+			setcookie( 'GALLERYSID', session_id(), $cookieTime, $cookiePath, $cookieDomain );
+
 			$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'Login successful.', array( 'server_version' => $this->getApiVersion() ) );
 		} else {
 			$response = $this->createResponse( FEG2REMOTE_PASSWORD_WRONG, 'Invalid username or password' );
@@ -140,30 +145,47 @@ class FisheyeRemote {
 
 	// Recursively traverses a multi-dimensional array of galleries
 	function traverseGalleries( $pGalHash, &$pResponse ) {
-		static $i = 1; //Albums don't like being 0 indexed 
+		global $gBitUser;
+		$i = 1;
+			$pResponse['album.parent.' . $i] = 0;
+			$pResponse['album.name.' . $i] = 1;
+			$pResponse['album.title.' . $i] = tra( 'Select a Gallery' );
+			$pResponse['album.perms.add.' . $i] = 'false';
+			$pResponse['album.perms.write.' . $i] = 'false';
+			$pResponse['album.perms.del_alb.' . $i] = 'false';
+			$pResponse['album.perms.create_sub.' . $i] = 'true';
+		
+		return $this->traverseSubGalleries( $pGalHash, $pResponse );
+	}
+
+	function traverseSubGalleries( $pGalHash, &$pResponse ) {
+		static $i = 1;
 		foreach( $pGalHash as $key=>$gallery)
 		{ 
+			$i++; //Albums don't like being 0 indexed 
 			if($gallery['content']['level'] != 0){
-			$pResponse['album.parent.' . $i] =  $gallery['content']['cb_gallery_content_id'];
+				$pResponse['album.parent.' . $i] = $gallery['content']['cb_gallery_content_id'];
+			} else {
+				$pResponse['album.parent.' . $i] = 1;
 			}
 			$pResponse['album.name.' . $i] = $gallery['content']['content_id'];
 			$pResponse['album.title.' . $i] = $this->cleanResponseValue( $gallery['content']['title'] );
-			
-			$pResponse['album.description.' . $i] = $gallery['content']['data'];
+		
+			if( !empty( $gallery['content']['data'] ) ) {	
+				$pResponse['album.summary.' . $i] = $gallery['content']['data'];
+				$pResponse['album.info.extrafields.' . $i] = "Summary";
+			}
 
 			$pResponse['album.perms.add.' . $i] = 'true';
 			$pResponse['album.perms.write.' . $i] = 'true';
 			$pResponse['album.perms.del_alb.' . $i] = 'true';
 			$pResponse['album.perms.create_sub.' . $i] = 'true';
 				
-			$pResponse['album.info.extrafields.' . $i] = "Summary,Description";
-			
-			$i++;
 			if( !empty( $gallery['children'] ) ) { 
-				$this->traverseGalleries($gallery['children'],$pResponse);
+				$this->traverseSubGalleries($gallery['children'],$pResponse);
 			}
 		}
-		return $i - 1; //Because albums don't like being 0 indexed, we must subtract one from the total album count
+		return $i;
 	}	
 
     function cmdFetchAlbums( $pParamHash ) {
@@ -232,9 +254,10 @@ class FisheyeRemote {
 
 		if($pParamHash['set_albumName']){
 			$parentGallery = new FisheyeGallery();
-			$parentGallery = $parentGallery->lookup(array('content_id' => $pParamHash['set_albumName'] ) );
-			$parentGallery->load();
-			$gallery->addToGalleries(array($parentGallery->mGalleryId));
+			if( $parentGallery = $parentGallery->lookup(array('content_id' => $pParamHash['set_albumName'] ) ) ) {
+				$parentGallery->load();
+				$gallery->addToGalleries(array($parentGallery->mGalleryId));
+			}
 		}
 
 		$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'Gallery created', array( 'album_name' => $storeHash['title'] ) );
@@ -243,10 +266,17 @@ class FisheyeRemote {
     }
 
     function sendResponse( $pResponse ) {
+		global $gBitUser;
 		print "#__GR2PROTO__\n";
+//error_log( "#__GR2PROTO__".' : '.$gBitUser->mUserId );
 		foreach ($pResponse as $k => $value) {
 			print  "$k=$value\n";
+//error_log( "$k=$value" );
 		}
+		// must be last
+		print "auth_token=".$gBitUser->mTicket;
+//error_log( "auth_token=".$gBitUser->mTicket );
+//error_log( "#__end__" );
     }
 
 	
