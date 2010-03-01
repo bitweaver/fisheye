@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/main.php,v 1.8 2010/02/09 03:32:04 spiderr Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/main.php,v 1.9 2010/03/01 19:17:58 spiderr Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -29,7 +29,7 @@ if( empty( $_REQUEST['g2_authToken'] ) ) {
 	}
 }
 
-require_once( '../../kernel/setup_inc.php' );
+require_once( '../kernel/setup_inc.php' );
 
 //Point of access for FisheyeRemote requests
 require_once( 'FisheyeRemote.php' );
