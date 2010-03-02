@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.97 2010/03/02 03:58:56 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.98 2010/03/02 04:17:25 spiderr Exp $
  * @package fisheye
  */
 
@@ -665,7 +665,6 @@ class FisheyeGallery extends FisheyeBase {
 	}
 
 	function splitConnectByTree( &$pRet, $pTreeHash ) {
-vd( $pTreeHash );
 		if( $pTreeHash ) {
 			foreach( array_keys( $pTreeHash ) as $conId ) {
 				$path = split( '/', $conId );
