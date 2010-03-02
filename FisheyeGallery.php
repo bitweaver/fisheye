@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.96 2010/01/09 13:18:38 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.97 2010/03/02 03:58:56 spiderr Exp $
  * @package fisheye
  */
 
@@ -647,10 +647,25 @@ class FisheyeGallery extends FisheyeBase {
 		foreach( array_keys( $rootContent ) as $conId ) {
 			FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( "SELECT branch AS hash_key, * FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text) INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id) INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) ORDER BY branch, lc.`title`", $conId ) );
 		}
+		FisheyeGallery::getTreeSort( $ret );
 		return( $ret );
 	}
 
+	function getTreeSort( &$pTree ) {
+		foreach( array_keys( $pTree ) as $k ) {
+			if( !empty( $pTree[$k]['children'] ) ) {
+				FisheyeGallery::getTreeSort( $pTree[$k]['children'] );
+			}
+		}
+		uasort( $pTree, array( 'FisheyeGallery', 'getTreeSortCmp' ) );
+	}
+
+	static function getTreeSortCmp( $a, $b ) {
+		return strcmp( $a['content']['title'], $b['content']['title'] );
+	}
+
 	function splitConnectByTree( &$pRet, $pTreeHash ) {
+vd( $pTreeHash );
 		if( $pTreeHash ) {
 			foreach( array_keys( $pTreeHash ) as $conId ) {
 				$path = split( '/', $conId );
