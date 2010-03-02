@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.7 2010/02/09 03:32:04 spiderr Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.8 2010/03/02 04:36:53 spiderr Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -49,6 +49,8 @@ define( 'FEG2REMOTE_ROTATE_IMAGE_FAILED', 504 );
 class FisheyeRemote {
 
 	var $mResponse = array();
+
+	var $mSubGalIdx = 1;
 
 	function getApiVersion() {
 		return '2.14';
@@ -131,11 +133,12 @@ class FisheyeRemote {
 		global $gBitUser, $gBitSystem;
 		$url = $gBitUser->login( $pParamHash['uname'], $pParamHash['password'] );
 		if( $gBitUser->isRegistered() ) {
+			/*
 			$cookieTime =  ( int )( time() + $gBitSystem->getConfig( 'users_remember_time', 86400 ));
 			$cookiePath = $gBitSystem->getConfig( 'cookie_path', BIT_ROOT_URL );
 			$cookieDomain = $gBitSystem->getConfig( 'cookie_domain', "" );
 			setcookie( 'GALLERYSID', session_id(), $cookieTime, $cookiePath, $cookieDomain );
-
+			*/
 			$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'Login successful.', array( 'server_version' => $this->getApiVersion() ) );
 		} else {
 			$response = $this->createResponse( FEG2REMOTE_PASSWORD_WRONG, 'Invalid username or password' );
@@ -146,62 +149,87 @@ class FisheyeRemote {
 	// Recursively traverses a multi-dimensional array of galleries
 	function traverseGalleries( $pGalHash, &$pResponse ) {
 		global $gBitUser;
-		$i = 1;
-			$pResponse['album.parent.' . $i] = 0;
-			$pResponse['album.name.' . $i] = 1;
-			$pResponse['album.title.' . $i] = tra( 'Select a Gallery' );
-			$pResponse['album.perms.add.' . $i] = 'false';
-			$pResponse['album.perms.write.' . $i] = 'false';
-			$pResponse['album.perms.del_alb.' . $i] = 'false';
-			$pResponse['album.perms.create_sub.' . $i] = 'true';
+
+		// Albums don't like being 0 indexed 
+		$this->mSubGalIdx = 0;
+
+		// the lightroom client is dumb, and can only handle one 0 level parent
+		if( stripos( $_SERVER['HTTP_USER_AGENT'], 'lightroom' ) !== FALSE ) {
+			$this->mSubGalIdx++;
+			$pResponse['album.parent.' . $this->mSubGalIdx] = 0;
+			$pResponse['album.name.' . $this->mSubGalIdx] = 1;
+			$pResponse['album.title.' . $this->mSubGalIdx] = tra( 'Select a Gallery' );
+			$pResponse['album.perms.add.' . $this->mSubGalIdx] = 'false';
+			$pResponse['album.perms.write.' . $this->mSubGalIdx] = 'false';
+			$pResponse['album.perms.del_alb.' . $this->mSubGalIdx] = 'false';
+			$pResponse['album.perms.create_sub.' . $this->mSubGalIdx] = 'true';
+		}
 		
-		return $this->traverseSubGalleries( $pGalHash, $pResponse );
+		return $this->traverseSubGalleries( $pGalHash, $pResponse, 1 );
 	}
 
-	function traverseSubGalleries( $pGalHash, &$pResponse ) {
-		static $i = 1;
-		foreach( $pGalHash as $key=>$gallery)
-		{ 
-			$i++; //Albums don't like being 0 indexed 
+    /**
+    * Function that returns link to display a piece of content
+    * @param $pGalHash branch of gallery information from FisheyeGallery::getTree
+    * @param $pResponse aggregate string containing response array
+    * @param $pLevel depth of pGalHash - this is used to non-definitively uniquify album.parent and album.name entries
+    * @return the url to display the gallery.
+    */
+	function traverseSubGalleries( $pGalHash, &$pResponse, $pLevel ) {
+		global $gBitUser;
+		foreach( $pGalHash as $key=>$gallery) { 
+			$this->mSubGalIdx++;
+
 			if($gallery['content']['level'] != 0){
-				$pResponse['album.parent.' . $i] = $gallery['content']['cb_gallery_content_id'];
+				$pResponse['album.parent.' . $this->mSubGalIdx] = $gallery['content']['cb_gallery_content_id'].($pLevel-1);
 			} else {
-				$pResponse['album.parent.' . $i] = 1;
+				// the lightroom client is dumb, and can only handle one 0 level parent
+				if( stripos( $_SERVER['HTTP_USER_AGENT'], 'lightroom' ) !== FALSE ) {
+					$pResponse['album.parent.' . $this->mSubGalIdx] = 1;
+				} else {
+					$pResponse['album.parent.' . $this->mSubGalIdx] = 0;
+				}
 			}
-			$pResponse['album.name.' . $i] = $gallery['content']['content_id'];
-			$pResponse['album.title.' . $i] = $this->cleanResponseValue( $gallery['content']['title'] );
+			// append pLevel to make .name probably unique since Fisheye can handle one gallery linked to multiple parents
+			$pResponse['album.name.' . $this->mSubGalIdx] = $gallery['content']['content_id'].$pLevel;
+			$pResponse['album.title.' . $this->mSubGalIdx] = $this->cleanResponseValue( $gallery['content']['title'] );
 		
 			if( !empty( $gallery['content']['data'] ) ) {	
-				$pResponse['album.summary.' . $i] = $gallery['content']['data'];
-				$pResponse['album.info.extrafields.' . $i] = "Summary";
+				$pResponse['album.summary.' . $this->mSubGalIdx] = $gallery['content']['data'];
+				$pResponse['album.info.extrafields.' . $this->mSubGalIdx] = "Summary";
 			}
 
-			$pResponse['album.perms.add.' . $i] = 'true';
-			$pResponse['album.perms.write.' . $i] = 'true';
-			$pResponse['album.perms.del_alb.' . $i] = 'true';
-			$pResponse['album.perms.create_sub.' . $i] = 'true';
+			$pResponse['album.perms.add.' . $this->mSubGalIdx] = 'true';
+			$pResponse['album.perms.write.' . $this->mSubGalIdx] = 'true';
+			$pResponse['album.perms.del_alb.' . $this->mSubGalIdx] = 'true';
+			$pResponse['album.perms.create_sub.' . $this->mSubGalIdx] = 'true';
 				
 			if( !empty( $gallery['children'] ) ) { 
-				$this->traverseSubGalleries($gallery['children'],$pResponse);
+				$this->traverseSubGalleries($gallery['children'],$pResponse, ($pLevel + 1) );
 			}
 		}
-		return $i;
+		$ret = $this->mSubGalIdx;
+		return $ret;
 	}	
 
     function cmdFetchAlbums( $pParamHash ) {
 		require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php' );
 		global $gBitUser;
-		$treeGallery = new FisheyeGallery();
-		$listHash['user_id'] = $gBitUser->mUserId;
-		if( $galleryList = $treeGallery->getTree( $listHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle' ) ) ) ) {
-			$galResponse = array();
-			$galleryCount = $this->traverseGalleries( $galleryList, $galResponse );
-			$galResponse['album_count'] = $galleryCount;
-			$galResponse['can_create_root'] = 'true';
-			$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'Gallery list successful', $galResponse );
+		if( $gBitUser->isRegistered() ) {
+			$treeGallery = new FisheyeGallery();
+			$listHash['user_id'] = $gBitUser->mUserId;
+			if( $galleryList = $treeGallery->getTree( $listHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle' ) ) ) ) {
+				$galResponse = array();
+				$galleryCount = $this->traverseGalleries( $galleryList, $galResponse );
+				$galResponse['album_count'] = $galleryCount;
+				$galResponse['can_create_root'] = 'true';
+				$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'Gallery list successful', $galResponse );
+			} else {
+				// perhaps we should make at least on gallery at this point?
+				$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'No galleries', array( 'album_count' => 0 ) );
+			}
 		} else {
-			// perhaps we should make at least on gallery at this point?
-			$response = $this->createResponse( FEG2REMOTE_SUCCESS, 'No galleries', array( 'album_count' => 0 ) );
+			$response = $this->createResponse( FEG2REMOTE_PASSWORD_WRONG, 'Application not logged in' );
 		}
 		return $response;
     }

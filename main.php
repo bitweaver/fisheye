@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/main.php,v 1.9 2010/03/01 19:17:58 spiderr Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/main.php,v 1.10 2010/03/02 04:36:53 spiderr Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -21,13 +21,6 @@
 // +----------------------------------------------------------------------+
 
 chdir( dirname( __FILE__ ) );
-
-if( empty( $_REQUEST['g2_authToken'] ) ) {
-	// No Auth token, nuke all cookies in case this was a previous login
-	foreach( array_keys( $_COOKIE ) as $key ) {
-		unset( $_COOKIE[$key] );
-	}
-}
 
 require_once( '../kernel/setup_inc.php' );
 
