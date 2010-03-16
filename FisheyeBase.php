@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.33 2009/11/10 18:48:07 tylerbello Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeBase.php,v 1.34 2010/03/16 03:55:10 spiderr Exp $
  * @package fisheye
  */
 
@@ -86,7 +86,7 @@ class FisheyeBase extends LibertyMime
 	function getBreadcrumbLinks() {
 		$ret = '';
 		if( !empty( $this->mGalleryPath ) ) {
-			$path = split( '/', ltrim( $this->mGalleryPath, '/' ) );
+			$path = explode( '/', ltrim( $this->mGalleryPath, '/' ) );
 			$p = 0;
 			$c = 1;
 			$joinSql = '';

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.34 2010/02/08 21:27:22 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_order.php,v 1.35 2010/03/16 03:55:10 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -99,7 +99,7 @@ if (!empty($_REQUEST['cancel'])) {
 			$galleryItem->load();
 			if( isset( $batchCon[$contentId] ) ) {
 				if( !empty( $_REQUEST['batch_command'] ) ) {
-					@list( $batchCommand, $batchParam ) = @split( ':', $_REQUEST['batch_command'] );
+					@list( $batchCommand, $batchParam ) = @explode( ':', $_REQUEST['batch_command'] );
 					switch( $batchCommand ) {
 						case 'delete':
 							$galleryItem->expunge();
