@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.37 2010/01/28 04:14:31 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.38 2010/03/27 01:06:39 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -185,7 +185,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 					} else {
 						$errors = array_merge( $errors, array_values( $newImage->mErrors ) );
 					}
-				} else {
+				} elseif( is_file( $scanFile ) ) {
 					// unknown file type, let's be tidy and clean it up
 					unlink( $scanFile );
 				}
