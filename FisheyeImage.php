@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.112 2010/02/03 18:29:53 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.113 2010/04/14 19:43:51 spiderr Exp $
  * @package fisheye
  */
 
@@ -332,7 +332,9 @@ class FisheyeImage extends FisheyeBase {
 			$file = $this->getSourceFile();
 			// only attempt to get exif data from jpg or tiff files - chokes otherwise
 			if( empty( $this->mExif ) && preg_match( "!\.(jpe?g|tif{1,2})$!", $file ) ) {
-				$this->mExif = array_change_key_case( @exif_read_data( $file ), CASE_LOWER );
+				if( $exif = @exif_read_data( $file ) ) {
+					$this->mExif = array_change_key_case( $exif, CASE_LOWER );
+				}
 			}
 			if( !empty( $this->mExif[$pExifField] ) ) {
 				$ret = $this->mExif[$pExifField];
