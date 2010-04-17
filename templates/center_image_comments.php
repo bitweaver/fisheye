@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/templates/center_image_comments.php,v 1.1 2007/11/25 04:42:56 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/templates/center_image_comments.php,v 1.3 2010/04/17 19:12:29 wjames5 Exp $
  * @package fisheye
  * @subpackage modules
  */
@@ -33,7 +33,7 @@ if (!empty($params['pigeonholes'])) {
 
 if( !empty( $params['root_content_type_guid'] ) ) {
 	if( empty($moduleTitle) && is_string( $params['root_content_type_guid'] ) ) {
-		$moduleTitle = $gLibertySystem->mContentTypes[$params['root_content_type_guid']]['content_description'].' '.tra( 'Comments' );
+		$moduleTitle = $gLibertySystem->getContentTypeName( $params['root_content_type_guid'] ).' '.tra( 'Comments' );
 	}
 	$listHash['root_content_type_guid'] = $params['root_content_type_guid'];
 } else {
