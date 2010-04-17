@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.99 2010/03/16 03:55:10 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.100 2010/04/17 22:46:08 wjames5 Exp $
  * @package fisheye
  */
 
@@ -37,7 +37,8 @@ class FisheyeGallery extends FisheyeBase {
 		// FYI: Any class which uses a table which inherits from liberty_content should create their own content type(s)
 		$this->registerContentType(
 			FISHEYEGALLERY_CONTENT_TYPE_GUID, array( 'content_type_guid' => FISHEYEGALLERY_CONTENT_TYPE_GUID,
-				'content_description' => 'Image Gallery',
+				'content_name' => 'Image Gallery',
+				'content_name_plural' => 'Image Galleries',
 				'handler_class' => 'FisheyeGallery',
 				'handler_package' => 'fisheye',
 				'handler_file' => 'FisheyeGallery.php',

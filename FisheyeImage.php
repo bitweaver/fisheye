@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.113 2010/04/14 19:43:51 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.114 2010/04/17 22:46:08 wjames5 Exp $
  * @package fisheye
  */
 
@@ -26,7 +26,7 @@ class FisheyeImage extends FisheyeBase {
 
 		$this->registerContentType(
 			FISHEYEIMAGE_CONTENT_TYPE_GUID, array( 'content_type_guid' => FISHEYEIMAGE_CONTENT_TYPE_GUID,
-				'content_description' => 'Image',
+				'content_name' => 'Image',
 				'handler_class' => 'FisheyeImage',
 				'handler_package' => 'fisheye',
 				'handler_file' => 'FisheyeImage.php',
@@ -658,7 +658,8 @@ class FisheyeImage extends FisheyeBase {
 			if( !empty( $storage['filename'] ) ) {
 				$ret = $storage['filename'];
 			} else {
-				$ret = tra( $this->getContentTypeDescription( $pHash['content_type_guid'] ) );
+				global $gLibertySystem;
+				$ret = $gLibertySystem->getContentTypeName( $pHash['content_type_guid'] );
 				if( !empty( $pHash['image_id'] ) ) {
 					$ret .= " ".$pHash['image_id'];
 				}

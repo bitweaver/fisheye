@@ -100,4 +100,9 @@ $gBitInstaller->registerContentObjects( FISHEYE_PKG_NAME, array(
 	'FisheyeGallery'=>FISHEYE_PKG_PATH.'FisheyeGallery.php',
 	'FisheyeImage'=>FISHEYE_PKG_PATH.'FisheyeImage.php',
 ));
-?>
+
+// Requirements
+$gBitInstaller->registerRequirements( FISHEYE_PKG_NAME, array(
+    'liberty' => array( 'min' => '2.1.4' ),
+));
+
