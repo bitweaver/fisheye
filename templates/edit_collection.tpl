@@ -2,7 +2,7 @@
 
 <div class="admin structure">
 	<div class="header">
-		<h1>{tr}Edit {$gStructure->mInfo.content_type.content_description}{/tr}</h1>
+		<h1>{tr}Edit {$gLibertySystem->getContentTypeName(gStructure->mInfo.content_type_guid)}{/tr}</h1>
 	</div>
 
 	<div class="body">

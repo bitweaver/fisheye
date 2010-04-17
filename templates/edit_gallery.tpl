@@ -131,7 +131,7 @@ function updateGalleryPagination() {
 						{legend legend="Gallery Memberships"}
 							{tr}If you would like this gallery to be a sub-gallery, check the parent gallery below. It is possible to belong to multiple galleries. If no parent is checked, this gallery will appear as a top-level gallery.{/tr}
 							<div class="row">
-								{formlabel label="`$gContent->mInfo.content_description` Belongs to These Galleries"}
+								{formlabel label=$gContent->getContentTypeName()|cat:" Belongs to These Galleries"}
 								{forminput}
 									{foreach from=$galleryList key=galId item=gal}
 										{if $galId != $gContent->mGalleryId}
