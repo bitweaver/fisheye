@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.101 2010/04/25 00:28:23 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.102 2010/04/25 00:59:23 spiderr Exp $
  * @package fisheye
  */
 
@@ -709,8 +709,6 @@ class FisheyeGallery extends FisheyeBase {
 			$pRet[$popId]['content'] = $pTreeHash;
 		}
 	}
-
-	
 
 	// Generate a nested ul list of listed galleries
 	function generateList( $pListHash, $pOptions ) {

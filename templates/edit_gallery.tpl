@@ -133,7 +133,9 @@ function updateGalleryPagination() {
 							<div class="row">
 								{formlabel label=$gContent->getContentTypeName()|cat:" Belongs to These Galleries"}
 								{forminput}
-{$galleryTree}
+<div class="gallerytree">
+	{$galleryTree}
+</div>
 								{/forminput}
 							</div>
 						{/legend}
