@@ -126,26 +126,14 @@ function updateGalleryPagination() {
 
 				{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_tab_tpl"}
 
-				{if $galleryList}
+				{if $galleryTree}
 					{jstab title="Gallery Memberships"}
 						{legend legend="Gallery Memberships"}
 							{tr}If you would like this gallery to be a sub-gallery, check the parent gallery below. It is possible to belong to multiple galleries. If no parent is checked, this gallery will appear as a top-level gallery.{/tr}
 							<div class="row">
 								{formlabel label=$gContent->getContentTypeName()|cat:" Belongs to These Galleries"}
 								{forminput}
-									{foreach from=$galleryList key=galId item=gal}
-										{if $galId != $gContent->mGalleryId}
-										<input type="checkbox" name="gallery_additions[]" value="{$gal.gallery_id}"
-											{if $gal.in_gallery}
-												checked="checked"
-											{/if}
-										/>
-										<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title|escape}</a>
-										<br />
-										{/if}
-									{foreachelse}
-										{tr}No Galleries Found{/tr}.
-									{/foreach}
+{$galleryTree}
 								{/forminput}
 							</div>
 						{/legend}
