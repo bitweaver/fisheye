@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.100 2010/04/17 22:46:08 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.101 2010/04/25 00:28:23 spiderr Exp $
  * @package fisheye
  */
 
@@ -632,21 +632,44 @@ class FisheyeGallery extends FisheyeBase {
 	function getTree( $pListHash ) {
 		global $gBitDb;
 		$bindVars = array();
+		$containVars = array();
+		$selectSql = '';
+		$joinSql = '';
 		$whereSql = '';
+		if( !empty( $pListHash['contain_item'] ) ) {
+			$selectSql = " , tfgim3.`item_content_id` AS `in_gallery` ";
+			$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=lc.`content_id`) AND tfgim3.`item_content_id`=? ";
+			$bindVars[] = $pListHash['contain_item'];
+			$containVars[] = $pListHash['contain_item'];
+			unset( $pListHash['contain_item'] );
+		}
 		foreach( $pListHash as $key=>$val ) {
 			$whereSql .= " $key=? AND ";
 			$bindVars[] = $val;
 		}
-		$query =   "SELECT lc.`content_id` AS `hash_key, fg.*, lc.*
+
+		$query =   "SELECT lc.`content_id` AS `hash_key, fg.*, lc.* $selectSql
 					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg 
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(fg.`content_id`=lc.`content_id`) 
+						$joinSql
 					WHERE $whereSql NOT EXISTS (SELECT gallery_content_id FROM fisheye_gallery_image_map tfgim2 WHERE tfgim2.item_content_id=lc.content_id) 
 					ORDER BY lc.title";
 		$rootContent = $gBitDb->GetAssoc( $query, $bindVars );
 
 		$ret = array();
 		foreach( array_keys( $rootContent ) as $conId ) {
-			FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( "SELECT branch AS hash_key, * FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text) INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id) INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) ORDER BY branch, lc.`title`", $conId ) );
+			$splitVars = array();
+			$query = "SELECT branch AS hash_key, * $selectSql 
+					  FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text) 
+						INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id) 
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) 
+						$joinSql
+					  ORDER BY branch, lc.`title`";
+			$splitVars[] = $conId;
+			if( !empty( $containVars ) ) {
+				$splitVars[] = $containVars[0];
+			}
+			FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query, $splitVars ) );
 		}
 		FisheyeGallery::getTreeSort( $ret );
 		return( $ret );
@@ -700,24 +723,34 @@ class FisheyeGallery extends FisheyeBase {
 				}
 			}
 			$ret .= ">";
-			$ret .= FisheyeGallery::generateListItems( $hash, !empty( $pOptions['item_attributes'] ) ? $pOptions['item_attributes'] : array() );
+			$ret .= FisheyeGallery::generateListItems( $hash, $pOptions );
 			$ret .= "</ul>";
 		}
 		return $ret;
 	}
 
 	// Helper method for generateMenu. See that method. Is Recursive
-	function generateListItems( &$pHash, $pAttributes=array() ) {
+	function generateListItems( &$pHash, $pOptions ) {
 		$ret = '';
 		foreach( array_keys( $pHash ) as $conId ) {
 			$ret .= '<li id="fisheyegallery'.$pHash[$conId]['content']['gallery_id'].'" gallery_id="'.$pHash[$conId]['content']['gallery_id'].'" ';
-			foreach( $pAttributes as $key=>$value ) {
-				$ret .= " $key=\"$value\" ";
+			if( !empty( $pOptions['item_attributes'] ) ) {
+				foreach( $pOptions['item_attributes'] as $key=>$value ) {
+					$ret .= " $key=\"$value\" ";
+				}
 			}
-			$ret .= ' >'.htmlspecialchars( $pHash[$conId]['content']['title'] );
+			$ret .= ' >';
+			if( !empty( $pOptions['radio_checkbox'] ) ) {
+				$ret .= '<input type="checkbox" name="gallery_additions[]" value="'.$pHash[$conId]['content']['gallery_id'].'" ';
+				if( !empty( $pHash[$conId]['content']['in_gallery'] ) ) {
+					$ret .=	' checked="checked" ';
+				}
+				$ret .= '/>';
+			}
+			$ret .= htmlspecialchars( $pHash[$conId]['content']['title'] );
 			$ret .= '</li>';
 			if( !empty( $pHash[$conId]['children'] ) ) {
-				$ret .= '<li><ul>'.FisheyeGallery::generateListItems( $pHash[$conId]['children'], $pAttributes ).'</ul></li>';
+				$ret .= '<li><ul>'.FisheyeGallery::generateListItems( $pHash[$conId]['children'], $pOptions ).'</ul></li>';
 			}
 		}
 		return $ret;
