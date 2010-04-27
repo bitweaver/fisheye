@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.114 2010/04/17 22:46:08 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.115 2010/04/27 04:21:59 spiderr Exp $
  * @package fisheye
  */
 
@@ -343,7 +343,7 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	function rotateImage( $pDegrees ) {
+	function rotateImage( $pDegrees, $pImmediateRender = FALSE ) {
 		global $gBitSystem;
 		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
 			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['storage_path'];
@@ -390,7 +390,7 @@ class FisheyeImage extends FisheyeBase {
 				if( $rotateFunc( $fileHash ) ) {
 					liberty_clear_thumbnails( $fileHash );
 					$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=`height`, `height`=`width` WHERE `content_id`=?", array( $this->mContentId ) );
-					$this->generateThumbnails();
+					$this->generateThumbnails( FALSE, $pImmediateRender );
 				} else {
 					$this->mErrors['rotate'] = $fileHash['error'];
 				}
@@ -482,11 +482,11 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 
-	function generateThumbnails( $pResizeOriginal=NULL ) {
+	function generateThumbnails( $pResizeOriginal=NULL, $pImmediateRender=FALSE ) {
 		global $gBitSystem;
 		$ret = FALSE;
 		// LibertyMime will take care of thumbnail generation of the offline thumbnailer is not active
-		if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) ) {
+		if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) && !$pImmediateRender ) {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."liberty_process_queue`
 					  WHERE `content_id`=?";
 			$this->mDb->query( $query, array( $this->mContentId ) );
