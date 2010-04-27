@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.29 2010/02/08 21:27:22 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit_image.php,v 1.30 2010/04/27 04:24:05 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -92,6 +92,10 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 			header( 'Location: '.$gContent->getDisplayUrl().($gBitSystem->isFeatureActive( 'pretty_urls' ) ? '?' : '&' ).'refresh=1' );
 			die;
 		}
+	}
+} elseif( !empty($_REQUEST['ajax_edit']) ) {
+	if( !empty( $_REQUEST['rotate_image'] ) ) {
+		$gContent->rotateImage( $_REQUEST['rotate_image'], TRUE );
 	}
 } elseif( !empty($_REQUEST['delete']) ) {
 	$gContent->verifyUserPermission( tra( "You do not have permission to delete this image." ) );
