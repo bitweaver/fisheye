@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.102 2010/04/25 00:59:23 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.103 2010/04/28 04:48:15 spiderr Exp $
  * @package fisheye
  */
 
@@ -641,6 +641,9 @@ class FisheyeGallery extends FisheyeBase {
 			$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=lc.`content_id`) AND tfgim3.`item_content_id`=? ";
 			$bindVars[] = $pListHash['contain_item'];
 			$containVars[] = $pListHash['contain_item'];
+		}
+		if( isset( $pListHash['contain_item'] ) ) {
+			// contain item might have squeaked in as 0, clear our from pListHash
 			unset( $pListHash['contain_item'] );
 		}
 		foreach( $pListHash as $key=>$val ) {

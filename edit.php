@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.38 2010/04/24 16:32:29 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.39 2010/04/28 04:48:15 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -109,12 +109,14 @@ $gallery = $gContent->getParentGalleries();
 $gBitSmarty->assign_by_ref( 'parentGalleries', $gallery );
 $getHash = array(
 	'user_id'       => $gBitUser->mUserId,
-	'contain_item'  => $gContent->mContentId,
 //	'max_records'   => -1,
 //	'no_thumbnails' => TRUE,
 //	'sort_mode'     => 'title_asc',
 //	'show_empty'    => TRUE,
 );
+if( $gContent->mContentId ) {
+	$getHash['contain_item'] = $gContent->mContentId;
+}
 // modify listHash according to global preferences
 if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
 	unset( $getHash['user_id'] );
