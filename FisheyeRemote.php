@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.8 2010/03/02 04:36:53 spiderr Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.9 2010/05/04 01:04:31 spiderr Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -61,6 +61,7 @@ class FisheyeRemote {
 	// weird but true. ubermind is an example
     function processRequest( $pGetData, $pPostData ) {
 		$pData = array_merge($pGetData, $pPostData); //Some programs (galleryexport) pass both post and get...and the cmd can be in either get or post
+
 		if(!empty($pData)){
 			switch ($pData['cmd']) {
 				case 'login':
@@ -147,7 +148,7 @@ class FisheyeRemote {
     }
 
 	// Recursively traverses a multi-dimensional array of galleries
-	function traverseGalleries( $pGalHash, &$pResponse ) {
+	function traverseGalleries( &$pGalHash, &$pResponse ) {
 		global $gBitUser;
 
 		// Albums don't like being 0 indexed 
@@ -172,16 +173,20 @@ class FisheyeRemote {
     * Function that returns link to display a piece of content
     * @param $pGalHash branch of gallery information from FisheyeGallery::getTree
     * @param $pResponse aggregate string containing response array
-    * @param $pLevel depth of pGalHash - this is used to non-definitively uniquify album.parent and album.name entries
+    * @param $pParentRandom depth of pGalHash - this is used to non-definitively uniquify album.parent and album.name entries
     * @return the url to display the gallery.
     */
-	function traverseSubGalleries( $pGalHash, &$pResponse, $pLevel ) {
+	function traverseSubGalleries( &$pGalHash, &$pResponse, $pParentRandom ) {
 		global $gBitUser;
 		foreach( $pGalHash as $key=>$gallery) { 
 			$this->mSubGalIdx++;
 
+			// Any number greater than 2 digits crashes iPhoto2Gallery
+			$randomizer = str_pad( rand( 1, 99 ), 2, '0' );
 			if($gallery['content']['level'] != 0){
-				$pResponse['album.parent.' . $this->mSubGalIdx] = $gallery['content']['cb_gallery_content_id'].($pLevel-1);
+				// Fisheye allows directories to below to multiple parents - not in gallery. This confuses some clients
+				// We pad with a random number for uniqueness
+				$pResponse['album.parent.' . $this->mSubGalIdx] = $gallery['content']['cb_gallery_content_id'].$pParentRandom;
 			} else {
 				// the lightroom client is dumb, and can only handle one 0 level parent
 				if( stripos( $_SERVER['HTTP_USER_AGENT'], 'lightroom' ) !== FALSE ) {
@@ -190,8 +195,8 @@ class FisheyeRemote {
 					$pResponse['album.parent.' . $this->mSubGalIdx] = 0;
 				}
 			}
-			// append pLevel to make .name probably unique since Fisheye can handle one gallery linked to multiple parents
-			$pResponse['album.name.' . $this->mSubGalIdx] = $gallery['content']['content_id'].$pLevel;
+			// append pParentRandom to make .name probably unique since Fisheye can handle one gallery linked to multiple parents
+			$pResponse['album.name.' . $this->mSubGalIdx] = $gallery['content']['content_id'].$randomizer;
 			$pResponse['album.title.' . $this->mSubGalIdx] = $this->cleanResponseValue( $gallery['content']['title'] );
 		
 			if( !empty( $gallery['content']['data'] ) ) {	
@@ -205,7 +210,7 @@ class FisheyeRemote {
 			$pResponse['album.perms.create_sub.' . $this->mSubGalIdx] = 'true';
 				
 			if( !empty( $gallery['children'] ) ) { 
-				$this->traverseSubGalleries($gallery['children'],$pResponse, ($pLevel + 1) );
+				$this->traverseSubGalleries($gallery['children'],$pResponse, $randomizer );
 			}
 		}
 		$ret = $this->mSubGalIdx;
@@ -252,11 +257,11 @@ class FisheyeRemote {
 			require_once (FISHEYE_PKG_PATH.'upload_inc.php');	
 		
 			$parentGallery = new FisheyeGallery();
-			$parentGallery = $parentGallery->lookup(array('content_id' => $pParamHash['set_albumName'] ) );
-			$parentGallery->load();
-		
-
-			$_REQUEST['gallery_additions'] = array($parentGallery->mGalleryId);
+error_log( 'content_id => '.$pParamHash['set_albumName'] );	
+			if( $parentGallery = $parentGallery->lookup(array('content_id' => $pParamHash['set_albumName'] ) ) ) {
+				$parentGallery->load();
+				$_REQUEST['gallery_additions'] = array($parentGallery->mGalleryId);
+			}
 			if( $errors = fisheye_store_upload( $uploadFile , $storeHash ) ){
 			 	$response = $this->createResponse( FEG2REMOTE_UPLOAD_PHOTO_FAIL, 'Export Failed' );
 			} else {
@@ -333,7 +338,7 @@ class FisheyeRemote {
 		$pValue = str_replace('\\', '\\\\', $pValue);
 		$pValue = str_replace("\r\n", '\n', $pValue);
 		$pValue = str_replace(array("\r", "\n", "\t"), array('\n', '\n', '\t'), $pValue);
-		$pValue = str_replace(array('#', '!', '=', ':'), array('\\#', '\\!', '\\=', '\\:'), $pValue);
+		$pValue = str_replace(array('#', '!', '='), array('\\#', '\\!', '\\='), $pValue);
 		return $pValue;
     }
 

@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/main.php,v 1.10 2010/03/02 04:36:53 spiderr Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/main.php,v 1.11 2010/05/04 01:04:32 spiderr Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -29,6 +29,20 @@ require_once( 'FisheyeRemote.php' );
 require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php' );
 
 $gFisheyeRemote = new FisheyeRemote();
+
+// Fisheye allows directories to below to multiple parents - not in gallery. This confuses some clients
+// We pad with a random number for uniqueness
+foreach( array( 'g2_itemId', 'set_albumName' ) as $key ) {
+	if( !empty( $_POST['g2_form'][$key] ) && $_POST['g2_form'][$key] > 1 ) {
+		$_POST['g2_form'][$key] = substr( $_POST['g2_form'][$key], 0, (strlen( $_POST['g2_form'][$key] ) - 2) );
+	}
+	if( !empty( $_GET['g2_form'][$key] ) && $_GET['g2_form'][$key] > 1 ) {
+		$_GET['g2_form'][$key] = substr( $_GET['g2_form'][$key], 0, (strlen( $_GET['g2_form'][$key] ) - 2) );
+	}
+	if( !empty( $_REQUEST[$key] ) && $_REQUEST[$key] > 1 ) {
+		$_REQUEST[$key] = substr( $_REQUEST[$key], 0, (strlen( $_REQUEST[$key] ) - 2) );
+	}
+}
 
 if( !empty( $_REQUEST['g2_form'] ) ){
 	$gFisheyeRemote->processRequest( (!empty( $_GET['g2_form'] ) ? $_GET['g2_form'] : array()), (!empty( $_POST['g2_form'] ) ? $_POST['g2_form'] : array()) );
