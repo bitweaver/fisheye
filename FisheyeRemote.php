@@ -3,7 +3,7 @@
 * Gallery2 Remote support for fisheye
 *
 * @package  fisheye
-* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.9 2010/05/04 01:04:31 spiderr Exp $
+* @version  $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeRemote.php,v 1.10 2010/05/04 01:09:26 spiderr Exp $
 * @author   spider <spider@steelsun.com>
 * @author   tylerbello <tylerbello@gmail.com>
 */
@@ -257,7 +257,6 @@ class FisheyeRemote {
 			require_once (FISHEYE_PKG_PATH.'upload_inc.php');	
 		
 			$parentGallery = new FisheyeGallery();
-error_log( 'content_id => '.$pParamHash['set_albumName'] );	
 			if( $parentGallery = $parentGallery->lookup(array('content_id' => $pParamHash['set_albumName'] ) ) ) {
 				$parentGallery->load();
 				$_REQUEST['gallery_additions'] = array($parentGallery->mGalleryId);
