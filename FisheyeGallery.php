@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.104 2010/05/04 13:42:12 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.105 2010/05/04 21:03:11 lsces Exp $
  * @package fisheye
  */
 
@@ -651,7 +651,7 @@ class FisheyeGallery extends FisheyeBase {
 			$bindVars[] = $val;
 		}
 
-		$query =   "SELECT lc.`content_id` AS `hash_key, fg.*, lc.* $selectSql
+		$query =   "SELECT lc.`content_id` AS `hash_key`, fg.*, lc.* $selectSql
 					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg 
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(fg.`content_id`=lc.`content_id`) 
 						$joinSql
@@ -669,8 +669,36 @@ class FisheyeGallery extends FisheyeBase {
 							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) 
 							$joinSql
 						  ORDER BY branch, lc.`title`";
+			} else if ( $this->mDb->mType == 'firebird' ) {
+				$query = "WITH RECURSIVE
+							GALLERY_TREE AS (
+								SELECT `content_id` AS gallery_content_id, `content_id` AS item_content_id, 0 AS BLEVEL, CAST( `content_id` AS VARCHAR(255) ) AS BRANCH
+								FROM `".BIT_DB_PREFIX."fisheye_gallery` B
+								WHERE B.`content_id` = ?
+ 
+								UNION ALL
+
+    							SELECT `gallery_content_id`, `item_content_id`, G.BLEVEL + 1, G.BRANCH || '/' || `item_content_id` AS BRANCH
+								FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` G1
+								JOIN GALLERY_TREE G
+								ON G1.`gallery_content_id` = G.`item_content_id`
+								INNER JOIN `".BIT_DB_PREFIX."liberty_content` lcg1 ON(lcg1.`content_id`=`item_content_id`) and lcg1.`content_type_guid` = 'fisheyegallery'
+							)
+
+							SELECT T.BRANCH AS hash_key, T.BLEVEL, fg.*, lc.* $selectSql 
+							FROM GALLERY_TREE T
+							INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=T.`gallery_content_id`) 
+							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (lc.`content_id`=T.`item_content_id`)
+							$joinSql
+						  ORDER BY T.BRANCH, lc.`title`";
 			} else {
-// NEED TO FIX for other databases
+// this needs replacing with a more suitable list query ...
+				$query = "SELECT lc.`content_id` AS `hash_key`, fg.*, lc.* $selectSql
+							FROM `".BIT_DB_PREFIX."fisheye_gallery` fg 
+							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(fg.`content_id`=lc.`content_id`) 
+							$joinSql
+							WHERE $whereSql EXISTS (SELECT gallery_content_id FROM fisheye_gallery_image_map tfgim2 WHERE tfgim2.item_content_id=lc.content_id) 
+							ORDER BY lc.title";				
 			}
 			$splitVars[] = $conId;
 			if( !empty( $containVars ) ) {
