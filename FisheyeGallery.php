@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.103 2010/04/28 04:48:15 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.104 2010/05/04 13:42:12 spiderr Exp $
  * @package fisheye
  */
 
@@ -662,12 +662,16 @@ class FisheyeGallery extends FisheyeBase {
 		$ret = array();
 		foreach( array_keys( $rootContent ) as $conId ) {
 			$splitVars = array();
-			$query = "SELECT branch AS hash_key, * $selectSql 
-					  FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text) 
-						INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id) 
-						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) 
-						$joinSql
-					  ORDER BY branch, lc.`title`";
+			if( $this->mDb->isAdvancedPostgresEnabled() ) {
+				$query = "SELECT branch AS hash_key, * $selectSql 
+						  FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text) 
+							INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id) 
+							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) 
+							$joinSql
+						  ORDER BY branch, lc.`title`";
+			} else {
+// NEED TO FIX for other databases
+			}
 			$splitVars[] = $conId;
 			if( !empty( $containVars ) ) {
 				$splitVars[] = $containVars[0];
