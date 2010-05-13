@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/Attic/view_image_tagged.php,v 1.1 2010/05/12 21:45:00 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/Attic/view_image_tagged.php,v 1.2 2010/05/13 09:11:50 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -22,8 +22,8 @@ if( !empty( $_REQUEST['size'] ) ) {
 }
 
 if( !empty( $_REQUEST['mode'] ) ) {
-	if ( $_REQUEST['save'] == 'yes' ) {
-		// save tag record
+	if ( !empty( $_REQUEST['save'] ) and $_REQUEST['save'] == 'yes' ) {
+vd($_REQUEST);		// save tag record
 	} 
 	$gBitSmarty->assign( 'mode', $_REQUEST['mode'] );
 }
@@ -49,9 +49,9 @@ if( is_object( $gGallery ) && $gGallery->isCommentable() ) {
 
 $gContent->addHit();
 
-$gBitThemes->loadCss( UTIL_PKG_PATH.'/javascript/libs/jquery/themes/base/ui.all.css', TRUE );
+$gBitThemes->loadCss( UTIL_PKG_PATH.'javascript/libs/jquery/themes/base/ui.all.css', TRUE );
 $gBitThemes->loadAjax( 'jquery' );
-$gBitThemes->loadJavascript( UTIL_PKG_PATH.'/javascript/libs/jquery/packed/ui/jquery.ui.all.packed.js', FALSE, 500, FALSE );
+$gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/jquery/full/ui/jquery.ui.all.js', FALSE, 500, FALSE );
 
 // this will let LibertyMime know that we want to display the original image
 $gContent->mInfo['image_file']['original'] = TRUE;
