@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/Attic/view_image_tagged.php,v 1.4 2010/05/13 22:00:37 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/Attic/view_image_tagged.php,v 1.5 2010/05/13 23:09:37 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -60,7 +60,7 @@ $tagSql = "SELECT lat.`comment_id` as tag_no, lc.`title` as description, lat.*
 			JOIN `".BIT_DB_PREFIX."liberty_content` lc ON lc.`content_id` = lcm.`content_id`
 			WHERE lat.`attachment_id` = ?";
 $gContent->mInfo['tags'] = $gContent->mDb->getAssoc( $tagSql, array( $gContent->mContentId ) );
-vd($gContent->mContentId);
+//vd($gContent->mContentId);
 global $gHideModules;
 $gHideModules = $gBitSystem->isFeatureActive( 'fisheye_image_hide_modules' );
 

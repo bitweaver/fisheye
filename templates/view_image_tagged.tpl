@@ -24,7 +24,7 @@
 			{else}
 				{if $gContent->mInfo.tags }
 					{foreach from=$gContent->mInfo.tags item=resTags key=itemContentId}
-						<div class=tag style="position:absolute;width:{$resTags.tag_width}px;height:{$resTags.tag_height}px;top:{$resTags.tag_top};left:{$resTags.tag_left};">
+						<div class=tag style="position:absolute;width:{$resTags.tag_width}px;height:{$resTags.tag_height}px;top:{$resTags.tag_top}px;left:{$resTags.tag_left}px;">
 							{$resTags.description}
 						</div>
 					{/foreach}
