@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/Attic/view_image_tagged.php,v 1.2 2010/05/13 09:11:50 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/Attic/view_image_tagged.php,v 1.3 2010/05/13 12:35:44 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -12,7 +12,7 @@ require_once( '../kernel/setup_inc.php' );
 
 require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
-//vd($_REQUEST);
+
 global $gBitSystem, $gDebug;
 
 if( !empty( $_REQUEST['size'] ) ) {
@@ -21,9 +21,22 @@ if( !empty( $_REQUEST['size'] ) ) {
 	setcookie( 'fisheyeviewsize', $_REQUEST['size'], 0, $gBitSystem->getConfig( 'cookie_path', BIT_ROOT_URL ), $gBitSystem->getConfig( 'cookie_domain', '.'.$_SERVER['SERVER_NAME'] ) );
 }
 
+include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
+
 if( !empty( $_REQUEST['mode'] ) ) {
 	if ( !empty( $_REQUEST['save'] ) and $_REQUEST['save'] == 'yes' ) {
-vd($_REQUEST);		// save tag record
+		// save tag record
+		if( $gContent->verifyId( $_REQUEST['image_id'] ) ) {
+			if ( !empty( $_REQUEST['comment_id'] ) and $gContent->verifyId( $_REQUEST['comment_id'] ) ) {
+				$gContent->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."liberty_attachment_tags` WHERE `content_id`=? and `comment_id`=?", array( $_REQUEST['image_id'], $_REQUEST['comment_id'] ) );
+			} else {
+				$_REQUEST['comment_id'] = 0;
+				// need to add a new comment here?
+			}
+			$gContent->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."liberty_attachment_tags` ( `attachment_id`, `comment_id`, `tag_top`, `tag_left`, `tag_width`, `tag_height` )
+				VALUES ( ?, ?, ?, ?, ?, ? )", 
+				array( $_REQUEST['image_id'], $_REQUEST['comment_id'], $_REQUEST['top'], $_REQUEST['left'], $_REQUEST['width'], $_REQUEST['height'] ) );
+		}
 	} 
 	$gBitSmarty->assign( 'mode', $_REQUEST['mode'] );
 }
@@ -32,9 +45,8 @@ if( !empty( $_REQUEST['delete'] ) ) {
 	// delete tag record 
 }
 
-include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
-$gContent->mInfo['tags'] = 0;
-//vd($gContent);
+$gContent->mInfo['tags'] = $gContent->mDb->getAssoc( "SELECT lat.`comment_id` as tag_no, 'Tag-' || lat.`comment_id` as description, lat.* FROM `".BIT_DB_PREFIX."liberty_attachment_tags` lat WHERE `attachment_id` = ?", array( $_REQUEST['image_id'] ) );
+// vd($gContent->mInfo['tags']);
 global $gHideModules;
 $gHideModules = $gBitSystem->isFeatureActive( 'fisheye_image_hide_modules' );
 

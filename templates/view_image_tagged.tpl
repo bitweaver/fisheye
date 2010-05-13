@@ -70,7 +70,7 @@
 		<h1>{$gContent->getTitle()|default:$gContent->mInfo.filename|escape}</h1>
 	</div>
 
-    <div class="body">
+{*    <div class="body">  *}
 		<div id="taggingArea">
 			<img src="{$gContent->mInfo.source_url}" />
 			{if $mode == 'edit' }
@@ -78,7 +78,7 @@
 			{else}
 				{if $gContent->mInfo.tags }
 					{foreach from=$gContent->mInfo.tags item=resTags key=itemContentId}
-						<div class=tag style="position:absolute;width:{$resTags.width}px;height:{$resTags.height}px;top:{$resTags.top};left:{$resTags.left};">
+						<div class=tag style="position:absolute;width:{$resTags.tag_width}px;height:{$resTags.tag_height}px;top:{$resTags.tag_top};left:{$resTags.tag_left};">
 							{$resTags.description}
 						</div>
 					{/foreach}
@@ -108,7 +108,7 @@
 				<a href="view_image_tagged.php?image_id={$gContent->mImageId}&mode=edit">Go to edit mode</a>
 			</div>
 		{/if}
-	</div>
+{*	</div>  *}
 	
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
 	
