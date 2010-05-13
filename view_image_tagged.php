@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/Attic/view_image_tagged.php,v 1.3 2010/05/13 12:35:44 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/Attic/view_image_tagged.php,v 1.4 2010/05/13 22:00:37 lsces Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -22,20 +22,29 @@ if( !empty( $_REQUEST['size'] ) ) {
 }
 
 include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
-
+//vd($gContent);
 if( !empty( $_REQUEST['mode'] ) ) {
 	if ( !empty( $_REQUEST['save'] ) and $_REQUEST['save'] == 'yes' ) {
 		// save tag record
 		if( $gContent->verifyId( $_REQUEST['image_id'] ) ) {
-			if ( !empty( $_REQUEST['comment_id'] ) and $gContent->verifyId( $_REQUEST['comment_id'] ) ) {
-				$gContent->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."liberty_attachment_tags` WHERE `content_id`=? and `comment_id`=?", array( $_REQUEST['image_id'], $_REQUEST['comment_id'] ) );
-			} else {
-				$_REQUEST['comment_id'] = 0;
-				// need to add a new comment here?
+			$gContent->mDb->StartTrans();
+			$storeComment = new LibertyComment( @BitBase::verifyId( $_REQUEST['comment_id'] ) ? $_REQUEST['comment_id'] : NULL );
+			if ( $gContent->verifyId( $storeComment->mCommentId ) ) {
+				$gContent->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."liberty_attachment_tags` WHERE `content_id`=? and `comment_id`=?", array( $gContent->mContentId, $storeComment->mCommentId ) );
 			}
-			$gContent->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."liberty_attachment_tags` ( `attachment_id`, `comment_id`, `tag_top`, `tag_left`, `tag_width`, `tag_height` )
-				VALUES ( ?, ?, ?, ?, ?, ? )", 
-				array( $_REQUEST['image_id'], $_REQUEST['comment_id'], $_REQUEST['top'], $_REQUEST['left'], $_REQUEST['width'], $_REQUEST['height'] ) );
+			$_REQUEST['content_id'] = $gContent->mContentId;
+			$_REQUEST['comments_parent_id'] = $gContent->mContentId;
+			$_REQUEST['comment_title'] = $_REQUEST['description'];
+			$_REQUEST['comment_data'] = $_REQUEST['description'];
+			if( $storeComment->storeComment( $_REQUEST )) {
+				// store successful
+				$storeComment->loadComment();
+				$gContent->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."liberty_attachment_tags` ( `attachment_id`, `comment_id`, `tag_top`, `tag_left`, `tag_width`, `tag_height` )
+					VALUES ( ?, ?, ?, ?, ?, ? )", 
+					array( $gContent->mContentId, $storeComment->mCommentId, $_REQUEST['top'], $_REQUEST['left'], $_REQUEST['width'], $_REQUEST['height'] ) );
+			}
+
+			$gContent->mDb->CompleteTrans();
 		}
 	} 
 	$gBitSmarty->assign( 'mode', $_REQUEST['mode'] );
@@ -45,8 +54,13 @@ if( !empty( $_REQUEST['delete'] ) ) {
 	// delete tag record 
 }
 
-$gContent->mInfo['tags'] = $gContent->mDb->getAssoc( "SELECT lat.`comment_id` as tag_no, 'Tag-' || lat.`comment_id` as description, lat.* FROM `".BIT_DB_PREFIX."liberty_attachment_tags` lat WHERE `attachment_id` = ?", array( $_REQUEST['image_id'] ) );
-// vd($gContent->mInfo['tags']);
+$tagSql = "SELECT lat.`comment_id` as tag_no, lc.`title` as description, lat.*
+			FROM `".BIT_DB_PREFIX."liberty_attachment_tags` lat 
+			JOIN `".BIT_DB_PREFIX."liberty_comments` lcm ON lcm.`comment_id` = lat.`comment_id`
+			JOIN `".BIT_DB_PREFIX."liberty_content` lc ON lc.`content_id` = lcm.`content_id`
+			WHERE lat.`attachment_id` = ?";
+$gContent->mInfo['tags'] = $gContent->mDb->getAssoc( $tagSql, array( $gContent->mContentId ) );
+vd($gContent->mContentId);
 global $gHideModules;
 $gHideModules = $gBitSystem->isFeatureActive( 'fisheye_image_hide_modules' );
 
@@ -62,8 +76,10 @@ if( is_object( $gGallery ) && $gGallery->isCommentable() ) {
 $gContent->addHit();
 
 $gBitThemes->loadCss( UTIL_PKG_PATH.'javascript/libs/jquery/themes/base/ui.all.css', TRUE );
+$gBitThemes->loadCss( THEMES_PKG_PATH.'css/imagetag.css', TRUE );
 $gBitThemes->loadAjax( 'jquery' );
 $gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/jquery/full/ui/jquery.ui.all.js', FALSE, 500, FALSE );
+$gBitThemes->loadJavascript( LIBERTY_PKG_PATH.'scripts/imagetag.js', FALSE, 500, FALSE );
 
 // this will let LibertyMime know that we want to display the original image
 $gContent->mInfo['image_file']['original'] = TRUE;
