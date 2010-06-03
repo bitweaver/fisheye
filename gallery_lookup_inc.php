@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/gallery_lookup_inc.php,v 1.6 2006/11/08 08:01:37 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/gallery_lookup_inc.php,v 1.7 2010/06/03 01:14:41 spiderr Exp $
  * @package fisheye
  * @subpackage functions
  */
@@ -9,9 +9,7 @@ global $gContent;
 
 $lookup = array();
 
-if( $gContent = FisheyeGallery::lookup( $_REQUEST ) ) {
-	$gContent->load();
-} else {
+if( !$gContent = FisheyeGallery::lookup( $_REQUEST ) ) {
 	$gContent = new FisheyeGallery();
 	$galleryId = NULL;
 }
