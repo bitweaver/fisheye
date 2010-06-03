@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.116 2010/06/03 01:14:04 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.117 2010/06/03 03:49:29 spiderr Exp $
  * @package fisheye
  */
 
@@ -144,13 +144,13 @@ class FisheyeImage extends FisheyeBase {
 		return count($this->mInfo);
 	}
 
-	function storeDimensions() {
-		if( $this->isValid() && $this->mInfo['width'] != $details['width'] || $this->mInfo['height'] != $details['height']  ) {
+	function storeDimensions( $pDetails ) {
+		if( $this->isValid() && $this->mInfo['width'] != $pDetails['width'] || $this->mInfo['height'] != $pDetails['height']  ) {
 			// if our data got out of sync with the database, force an update
 			$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
-			$this->mDb->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );
-			$this->mInfo['width'] = $details['width'];
-			$this->mInfo['height'] = $details['height'];
+			$this->mDb->query( $query, array( $pDetails['width'], $pDetails['height'], $this->mContentId ) );
+			$this->mInfo['width'] = $pDetails['width'];
+			$this->mInfo['height'] = $pDetails['height'];
 		}
 	}
 
@@ -158,7 +158,6 @@ class FisheyeImage extends FisheyeBase {
 		$ret = NULL;
 		// make sure we have a valid image file.
 		if( $this->isValid() && ($details = $this->getImageDetails() ) ) {
-			$this->storeDimensions();
 
 			$ret = array(	'type' => $this->getContentType(),
 							'landscape' => $this->isLandscape(),
