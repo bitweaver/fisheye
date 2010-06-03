@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.115 2010/04/27 04:21:59 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeImage.php,v 1.116 2010/06/03 01:14:04 spiderr Exp $
  * @package fisheye
  */
 
@@ -144,17 +144,21 @@ class FisheyeImage extends FisheyeBase {
 		return count($this->mInfo);
 	}
 
+	function storeDimensions() {
+		if( $this->isValid() && $this->mInfo['width'] != $details['width'] || $this->mInfo['height'] != $details['height']  ) {
+			// if our data got out of sync with the database, force an update
+			$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
+			$this->mDb->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );
+			$this->mInfo['width'] = $details['width'];
+			$this->mInfo['height'] = $details['height'];
+		}
+	}
+
 	function exportHtml( $pData = NULL ) {
 		$ret = NULL;
 		// make sure we have a valid image file.
 		if( $this->isValid() && ($details = $this->getImageDetails() ) ) {
-			if( $this->mInfo['width'] != $details['width'] || $this->mInfo['height'] != $details['height']  ) {
-				// if our data got out of sync with the database, force an update
-				$query = "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?";
-				$this->mDb->query( $query, array( $details['width'], $details['height'], $this->mContentId ) );
-				$this->mInfo['width'] = $details['width'];
-				$this->mInfo['height'] = $details['height'];
-			}
+			$this->storeDimensions();
 
 			$ret = array(	'type' => $this->getContentType(),
 							'landscape' => $this->isLandscape(),
@@ -540,9 +544,11 @@ class FisheyeImage extends FisheyeBase {
 	// Get resolution, etc
 	function getImageDetails($pFilePath = NULL) {
 		$info = NULL;
-		$pFilePath = ($pFilePath ? $pFilePath : $this->getSourceFile());
-
-		$checkFiles = array( $pFilePath, dirname( $pFilePath ).'/original.jpg' );
+		if( file_exists( $pFilePath ) ) {
+			$checkFiles = array( $pFilePath, dirname( $pFilePath ).'/original.jpg' );
+		} else {
+			$checkFiles = array( $this->getSourceFile() );
+		}
 
 		foreach( $checkFiles as $cf ) {
 			if ($cf && file_exists( $cf ) && filesize( $cf ) ) {
@@ -553,11 +559,21 @@ class FisheyeImage extends FisheyeBase {
 				}
 			}
 		}
-
 		return $info;
 	}
 
+	function getWidth() {
+		if( !isset( $this->mInfo['width'] ) ) {
+			$this->mInfo = array_merge( $this->mInfo, $this->getImageDetails() );
+		}
+		return $this->getField('width');
+	}
+
 	function getHeight() {
+		if( !isset( $this->mInfo['width'] ) ) {
+			$this->mInfo = array_merge( $this->mInfo, $this->getImageDetails() );
+		}
+		return $this->getField('height');
 	}
 
     /**
