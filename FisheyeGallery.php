@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.105 2010/05/04 21:03:11 lsces Exp $
+ * @version $Header$
  * @package fisheye
  */
 

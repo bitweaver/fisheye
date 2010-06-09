@@ -1,7 +1,7 @@
 <?php
 /**
- * @version  $Revision: 1.3 $
- * $Header: /cvsroot/bitweaver/_bit_fisheye/liberty_plugins/data.image.php,v 1.3 2009/01/23 18:00:31 squareing Exp $
+ * @version  $Revision$
+ * $Header$
  * @package  liberty
  * @subpackage plugins_storage
  */

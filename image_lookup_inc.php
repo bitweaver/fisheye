@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/image_lookup_inc.php,v 1.7 2010/02/02 22:02:21 spiderr Exp $
+ * @version $Header$
  * @package fisheye
  * @subpackage functions
  */

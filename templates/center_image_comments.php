@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/templates/center_image_comments.php,v 1.3 2010/04/17 19:12:29 wjames5 Exp $
+ * @version $Header$
  * @package fisheye
  * @subpackage modules
  */

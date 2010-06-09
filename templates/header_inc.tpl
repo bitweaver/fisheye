@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_fisheye/templates/header_inc.tpl,v 1.10 2007/11/21 09:32:33 squareing Exp $ *}
+{* $Header$ *}
 {strip}
 {if $gContent}
 	{if $gGallery->mInfo.previous_image_id}

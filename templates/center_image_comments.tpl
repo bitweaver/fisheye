@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_fisheye/templates/center_image_comments.tpl,v 1.2 2007/11/25 04:59:24 spiderr Exp $ *}
+{* $Header$ *}
 {strip}
 {if $modLastComments}
 <div class="listing fisheye">

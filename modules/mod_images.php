@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.php,v 1.13 2008/09/12 00:39:08 laetzer Exp $
+ * @version $Header$
  * @package fisheye
  * @subpackage modules
  */

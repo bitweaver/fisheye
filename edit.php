@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/edit.php,v 1.39 2010/04/28 04:48:15 spiderr Exp $
+ * @version $Header$
  * @package fisheye
  * @subpackage functions
  */

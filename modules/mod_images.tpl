@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_fisheye/modules/mod_images.tpl,v 1.7 2008/09/02 16:08:24 laetzer Exp $ *}
+{* $Header$ *}
 {strip}
 {if $gBitSystem->isPackageActive( 'fisheye' ) && $modImages}
 	{bitmodule title="$moduleTitle" name="fisheye_images"}

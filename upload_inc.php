@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_fisheye/upload_inc.php,v 1.38 2010/03/27 01:06:39 spiderr Exp $
+ * @version $Header$
  * @package fisheye
  * @subpackage functions
  */
