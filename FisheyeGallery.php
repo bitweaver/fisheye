@@ -535,11 +535,14 @@ class FisheyeGallery extends FisheyeBase {
 					if( $pRecursiveDelete ) {
 						$this->mItems[$key]->expunge( $pRecursiveDelete );
 					} elseif( is_a( $this->mItems[$key], 'FisheyeImage' ) ) {
-						$query = "SELECT COUNT(`item_content_id`) AS `other_gallery`
-								  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
-								  WHERE `item_content_id`=? AND `gallery_content_id`!=?";
-						if( !($inOtherGallery = $this->mDb->getOne($query, array($this->mItems[$key]->mContentId, $this->mContentId ) )) ) {
-							$this->mItems[$key]->expunge();
+						// make sure we have a valid content_id before we exec
+						if( is_numeric( $this->mItems[$key]->mContentId ) ) {
+							$query = "SELECT COUNT(`item_content_id`) AS `other_gallery`
+									  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
+									  WHERE `item_content_id`=? AND `gallery_content_id`!=?";
+							if( !($inOtherGallery = $this->mDb->getOne($query, array($this->mItems[$key]->mContentId, $this->mContentId ) )) ) {
+								$this->mItems[$key]->expunge();
+							}
 						}
 					}
 				}
