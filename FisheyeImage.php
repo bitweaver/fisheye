@@ -685,7 +685,7 @@ class FisheyeImage extends FisheyeBase {
 		
 
 	function getThumbnailContentId() {
-		return( $this->getField( 'content_id' ) );
+		return( $this->mContentId );
 	}
 
 	function getThumbnailUrl( $pSize='small', $pInfoHash=NULL ) {
