@@ -712,9 +712,9 @@ class FisheyeGallery extends FisheyeBase {
 				if( !empty( $containVars ) ) {
 					$splitVars[] = $containVars[0];
 				}
+				FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query, $splitVars ) );
+				FisheyeGallery::getTreeSort( $ret );
 			}
-			FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query, $splitVars ) );
-			FisheyeGallery::getTreeSort( $ret );
 		} else {
 // this needs replacing with a more suitable list query ...
 			$galList = $this->getList( $pListHash );
