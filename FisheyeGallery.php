@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header$
+ * @version $Header: /cvsroot/bitweaver/_bit_fisheye/FisheyeGallery.php,v 1.108 2010/07/11 19:14:07 spiderr Exp $
  * @package fisheye
  */
 
@@ -377,6 +377,17 @@ class FisheyeGallery extends FisheyeBase {
 		return( $this->getField( 'thumbnail_content_id' ) );
 	}
 
+	function getThumbnailUri( $pSize='small' ) {
+		if( empty( $this->mInfo['preview_content'] ) ) {
+			$this->loadThumbnail();
+		}
+
+		if( is_object( $this->mInfo['preview_content'] ) ) {
+			return $this->mInfo['preview_content']->getThumbnailUri( $pSize );
+		}
+	}
+
+
 	function getThumbnailUrl( $pSize='small' ) {
 		if( empty( $this->mInfo['preview_content'] ) ) {
 			$this->loadThumbnail();
@@ -634,82 +645,86 @@ class FisheyeGallery extends FisheyeBase {
 
 	function getTree( $pListHash ) {
 		global $gBitDb;
-		$bindVars = array();
-		$containVars = array();
-		$selectSql = '';
-		$joinSql = '';
-		$whereSql = '';
-		if( !empty( $pListHash['contain_item'] ) ) {
-			$selectSql = " , tfgim3.`item_content_id` AS `in_gallery` ";
-			$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=lc.`content_id`) AND tfgim3.`item_content_id`=? ";
-			$bindVars[] = $pListHash['contain_item'];
-			$containVars[] = $pListHash['contain_item'];
-		}
-		if( isset( $pListHash['contain_item'] ) ) {
-			// contain item might have squeaked in as 0, clear our from pListHash
-			unset( $pListHash['contain_item'] );
-		}
-		foreach( $pListHash as $key=>$val ) {
-			$whereSql .= " $key=? AND ";
-			$bindVars[] = $val;
-		}
 
-		$query =   "SELECT lc.`content_id` AS `hash_key`, fg.*, lc.* $selectSql
-					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg 
-						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(fg.`content_id`=lc.`content_id`) 
-						$joinSql
-					WHERE $whereSql NOT EXISTS (SELECT gallery_content_id FROM fisheye_gallery_image_map tfgim2 WHERE tfgim2.item_content_id=lc.content_id) 
-					ORDER BY lc.title";
-		$rootContent = $gBitDb->GetAssoc( $query, $bindVars );
+		if( $this->mDb->isAdvancedPostgresEnabled() || $this->mDb->mType == 'firebird' ) {
+			$bindVars = array();
+			$containVars = array();
+			$selectSql = '';
+			$joinSql = '';
+			$whereSql = '';
+			if( !empty( $pListHash['contain_item'] ) ) {
+				$selectSql = " , tfgim3.`item_content_id` AS `in_gallery` ";
+				$joinSql .= " LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` tfgim3 ON (tfgim3.`gallery_content_id`=lc.`content_id`) AND tfgim3.`item_content_id`=? ";
+				$bindVars[] = $pListHash['contain_item'];
+				$containVars[] = $pListHash['contain_item'];
+			}
+			if( isset( $pListHash['contain_item'] ) ) {
+				// contain item might have squeaked in as 0, clear our from pListHash
+				unset( $pListHash['contain_item'] );
+			}
+			foreach( $pListHash as $key=>$val ) {
+				$whereSql .= " $key=? AND ";
+				$bindVars[] = $val;
+			}
 
-		$ret = array();
-		foreach( array_keys( $rootContent ) as $conId ) {
-			$splitVars = array();
-			if( $this->mDb->isAdvancedPostgresEnabled() ) {
-				$query = "SELECT branch AS hash_key, * $selectSql 
-						  FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text) 
-							INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id) 
-							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) 
-							$joinSql
-						  ORDER BY branch, lc.`title`";
-			} else if ( $this->mDb->mType == 'firebird' ) {
-				$query = "WITH RECURSIVE
-							GALLERY_TREE AS (
-								SELECT `content_id` AS gallery_content_id, `content_id` AS item_content_id, 0 AS BLEVEL, CAST( `content_id` AS VARCHAR(255) ) AS BRANCH
-								FROM `".BIT_DB_PREFIX."fisheye_gallery` B
-								WHERE B.`content_id` = ?
- 
-								UNION ALL
-
-    							SELECT `gallery_content_id`, `item_content_id`, G.BLEVEL + 1, G.BRANCH || '/' || `item_content_id` AS BRANCH
-								FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` G1
-								JOIN GALLERY_TREE G
-								ON G1.`gallery_content_id` = G.`item_content_id`
-								INNER JOIN `".BIT_DB_PREFIX."liberty_content` lcg1 ON(lcg1.`content_id`=`item_content_id`) and lcg1.`content_type_guid` = 'fisheyegallery'
-							)
-
-							SELECT T.BRANCH AS hash_key, T.BLEVEL, fg.*, lc.* $selectSql 
-							FROM GALLERY_TREE T
-							INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=T.`gallery_content_id`) 
-							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (lc.`content_id`=T.`item_content_id`)
-							$joinSql
-						  ORDER BY T.BRANCH, lc.`title`";
-			} else {
-// this needs replacing with a more suitable list query ...
-				$query = "SELECT lc.`content_id` AS `hash_key`, fg.*, lc.* $selectSql
-							FROM `".BIT_DB_PREFIX."fisheye_gallery` fg 
+			$query =   "SELECT lc.`content_id` AS `hash_key`, fg.*, lc.* $selectSql
+						FROM `".BIT_DB_PREFIX."fisheye_gallery` fg 
 							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(fg.`content_id`=lc.`content_id`) 
 							$joinSql
-							WHERE $whereSql EXISTS (SELECT gallery_content_id FROM fisheye_gallery_image_map tfgim2 WHERE tfgim2.item_content_id=lc.content_id) 
-							ORDER BY lc.title";				
+						WHERE $whereSql NOT EXISTS (SELECT gallery_content_id FROM fisheye_gallery_image_map tfgim2 WHERE tfgim2.item_content_id=lc.content_id) 
+						ORDER BY lc.title";
+			$rootContent = $gBitDb->GetAssoc( $query, $bindVars );
+
+			$ret = array();
+			foreach( array_keys( $rootContent ) as $conId ) {
+				$splitVars = array();
+				if( $this->mDb->isAdvancedPostgresEnabled() ) {
+					$query = "SELECT branch AS hash_key, * $selectSql 
+							  FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`item_content_id`', '`gallery_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text) 
+								INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id) 
+								INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) 
+								$joinSql
+							  ORDER BY branch, lc.`title`";
+				} else if ( $this->mDb->mType == 'firebird' ) {
+					$query = "WITH RECURSIVE
+								GALLERY_TREE AS (
+									SELECT `content_id` AS gallery_content_id, `content_id` AS item_content_id, 0 AS BLEVEL, CAST( `content_id` AS VARCHAR(255) ) AS BRANCH
+									FROM `".BIT_DB_PREFIX."fisheye_gallery` B
+									WHERE B.`content_id` = ?
+	 
+									UNION ALL
+
+									SELECT `gallery_content_id`, `item_content_id`, G.BLEVEL + 1, G.BRANCH || '/' || `item_content_id` AS BRANCH
+									FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` G1
+									JOIN GALLERY_TREE G
+									ON G1.`gallery_content_id` = G.`item_content_id`
+									INNER JOIN `".BIT_DB_PREFIX."liberty_content` lcg1 ON(lcg1.`content_id`=`item_content_id`) and lcg1.`content_type_guid` = 'fisheyegallery'
+								)
+
+								SELECT T.BRANCH AS hash_key, T.BLEVEL, fg.*, lc.* $selectSql 
+								FROM GALLERY_TREE T
+								INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=T.`gallery_content_id`) 
+								INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (lc.`content_id`=T.`item_content_id`)
+								$joinSql
+							  ORDER BY T.BRANCH, lc.`title`";
+				}
+				$splitVars[] = $conId;
+				if( !empty( $containVars ) ) {
+					$splitVars[] = $containVars[0];
+				}
+				FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query, $splitVars ) );
+				FisheyeGallery::getTreeSort( $ret );
 			}
-			$splitVars[] = $conId;
-			if( !empty( $containVars ) ) {
-				$splitVars[] = $containVars[0];
+		} else {
+// this needs replacing with a more suitable list query ...
+			$galList = $this->getList( $pListHash );
+			// index by content_id
+			foreach( $galList as $galId => $gal ) {
+				$ret[$gal['content_id']] = $gal;
 			}
-			FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query, $splitVars ) );
+			FisheyeGallery::splitConnectByTree( $ret, $ret );
+			FisheyeGallery::getTreeSort( $ret );
 		}
-		FisheyeGallery::getTreeSort( $ret );
 		return( $ret );
 	}
 

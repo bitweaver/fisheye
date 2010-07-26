@@ -89,7 +89,7 @@ class FisheyeImage extends FisheyeBase {
 						LEFT JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON (ufm.`favorite_content_id`=lc.`content_id` AND ufm.`user_id`=uuc.`user_id`)
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_hits` lch ON ( lch.`content_id` = lc.`content_id` ) $joinSql
 					$whereSql";
-			if( $this->mInfo = $this->mDb->getRow( $sql, array( $bindVars ) ) ) {
+			if( $this->mInfo = $this->mDb->getRow( $sql, $bindVars ) ) {
 				$this->mImageId = $this->mInfo['image_id'];
 				$this->mContentId = $this->mInfo['content_id'];
 

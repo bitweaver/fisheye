@@ -20,14 +20,14 @@ if ($page > $gContent->mInfo['num_pages']) {
 	$page = 1;
 }
 
-$imagesPerPage = $gContent->getField( 'rows_per_page' ) * $gContent->getField( 'cols_per_page' );
+$imagesPerPage = $gContent->getField( 'rows_per_page' ) * $gContent->getField( 'cols_per_page', 10 );
 $imageOffset = $imagesPerPage * ($page-1);
 
 $gBitSmarty->assign_by_ref('pageCount', $page);
 $gBitSmarty->assign_by_ref('imagesPerPage', $imagesPerPage);
 $gBitSmarty->assign_by_ref('imageOffset', $imageOffset);
 $gBitSmarty->assign_by_ref('rows_per_page', $gContent->mInfo['rows_per_page']);
-$gBitSmarty->assign_by_ref('cols_per_page', $gContent->mInfo['cols_per_page']);
+$gBitSmarty->assign_by_ref('cols_per_page', $gContent->getField( 'cols_per_page', 10 ) );
 
 $gContent->loadImages( $page );
 $gContent->addHit();
