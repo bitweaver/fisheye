@@ -48,5 +48,5 @@
 		{/if}
 
 		<div class="clear"></div>
-	</div><!-- end .structure -->
+	</div><!-- end .gallerybar -->
 {/strip}

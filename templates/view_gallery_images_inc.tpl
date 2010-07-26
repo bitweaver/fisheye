@@ -33,11 +33,11 @@
 				<th style="width:1%"></th>
 			{/if}
 			<th style="width:60%">
-				{smartlink ititle=Name isort=title icontrol=$galInfo structure_id=$gContent->mStructureId}
+				{smartlink ititle=Name isort=title icontrol=$galInfo}
 			</th>
 			{if $gBitSystem->isFeatureActive( 'fisheye_item_list_date' ) || $gBitSystem->isFeatureActive( 'fisheye_item_list_creator' )}
 				<th style="width:10%">
-					{smartlink ititle=Uploaded isort=created iorder=desc idefault=1 icontrol=$galInfo structure_id=$gContent->mStructureId}
+					{smartlink ititle=Uploaded isort=created iorder=desc idefault=1 icontrol=$galInfo}
 				</th>
 			{/if}
 			{if $gBitSystem->isFeatureActive( 'fisheye_item_list_size' )}
@@ -45,7 +45,7 @@
 			{/if}
 			{if $gBitSystem->isFeatureActive( 'fisheye_item_list_hits' )}
 				<th style="width:10%">
-					{smartlink ititle=Downloads isort="lch.hits" icontrol=$galInfo structure_id=$gContent->mStructureId}
+					{smartlink ititle=Downloads isort="lch.hits" icontrol=$galInfo}
 				</th>
 			{/if}
 			<th style="width:20%">{tr}Actions{/tr}</th>
