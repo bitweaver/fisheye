@@ -185,7 +185,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 					} else {
 						$errors = array_merge( $errors, array_values( $newImage->mErrors ) );
 					}
-				} elseif( is_file( $scanFile ) ) {
+				} elseif( is_file( $scanFile['tmp_name'] ) ) {
 					// unknown file type, let's be tidy and clean it up
 					unlink( $scanFile );
 				}
