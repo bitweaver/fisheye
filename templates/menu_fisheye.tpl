@@ -6,14 +6,11 @@
 	{if $gBitUser->hasPermission('p_fisheye_create')}
 		<li><a class="item" href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gBitUser->mUserId}">{biticon iname="user-home" iexplain="My Galleries" ilocation=menu}</a></li>
 		<li><a class="item" href="{$smarty.const.FISHEYE_PKG_URL}edit.php">{biticon iname="document-new" iexplain="Create a Gallery" ilocation=menu}</a></li>
-		{*<li><a class="item" href="{$smarty.const.FISHEYE_PKG_URL}edit_collection.php">{tr}Create a Collection{/tr}</a></li>*}
 	{/if}
 	{if $gBitUser->hasPermission('p_fisheye_upload')}
 		<li><a class="item" href="{$smarty.const.FISHEYE_PKG_URL}upload.php">{biticon iname="go-up" iexplain="Upload Images" ilocation=menu}</a></li>
 	{/if}
 	{* if $gBitUser->hasPermission('p_fisheye_view')}
-		<!--<li><a class="item" href="{$smarty.const.FISHEYE_PKG_URL}browse.php">{tr}Browse Galleries{/tr}</a></li>-->
-		<!--<li><a class="item" href="{$smarty.const.FISHEYE_PKG_URL}collection.php">{tr}List Collections{/tr}</a></li>-->
 		<li><a class="item" href="{$smarty.const.FISHEYE_PKG_URL}gallery_tree.php">{biticon iname="folder-remote" iexplain="growser gallery tree" ilocation=menu} {tr}Browse Gallery Tree{/tr}</a></li>
 	{/if *}
 	{if $gBitUser->isRegistered() && $gBitSystem->isPackageActive('quota')}
