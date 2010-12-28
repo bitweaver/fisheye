@@ -1,9 +1,80 @@
 <?php
 /**
- * @version $Header$
  * @package fisheye
  * @subpackage functions
  */
+
+
+
+/**
+ * fisheye_handle_upload
+ */
+function fisheye_handle_upload( &$pFiles ) {
+	global $gBitUser, $gContent, $gBitSystem, $fisheyeErrors, $fisheyeWarnings, $fisheyeSuccess, $gFisheyeUploads;
+
+	// first of all set the execution time for this process to unlimited
+	set_time_limit(0);
+
+	$upImages = array();
+	$upArchives = array();
+	$upErrors = array();
+	$upData = array();
+
+	$i = 0;
+	usort( $pFiles, 'fisheye_sort_uploads' );
+
+	foreach( array_keys( $pFiles ) as $key ) {
+		$pFiles[$key]['type'] = $gBitSystem->verifyMimeType( $pFiles[$key]['tmp_name'] );
+		if( preg_match( '/(^image|pdf|vnd)/i', $pFiles[$key]['type'] ) ) {
+			$upImages[$key] = $pFiles[$key];
+			// clone the request data so edit service values are passed into store process
+			$upData[$key] = $_REQUEST;
+			// add the form data for each upload
+			if( !empty( $_REQUEST['imagedata'][$i] ) ) {
+				array_merge( $upData[$key], $_REQUEST['imagedata'][$i] );
+			}
+		} elseif( !empty( $pFiles[$key]['tmp_name'] ) && !empty( $pFiles[$key]['name'] ) ) {
+			$upArchives[$key] = $pFiles[$key];
+		}
+		$i++;
+	}
+
+	$gallery_additions = array();
+
+	// No gallery was specified, let's try to find one or create one.
+	if( empty( $_REQUEST['gallery_additions'] ) ) {
+		if( $gBitUser->hasPermission( 'p_fisheye_create' )) {
+			$_REQUEST['gallery_additions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
+		} else {
+			$gBitSystem->fatalError( tra( "You don't have permissions to create a new gallery. Please select an existing one to insert your images to." ));
+		}
+	}
+
+	foreach( array_keys( $upArchives ) as $key ) {
+		$upErrors = fisheye_process_archive( $upArchives[$key], $gContent, TRUE );
+	}
+
+	foreach( array_keys( $upImages ) as $key ) {
+		// resize original if we the user requests it
+		if( !empty( $_REQUEST['resize'] ) ) {
+			$upImages[$key]['resize'] = $_REQUEST['resize'];
+		}
+		$upErrors = array_merge( $upErrors, fisheye_store_upload( $upImages[$key], $upData[$key], !empty( $_REQUEST['rotate_image'] )));
+	}
+
+	if( !is_object( $gContent ) || !$gContent->isValid() ) {
+		$gContent = new FisheyeGallery( $_REQUEST['gallery_additions'][0] );
+		$gContent->load();
+	}
+
+	if( !empty( $gFisheyeUploads ) ){
+		$_REQUEST['uploaded_objects'] = &$gFisheyeUploads;
+		$gContent->invokeServices( "content_post_upload_function", $_REQUEST );
+	}
+
+	return $upErrors;
+}
+
 
 /**
  * fisheye_sort_upload
@@ -85,6 +156,7 @@ function fisheye_store_upload( &$pFileHash, $pImageData = array(), $pAutoRotate=
 function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) {
 	global $gBitSystem, $gBitUser;
 	$errors = array();
+
 	if( ( $destDir = liberty_process_archive( $pFileHash ) ) && ( !empty( $_REQUEST['process_archive'] ) || !$gBitUser->hasPermission( 'p_fisheye_upload_nonimages' ) ) ) {
 		if( empty( $pParentGallery ) && !is_file( $pFileHash['tmp_name'] ) ) {
 			$pParentGallery = new FisheyeGallery();

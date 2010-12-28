@@ -1,6 +1,5 @@
 <?php
 /**
- * @version $Header$
  * @package fisheye
  * @subpackage functions
  */
@@ -22,64 +21,7 @@ require_once( FISHEYE_PKG_PATH.'upload_inc.php');
 $gBitSystem->verifyPermission( 'p_fisheye_upload' );
 
 if( !empty( $_REQUEST['save_image'] ) ) {
-	// first of all set the execution time for this process to unlimited
-	set_time_limit(0);
-
-	$upImages = array();
-	$upArchives = array();
-	$upErrors = array();
-	$upData = array();
-
-	$i = 0;
-	usort( $_FILES, 'fisheye_sort_uploads' );
-	foreach( array_keys( $_FILES ) as $key ) {
-		if( preg_match( '/(^image|pdf)/i', $_FILES[$key]['type'] ) ) {
-			$upImages[$key] = $_FILES[$key];
-			// clone the request data so edit service values are passed into store process
-			$upData[$key] = $_REQUEST;
-			// add the form data for each upload
-			if( !empty( $_REQUEST['imagedata'][$i] ) ) {
-				array_merge( $upData[$key], $_REQUEST['imagedata'][$i] );
-			}
-		} elseif( !empty( $_FILES[$key]['tmp_name'] ) && !empty( $_FILES[$key]['name'] ) ) {
-			$upArchives[$key] = $_FILES[$key];
-		}
-		$i++;
-	}
-
-	$gallery_additions = array();
-
-	// No gallery was specified, let's try to find one or create one.
-	if( empty( $_REQUEST['gallery_additions'] ) ) {
-		if( $gBitUser->hasPermission( 'p_fisheye_create' )) {
-			$_REQUEST['gallery_additions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
-		} else {
-			$gBitSystem->fatalError( tra( "You don't have permissions to create a new gallery. Please select an existing one to insert your images to." ));
-		}
-	}
-
-	foreach( array_keys( $upArchives ) as $key ) {
-		$upErrors = fisheye_process_archive( $upArchives[$key], $gContent, TRUE );
-	}
-
-	foreach( array_keys( $upImages ) as $key ) {
-		// resize original if we the user requests it
-		if( !empty( $_REQUEST['resize'] ) ) {
-			$upImages[$key]['resize'] = $_REQUEST['resize'];
-		}
-		$upErrors = array_merge( $upErrors, fisheye_store_upload( $upImages[$key], $upData[$key], !empty( $_REQUEST['rotate_image'] )));
-	}
-
-	if( !is_object( $gContent ) || !$gContent->isValid() ) {
-		$gContent = new FisheyeGallery( $_REQUEST['gallery_additions'][0] );
-		$gContent->load();
-	}
-
-	if( !empty( $gFisheyeUploads ) ){
-		$_REQUEST['uploaded_objects'] = &$gFisheyeUploads;
-		$gContent->invokeServices( "content_post_upload_function", $_REQUEST );
-	}
-
+	$upErrors = fisheye_handle_upload( $_FILES );
 	if( empty( $upErrors ) ) {
 		bit_redirect( $gContent->getDisplayUrl() );
 	} else {
@@ -100,30 +42,19 @@ $gContent->invokeServices( 'content_edit_function' );
 
 // Get a list of all existing galleries
 $gFisheyeGallery = new FisheyeGallery();
-$listHash = array(
+$getHash = array(
 	'user_id'       => $gBitUser->mUserId,
-	'max_records'   => -1,
-	'no_thumbnails' => TRUE,
-	'sort_mode'     => 'title_asc',
-	'show_empty'    => TRUE,
 );
 // modify listHash according to global preferences
 if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
-	unset( $listHash['user_id'] );
+	unset( $getHash['user_id'] );
 } elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
-	$listHash['show_public'] = TRUE;
-}
-$galleryList = $gFisheyeGallery->getList( $listHash );
-
-if( @BitBase::verifyId( $_REQUEST['gallery_id'] ) && empty( $galleryList[$_REQUEST['gallery_id']] ) ) {
-	if( $addGallery = new FisheyeGallery( $_REQUEST['gallery_id'] ) ) {
-		if( $addGallery->load() && $addGallery->hasUpdatePermission() ) {
-			$galleryList[$_REQUEST['gallery_id']] = $addGallery->mInfo;
-		}
-	}
+	$getHash['show_public'] = TRUE;
 }
 
-$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
+$galleryTree = $gContent->generateList( $getHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle'), 'radio_checkbox' => TRUE, ), true );
+
+$gBitSmarty->assign_by_ref( 'galleryTree', $galleryTree );
 
 if( $gLibertySystem->hasService( 'upload' ) ) {
 	$gContent->invokeServices( "content_pre_upload_function", $_REQUEST );
