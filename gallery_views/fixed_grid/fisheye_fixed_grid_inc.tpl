@@ -1,4 +1,20 @@
-	<table class="thumbnailblock">
+{strip}
+{include file="bitpackage:fisheye/gallery_nav.tpl"}
+<div class="display fisheye">
+	<div class="header">
+		{include file="bitpackage:fisheye/gallery_icons_inc.tpl"}
+		<h1>{$gContent->getTitle()|escape}</h1>
+	</div>
+
+	<div class="body">
+		{formfeedback success=$fisheyeSuccess error=$fisheyeErrors warning=$fisheyeWarnings}
+
+		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
+		{if $gContent->mInfo.data}
+			<p>{$gContent->mInfo.data|escape}</p>
+		{/if}
+
+		<table class="thumbnailblock">
 		{counter assign="imageCount" start="0" print=false}
 		{assign var="max" value=100}
 		{assign var="tdWidth" value="`$max/$cols_per_page`"}
@@ -30,7 +46,17 @@
 		{foreachelse}
 			<tr><td class="norecords">{tr}This gallery is empty{/tr}. <a href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">Upload pictures!</a></td></tr>
 		{/foreach}
-
 		{if $imageCount % $cols_per_page != 0}</tr>{/if}
-	</table>
+		</table>
+	</div>	<!-- end .body -->
 
+	{libertypagination numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}
+
+	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
+
+	{if $gContent->getPreference('allow_comments') eq 'y'}
+		{include file="bitpackage:liberty/comments.tpl"}
+	{/if}
+</div>	<!-- end .fisheye -->
+{/strip}
+	

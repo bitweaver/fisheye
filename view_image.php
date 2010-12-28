@@ -1,6 +1,5 @@
 <?php
 /**
- * @version $Header$
  * @package fisheye
  * @subpackage functions
  */
@@ -46,4 +45,3 @@ if( $gContent->hasUpdatePermission() || $gGallery && $gGallery->getPreference( '
 	$gContent->mInfo['image_file']['original'] = TRUE;
 }
 require_once( FISHEYE_PKG_PATH.'display_fisheye_image_inc.php' );
-?>

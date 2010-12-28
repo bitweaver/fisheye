@@ -1,6 +1,5 @@
 <?php
 /**
- * @version $Header$
  * @package fisheye
  * @subpackage functions
  */
@@ -34,7 +33,8 @@ $gBitSmarty->assign( 'galleryPaginationTypes',
 		FISHEYE_PAGINATION_AUTO_FLOW       => 'Auto-Flow Images',
 		FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number',
 		FISHEYE_PAGINATION_SIMPLE_LIST     => 'Simple List',
-		FISHEYE_PAGINATION_AJAX_SCROLLER   => 'Ajax Scroller'
+		FISHEYE_PAGINATION_AJAX_SCROLLER   => 'Ajax Scroller',
+		FISHEYE_PAGINATION_GALLERIFFIC     => 'Galleriffic'
 	)
 );
 

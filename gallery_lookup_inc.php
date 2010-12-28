@@ -1,6 +1,5 @@
 <?php
 /**
- * @version $Header$
  * @package fisheye
  * @subpackage functions
  */
@@ -16,12 +15,8 @@ if( !$gContent = FisheyeGallery::lookup( $_REQUEST ) ) {
 
 if( !empty( $_REQUEST['gallery_path'] ) ) {
 	$gContent->setGalleryPath( $_REQUEST['gallery_path'] );
-} elseif( $gContent->isValid() && $parents = $gContent->getParentGalleries() ) {
-	$gal = current( $parents );
-	$gContent->setGalleryPath( '/'.$gal['gallery_id'] );
 }
 
 $gBitSmarty->assign_by_ref('gContent', $gContent);
 $gBitSmarty->assign_by_ref('galleryId', $gContent->mGalleryId);
 
-?>

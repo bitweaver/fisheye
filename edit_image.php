@@ -1,6 +1,5 @@
 <?php
 /**
- * @version $Header$
  * @package fisheye
  * @subpackage functions
  */
@@ -127,21 +126,20 @@ $gContent->loadParentGalleries();
 
 // Get a list of all existing galleries
 $gFisheyeGallery = new FisheyeGallery();
-$listHash = array(
-	'user_id'       => $gContent->isValid() ? $gContent->getField( 'user_id' ) : $gBitUser->mUserId,
-	'max_records'   => -1,
-	'no_thumbnails' => TRUE,
-	'sort_mode'     => 'title_asc',
-	'show_empty'    => TRUE,
+$getHash = array(
+	'user_id'       => $gBitUser->mUserId,
 );
+if( $gContent->mContentId ) {
+	$getHash['contain_item'] = $gContent->mContentId;
+}
 // modify listHash according to global preferences
 if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
-	unset( $listHash['user_id'] );
+	unset( $getHash['user_id'] );
 } elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
-	$listHash['show_public'] = TRUE;
+	$getHash['show_public'] = TRUE;
 }
-$galleryList = $gFisheyeGallery->getList( $listHash );
-$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
+$galleryTree = $gFisheyeGallery->generateList( $getHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle'), 'radio_checkbox' => TRUE, ), true );
+$gBitSmarty->assign_by_ref( 'galleryTree', $galleryTree );
 
 $gBitSmarty->assign('requested_gallery', !empty($_REQUEST['gallery_id']) ? $_REQUEST['gallery_id'] : NULL);
 

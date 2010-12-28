@@ -1,6 +1,5 @@
 <?php
 /**
- * @version $Header$
  * @package fisheye
  * @subpackage functions
  */
@@ -19,5 +18,9 @@ if( empty( $_REQUEST['size'] )) {
 }
 
 $gBitSystem->setBrowserTitle( $gContent->getTitle() );
-$gBitSystem->display( $gContent->getRenderTemplate() , NULL, array( 'display_mode' => 'display' ));
-?>
+if( $gBitThemes->isAjaxRequest() ) {
+	$gBitSmarty->display( $gContent->getRenderTemplate() );
+} else {
+	$gBitSystem->display( $gContent->getRenderTemplate() , NULL, array( 'display_mode' => 'display' ));
+}
+

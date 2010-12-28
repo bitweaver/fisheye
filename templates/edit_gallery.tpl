@@ -6,6 +6,7 @@ function updateGalleryPagination() {
 	document.getElementById('position_number-pagination').style.display = 'none';
 	document.getElementById('simple_list-pagination').style.display = 'none';
 	document.getElementById('ajax_scroller-pagination').style.display = 'none';
+	document.getElementById('galleriffic-pagination').style.display = 'none';
 	var input = document.getElementById('editGalleryForm').gallery_pagination;
     var i  = input.selectedIndex;
     var select = input.options[i].value;
@@ -95,6 +96,11 @@ function updateGalleryPagination() {
 									{formhelp note="This option provides an ajax powered scrolling display using the mbGallery jquery library."}
 								</div>
 
+								<div id="galleriffic-pagination">
+									<input type="text" id="galleriffic-style" name="galleriffic_style" size="2" maxlength="2" value="{$gContent->mInfo.galleriffic_style|default:$gBitSystem->getConfig('fisheye_gallery_default_galleriffic_style')}"/> {tr}Galleriffic layout style{/tr}
+									{formhelp note="This option provides a javascript powered tabbed thumbnail list display using the galleriffic jquery library."}
+								</div>
+
 							{/forminput}
 						</div>
 
@@ -133,9 +139,9 @@ function updateGalleryPagination() {
 							<div class="row">
 								{formlabel label=$gContent->getContentTypeName()|cat:" Belongs to These Galleries"}
 								{forminput}
-<div class="gallerytree">
-	{$galleryTree}
-</div>
+									<div class="gallerytree">
+										{$galleryTree}
+									</div>
 								{/forminput}
 							</div>
 						{/legend}

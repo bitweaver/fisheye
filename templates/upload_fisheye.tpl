@@ -101,26 +101,16 @@
 					{/if}
 					{formlabel label="Add File(s) to these Galleries"}
 					{forminput}
-						{foreach from=$galleryList key=galId item=gal}
-							<input type="checkbox" name="gallery_additions[]" value="{$galId}"
-								{if  $gContent->mGalleryId == $galId}
-									checked="checked"
-								{else}
-									{section name=gx loop=$gContent->mInfo.parent_galleries}
-										{if ($gContent->mInfo.parent_galleries[gx].gallery_id == $galId)}
-											checked="checked"
-										{/if}
-									{/section}
-								{/if}
-							/>
-							<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gal.gallery_id}">{$gal.title|escape}</a>
-							<br />
-						{foreachelse}
+						{if $galleryTree}
+							<div class="gallerytree">
+								{$galleryTree}
+							</div>						
+						{else}
 							<p class="norecords">
 								{tr}No Galleries Found{/tr}.<br />
 								{tr}The following gallery will automatically be created for you{/tr}: <strong>{displayname hash=$gBitUser->mInfo nolink=1}'s Gallery</strong>
 							</p>
-						{/foreach}
+						{/if}
 					{/forminput}
 				</div>
 

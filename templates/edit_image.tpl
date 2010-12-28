@@ -90,21 +90,15 @@
 						<div class="row">
 							{formlabel label="Add This Image to These Galleries"}
 							{forminput}
-								{foreach from=$galleryList item=gal key=galleryId}
-										<input type="checkbox" name="gallery_additions[]" value="{$galleryId}"
-											{if $requested_gallery == $galleryId}
-												checked="checked"
-											{else}
-												{if $gContent->mInfo.parent_galleries[$galleryId]}
-													checked="checked"
-												{/if}
-											{/if}
-										/> <a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$galleryId}">{$gal.title|escape}</a>
-										<br />
-								{foreachelse}
-									<div>{tr}No Galleries Found{/tr}</div>
-								{/foreach}
-							{/forminput}
+								{if $galleryTree}
+<div class="gallerytree">
+	{$galleryTree}
+</div>						{else}
+							<p class="norecords">
+								{tr}No Galleries Found{/tr}.<br />
+							</p>
+						{/if}
+					{/forminput}
 						</div>
 
 						{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}
