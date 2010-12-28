@@ -1,6 +1,5 @@
 <?php
 /**
- * @version $Header$
  * @package fisheye
  */
 
@@ -83,8 +82,42 @@ class FisheyeBase extends LibertyMime
 
 	// THis is a function that creates a mack daddy function to get a breadcrumb path with a single query.
 	// Do not muck with this query unless you really, truly understand what is going on.
-	function getBreadcrumbLinks() {
+/*
+not ready for primetime
+	function getPaths() {
+		global $gBitDb;
+
+		$ret = NULL;
+		if( $this->isValid() ) {
+			if( $this->mDb->isAdvancedPostgresEnabled() ) {
+				$bindVars = array();
+				$containVars = array();
+				$selectSql = '';
+				$joinSql = '';
+				$whereSql = '';
+
+				$query = "SELECT fg.gallery_id, branch
+						  FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`gallery_content_id`', '`item_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text) 
+							INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id) 
+							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) 
+						  ORDER BY level DESC, branch, lc.`title`";
+				if( $ret = $gBitDb->GetAssoc( $query, array( $this->mContentId ) ) ) {
+				}
+			}
+		}
+		return $ret;
+	}
+*/
+
+	function getBreadcrumbLinks( $pIncludeSelf = FALSE ) {
 		$ret = '';
+		if( empty( $this->mGalleryPath ) ) {
+			if( $this->isValid() && $parents = $this->getParentGalleries() ) {
+				$gal = current( $parents );
+				$this->setGalleryPath( '/'.$gal['gallery_id'] );
+			}
+		}
+
 		if( !empty( $this->mGalleryPath ) ) {
 			$path = explode( '/', ltrim( $this->mGalleryPath, '/' ) );
 			$p = 0;
@@ -121,7 +154,9 @@ class FisheyeBase extends LibertyMime
 					$path .= '/'.$rs->fields['gallery_id'.$i];
 				}
 			}
-			$ret .= $this->getTitle();
+			if( $pIncludeSelf ) {
+				$ret .= $this->getTitle();
+			}
 		}
 		return $ret;
 	}
