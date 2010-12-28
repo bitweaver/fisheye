@@ -1,6 +1,5 @@
 <?php
 /**
- * @version $Header$
  * @package fisheye
  */
 
@@ -131,9 +130,12 @@ class FisheyeImage extends FisheyeBase {
 
 				if( empty( $this->mInfo['height'] ) ||  empty( $this->mInfo['height'] ) ) {
 					$details = $this->getImageDetails();
-					$this->mInfo['width'] = $details['width'];
-					$this->mInfo['height'] = $details['height'];
-					$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?", array( $this->mInfo['width'], $this->mInfo['height'], $this->mContentId ) );
+					// bounds checking on the width and height - corrupt photos can be ridiculously huge or negative
+					if( $details['width'] > 0 AND $details['width'] < 9999 AND $details['height'] > 0 AND $details['height'] < 9999 ) {
+						$this->mInfo['width'] = $details['width'];
+						$this->mInfo['height'] = $details['height'];
+						$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?", array( $this->mInfo['width'], $this->mInfo['height'], $this->mContentId ) );
+					}
 				}
 			}
 		} else {
@@ -546,7 +548,13 @@ class FisheyeImage extends FisheyeBase {
 		if( file_exists( $pFilePath ) ) {
 			$checkFiles = array( $pFilePath, dirname( $pFilePath ).'/original.jpg' );
 		} else {
+			$sourceFile  = $this->getSourceFile();
 			$checkFiles = array( $this->getSourceFile() );
+			// was an original file created?
+			$originalFile = dirname( $sourceFile ).'/original.jpg';
+			if( file_exists( $originalFile ) && !is_link( $originalFile ) ) {
+				$checkFiles[] = $originalFile;
+			}
 		}
 
 		foreach( $checkFiles as $cf ) {
@@ -555,6 +563,7 @@ class FisheyeImage extends FisheyeBase {
 					$info['width'] = $info[0];
 					$info['height'] = $info[1];
 					$info['size'] = filesize( $cf );
+					break;
 				}
 			}
 		}
