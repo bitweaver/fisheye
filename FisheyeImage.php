@@ -286,8 +286,8 @@ class FisheyeImage extends FisheyeBase {
 				$this->mContentId = $pParamHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
 
-				if ( isset($pParamHash['storage_guid']) && !empty($pParamHash['STORAGE'][$pParamHash['storage_guid']]['_files_override'][0]['source_file'])) {
-					$imageDetails = $this->getImageDetails($pParamHash['STORAGE'][$pParamHash['storage_guid']]['_files_override'][0]['source_file']);
+				if ( file_exists( $this->mInfo['source_file'] )) {
+					$imageDetails = $this->getImageDetails( $this->mInfo['source_file'] );
 				} else {
 					$imageDetails = NULL;
 				}
@@ -308,6 +308,7 @@ class FisheyeImage extends FisheyeBase {
 					$sql = "INSERT INTO `".BIT_DB_PREFIX."fisheye_image` (`image_id`, `content_id`, `width`, `height`) VALUES (?,?,?,?)";
 					$bindVars = array($this->mImageId, $this->mContentId, $imageDetails['width'], $imageDetails['height']);
 				}
+
 				$rs = $this->mDb->query($sql, $bindVars);
 
 				// check to see if we need offline thumbnailing
