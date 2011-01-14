@@ -24,11 +24,11 @@
 			{foreach from=$gContent->mItems item=galItem}
 			<li>
 				{if is_a($galItem, 'FisheyeImage')}
-					<a class="thumb" name="{$galItem->mImageId}" href="{$galItem->mInfo.thumbnail_uri.large}{*$smarty.const.FISHEYE_PKG_URL}view_image.php?image_id={$galItem->mImageId*}" title="{$galItem->mInfo.title|escape}">
-						<img src="{$galItem->mInfo.thumbnail_uri.avatar}" alt="{$galItem->mInfo.title|escape}" />
+					<a class="thumb" name="{$galItem->mImageId}" href="{$galItem->mInfo.thumbnail_url.large}{*$smarty.const.FISHEYE_PKG_URL}view_image.php?image_id={$galItem->mImageId*}" title="{$galItem->mInfo.title|escape}">
+						<img src="{$galItem->mInfo.thumbnail_url.avatar}" alt="{$galItem->mInfo.title|escape}" />
 					</a>
 					<h2 class="heading">
-						<div class="image-heading">{biticon iname="image-x-generic" isize="small" iexplain="{$galItem->getContentTypeDescription()|escape}{$galItem->getDisplayLink()}</div>
+						<div class="image-heading">{biticon iname="image-x-generic" isize="small" iexplain=""}{$galItem->getContentTypeDescription()|escape}{$galItem->getDisplayLink()}</div>
 					</h2>
 					<div class="caption">
 						<div class="meta floatright">
@@ -39,7 +39,7 @@
 							{/if}
 							{if ($galItem->hasUpdatePermission() || $gContent->getPreference('link_original_images')) && $galItem->mInfo.image_file.source_url}
 							<div class="download">
-								<a href="{$galItem->mInfo.source_uri}">{tr}Download Original{/tr}</a>
+								<a href="{$galItem->mInfo.source_url}">{tr}Download Original{/tr}</a>
 								{if $galItem->mInfo.width && $galItem->mInfo.height}
 								<div class="photo-date">{$galItem->mInfo.width}x{$galItem->mInfo.height} {tr}pixels{/tr}</div>
 								{/if}
@@ -49,8 +49,8 @@
 						<div class="image-desc"><p>{$galItem->mInfo.description|escape}</p></div>
 					</div>
 				{elseif is_a($galItem, 'FisheyeGallery')}
-					<a class="thumb" name="{$galItem->mContentId}" href="{$galItem->mPreviewImage->mInfo.thumbnail_uri.large}" title="{$galItem->mInfo.title|escape}">
-						<img src="{$galItem->mPreviewImage->mInfo.thumbnail_uri.avatar}" alt="{$galItem->mInfo.title|escape}"/>
+					<a class="thumb" name="{$galItem->mContentId}" href="{$galItem->mPreviewImage->mInfo.thumbnail_url.large}" title="{$galItem->mInfo.title|escape}">
+						<img src="{$galItem->mPreviewImage->mInfo.thumbnail_url.avatar}" alt="{$galItem->mInfo.title|escape}"/>
 					</a>
 					<div class="heading">
 						<h2>{biticon iname="emblem-photos" isize="small" iexplain="{$galItem->getContentTypeDescription()|escape}{$galItem->getDisplayLink()}</h2><span class="image-count">({$galItem->getImageCount()} {tr}Items{/tr})</span>
