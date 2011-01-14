@@ -286,7 +286,7 @@ class FisheyeImage extends FisheyeBase {
 				$this->mContentId = $pParamHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
 
-				if ( file_exists( $this->mInfo['source_file'] )) {
+				if ( !empty( $this->mInfo['source_file'] ) && file_exists( $this->mInfo['source_file'] )) {
 					$imageDetails = $this->getImageDetails( $this->mInfo['source_file'] );
 				} else {
 					$imageDetails = NULL;
