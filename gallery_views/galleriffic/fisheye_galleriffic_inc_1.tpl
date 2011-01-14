@@ -28,7 +28,7 @@
 						<img src="{$galItem->mInfo.thumbnail_url.avatar}" alt="{$galItem->mInfo.title|escape}" />
 					</a>
 					<h2 class="heading">
-						<div class="image-heading">{biticon iname="image-x-generic" isize="small" iexplain=""}{$galItem->getContentTypeDescription()|escape}{$galItem->getDisplayLink()}</div>
+						<div class="image-heading">{biticon iname="image-x-generic" isize="small" iexplain=$galItem->getContentTypeDescription()|escape}{$galItem->getDisplayLink()}</div>
 					</h2>
 					<div class="caption">
 						<div class="meta floatright">
