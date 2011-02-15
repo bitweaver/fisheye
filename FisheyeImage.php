@@ -352,7 +352,7 @@ class FisheyeImage extends FisheyeBase {
 	function rotateImage( $pDegrees, $pImmediateRender = FALSE ) {
 		global $gBitSystem;
 		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
-			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['storage_path'];
+			$fileHash['source_file'] = STORAGE_PKG_PATH.$this->mInfo['storage_path'];
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
@@ -418,7 +418,7 @@ class FisheyeImage extends FisheyeBase {
 	function convertColorspace( $pColorSpace ) {
 		$ret = FALSE;
 		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
-			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['storage_path'];
+			$fileHash['source_file'] = STORAGE_PKG_PATH.$this->mInfo['storage_path'];
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
@@ -440,7 +440,7 @@ class FisheyeImage extends FisheyeBase {
 	function resizeOriginal( $pResizeOriginal ) {
 		global $gBitSystem;
 		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
-			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['storage_path'];
+			$fileHash['source_file'] = STORAGE_PKG_PATH.$this->mInfo['storage_path'];
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
@@ -470,7 +470,7 @@ class FisheyeImage extends FisheyeBase {
 				$storeHash = array(
 					'file_size'    => $details['size'],
 					'mime_type'    => $details['mime'],
-					'storage_path' => str_replace( BIT_ROOT_PATH, "", $fileHash['source_file'] ),
+					'storage_path' => str_replace( STORAGE_PKG_PATH, "", $fileHash['source_file'] ),
 				);
 				$this->mDb->associateUpdate( BIT_DB_PREFIX."liberty_files", $storeHash, array( 'file_id' => $this->mInfo['file_id'] ) );
 				//$query = "UPDATE `".BIT_DB_PREFIX."liberty_files` SET `file_size`=? WHERE `file_id`=?";
@@ -508,7 +508,7 @@ class FisheyeImage extends FisheyeBase {
 
 	function renderThumbnails( $pThumbSizes=NULL ) {
 		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
-			$fileHash['source_file'] = BIT_ROOT_PATH.$this->mInfo['storage_path'];
+			$fileHash['source_file'] = STORAGE_PKG_PATH.$this->mInfo['storage_path'];
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
 			$fileHash['dest_path'] = dirname( $this->mInfo['storage_path'] ).'/';
@@ -534,7 +534,7 @@ class FisheyeImage extends FisheyeBase {
 	function getSourceFile() {
 		$ret = NULL;
 		if( !empty( $this->mInfo['storage_path'] ) ) {
-			 $ret = BIT_ROOT_PATH.$this->mInfo['storage_path'];
+			 $ret = STORAGE_PKG_PATH.$this->mInfo['storage_path'];
 		}
 		return $ret;
 	}
@@ -816,7 +816,7 @@ class FisheyeImage extends FisheyeBase {
 
 		$thumbSize = (!empty( $pListHash['size'] ) ? $pListHash['size'] : 'avatar' );
 
-		$query = "SELECT $distinct fi.`image_id` AS `hash_key`, fi.*, lf.*, lc.*, fg.`gallery_id`, uu.`login`, uu.`real_name` $select $selectSql
+		$query = "SELECT $distinct fi.`image_id` AS `hash_key`, fi.*, lf.*, la.attachment_id, lc.*, fg.`gallery_id`, uu.`login`, uu.`real_name` $select $selectSql
 				FROM `".BIT_DB_PREFIX."fisheye_image` fi
 					INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON(la.`content_id`=fi.`content_id`)
 					INNER JOIN `".BIT_DB_PREFIX."liberty_files` lf ON(la.`foreign_id`=lf.`file_id`)
@@ -833,7 +833,7 @@ class FisheyeImage extends FisheyeBase {
 					$ret[$imageId]['display_url']      = $this->getDisplayUrl( $imageId );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
 					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( array(
-						'storage_path'  => $ret[$imageId]['storage_path'],
+						'storage_path'  => liberty_mime_get_storage_path( $row['attachment_id'], $row['user_id'], liberty_mime_get_storage_sub_dir_name( $row['upload'] )),
 						'default_image' => FISHEYE_PKG_URL.'image/generating_thumbnails.png',
 						'size'          => $thumbSize,
 					));
