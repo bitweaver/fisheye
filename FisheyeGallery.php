@@ -651,6 +651,8 @@ class FisheyeGallery extends FisheyeBase {
 	function getTree( $pListHash ) {
 		global $gBitDb;
 
+		$ret = array();
+
 		if( $this->mDb->isAdvancedPostgresEnabled() ) {
 			$bindVars = array();
 			$containVars = array();
@@ -680,7 +682,6 @@ class FisheyeGallery extends FisheyeBase {
 						ORDER BY lc.title";
 			$rootContent = $gBitDb->GetAssoc( $query, $bindVars );
 
-			$ret = array();
 			foreach( array_keys( $rootContent ) as $conId ) {
 				$splitVars = array();
 				$query = "SELECT branch AS hash_key, * $selectSql 
@@ -755,6 +756,7 @@ class FisheyeGallery extends FisheyeBase {
 			}
 		} else {
 // this needs replacing with a more suitable list query ...
+			$pListHash['show_empty'] = TRUE;
 			$galList = $this->getList( $pListHash );
 			// index by content_id
 			foreach( $galList as $galId => $gal ) {
@@ -855,19 +857,18 @@ class FisheyeGallery extends FisheyeBase {
 
 	// Generate a select drop menu of listed galleries
 	function generateMenu( $pListHash, $pOptions, $pLocate=NULL ) {
-		$ret = '';
-		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {	
-			$ret = "<select ";
-			foreach( array( 'class', 'name', 'id', 'onchange' ) as $key ) {
-				if( !empty( $pOptions[$key] ) ) {
-					$ret .= " $key=\"$pOptions[$key]\" ";
-				}
+		$ret = "<select ";
+		foreach( array( 'class', 'name', 'id', 'onchange' ) as $key ) {
+			if( !empty( $pOptions[$key] ) ) {
+				$ret .= " $key=\"$pOptions[$key]\" ";
 			}
-			$ret .= ">";
-			$ret .= !empty( $pOptions['first_option'] ) ? $pOptions['first_option'] : '';
-			$ret .= FisheyeGallery::generateMenuOptions( $hash, $pOptions, $pLocate );
-			$ret .= "</select>";
 		}
+		$ret .= ">";
+		$ret .= !empty( $pOptions['first_option'] ) ? $pOptions['first_option'] : '';
+		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {	
+			$ret .= FisheyeGallery::generateMenuOptions( $hash, $pOptions, $pLocate );
+		}
+		$ret .= "</select>";
 		return $ret;
 	}
 
