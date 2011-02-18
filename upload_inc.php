@@ -89,7 +89,7 @@ function fisheye_sort_uploads( $a, $b ) {
 function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	global $gBitUser;
 	$gal = new FisheyeGallery();
-	$getHash = array( 'user_id' => $pUserId, 'max_records' => 1, 'sort_mode' => 'created_desc' );
+	$getHash = array( 'user_id' => $pUserId, 'max_records' => 1, 'sort_mode' => 'created_desc', 'show_empty' => TRUE );
 	$upList = $gal->getList( $getHash );
 	if( !empty( $upList ) ) {
 		$ret = key( $upList );
