@@ -526,7 +526,7 @@ class FisheyeImage extends FisheyeBase {
 	function getSourceUrl() {
 		$ret = NULL;
 		if( !empty( $this->mInfo['storage_path'] ) ) {
-			 $ret =  BIT_ROOT_URL.dirname( $this->mInfo['storage_path'] ).'/'.rawurlencode( basename( $this->mInfo['storage_path'] ) );
+			 $ret =  STORAGE_PKG_URI.dirname( $this->mInfo['storage_path'] ).'/'.rawurlencode( basename( $this->mInfo['storage_path'] ) );
 		}
 		return $ret;
 	}
