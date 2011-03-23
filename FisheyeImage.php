@@ -833,7 +833,7 @@ class FisheyeImage extends FisheyeBase {
 					$ret[$imageId]['display_url']      = $this->getDisplayUrl( $imageId );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
 					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( array(
-						'storage_path'  => liberty_mime_get_storage_path( $row['attachment_id'], $row['user_id'], liberty_mime_get_storage_sub_dir_name( $row['upload'] )),
+						'storage_path'  => $row['storage_path'],
 						'default_image' => FISHEYE_PKG_URL.'image/generating_thumbnails.png',
 						'size'          => $thumbSize,
 					));
