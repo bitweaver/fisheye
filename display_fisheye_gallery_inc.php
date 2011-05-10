@@ -32,11 +32,10 @@ switch( $gContent->getLayout() ) {
 	case 'auto_flow':
 		$gBitThemes->loadCss( FISHEYE_PKG_PATH."div_layout.css", TRUE );
 		break;
-	case 'ajax_scroller':
-		$gBitThemes->loadCss( FISHEYE_PKG_PATH."mb_layout.css", TRUE );
+	case 'matteo':
+		$gBitThemes->loadCss( FISHEYE_PKG_PATH."gallery_view/matteo/mb_layout.css", TRUE );
 		$gBitThemes->loadAjax( 'jquery' );
 		$gBitThemes->loadJavascript( UTIL_PKG_PATH.'/javascript/libs/jquery/plugins/mbgallery/mbGallery.js', FALSE, 500, FALSE );
-		$gBitThemes->loadJavascript( UTIL_PKG_PATH.'/javascript/libs/jquery/plugins/mbgallery/mbGalleryBox.js', FALSE, 501, FALSE );
 		break;
 	case 'galleriffic':
 		// Need to add options for different styles of layout 

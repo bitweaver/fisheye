@@ -33,7 +33,7 @@ $gBitSmarty->assign( 'galleryPaginationTypes',
 		FISHEYE_PAGINATION_AUTO_FLOW       => 'Auto-Flow Images',
 		FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number',
 		FISHEYE_PAGINATION_SIMPLE_LIST     => 'Simple List',
-		FISHEYE_PAGINATION_AJAX_SCROLLER   => 'Ajax Scroller',
+		FISHEYE_PAGINATION_MATTEO		   => 'Matteo',
 		FISHEYE_PAGINATION_GALLERIFFIC     => 'Galleriffic'
 	)
 );
@@ -45,7 +45,7 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 	} elseif ( $_REQUEST['gallery_pagination'] == 'simple_list' ) {
 		$_REQUEST['rows_per_page'] = $_REQUEST['lines_per_page'];
 		$_REQUEST['cols_per_page'] = '1';
-	} elseif ( $_REQUEST['gallery_pagination'] == 'ajax_scroller' ) {
+	} elseif ( $_REQUEST['gallery_pagination'] == 'matteo' ) {
 		$_REQUEST['rows_per_page'] = $_REQUEST['images_per_page'];
 		$_REQUEST['cols_per_page'] = '1';
 	}

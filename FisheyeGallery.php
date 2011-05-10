@@ -14,7 +14,7 @@ define( 'FISHEYE_PAGINATION_FIXED_GRID', 'fixed_grid' );
 define( 'FISHEYE_PAGINATION_AUTO_FLOW', 'auto_flow' );
 define( 'FISHEYE_PAGINATION_POSITION_NUMBER', 'position_number' );
 define( 'FISHEYE_PAGINATION_SIMPLE_LIST', 'simple_list' );
-define( 'FISHEYE_PAGINATION_AJAX_SCROLLER', 'ajax_scroller' );
+define( 'FISHEYE_PAGINATION_MATTEO', 'matteo' );
 define( 'FISHEYE_PAGINATION_GALLERIFFIC', 'galleriffic' );
 
 /**

@@ -5,7 +5,7 @@ function updateGalleryPagination() {
 	document.getElementById('auto_flow-pagination').style.display = 'none';
 	document.getElementById('position_number-pagination').style.display = 'none';
 	document.getElementById('simple_list-pagination').style.display = 'none';
-	document.getElementById('ajax_scroller-pagination').style.display = 'none';
+	document.getElementById('matteo-pagination').style.display = 'none';
 	document.getElementById('galleriffic-pagination').style.display = 'none';
 	var input = document.getElementById('editGalleryForm').gallery_pagination;
     var i  = input.selectedIndex;
@@ -91,7 +91,7 @@ function updateGalleryPagination() {
 									{formhelp note="This option allows a single column display of images with mime details where available."}
 								</div>
 
-								<div id="ajax_scroller-pagination">
+								<div id="matteo-pagination">
 									<input type="text" id="gallery-rows-per-page" name="images_per_page" size="2" maxlength="2" value="{$gContent->mInfo.rows_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/> {tr}Total images per page{/tr}
 									{formhelp note="This option provides an ajax powered scrolling display using the mbGallery jquery library."}
 								</div>
