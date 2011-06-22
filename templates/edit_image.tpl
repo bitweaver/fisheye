@@ -24,10 +24,9 @@
 									<img src="{$gContent->mInfo.thumbnail_url.medium}?{math equation="1 + rand(1,9999)"}" alt="{$gContent->getTitle()|escape}" />
 									<br />
 									<small>
+										<a href="{$gContent->getSourceUrl()}">{tr}Full size{/tr}</a>
 										{if $gContent->mInfo.width && $gContent->mInfo.height}
-											{tr}Full size{/tr} - <a href="{$gContent->mInfo.source_url}">{$gContent->mInfo.width} x {$gContent->mInfo.height}</a>
-										{elseif $gContent->mInfo.source_url}
-											<a href="{$gContent->mInfo.source_url}">{tr}Full size{/tr}</a>
+											: {$gContent->mInfo.width} x {$gContent->mInfo.height}
 										{/if}
 									</small>
 								{else}
