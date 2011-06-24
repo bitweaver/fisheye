@@ -286,8 +286,8 @@ class FisheyeImage extends FisheyeBase {
 				$this->mContentId = $pParamHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
 
-				if ( !empty( $this->mInfo['source_file'] ) && file_exists( $this->mInfo['source_file'] )) {
-					$imageDetails = $this->getImageDetails( $this->mInfo['source_file'] );
+				if ( !empty( $this->mInfo['source_file'] ) && file_exists( $this->getSourceFile() )) {
+					$imageDetails = $this->getImageDetails( $this->getSourceFile() );
 				} else {
 					$imageDetails = NULL;
 				}
@@ -352,11 +352,11 @@ class FisheyeImage extends FisheyeBase {
 	function rotateImage( $pDegrees, $pImmediateRender = FALSE ) {
 		global $gBitSystem;
 		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
-			$fileHash['source_file'] = STORAGE_PKG_PATH.$this->mInfo['storage_path'];
+			$fileHash['source_file'] = $this->getSourceFile();
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->mInfo['storage_path'] ).'/';
+			$fileHash['dest_path'] = dirname( $this->getSourceFile() ).'/';
 			$fileHash['name'] = $this->mInfo['filename'];
 			if( $pDegrees == 'auto' ) {
 				if( $exifOrientation = $this->getExifField( 'orientation' ) ) {
@@ -418,11 +418,11 @@ class FisheyeImage extends FisheyeBase {
 	function convertColorspace( $pColorSpace ) {
 		$ret = FALSE;
 		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
-			$fileHash['source_file'] = STORAGE_PKG_PATH.$this->mInfo['storage_path'];
+			$fileHash['source_file'] = $this->getSourceFile();
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->mInfo['storage_path'] ).'/';
+			$fileHash['dest_path'] = dirname( $this->getSourceFile() ).'/';
 			$fileHash['name'] = $this->mInfo['filename'];
 			if( $convertFunc = liberty_get_function( 'convert_colorspace' ) ) {
 				if( $ret = $convertFunc( $fileHash, $pColorSpace ) ) {
@@ -440,11 +440,11 @@ class FisheyeImage extends FisheyeBase {
 	function resizeOriginal( $pResizeOriginal ) {
 		global $gBitSystem;
 		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
-			$fileHash['source_file'] = STORAGE_PKG_PATH.$this->mInfo['storage_path'];
+			$fileHash['source_file'] = $this->getSourceFile();
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->mInfo['storage_path'] ).'/';
+			$fileHash['dest_path'] = dirname( $this->getSourceFile() ).'/';
 			$fileHash['name'] = $this->mInfo['filename'];
 			$fileHash['max_height'] = $fileHash['max_width'] = $pResizeOriginal;
 			// make a copy of the fileHash that we can compare output after processing
@@ -470,7 +470,7 @@ class FisheyeImage extends FisheyeBase {
 				$storeHash = array(
 					'file_size'    => $details['size'],
 					'mime_type'    => $details['mime'],
-					'storage_path' => str_replace( STORAGE_PKG_PATH, "", $fileHash['source_file'] ),
+					'storage_path' => $this->getSourceFile(),
 				);
 				$this->mDb->associateUpdate( BIT_DB_PREFIX."liberty_files", $storeHash, array( 'file_id' => $this->mInfo['file_id'] ) );
 				//$query = "UPDATE `".BIT_DB_PREFIX."liberty_files` SET `file_size`=? WHERE `file_id`=?";
@@ -508,10 +508,10 @@ class FisheyeImage extends FisheyeBase {
 
 	function renderThumbnails( $pThumbSizes=NULL ) {
 		if( !empty( $this->mInfo['storage_path'] ) || $this->load() ) {
-			$fileHash['source_file'] = STORAGE_PKG_PATH.$this->mInfo['storage_path'];
+			$fileHash['source_file'] = $this->getSourceFile();
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->mInfo['storage_path'] ).'/';
+			$fileHash['dest_path'] = $this->getStorageBranch();
 			$fileHash['name'] = $this->mInfo['filename'];
 			$fileHash['thumbnail_sizes'] = $pThumbSizes;
 			// just generate thumbnails
@@ -526,7 +526,7 @@ class FisheyeImage extends FisheyeBase {
 	function getSourceUrl() {
 		$ret = NULL;
 		if( !empty( $this->mInfo['storage_path'] ) ) {
-			 $ret =  STORAGE_PKG_URI.dirname( $this->mInfo['storage_path'] ).'/'.rawurlencode( basename( $this->mInfo['storage_path'] ) );
+			 $ret =  $this->getStorageUrl().rawurlencode( basename( $this->mInfo['storage_path'] ) );
 		}
 		return $ret;
 	}
@@ -534,9 +534,21 @@ class FisheyeImage extends FisheyeBase {
 	function getSourceFile() {
 		$ret = NULL;
 		if( !empty( $this->mInfo['storage_path'] ) ) {
-			 $ret = STORAGE_PKG_PATH.$this->mInfo['storage_path'];
+			 $ret = $this->getStoragePath().basename( $this->mInfo['storage_path'] );
 		}
 		return $ret;
+	}
+
+	function getStorageUrl( $pSubDir = NULL, $pUserId = NULL, $pPackage = FISHEYE_PKG_NAME, $pPermissions = 0755 ) {
+		return parent::getStorageUrl( 'images', $this->getField('user_id'), NULL ).$this->getField('attachment_id').'/';
+	}
+
+	function getStorageBranch( $pSubDir = NULL, $pUserId = NULL, $pPackage = FISHEYE_PKG_NAME, $pPermissions = 0755, $pRootDir = NULL ) {
+		return parent::getStorageBranch( 'images', $this->getField('user_id'), NULL ).$this->getField('attachment_id').'/';
+	}
+
+	function getStoragePath( $pSubDir = NULL, $pUserId = NULL, $pPackage = FISHEYE_PKG_NAME, $pPermissions = 0755, $pRootDir = NULL ) {
+		return parent::getStoragePath( 'images', $this->getField('user_id'), NULL ).$this->getField('attachment_id').'/';
 	}
 
 	function getPreviewHash() {
