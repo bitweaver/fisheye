@@ -54,7 +54,7 @@ if( !$gBitUser->hasPermission( 'p_fisheye_view' ) ) {
 		$item               = new FeedItem();
 		$item->title        = $feed['title'];
 		$item->link         = $feed['display_url'];
-		$item->description  = '<a href="'.$feed['display_url'].'"><img src="'.liberty_fetch_thumbnail_url( array( 'storage_path' => $feed['storage_path'], 'size' => 'medium' )).'" /></a>';
+		$item->description  = '<a href="'.$feed['display_url'].'"><img src="'.$feed['thumbnail_url'].'" /></a>';
 		$item->description .= '<p>'.$feed['data'].'</p>';
 
 		$item->date         = ( int )$feed['last_modified'];

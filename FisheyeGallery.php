@@ -148,7 +148,7 @@ class FisheyeGallery extends FisheyeBase {
 				}
 				if( @$this->verifyId( $pCurrentImageId ) && @$this->verifyId($this->mContentId)) {
 					// this code sucks but works - XOXO spiderr
-					$query = "SELECT fgim.*, fi.`image_id`, lf.`storage_path`
+					$query = "SELECT fgim.*, fi.`image_id`, lf.`file_name`, lf.`user_id`, la.`attachment_id`
 							FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
 								INNER JOIN `".BIT_DB_PREFIX."fisheye_image` fi ON ( fi.`content_id`=fgim.`item_content_id` )
 								INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON ( fi.`content_id`=la.`content_id` )
@@ -156,13 +156,15 @@ class FisheyeGallery extends FisheyeBase {
 							WHERE fgim.`gallery_content_id` = ?
 							ORDER BY fgim.`item_position`, fi.`content_id` ";
 					if( $rs = $this->mDb->query($query, array( $this->mContentId ) ) ) {
+						$tempImage = new FisheyeImage();
 						$rows = $rs->getRows();
 						for( $i = 0; $i < count( $rows ); $i++ ) {
 							if( $rows[$i]['image_id'] == $pCurrentImageId ) {
 								if( $i > 0 ) {
 									$this->mInfo['previous_image_id'] = $rows[$i-1]['image_id'];
 									$this->mInfo['previous_image_avatar'] = liberty_fetch_thumbnail_url( array(
-										'storage_path' => $rows[$i-1]['storage_path'],
+										'file_name' => $rows[$i-1]['file_name'],
+										'source_file'	=> $tempImage->getSourceFile( $rows[$i-1] ),
 										'mime_image'   => TRUE,
 										'size'         => 'avatar',
 									));
@@ -170,7 +172,8 @@ class FisheyeGallery extends FisheyeBase {
 								if( $i + 1  < count( $rows ) ) {
 									$this->mInfo['next_image_id'] = $rows[$i+1]['image_id'];
 									$this->mInfo['next_image_avatar'] = liberty_fetch_thumbnail_url( array(
-										'storage_path' => $rows[$i+1]['storage_path'],
+										'file_name' => $rows[$i+1]['file_name'],
+										'source_file'	=> $tempImage->getSourceFile( $rows[$i+1] ),
 										'mime_image'   => TRUE,
 										'size'         => 'avatar',
 									));
