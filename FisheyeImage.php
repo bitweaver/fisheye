@@ -263,6 +263,7 @@ class FisheyeImage extends FisheyeBase {
 
 	function store(&$pParamHash) {
 		global $gBitSystem, $gLibertySystem;
+
 		if ($this->verifyImageData($pParamHash)) {
 			// Save the current attachment ID for the image attached to this FisheyeImage so we can
 			// delete it after saving the new one
@@ -356,7 +357,7 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->getSourceFile() ).'/';
+			$fileHash['dest_branch'] = dirname( $this->getSourceFile() ).'/';
 			$fileHash['name'] = $this->getField( 'file_name' );
 			if( $pDegrees == 'auto' ) {
 				if( $exifOrientation = $this->getExifField( 'orientation' ) ) {
@@ -422,7 +423,7 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->getSourceFile() ).'/';
+			$fileHash['dest_branch'] = dirname( $this->getSourceFile() ).'/';
 			$fileHash['name'] = $this->getField( 'file_name' );
 			if( $convertFunc = liberty_get_function( 'convert_colorspace' ) ) {
 				if( $ret = $convertFunc( $fileHash, $pColorSpace ) ) {
@@ -444,16 +445,15 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = dirname( $this->getSourceFile() ).'/';
+			$fileHash['dest_branch'] = $this->getStorageBranch();
 			$fileHash['name'] = $this->getField( 'file_name' );
 			$fileHash['max_height'] = $fileHash['max_width'] = $pResizeOriginal;
 			// make a copy of the fileHash that we can compare output after processing
 			$preResize = $fileHash;
 			$resizeFunc = liberty_get_function( 'resize' );
 
-			if( !$resizeFunc( $fileHash ) ) {
-				$this->mErrors['resize'] = $fileHash['error'];
-			} else {
+			if( $resizeFile = $resizeFunc( $fileHash ) ) {
+				clearstatcache();
 				// Ack this is evil direct bashing of the liberty tables! XOXO spiderr
 				// should be a cleaner way eventually
 
@@ -465,10 +465,10 @@ class FisheyeImage extends FisheyeBase {
 						@unlink( $preResize['source_file'] );
 					}
 				}
-				$details = $this->getImageDetails( $fileHash['source_file'] );
+				$details = $this->getImageDetails( $resizeFile );
 				// store all the values that might have changed due to the resize
 				$storeHash = array(
-					'file_size' => $details['size'],
+					'file_size' => filesize( $resizeFile ),
 					'mime_type' => $details['mime'],
 				);
 				$this->mDb->associateUpdate( BIT_DB_PREFIX."liberty_files", $storeHash, array( 'file_id' => $this->mInfo['file_id'] ) );
@@ -481,6 +481,8 @@ class FisheyeImage extends FisheyeBase {
 				if( $fileHash['source_file'] != $preResize['source_file'] && is_file( $fileHash['source_file'] ) && is_file( $preResize['source_file'] ) ) {
 					@unlink( $preResize['source_file'] );
 				}
+			} else {
+				$this->mErrors['resize'] = $fileHash['error'];
 			}
 		}
 		return (count($this->mErrors) == 0);
@@ -510,7 +512,7 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['source_file'] = $this->getSourceFile();
 			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_path'] = $this->getStorageBranch();
+			$fileHash['dest_branch'] = $this->getStorageBranch();
 			$fileHash['name'] = $this->getField( 'file_name' );
 			$fileHash['thumbnail_sizes'] = $pThumbSizes;
 			// just generate thumbnails
