@@ -20,7 +20,7 @@
 						<div class="row">
 							{formlabel label="Current Image"}
 							{forminput}
-								{if $gContent->mInfo.storage_path}
+								{if $gContent->mInfo.thumbnail_url.medium}
 									<img src="{$gContent->mInfo.thumbnail_url.medium}?{math equation="1 + rand(1,9999)"}" alt="{$gContent->getTitle()|escape}" />
 									<br />
 									<small>

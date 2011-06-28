@@ -21,7 +21,7 @@
 	<div class="row">
 		{formlabel label="Current Image"}
 		{forminput}
-			{if $gContent->mInfo.storage_path}
+			{if $gContent->mInfo.thumbnail_url.medium}
 				<img src="{$gContent->mInfo.thumbnail_url.medium}" alt="{$gContent->getTitle()|escape}" />
 				<br />
 				<small>
