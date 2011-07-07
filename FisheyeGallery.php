@@ -188,14 +188,14 @@ class FisheyeGallery extends FisheyeBase {
 		return count($this->mInfo);
 	}
 
-	function loadImages( $pPage=-1 ) {
+	function loadImages( $pPage=-1, $pImagesPerPage=-1) {
 		global $gLibertySystem, $gBitSystem, $gBitUser;
 		if( !$this->isValid() ) {
 			return NULL;
 		}
 		$bindVars = array($this->mContentId);
 		$whereSql = $selectSql = $joinSql = $orderSql = '';
-		$rows = $offset = NULL;
+		$rowCount = $offset = NULL;
 
 		if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
 			$orderSql = ", ".$this->mDb->convertSortmode( $gBitSystem->getConfig( 'fisheye_gallery_default_sort_mode' ) );
@@ -217,10 +217,10 @@ class FisheyeGallery extends FisheyeBase {
 					array_push( $bindVars, $mantissa );
 				}
 			} elseif( $this->getLayout() == FISHEYE_PAGINATION_FIXED_GRID ) {
-				$rows = $this->getField( 'rows_per_page' ) * $this->getField( 'cols_per_page' );
-				$offset = $rows * ($pPage - 1);
+				$rowCount = $this->getField( 'rows_per_page' ) * $this->getField( 'cols_per_page' );
+				$offset = $rowCount * ($pPage - 1);
 			} else {
-				$rows = -1;
+				$rowCount = $pImagesPerPage;
 			}
 		}
 
@@ -234,7 +234,7 @@ class FisheyeGallery extends FisheyeBase {
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
 				WHERE fgim.`gallery_content_id` = ? $whereSql
 				ORDER BY fgim.`item_position` $orderSql";
-		$rs = $this->mDb->query($query, $bindVars, $rows, $offset);
+		$rs = $this->mDb->query($query, $bindVars, $rowCount, $offset);
 
 		$rows = $rs->getRows();
 		foreach ($rows as $row) {

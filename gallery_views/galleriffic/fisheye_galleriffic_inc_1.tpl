@@ -106,7 +106,7 @@ jQuery(document).ready(function($) {
 	// Initialize Advanced Galleriffic Gallery
 	var gallery = $('#thumbs').galleriffic({
 		delay:                     2500,
-		numThumbs:                 20,
+		numThumbs:                 30,
 		preloadAhead:              10,
 		enableTopPager:            true,
 		enableBottomPager:         true,

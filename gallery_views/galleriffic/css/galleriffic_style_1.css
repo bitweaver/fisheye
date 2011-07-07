@@ -172,7 +172,7 @@ div.image-desc {
 div.download {
 	margin-top: 8px;
 }
-.navigation-container { width:35%; float:left; }
+.navigation-container { width:30%; float:left; }
 div.navigation {
 	float: left;
 	position: relative;
@@ -246,6 +246,7 @@ div.gallery-gutter {
 	padding-bottom: 20px;
 }
 #gallery {
+	width:70%;
 	overflow:hidden;
 }
 div#page {
