@@ -136,6 +136,7 @@ function fisheye_store_upload( &$pFileHash, $pImageData = array(), $pAutoRotate=
 		if( !$image->store( $pImageData ) ) {
 			$ret = $image->mErrors;
 		} else {
+			$image->load();
 			// play with image some more if user has requested it
 			if( $pAutoRotate ) {
 				$image->rotateImage( 'auto' );

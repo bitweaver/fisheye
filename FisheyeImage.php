@@ -328,7 +328,6 @@ class FisheyeImage extends FisheyeBase {
 		} else {
 			$this->mErrors[] = "There were errors while attempting to save this gallery image";
 		}
-
 		return (count($this->mErrors) == 0);
 	}
 
@@ -525,19 +524,19 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	function getStorageUrl( $pParamHash = array() ) {
-		$pParamHash['sub_dir'] = 'images';
+		$pParamHash['sub_dir'] =  $this->getParameter( $pParamHash, 'sub_dir', liberty_mime_get_storage_sub_dir_name( array( 'type'=>$this->getField( 'mime_type' ), 'name'=>$this->getField('file_name') ) ) );
 		$pParamHash['user_id'] = $this->getParameter( $pParamHash, 'user_id', $this->getField('user_id') );
 		return parent::getStorageUrl( $pParamHash ).$this->getParameter( $pParamHash, 'attachment_id', $this->getField('attachment_id') ).'/';
 	}
 
 	function getStorageBranch( $pParamHash = array() ) {
-		$pParamHash['sub_dir'] = 'images';
+		$pParamHash['sub_dir'] =  $this->getParameter( $pParamHash, 'sub_dir', liberty_mime_get_storage_sub_dir_name( array( 'type'=>$this->getField( 'mime_type' ), 'name'=>$this->getField('file_name') ) ) );
 		$pParamHash['user_id'] = $this->getParameter( $pParamHash, 'user_id', $this->getField('user_id') );
 		return parent::getStorageBranch( $pParamHash ).$this->getParameter( $pParamHash, 'attachment_id', $this->getField('attachment_id') ).'/';
 	}
 
 	function getStoragePath( $pParamHash = array() ) {
-		$pParamHash['sub_dir'] = 'images';
+		$pParamHash['sub_dir'] = liberty_mime_get_storage_sub_dir_name( array( 'type'=>$this->getField( 'mime_type' ), 'name'=>$this->getField('file_name') ) );
 		$pParamHash['user_id'] = $this->getParameter( $pParamHash, 'user_id', $this->getField('user_id') );
 		return parent::getStoragePath( $pParamHash ).$this->getParameter( $pParamHash, 'attachment_id', $this->getField('attachment_id') ).'/';
 	}
