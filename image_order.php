@@ -67,7 +67,7 @@ if (!empty($_REQUEST['cancel'])) {
 				break;
 			case 'file_name':
 				foreach( array_keys( $gContent->mItems ) as $imageId ) {
-					$reorder[$gContent->mItems[$imageId]->mContentId] = $gContent->mItems[$imageId]->mInfo['filename'];
+					$reorder[$gContent->mItems[$imageId]->mContentId] = $gContent->mItems[$imageId]->mInfo['file_name'];
 				}
 				break;
 			case 'random':
