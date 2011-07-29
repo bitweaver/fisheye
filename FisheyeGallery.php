@@ -1020,22 +1020,28 @@ class FisheyeGallery extends FisheyeBase {
 			
 			$filename = tempnam(TEMP_PKG_PATH,"galleryzip");
 			$path = '/';
+
 			if( $zip->open ($filename, ZIPARCHIVE::OVERWRITE) !== TRUE ){
 				$this->mErrors['download'] = "Unable to create zip file";
 			}else{
 				addGalleryRecursive( $this->mGalleryId , $path, $zip);
 			}
 				$zip->close();
-			
+
 				//escape backslashes
 				$outputFileTitle = str_replace("\\",'\\\\',$this->getTitle());	
 				//escape double quotes
 				$outputFileTitle = str_replace('"','\\"',$outputFileTitle);
 
-				Header("Content-type: application/octet-stream");
+				header('Content-Description: File Transfer');
+				header('Content-Type: application/octet-stream');
 				Header ("Content-disposition: attachment; filename=\"".$outputFileTitle.".zip\"");
+				header('Content-Transfer-Encoding: binary');
+				header('Expires: 0');
+				header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+				header('Pragma: public');
 				Header ("Content-Length: ".filesize( $filename ) );
-				Header ("Expires:  0");
+				ob_end_flush();
 				readfile($filename);
 				unlink($filename);
 			}
