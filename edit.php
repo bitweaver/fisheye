@@ -121,7 +121,7 @@ if( $gContent->mContentId ) {
 if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
 	unset( $getHash['user_id'] );
 } elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
-	$getHash['show_public'] = TRUE;
+//	$getHash['show_public'] = TRUE;
 }
 $galleryTree = $gContent->generateList( $getHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle'), 'radio_checkbox' => TRUE, ) );
 $gBitSmarty->assign_by_ref( 'galleryTree', $galleryTree );
