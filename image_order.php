@@ -208,7 +208,7 @@ $listHash = array(
 if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
 	unset( $listHash['user_id'] );
 } elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
-	$listHash['show_public'] = TRUE;
+//	$listHash['show_public'] = TRUE;
 }
 $galleryList = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
