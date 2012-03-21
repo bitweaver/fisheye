@@ -260,7 +260,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 					}
 				} elseif( is_file( $scanFile['tmp_name'] ) ) {
 					// unknown file type, let's be tidy and clean it up
-					unlink( $scanFile );
+					unlink( $scanFile['tmp_name'] );
 				}
 				$order += 10;
 			}
