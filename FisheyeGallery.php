@@ -629,13 +629,13 @@ class FisheyeGallery extends FisheyeBase {
     * @param pGalleryId id of gallery to link
     * @return the url to display the gallery.
     */
-	function getDisplayUrl( $pGalleryId=NULL, $pPath=NULL ) {
-		$ret = FISHEYE_PKG_URL;
-		if( !@$this->verifyId( $pGalleryId ) ) {
+	function getDisplayUrl( $pGalleryId=NULL, $pHash=NULL ) {
+		if( !BitBase::verifyId( $pGalleryId ) && is_object( $this ) ) {
 			$pGalleryId = $this->mGalleryId;
 			$pPath = $this->mGalleryPath;
 		}
-		if( @$this->verifyId( $pGalleryId ) ) {
+		if( BitBase::verifyId( $pGalleryId ) ) {
+			$ret = FISHEYE_PKG_URL;
 			global $gBitSystem;
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
 				$ret .= 'gallery'.$pPath.'/'.$pGalleryId;
@@ -645,8 +645,8 @@ class FisheyeGallery extends FisheyeBase {
 					$ret .= '&gallery_path='.$pPath;
 				}
 			}
-		} elseif( @$this->verifyId( $pImageId['content_id'] ) ) {
-			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pImageId['content_id'];
+		} elseif( @BitBase::verifyId( $pHash['content_id'] ) ) {
+			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pHash['content_id'];
 		}
 		return $ret;
 	}
