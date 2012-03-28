@@ -630,19 +630,20 @@ class FisheyeGallery extends FisheyeBase {
     * @return the url to display the gallery.
     */
 	function getDisplayUrl( $pGalleryId=NULL, $pHash=NULL ) {
+		$path = NULL;
 		if( !BitBase::verifyId( $pGalleryId ) && is_object( $this ) ) {
 			$pGalleryId = $this->mGalleryId;
-			$pPath = $this->mGalleryPath;
+			$path = $this->mGalleryPath;
 		}
 		if( BitBase::verifyId( $pGalleryId ) ) {
 			$ret = FISHEYE_PKG_URL;
 			global $gBitSystem;
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret .= 'gallery'.$pPath.'/'.$pGalleryId;
+				$ret .= 'gallery'.$path.'/'.$pGalleryId;
 			} else {
 				$ret .= 'view.php?gallery_id='.$pGalleryId;
-				if( !empty( $pPath ) ) {
-					$ret .= '&gallery_path='.$pPath;
+				if( !empty( $path ) ) {
+					$ret .= '&gallery_path='.$path;
 				}
 			}
 		} elseif( @BitBase::verifyId( $pHash['content_id'] ) ) {
