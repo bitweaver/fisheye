@@ -34,6 +34,7 @@ $gBitSmarty->assign( 'galleryPaginationTypes',
 		FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number',
 		FISHEYE_PAGINATION_SIMPLE_LIST     => 'Simple List',
 		FISHEYE_PAGINATION_MATTEO		   => 'Matteo',
+
 		FISHEYE_PAGINATION_GALLERIFFIC     => 'Galleriffic'
 	)
 );
@@ -62,8 +63,7 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();
 		}
-
-		header("location: ".$gContent->getDisplayUrl() );
+		header("location: ".$gContent->getContentUrl() );
 		die();
 	}
 } elseif( !empty( $_REQUEST['delete'] ) ) {
@@ -95,7 +95,7 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 	}
 
 } elseif( !empty($_REQUEST['cancelgallery'] ) ) {
-	header( 'Location: '.$gContent->getDisplayUrl() );
+	header( 'Location: '.$gContent->getContentUrl() );
 	die();
 }
 

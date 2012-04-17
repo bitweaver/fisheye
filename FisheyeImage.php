@@ -38,7 +38,7 @@ class FisheyeImage extends FisheyeBase {
 		$this->mAdminContentPerm = 'p_fisheye_admin';
 	}
 
-	function lookup( $pLookupHash ) {
+	public static function lookup( $pLookupHash ) {
 		global $gBitDb;
 		$ret = NULL;
 
@@ -60,7 +60,7 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	function load( $pPluginParams = NULL ) {
+	function load( $pContentId = NULL, $pPluginParams = NULL ) {
 		if( $this->isValid() ) {
 			global $gBitSystem;
 			$gateSql = NULL;
@@ -121,9 +121,9 @@ class FisheyeImage extends FisheyeBase {
 					$this->mInfo = array_merge( current( $this->mStorage ), $this->mInfo );
 					// copy the image data by reference to reduce memory
 					reset( $this->mStorage );
-					$this->mInfo['image_file'] =& current( $this->mStorage );
+					$this->mInfo['image_file'] = current( $this->mStorage );
 					// override original display_url that mime knows where we keep the image
-					$this->mInfo['image_file']['display_url'] = $this->getDisplayUrl();
+					$this->mInfo['image_file']['display_url'] = $this->getContentUrl();
 				} else {
 					$this->mInfo['image_file'] = NULL;
 				}
@@ -163,7 +163,7 @@ class FisheyeImage extends FisheyeBase {
 
 			$ret = array(	'type' => $this->getContentType(),
 							'landscape' => $this->isLandscape(),
-							'url' => $this->getDisplayUrl(),
+							'url' => $this->getContentUrl(),
 							'content_id' => $this->mContentId,
 							'title' => $this->getTitle(),
 							'has_description' => !empty( $this->mInfo['data'] ),
@@ -535,7 +535,7 @@ class FisheyeImage extends FisheyeBase {
 		return parent::getStorageBranch( $pParamHash ).$this->getParameter( $pParamHash, 'attachment_id', $this->getField('attachment_id') ).'/';
 	}
 
-	function getStoragePath( $pParamHash = array() ) {
+	function getStoragePath( $pParamHash, $pRootDir=NULL ) {
 		$pParamHash['sub_dir'] = liberty_mime_get_storage_sub_dir_name( array( 'type'=>$this->getField( 'mime_type' ), 'name'=>$this->getField('file_name') ) );
 		$pParamHash['user_id'] = $this->getParameter( $pParamHash, 'user_id', $this->getField('user_id') );
 		return parent::getStoragePath( $pParamHash ).$this->getParameter( $pParamHash, 'attachment_id', $this->getField('attachment_id') ).'/';
@@ -609,19 +609,13 @@ class FisheyeImage extends FisheyeBase {
     * @param pMixed if a string, it is assumed to be the size, if an array, it is assumed to be a mInfo hash
     * @return the url to display the gallery.
     */
-	function getDisplayUrl( $pImageId=NULL, $pMixed=NULL ) {
-		$ret = '';
-		if( !@BitBase::verifyId( $pImageId ) ) {
-			$pImageId = $this->mImageId;
-		}
-
+	public static function getDisplayUrl( $pImageId=NULL, $pMixed=NULL ) {
 		// if pMixed is an array, we assume it has all the pertinent information
 		if( is_array( $pMixed )) {
 			$info = $pMixed;
-		} else {
-			$info = &$this->mInfo;
 		}
 
+		$gallery = ( isset( $info['gallery_path'] ) ) ? $info['gallery_path'] : NULL ;
 		$size = ( is_string( $pMixed ) && isset( $info['thumbnail_url'][$pMixed] ) ) ? $pMixed : NULL ;
 		global $gBitSystem;
 		if( @BitBase::verifyId( $pImageId ) ) {
@@ -635,8 +629,8 @@ class FisheyeImage extends FisheyeBase {
 				}
 			} else {
 				$ret = FISHEYE_PKG_URL.'view_image.php?image_id='.$pImageId;
-				if( !empty( $this ) && !empty( $this->mGalleryPath ) ) {
-					$ret .= '&gallery_path='.$this->mGalleryPath;
+				if( $gallery ) {
+					$ret .= '&gallery_path='.$gallery;
 				}
 				if( $size ) {
 					$ret .= '&size='.$size;
@@ -648,7 +642,18 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
+	function getContentUrl( $pImageId=NULL ) {
+		$ret = '';
+		if( !@BitBase::verifyId( $pImageId ) ) {
+			$pImageId = $this->mImageId;
+			$info = &$this->mInfo;
+		} else {
+			$info = NULL;
+		}
 
+
+		return self::getDisplayUrl( $pImageId, $info );
+	}
 	/**
 	 * Generate a valid display link for the Blog
 	 *
@@ -656,7 +661,7 @@ class FisheyeImage extends FisheyeBase {
 	 * @param	array	Not used
 	 * @return	object	Fully formatted html link for use by Liberty
 	 */
-	function getDisplayLink( $pTitle=NULL, $pMixed=NULL ) {
+	function getDisplayLink( $pTitle=NULL, $pMixed=NULL, $pAnchor=NULL ) {
 		global $gBitSystem;
 
 		$pTitle = trim( $pTitle );
@@ -700,7 +705,7 @@ class FisheyeImage extends FisheyeBase {
 		return( $this->mContentId );
 	}
 
-	function getThumbnailUrl( $pSize='small', $pInfoHash=NULL ) {
+	function getThumbnailUrl( $pSize = 'small', $pInfoHash = NULL, $pSecondaryId = NULL, $pDefault=TRUE ) {
 		$ret = NULL;
 		if( !empty( $pInfoHash ) ) {
 			// do some stuff if we are given a hash of stuff
@@ -834,7 +839,7 @@ class FisheyeImage extends FisheyeBase {
 				$ret[$row['hash_key']] = $row;
 				$imageId = $row['image_id'];
 				if( empty( $pListHash['no_thumbnails'] ) ) {
-					$ret[$imageId]['display_url']      = $this->getDisplayUrl( $imageId );
+					$ret[$imageId]['display_url']      = self::getDisplayUrl( $imageId );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
 					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( array(
 						'source_file'   => $this->getSourceFile( $row ),

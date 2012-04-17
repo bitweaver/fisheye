@@ -23,7 +23,7 @@ $gBitSystem->verifyPermission( 'p_fisheye_upload' );
 if( !empty( $_REQUEST['save_image'] ) ) {
 	$upErrors = fisheye_handle_upload( $_FILES );
 	if( empty( $upErrors ) ) {
-		bit_redirect( $gContent->getDisplayUrl() );
+		bit_redirect( $gContent->getContentUrl() );
 	} else {
 		$gBitSmarty->assign( 'errors', $upErrors );
 	}

@@ -26,7 +26,7 @@ if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 $gContent->verifyUpdatePermission();
 
 if (!empty($_REQUEST['cancel'])) {
-	header( 'Location: '.$gContent->getDisplayUrl() );
+	header( 'Location: '.$gContent->getContentUrl() );
 	die;
 } elseif (!empty($_REQUEST['updateImageOrder'])) {
 	if( !empty( $_REQUEST['batch'] ) ) {
@@ -95,7 +95,7 @@ if (!empty($_REQUEST['cancel'])) {
 	}
 
 	foreach ($_REQUEST['imagePosition'] as $contentId=>$newPos) {
-		if( $galleryItem = $gLibertySystem->getLibertyObject( $contentId ) ) {
+		if( $galleryItem = LibertyBase::getLibertyObject( $contentId ) ) {
 			$galleryItem->load();
 			if( isset( $batchCon[$contentId] ) ) {
 				if( !empty( $_REQUEST['batch_command'] ) ) {
