@@ -90,9 +90,10 @@
 							{formlabel label="Add This Image to These Galleries"}
 							{forminput}
 								{if $galleryTree}
-<div class="gallerytree">
-	{$galleryTree}
-</div>						{else}
+									<div class="gallerytree">
+										{$galleryTree}
+									</div>
+								{else}
 							<p class="norecords">
 								{tr}No Galleries Found{/tr}.<br />
 							</p>
