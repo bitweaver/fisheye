@@ -88,7 +88,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		}
 		if( empty( $gContent->mErrors ) ) {
 			// add a refresh parameter to the URL so the thumbnails will properly refresh first go reload
-			header( 'Location: '.$gContent->getDisplayUrl().($gBitSystem->isFeatureActive( 'pretty_urls' ) ? '?' : '&' ).'refresh=1' );
+			header( 'Location: '.$gContent->getContentUrl().($gBitSystem->isFeatureActive( 'pretty_urls' ) ? '?' : '&' ).'refresh=1' );
 			die;
 		}
 	}
@@ -112,7 +112,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		);
 	} else {
 		if( $gContent->expunge() ) {
-			$url = ( is_object( $gGallery ) ? $gGallery->getDisplayUrl() : FISHEYE_PKG_URL );
+			$url = ( is_object( $gGallery ) ? $gGallery->getContentUrl() : FISHEYE_PKG_URL );
 			header( "Location: $url" );
 		}
 	}
@@ -136,7 +136,7 @@ if( $gContent->mContentId ) {
 if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
 	unset( $getHash['user_id'] );
 } elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
-//	$getHash['show_public'] = TRUE;
+	$getHash['show_public'] = TRUE;
 }
 $galleryTree = $gFisheyeGallery->generateList( $getHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle'), 'radio_checkbox' => TRUE, ), true );
 $gBitSmarty->assign_by_ref( 'galleryTree', $galleryTree );

@@ -11,7 +11,6 @@
 require_once( '../kernel/setup_inc.php' );
 
 require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
-require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 global $gBitSystem, $gBitSmarty, $gFisheyeGallery;
 
 $gFisheyeGallery = new FisheyeGallery();

@@ -48,7 +48,7 @@ $gBitSmarty->assign_by_ref('pageCount', $page);
 $gBitSmarty->assign_by_ref('imagesPerPage', $imagesPerPage);
 $gBitSmarty->assign_by_ref('imageOffset', $imageOffset);
 $gBitSmarty->assign_by_ref('rows_per_page', $gContent->mInfo['rows_per_page']);
-$gBitSmarty->assign_by_ref('cols_per_page', $gContent->getField( 'cols_per_page', 10 ) );
+$gBitSmarty->assign('cols_per_page', $gContent->getField( 'cols_per_page', 10 ) );
 
 $gContent->loadImages( $page, $imagesPerPage );
 $gContent->addHit();

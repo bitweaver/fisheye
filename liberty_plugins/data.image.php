@@ -100,7 +100,11 @@ function data_image( $pData, $pParams ) {
 			// if this image is linking to something, wrap the image with the <a>
 			$ret = '<a href="'.trim( $wrapper['link'] ).'">'.$ret.'</a>';
 		} elseif ( empty( $pParams['size'] ) || $pParams['size'] != 'original' ) {
-			$ret = '<a href="'.trim( $item->mInfo['source_url'] ).'">'.$ret.'</a>';
+			if ( !empty( $item->mInfo['source_url'] ) ) {
+				$ret = '<a href="'.trim( $item->mInfo['source_url'] ).'">'.$ret.'</a>';
+			} else if ( !empty( $item->mInfo['media_url'] ) ) {
+				$ret = '<a href="'.trim( $item->mInfo['media_url'] ).'">'.$ret.'</a>';
+			} 
 		}
 
 		if( !empty( $wrapper['style'] ) || !empty( $class ) || !empty( $wrapper['description'] ) ) {
