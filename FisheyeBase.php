@@ -14,10 +14,8 @@ require_once( LIBERTY_PKG_PATH.'LibertyMime.php' );		// FisheyeGallery base clas
 class FisheyeBase extends LibertyMime
 {
 	// Path of gallery images to get breadcrumbs
-	var $mGalleryPath;
 
 	function FisheyeBase() {
-		$this->mGalleryPath = '';
 		if( get_class( $this ) == 'fisheyegallery' ) {
 			LibertyContent::LibertyContent();
 		} else {
@@ -69,7 +67,7 @@ class FisheyeBase extends LibertyMime
 	}
 
 	function setGalleryPath( $pPath ) {
-		$this->mGalleryPath = rtrim( $pPath, '/' );
+		$this->setField( 'gallery_path', rtrim( $pPath, '/' ) );
 	}
 
 	function getThumbnailContentId() {
@@ -111,15 +109,13 @@ not ready for primetime
 
 	function getBreadcrumbLinks( $pIncludeSelf = FALSE ) {
 		$ret = '';
-		if( empty( $this->mGalleryPath ) ) {
+		if( !$this->getField( 'gallery_path' ) ) {
 			if( $this->isValid() && $parents = $this->getParentGalleries() ) {
 				$gal = current( $parents );
 				$this->setGalleryPath( '/'.$gal['gallery_id'] );
 			}
-		}
-
-		if( !empty( $this->mGalleryPath ) ) {
-			$path = explode( '/', ltrim( $this->mGalleryPath, '/' ) );
+		} else {
+			$path = explode( '/', ltrim( $this->getField( 'gallery_path' ), '/' ) );
 			$p = 0;
 			$c = 1;
 			$joinSql = '';
@@ -150,7 +146,9 @@ not ready for primetime
 			if( !empty( $rs->fields ) ) {
 				$path = '';
 				for( $i = 1; $i <= (count( $rs->fields ) / 2); $i++ ) {
-					$ret .= ' <a class="breadcrumb" href="'.FisheyeGallery::getDisplayUrl( $rs->fields['gallery_id'.$i], $path ).'" gallery_id = "'.$rs->fields['gallery_id'.$i].'" >'.$rs->fields['title'.$i].'</a> &raquo; ';
+					$urlHash = $rs->fields['gallery_id'.$i];
+					$urlHash['gallery_path'] = $path;
+					$ret .= ' <a class="breadcrumb" href="'.FisheyeGallery::getDisplayUrlFromHash( $urlHash ).'" gallery_id = "'.$rs->fields['gallery_id'.$i].'" >'.$rs->fields['title'.$i].'</a> &raquo; ';
 					$path .= '/'.$rs->fields['gallery_id'.$i];
 				}
 			}

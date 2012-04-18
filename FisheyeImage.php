@@ -609,41 +609,32 @@ class FisheyeImage extends FisheyeBase {
     * @param pMixed if a string, it is assumed to be the size, if an array, it is assumed to be a mInfo hash
     * @return the url to display the gallery.
     */
-	function getDisplayUrl( $pImageId=NULL, $pMixed=NULL ) {
+	function getDisplayUrlFromHash( &$pHash ) {
 		$ret = '';
-		if( !@BitBase::verifyId( $pImageId ) ) {
-			$pImageId = $this->mImageId;
-		}
 
-		// if pMixed is an array, we assume it has all the pertinent information
-		if( is_array( $pMixed )) {
-			$info = $pMixed;
-		} else {
-			$info = &$this->mInfo;
-		}
+		$size = ( is_string( $pHash['size'] ) && isset( $info['thumbnail_url'][$pHash['size']] ) ) ? $pHash['size'] : NULL ;
 
-		$size = ( is_string( $pMixed ) && isset( $info['thumbnail_url'][$pMixed] ) ) ? $pMixed : NULL ;
 		global $gBitSystem;
-		if( @BitBase::verifyId( $pImageId ) ) {
+		if( @BitBase::verifyId( $pHash['image_id'] ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = FISHEYE_PKG_URL.'image/'.$pImageId;
-				if( !empty( $this ) && !empty( $this->mGalleryPath ) ) {
-					$ret .= $this->mGalleryPath;
+				$ret = FISHEYE_PKG_URL.'image/'.$pHash['image_id'];
+				if( !empty( $pHash['gallery_path'] ) ) {
+					$ret .= $pHash['gallery_path'];
 				}
 				if( $size ) {
 					$ret .= '/'.$size;
 				}
 			} else {
-				$ret = FISHEYE_PKG_URL.'view_image.php?image_id='.$pImageId;
-				if( !empty( $this ) && !empty( $this->mGalleryPath ) ) {
-					$ret .= '&gallery_path='.$this->mGalleryPath;
+				$ret = FISHEYE_PKG_URL.'view_image.php?image_id='.$pHash['image_id'];
+				if( !empty( $this ) && !empty( $pHash['gallery_path'] ) ) {
+					$ret .= '&gallery_path='.$pHash['gallery_path'];
 				}
 				if( $size ) {
 					$ret .= '&size='.$size;
 				}
 			}
-		} elseif( @BitBase::verifyId( $info['content_id'] ) ) {
-			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$info['content_id'];
+		} elseif( @BitBase::verifyId( $pHash['content_id'] ) ) {
+			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pHash['content_id'];
 		}
 		return $ret;
 	}
@@ -670,7 +661,7 @@ class FisheyeImage extends FisheyeBase {
 
 		$ret = $pTitle;
 		if( $gBitSystem->isPackageActive( 'fisheye' ) ) {
-			$ret = '<a title="'.$pTitle.'" href="'.FisheyeImage::getDisplayUrl( NULL, $pMixed ).'">'.$pTitle.'</a>';
+			$ret = '<a title="'.$pTitle.'" href="'.FisheyeImage::getDisplayUrlFromHash( $pMixed ).'">'.$pTitle.'</a>';
 		}
 		return $ret;
 	}
@@ -834,7 +825,7 @@ class FisheyeImage extends FisheyeBase {
 				$ret[$row['hash_key']] = $row;
 				$imageId = $row['image_id'];
 				if( empty( $pListHash['no_thumbnails'] ) ) {
-					$ret[$imageId]['display_url']      = $this->getDisplayUrl( $imageId );
+					$ret[$imageId]['display_url']      = $this->getDisplayUrlFromHash( $ret );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
 					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( array(
 						'source_file'   => $this->getSourceFile( $row ),

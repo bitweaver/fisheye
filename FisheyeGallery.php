@@ -629,21 +629,18 @@ class FisheyeGallery extends FisheyeBase {
     * @param pGalleryId id of gallery to link
     * @return the url to display the gallery.
     */
-	function getDisplayUrl( $pGalleryId=NULL, $pHash=NULL ) {
+	function getDisplayUrlFromHash( $pHash ) {
 		$path = NULL;
-		if( !BitBase::verifyId( $pGalleryId ) && is_object( $this ) ) {
-			$pGalleryId = $this->mGalleryId;
-			$path = $this->mGalleryPath;
-		}
-		if( BitBase::verifyId( $pGalleryId ) ) {
+
+		if( BitBase::verifyId( $pHash['gallery_id'] ) ) {
 			$ret = FISHEYE_PKG_URL;
 			global $gBitSystem;
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret .= 'gallery'.$path.'/'.$pGalleryId;
+				$ret .= 'gallery'.$path.'/'.$pHash['gallery_id'];
 			} else {
-				$ret .= 'view.php?gallery_id='.$pGalleryId;
-				if( !empty( $path ) ) {
-					$ret .= '&gallery_path='.$path;
+				$ret .= 'view.php?gallery_id='.$pHash['gallery_id'];
+				if( !empty( $pHash['path'] ) ) {
+					$ret .= '&gallery_path='.$pHash['path'];
 				}
 			}
 		} elseif( @BitBase::verifyId( $pHash['content_id'] ) ) {
@@ -985,8 +982,8 @@ class FisheyeGallery extends FisheyeBase {
 			if( empty( $pListHash['no_thumbnails'] ) ) {
 				$thumbsize = !empty( $pListHash['thumbnail_size'] ) ? $pListHash['thumbnail_size'] : 'small';
 				foreach( array_keys( $data ) as $galleryId ) {
-					$data[$galleryId]['display_url'] = $this->getDisplayUrl( $galleryId );
-					$data[$galleryId]['display_uri'] = $this->getDisplayUri( $galleryId );
+					$data[$galleryId]['display_url'] = $this->getDisplayUrlFromHash( $data[$galleryId] );
+					$data[$galleryId]['display_uri'] = $this->getDisplayUriFromHash( $data[$galleryId] );
 					if( $thumbImage = $this->getThumbnailImage( $data[$galleryId]['content_id'], $data[$galleryId]['preview_content_id'], $data[$galleryId]['preview_content_type_guid'] ) ) {
 						$data[$galleryId]['thumbnail_url'] = $thumbImage->getThumbnailUrl( $thumbsize );
 						$data[$galleryId]['thumbnail_uri'] = $thumbImage->getThumbnailUri( $thumbsize );
