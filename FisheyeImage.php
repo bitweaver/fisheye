@@ -609,7 +609,7 @@ class FisheyeImage extends FisheyeBase {
     * @param pMixed if a string, it is assumed to be the size, if an array, it is assumed to be a mInfo hash
     * @return the url to display the gallery.
     */
-	function getDisplayUrlFromHash( &$pHash ) {
+	public static function getDisplayUrlFromHash( &$pHash ) {
 		$ret = '';
 		$size = ( is_string( $pHash['size'] ) && isset( $info['thumbnail_url'][$pHash['size']] ) ) ? $pHash['size'] : NULL ;
 

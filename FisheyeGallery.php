@@ -636,7 +636,7 @@ class FisheyeGallery extends FisheyeBase {
     * @param pGalleryId id of gallery to link
     * @return the url to display the gallery.
     */
-	function getDisplayUrlFromHash( $pHash ) {
+	public static function getDisplayUrlFromHash( $pHash ) {
 		$path = NULL;
 
 		if( BitBase::verifyId( $pHash['gallery_id'] ) ) {
