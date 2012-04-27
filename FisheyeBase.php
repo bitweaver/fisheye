@@ -14,8 +14,10 @@ require_once( LIBERTY_PKG_PATH.'LibertyMime.php' );		// FisheyeGallery base clas
 class FisheyeBase extends LibertyMime
 {
 	// Path of gallery images to get breadcrumbs
+	var $mGalleryPath;
 
 	function FisheyeBase() {
+		$this->mGalleryPath = '';
 		if( get_class( $this ) == 'fisheyegallery' ) {
 			LibertyContent::LibertyContent();
 		} else {
