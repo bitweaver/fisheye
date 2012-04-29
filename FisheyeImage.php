@@ -609,33 +609,55 @@ class FisheyeImage extends FisheyeBase {
     * @param pMixed if a string, it is assumed to be the size, if an array, it is assumed to be a mInfo hash
     * @return the url to display the gallery.
     */
-	public static function getDisplayUrlFromHash( &$pHash ) {
+	public static function getDisplayUrlFromHash( &$pParamHash ) {
 		$ret = '';
-		$size = ( is_string( $pHash['size'] ) && isset( $info['thumbnail_url'][$pHash['size']] ) ) ? $pHash['size'] : NULL ;
+		$size = ( is_string( $pParamHash['size'] ) && isset( $pParamHash['thumbnail_url'][$pParamHash['size']] ) ) ? $pParamHash['size'] : NULL ;
 
 		global $gBitSystem;
-		if( @BitBase::verifyId( $pHash['image_id'] ) ) {
+		if( @BitBase::verifyId( $pParamHash['image_id'] ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = FISHEYE_PKG_URL.'image/'.$pHash['image_id'];
-				if( !empty( $pHash['gallery_path'] ) ) {
-					$ret .= $pHash['gallery_path'];
+				$ret = FISHEYE_PKG_URL.'image/'.$pParamHash['image_id'];
+				if( !empty( $pParamHash['gallery_path'] ) ) {
+					$ret .= $pParamHash['gallery_path'];
 				}
 				if( $size ) {
 					$ret .= '/'.$size;
 				}
 			} else {
-				$ret = FISHEYE_PKG_URL.'view_image.php?image_id='.$pHash['image_id'];
-				if( !empty( $this ) && !empty( $pHash['gallery_path'] ) ) {
-					$ret .= '&gallery_path='.$pHash['gallery_path'];
+				$ret = FISHEYE_PKG_URL.'view_image.php?image_id='.$pParamHash['image_id'];
+				if( !empty( $this ) && !empty( $pParamHash['gallery_path'] ) ) {
+					$ret .= '&gallery_path='.$pParamHash['gallery_path'];
 				}
 				if( $size ) {
 					$ret .= '&size='.$size;
 				}
 			}
-		} elseif( @BitBase::verifyId( $pHash['content_id'] ) ) {
-			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pHash['content_id'];
+		} elseif( @BitBase::verifyId( $pParamHash['content_id'] ) ) {
+			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pParamHash['content_id'];
 		}
 		return $ret;
+	}
+
+    /**
+    * Function that returns link to display an image
+    * @return the url to display the gallery.
+    */
+	public function getDisplayUrl() {
+		$info = &$this->mInfo;
+		$info['image_id'] = $this->mImageId;
+		$info['gallery_path'] = $this->mGalleryPath;
+		return self::getDisplayUrlFromHash( $info );
+	}
+
+    /**
+    * Function that returns link to display an image
+    * Used to display thumbnails for navigation bar
+    * @param pImageId id of image to link
+    * @return the url to display the image.
+    */
+	public function getImageUrl( $pImageId ) {
+		$info = array( 'image_id' => $pImageId );
+		return self::getDisplayUrlFromHash( $info );
 	}
 
 	/**

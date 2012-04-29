@@ -19,7 +19,7 @@
 			<div class="navigation">
 				<span class="left">
 					{if $gGallery->mInfo.previous_image_id}
-						<a href="{$gContent->getDisplayUrl($gGallery->mInfo.previous_image_id)|escape}">
+						<a href="{$gContent->getImageUrl($gGallery->mInfo.previous_image_id)|escape}">
 							{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
 								{biticon ipackage="icons" iname="go-previous" iexplain=previous iforce="icon"}
 							{else}
@@ -35,7 +35,7 @@
 
 				<span class="right">
 					{if $gGallery->mInfo.next_image_id}
-						<a href="{$gContent->getDisplayUrl($gGallery->mInfo.next_image_id)|escape}">
+						<a href="{$gContent->getImageUrl($gGallery->mInfo.next_image_id)|escape}">
 							{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
 								{biticon ipackage="icons" iname="go-next" iexplain=next iforce="icon"}
 							{else}

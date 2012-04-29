@@ -637,22 +637,22 @@ class FisheyeGallery extends FisheyeBase {
     * @param pGalleryId id of gallery to link
     * @return the url to display the gallery.
     */
-	public static function getDisplayUrlFromHash( $pHash ) {
+	public static function getDisplayUrlFromHash( &$pParamHash ) {
 		$path = NULL;
 
-		if( BitBase::verifyId( $pHash['gallery_id'] ) ) {
+		if( BitBase::verifyId( $pParamHash['gallery_id'] ) ) {
 			$ret = FISHEYE_PKG_URL;
 			global $gBitSystem;
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret .= 'gallery'.$path.'/'.$pHash['gallery_id'];
+				$ret .= 'gallery'.$path.'/'.$pParamHash['gallery_id'];
 			} else {
-				$ret .= 'view.php?gallery_id='.$pHash['gallery_id'];
+				$ret .= 'view.php?gallery_id='.$pParamHash['gallery_id'];
 				if( !empty( $pHash['path'] ) ) {
-					$ret .= '&gallery_path='.$pHash['path'];
+					$ret .= '&gallery_path='.$pParamHash['path'];
 				}
 			}
-		} elseif( @BitBase::verifyId( $pHash['content_id'] ) ) {
-			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pHash['content_id'];
+		} elseif( @BitBase::verifyId( $pParamHash['content_id'] ) ) {
+			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pParamHash['content_id'];
 		}
 		return $ret;
 	}
@@ -746,9 +746,9 @@ class FisheyeGallery extends FisheyeBase {
 								ON G1.`gallery_content_id` = G.`item_content_id`
 								INNER JOIN `".BIT_DB_PREFIX."liberty_content` lcg1 ON(lcg1.`content_id`=`item_content_id`) and lcg1.`content_type_guid` = 'fisheyegallery'
 							)
-							SELECT T.BRANCH AS hash_key, T.BLEVEL, fg.*, lc.* $selectSql 
+							SELECT T.BRANCH AS hash_key, T.BLEVEL, fg.*, lc.* $selectSql
 							FROM GALLERY_TREE T
-							INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=T.`gallery_content_id`) 
+							INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=T.`gallery_content_id`)
 							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (lc.`content_id`=T.`item_content_id`)
 							LEFT OUTER JOIN  `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgimo ON (fgimo.`gallery_content_id`=T.gallery_parent_id) AND fgimo.`item_content_id`=T.gallery_content_id
 							$joinSql
