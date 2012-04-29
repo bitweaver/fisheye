@@ -2,10 +2,10 @@
 {strip}
 {if $gContent}
 	{if $gGallery->mInfo.previous_image_id}
-		<link rel="prev" title="{tr}Previous{/tr}" href="{$gContent->getContentUrl($gGallery->mInfo.previous_image_id)|escape}" />
+		<link rel="prev" title="{tr}Previous{/tr}" href="{$gContent->getDisplayUrl($gGallery->mInfo.previous_image_id)|escape}" />
 	{/if}
 	{if $gGallery->mInfo.next_image_id}
-		<link rel="next" title="{tr}Next{/tr}" href="{$gContent->getContentUrl($gGallery->mInfo.next_image_id)|escape}" />
+		<link rel="next" title="{tr}Next{/tr}" href="{$gContent->getDisplayUrl($gGallery->mInfo.next_image_id)|escape}" />
 	{/if}
 {/if}
 {if $gBitSystem->isPackageActive( 'rss' ) and $gBitSystem->isFeatureActive( 'fisheye_rss' ) and $smarty.const.ACTIVE_PACKAGE eq 'fisheye' and $gBitUser->hasPermission( 'p_fisheye_view' )}

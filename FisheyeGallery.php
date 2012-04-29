@@ -70,7 +70,7 @@ class FisheyeGallery extends FisheyeBase {
 			$lookupContentId = $pLookupHash['content_id'];
 			$lookupContentGuid = NULL;
 		}
-	
+
 		if( BitBase::verifyId( $lookupContentId ) ) {
 			$ret = LibertyBase::getLibertyObject( $lookupContentId, $lookupContentGuid );
 		}
@@ -99,7 +99,7 @@ class FisheyeGallery extends FisheyeBase {
 			$query = "SELECT fg.*, lc.* $selectSql
 						, uue.`login` AS modifier_user, uue.`real_name` AS `modifier_real_name`
 						, uuc.`login` AS creator_user, uuc.`real_name` AS `creator_real_name`
-					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg 
+					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (fg.`content_id` = lc.`content_id`) $joinSql
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON (uue.`user_id` = lc.`modifier_user_id`)
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = lc.`user_id`)
@@ -228,9 +228,9 @@ class FisheyeGallery extends FisheyeBase {
 		$this->mItems = array();
 
 		$query = "SELECT fgim.*, lc.`user_id`, lct.*, ufm.`favorite_content_id` AS is_favorite $selectSql
-				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim 
-					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` ) 
-					INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` ) 
+				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` )
+					INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` )
 					$joinSql
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
 				WHERE fgim.`gallery_content_id` = ? $whereSql
@@ -255,6 +255,7 @@ class FisheyeGallery extends FisheyeBase {
 				}
 			}
 		}
+
 		return count( $this->mItems );
 	}
 
@@ -276,9 +277,9 @@ class FisheyeGallery extends FisheyeBase {
 			$this->mItems = array();
 
 			$query = "SELECT lc.`content_id` AS `has_key`, fgim.*, lc.*, lct.*, fi.`image_id`, ufm.`favorite_content_id` AS is_favorite $selectSql
-					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim 
-						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` ) 
-						INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` ) 
+					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` )
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."` fisheye_image fi ON ( fgim.`item_content_id`=fi.`content_id` )
 						$joinSql
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
@@ -293,7 +294,7 @@ class FisheyeGallery extends FisheyeBase {
 		$ret = NULL;
 		$ret['metadata'] = array(	'type' => $this->getContentType(),
 						'landscape' => FALSE,
-						'url' => $this->getContentUrl(),
+						'url' => $this->getDisplayUrl(),
 						'content_id' => $this->mContentId,
 					);
 		if( $this->loadImages() ) {
@@ -327,7 +328,7 @@ class FisheyeGallery extends FisheyeBase {
 			$ret =  $this->mInfo['preview_content']->mInfo;
 		}
 		// override  $this->mInfo['preview_content']->mInfo['display_url'] so we don't drive directly to the image
-		$ret['display_url'] = $this->getContentUrl();
+		$ret['display_url'] = $this->getDisplayUrl();
 		return $ret;
 	}
 
@@ -428,9 +429,9 @@ class FisheyeGallery extends FisheyeBase {
 			} else {
 				if( $this->mDb->isAdvancedPostgresEnabled() ) {
 					$whereSql = '';
-					$bindVars = array( $pContentId ); 
+					$bindVars = array( $pContentId );
 					if( !$gBitUser->isAdmin() ) {
-						$whereSql = "  AND (cgm.`security_id` IS NULL OR lc.`user_id`=?) ";	
+						$whereSql = "  AND (cgm.`security_id` IS NULL OR lc.`user_id`=?) ";
 						$bindVars[] = $gBitUser->mUserId;
 					}
 					$query =   "SELECT COALESCE( fg.`preview_content_id`, lc.`content_id` ) AS `content_id`, lc.`content_type_guid`
@@ -461,7 +462,7 @@ class FisheyeGallery extends FisheyeBase {
 				if( $ret = $ret->getThumbnailImage() ) {
 					$this->mInfo['thumbnail_content_id'] = $ret->getField( 'content_id' );
 				}
-			} else {	
+			} else {
 				$this->mInfo['thumbnail_content_id'] = $pThumbnailContentId;
 			}
 		}
@@ -501,7 +502,7 @@ class FisheyeGallery extends FisheyeBase {
 				$this->mInfo['content_id'] = $this->mContentId;
 				if ($this->galleryExistsInDatabase()) {
 					$query = "UPDATE `".BIT_DB_PREFIX."fisheye_gallery`
-							SET `rows_per_page` = ?, `cols_per_page` = ?, `thumbnail_size` = ? 
+							SET `rows_per_page` = ?, `cols_per_page` = ?, `thumbnail_size` = ?
 							WHERE `gallery_id` = ?";
 					$bindVars = array($pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size'], $this->mGalleryId);
 				} else {
@@ -656,13 +657,6 @@ class FisheyeGallery extends FisheyeBase {
 		return $ret;
 	}
 
-	public function getContentUrl( $pGalleryId=NULL ) {
-		if( !$pGalleryId && $this->isValid() ) {
-			$pGalleryId = $this->mGalleryId;
-			$pHash['gallery'] = $this->mGalleryPath;
-		}
-		return self::getDisplayUrl( $pGalleryId, $pPath );
-	}
 	function getTree( $pListHash ) {
 		global $gBitDb;
 
@@ -688,10 +682,10 @@ class FisheyeGallery extends FisheyeBase {
 			}
 
 			$query =   "SELECT lc.`content_id` AS `hash_key`, fg.*, lc.* $selectSql
-						FROM `".BIT_DB_PREFIX."fisheye_gallery` fg 
-							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(fg.`content_id`=lc.`content_id`) 
+						FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
+							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(fg.`content_id`=lc.`content_id`)
 							$joinSql
-						WHERE $whereSql NOT EXISTS (SELECT gallery_content_id FROM fisheye_gallery_image_map tfgim2 WHERE tfgim2.item_content_id=lc.content_id) 
+						WHERE $whereSql NOT EXISTS (SELECT gallery_content_id FROM fisheye_gallery_image_map tfgim2 WHERE tfgim2.item_content_id=lc.content_id)
 						ORDER BY lc.title";
 			$rootContent = $gBitDb->GetAssoc( $query, $bindVars );
 
@@ -711,7 +705,7 @@ class FisheyeGallery extends FisheyeBase {
 				FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query, $splitVars ) );
 				FisheyeGallery::getTreeSort( $ret );
 			}
-		} else if( $this->mDb->mType == 'firebird' ) {
+				} else if ( $this->mDb->mType == 'firebird' ) {
 			$bindVars = array();
 			$containVars = array();
 			$selectSql = '';
@@ -737,8 +731,8 @@ class FisheyeGallery extends FisheyeBase {
 			}
 
 			$splitVars = array();
-				$query = "WITH RECURSIVE
-							GALLERY_TREE AS (
+					$query = "WITH RECURSIVE
+								GALLERY_TREE AS (
 								SELECT B.`content_id` AS gallery_content_id, B.`content_id` AS item_content_id, 0 AS BLEVEL, CAST( lcp.`title` AS VARCHAR(255) ) AS BRANCH, 0 AS gallery_parent_id
 								FROM `".BIT_DB_PREFIX."fisheye_gallery` B
 								INNER JOIN `".BIT_DB_PREFIX."liberty_content` lcp ON(lcp.`content_id`=B.`content_id`)
@@ -763,7 +757,7 @@ class FisheyeGallery extends FisheyeBase {
 
 //			$splitVars[] = $conId;
 			if( !empty( $bindVars ) ) {
-				FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query, $bindVars ) );			
+				FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query, $bindVars ) );
 			} else {
 				FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query ) );
 			}
@@ -811,7 +805,7 @@ class FisheyeGallery extends FisheyeBase {
 			}
 			FisheyeGallery::recurseConnectByPath( $pRet[$popId]['children'], $pTreeHash, $pPath );
 		} else {
-			
+
 			$pRet[$popId]['content'] = $pTreeHash;
 		}
 	}
@@ -819,7 +813,7 @@ class FisheyeGallery extends FisheyeBase {
 	// Generate a nested ul list of listed galleries
 	function generateList( $pListHash, $pOptions, $pLocate = FALSE ) {
 		$ret = '';
-		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {	
+		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {
 			$ret = "<ul ";
 			foreach( array( 'class', 'name', 'id', 'onchange' ) as $key ) {
 				if( !empty( $pOptions[$key] ) ) {
@@ -852,8 +846,8 @@ class FisheyeGallery extends FisheyeBase {
 				}
 				$ret .= '/>';
 			}
-			} 
-			if ( $pHash[$conId]['content']['content_id'] == $this->mContentId 
+			}
+			if ( $pHash[$conId]['content']['content_id'] == $this->mContentId
 				or ( isset( $pHash[$conId]['content']['in_gallery'] ) and $pHash[$conId]['content']['in_gallery'] ) ) {
 				$ret .= '<b>'.htmlspecialchars( $pHash[$conId]['content']['title'] ).'</b>';
 			} else {
@@ -878,7 +872,7 @@ class FisheyeGallery extends FisheyeBase {
 		}
 		$ret .= ">";
 		$ret .= !empty( $pOptions['first_option'] ) ? $pOptions['first_option'] : '';
-		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {	
+		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {
 			$ret .= FisheyeGallery::generateMenuOptions( $hash, $pOptions, $pLocate );
 		}
 		$ret .= "</select>";
@@ -897,7 +891,7 @@ class FisheyeGallery extends FisheyeBase {
 			}
 			if ( $pLocate && $pLocate == $pHash[$conId]['content']['gallery_id'] ) {
 				$ret .=	' selected="selected" ';
-			} 
+			}
 			$ret .= ' >'.($pPrefix?$pPrefix.'&raquo; ':'').htmlspecialchars( $pHash[$conId]['content']['title'] ).'</option>';
 
 			if( !empty( $pHash[$conId]['children'] ) ) {
@@ -906,7 +900,6 @@ class FisheyeGallery extends FisheyeBase {
 		}
 		return $ret;
 	}
-
 
 	function getList( &$pListHash ) {
 		global $gBitUser,$gBitSystem, $gBitDbType;
@@ -1027,7 +1020,7 @@ class FisheyeGallery extends FisheyeBase {
 	function download(){
 		if($this->isValid()){
 			$zip = new ZipArchive();
-			
+
 			$filename = tempnam(TEMP_PKG_PATH,"galleryzip");
 			$path = '/';
 
@@ -1039,7 +1032,7 @@ class FisheyeGallery extends FisheyeBase {
 				$zip->close();
 
 				//escape backslashes
-				$outputFileTitle = str_replace("\\",'\\\\',$this->getTitle());	
+				$outputFileTitle = str_replace("\\",'\\\\',$this->getTitle());
 				//escape double quotes
 				$outputFileTitle = str_replace('"','\\"',$outputFileTitle);
 

@@ -19,29 +19,29 @@ include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
 $gContent->verifyUpdatePermission();
 
 //Utility function, maybe should be moved for use elsewhere. Seems like it has a multitude of possible hook points
-function convertSmartQuotes($string) 
-{ 
+function convertSmartQuotes($string)
+{
 //UTF-8
 $search = array("\xe2\x80\x98", "\xe2\x80\x99", "\xe2\x80\x9c", "\xe2\x80\x9d", "\xe2\x80\x93", "\xe2\x80\x94", "\xe2\x80\xa6");
 $replace= array("'", "'", '"', '"', '-', '--', '...');
 
-$string = str_replace($search, $replace, $string); 
+$string = str_replace($search, $replace, $string);
 
 //Windows
 $search = array(chr(145), chr(146), chr(147), chr(148), chr(150), chr(151), chr(133));
 $replace=  array("'", "'", '"', '"', '-', '--', '...');
-	
-$string = str_replace($search, $replace, $string); 
 
-return $string; 
-} 	
+$string = str_replace($search, $replace, $string);
+
+return $string;
+}
 if( !empty($_REQUEST['edit'])){
 	global $gBitContent;
 	$_REQUEST['edit'] = convertSmartQuotes($_REQUEST['edit']);
 }
 
 if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] ) ) {
-	
+
 	if (empty($_REQUEST['gallery_id']) && empty($_REQUEST['image_id'])) {
 		// We have no way to know what gallery to add an image to or what image to edit!
 		$gBitSmarty->assign( 'msg', tra( "No gallery or image was specified" ) );
@@ -68,7 +68,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		if( !empty( $replaceOriginal ) && $replaceOriginal != $gContent->getSourceFile() && file_exists( $replaceOriginal ) ) {
 			unlink( $replaceOriginal );
 		}
-	
+
 		// maybe we need to resize the original and generate thumbnails
 		if( !empty( $_REQUEST['resize'] ) ) {
 			$gContent->resizeOriginal( $_REQUEST['resize'] );
@@ -88,7 +88,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		}
 		if( empty( $gContent->mErrors ) ) {
 			// add a refresh parameter to the URL so the thumbnails will properly refresh first go reload
-			header( 'Location: '.$gContent->getContentUrl().($gBitSystem->isFeatureActive( 'pretty_urls' ) ? '?' : '&' ).'refresh=1' );
+			header( 'Location: '.$gContent->getDisplayUrl().($gBitSystem->isFeatureActive( 'pretty_urls' ) ? '?' : '&' ).'refresh=1' );
 			die;
 		}
 	}
@@ -104,19 +104,18 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 	} elseif( empty( $_REQUEST['confirm'] ) ) {
 		$formHash['delete'] = TRUE;
 		$formHash['image_id'] = $gContent->mImageId;
-		$gBitSystem->confirmDialog( $formHash, 
-			array( 
+		$gBitSystem->confirmDialog( $formHash,
+			array(
 				'warning' => tra('Are you sure you want to delete this image?') . ' (' . $gContent->getTitle() . ') ' . tra('It will be removed from all galleries to which it belongs.'),
 				'error' => tra('This cannot be undone!'),
 			)
 		);
 	} else {
 		if( $gContent->expunge() ) {
-			$url = ( is_object( $gGallery ) ? $gGallery->getContentUrl() : FISHEYE_PKG_URL );
+			$url = ( is_object( $gGallery ) ? $gGallery->getDisplayUrl() : FISHEYE_PKG_URL );
 			header( "Location: $url" );
 		}
 	}
-
 }
 
 $errors = $gContent->mErrors;

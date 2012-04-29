@@ -25,7 +25,7 @@
 
 			<td style="width:{$tdWidth}%; vertical-align:top;"> <!-- Begin Image Cell -->
 				{box class="box `$galItem->mInfo.content_type_guid`"}
-					<a href="{$galItem->getContentUrl()|escape}">
+					<a href="{$galItem->getDisplayUrl()|escape}">
 						<img class="thumb" src="{$galItem->getThumbnailUri()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
 					</a>
 					{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}

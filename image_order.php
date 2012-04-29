@@ -26,7 +26,7 @@ if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 $gContent->verifyUpdatePermission();
 
 if (!empty($_REQUEST['cancel'])) {
-	header( 'Location: '.$gContent->getContentUrl() );
+	header( 'Location: '.$gContent->getDisplayUrl() );
 	die;
 } elseif (!empty($_REQUEST['updateImageOrder'])) {
 	if( !empty( $_REQUEST['batch'] ) ) {

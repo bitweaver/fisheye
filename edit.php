@@ -63,7 +63,7 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();
 		}
-		header("location: ".$gContent->getContentUrl() );
+		header("location: ".$gContent->getDisplayUrl() );
 		die();
 	}
 } elseif( !empty( $_REQUEST['delete'] ) ) {
@@ -78,8 +78,8 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 			'<label><input name="recurse" value="" type="radio" checked="checked" /> '.tra( 'Delete only images in this gallery. Sub-galleries will not be removed.' ).'</label>',
 			'<label><input name="recurse" value="all" type="radio" /> '.tra( 'Permanently delete all contents, even if they appear in other galleries.' ).'</label>',
 		);
-		$gBitSystem->confirmDialog( $formHash, 
-			array( 
+		$gBitSystem->confirmDialog( $formHash,
+			array(
 				'warning' => tra('Are you sure you want to delete this gallery?') . ' ' . $gContent->getTitle(),
 				'error' => tra('This cannot be undone!'),
 			)
@@ -95,7 +95,7 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 	}
 
 } elseif( !empty($_REQUEST['cancelgallery'] ) ) {
-	header( 'Location: '.$gContent->getContentUrl() );
+	header( 'Location: '.$gContent->getDisplayUrl() );
 	die();
 }
 

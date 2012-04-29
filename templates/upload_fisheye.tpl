@@ -87,49 +87,49 @@
 				</div>
 			</div>
 			<div class="width50p floatleft">
-					{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
-						<div class="row">
-							{formlabel label="Process Archive(s)" for="process_archive"}
-							{forminput}
-								<input type="checkbox" id="process_archive" name="process_archive" value="true" checked="checked" />
-								{formhelp note="If you don't want to have archived files processed and extracted, please uncheck the above box."}
-							{/forminput}
-						</div>
-					{else}
-						<input type="hidden" name="process_archive" value="true" />
-					{/if}
-
-					{if function_exists('exif_read_data')}
-						<div class="row">
-							{formlabel label="Auto-Rotate Images" for="rotate_image"}
-							{forminput}
-								<input type="checkbox" id="rotate_image" name="rotate_image" value="auto" checked="checked" />
-								{formhelp note="If your camera was turned sideways when the image was taken, this will attempt to orient the image correctly."}
-							{/forminput}
-						</div>
-					{/if}
-
+				{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
 					<div class="row">
-						{formlabel label="Use Filenames" for="use_filenames"}
+						{formlabel label="Process Archive(s)" for="process_archive"}
 						{forminput}
-							<input type="checkbox" id="use_filenames" name="use_filenames" value="true"/>
-							{formhelp note="If you would like to name your images based upon their filenames rather than their EXIF data."}
+							<input type="checkbox" id="process_archive" name="process_archive" value="true" checked="checked" />
+							{formhelp note="If you don't want to have archived files processed and extracted, please uncheck the above box."}
 						{/forminput}
 					</div>
+				{else}
+					<input type="hidden" name="process_archive" value="true" />
+				{/if}
 
+				{if function_exists('exif_read_data')}
 					<div class="row">
-						{include file="bitpackage:fisheye/resize_image_select.tpl"}
+						{formlabel label="Auto-Rotate Images" for="rotate_image"}
+						{forminput}
+							<input type="checkbox" id="rotate_image" name="rotate_image" value="auto" checked="checked" />
+							{formhelp note="If your camera was turned sideways when the image was taken, this will attempt to orient the image correctly."}
+						{/forminput}
 					</div>
+				{/if}
+
+				<div class="row">
+					{formlabel label="Use Filenames" for="use_filenames"}
+					{forminput}
+						<input type="checkbox" id="use_filenames" name="use_filenames" value="true"/>
+						{formhelp note="If you would like to name your images based upon their filenames rather than their EXIF data."}
+					{/forminput}
 				</div>
 
-				{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}
-
-				{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_mini_tpl"}
-
-				<div class="row submit">
-					<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
-					<input type="submit" id="submitbutton" value="{tr}Upload File(s){/tr}" {if $submitClick}onclick="{$submitClick}"{/if}/>
+				<div class="row">
+					{include file="bitpackage:fisheye/resize_image_select.tpl"}
 				</div>
+			</div>
+
+			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}
+
+			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_mini_tpl"}
+
+			<div class="row submit">
+				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
+				<input type="submit" id="submitbutton" value="{tr}Upload File(s){/tr}" {if $submitClick}onclick="{$submitClick}"{/if}/>
+			</div>
 			</div>
 		{/form}
 	</div> <!-- end .body -->

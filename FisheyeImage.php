@@ -52,7 +52,7 @@ class FisheyeImage extends FisheyeBase {
 			$lookupContentId = $pLookupHash['content_id'];
 			$lookupContentGuid = NULL;
 		}
-	
+
 		if( BitBase::verifyId( $lookupContentId ) ) {
 			$ret = LibertyBase::getLibertyObject( $lookupContentId, $lookupContentGuid );
 		}
@@ -123,7 +123,7 @@ class FisheyeImage extends FisheyeBase {
 					reset( $this->mStorage );
 					$this->mInfo['image_file'] = current( $this->mStorage );
 					// override original display_url that mime knows where we keep the image
-					$this->mInfo['image_file']['display_url'] = $this->getContentUrl();
+					$this->mInfo['image_file']['display_url'] = $this->getDisplayUrl();
 				} else {
 					$this->mInfo['image_file'] = NULL;
 				}
@@ -163,7 +163,7 @@ class FisheyeImage extends FisheyeBase {
 
 			$ret = array(	'type' => $this->getContentType(),
 							'landscape' => $this->isLandscape(),
-							'url' => $this->getContentUrl(),
+							'url' => $this->getDisplayUrl(),
 							'content_id' => $this->mContentId,
 							'title' => $this->getTitle(),
 							'has_description' => !empty( $this->mInfo['data'] ),
@@ -387,7 +387,7 @@ class FisheyeImage extends FisheyeBase {
 							}
 							break;
 						 // *) transform="";;
-					}	
+					}
 				}
 			}
 			if( is_numeric( $pDegrees ) ) {
@@ -410,7 +410,7 @@ class FisheyeImage extends FisheyeBase {
 
 	/**
 	 * convertColorspace
-	 * 
+	 *
 	 * @param string $pColorSpace - target color space, only 'grayscale' is currently supported, and only when using the MagickWand image processor
 	 * @access public
 	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
@@ -530,7 +530,7 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	function getStorageBranch( $pParamHash = array() ) {
-		$pParamHash['sub_dir'] =  $this->getParameter( $pParamHash, 'sub_dir', liberty_mime_get_storage_sub_dir_name( array( 'type'=>$this->getField( 'mime_type' ), 'name'=>$this->getField('file_name') ) ) );
+		$pParamHash['sub_dir'] = $this->getParameter( $pParamHash, 'sub_dir', liberty_mime_get_storage_sub_dir_name( array( 'type'=>$this->getField( 'mime_type' ), 'name'=>$this->getField('file_name') ) ) );
 		$pParamHash['user_id'] = $this->getParameter( $pParamHash, 'user_id', $this->getField('user_id') );
 		return parent::getStorageBranch( $pParamHash ).$this->getParameter( $pParamHash, 'attachment_id', $this->getField('attachment_id') ).'/';
 	}
@@ -638,18 +638,6 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	function getContentUrl( $pImageId=NULL ) {
-		$ret = '';
-		if( !@BitBase::verifyId( $pImageId ) ) {
-			$pImageId = $this->mImageId;
-			$info = &$this->mInfo;
-		} else {
-			$info = NULL;
-		}
-
-
-		return self::getDisplayUrl( $pImageId, $info );
-	}
 	/**
 	 * Generate a valid display link for the Blog
 	 *
@@ -695,7 +683,7 @@ class FisheyeImage extends FisheyeBase {
 		}
 		return $ret;
 	}
-		
+
 
 	function getThumbnailContentId() {
 		return( $this->mContentId );
@@ -749,9 +737,9 @@ class FisheyeImage extends FisheyeBase {
 			$query = "SELECT COUNT(`image_id`)
 					FROM `".BIT_DB_PREFIX."fisheye_image`
 					WHERE `image_id` = ?";
-					
+
 			$bindVars = array($this->mImageId);
-			
+
 			if($this->mDb->getOne($query, $bindVars) > 0){
 				$ret = TRUE;
 			}
@@ -850,8 +838,8 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	/**
-	 * isCommentable 
-	 * 
+	 * isCommentable
+	 *
 	 * @access public
 	 * @return TRUE on success, FALSE on failure
 	 */
