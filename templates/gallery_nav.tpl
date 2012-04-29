@@ -1,5 +1,9 @@
 {strip}
-	<div class="gallerybar">
+	{if $gGallery->mInfo.previous_image_id or $gGallery->mInfo.next_image_id}
+		<div class="gallerynav">
+	{else}
+		<div class="gallerybar">
+	{/if}
 		<div class="path">
 			{assign var=breadCrumbs value=$gContent->getBreadcrumbLinks()}
 			{if $gGallery}
