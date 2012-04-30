@@ -148,7 +148,7 @@ not ready for primetime
 			if( !empty( $rs->fields ) ) {
 				$path = '';
 				for( $i = 1; $i <= (count( $rs->fields ) / 2); $i++ ) {
-					$urlHash = $rs->fields['gallery_id'.$i];
+					$urlHash['gallery_id'] = $rs->fields['gallery_id'.$i];
 					$urlHash['gallery_path'] = $path;
 					$ret .= ' <a class="breadcrumb" href="'.FisheyeGallery::getDisplayUrlFromHash( $urlHash ).'" gallery_id = "'.$rs->fields['gallery_id'.$i].'" >'.$rs->fields['title'.$i].'</a> &raquo; ';
 					$path .= '/'.$rs->fields['gallery_id'.$i];
