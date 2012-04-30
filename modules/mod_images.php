@@ -69,7 +69,7 @@ if( $display ) {
 		$moduleTitle = tra( $moduleTitle );
 
 		if( !empty( $listHash['user_id'] ) ) {
-			$moduleTitle .= ' '.tra('by').' '.BitUser::getDisplayName( TRUE, current( $images ) );
+			$moduleTitle .= ' '.tra('by').' '.BitUser::getDisplayNameFromHash( TRUE, current( $images ) );
 		} elseif( !empty( $listHash['recent_users'] ) ) {
 			$moduleTitle .= ' '.tra( 'by' ).' <a href="'.USERS_PKG_URL.'">'.tra( 'New Users' ).'</a>';
 		}
