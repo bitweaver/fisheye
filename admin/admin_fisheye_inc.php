@@ -125,6 +125,9 @@ $formImageLists = array(
 );
 $gBitSmarty->assign( 'formImageLists', $formImageLists);
 
+require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php' );
+$gBitSmarty->assign( 'galleryPaginationTypes', FisheyeGallery::getAllLayouts() );
+
 $sortOptions = array(
 	''                      => tra( 'None' ),
 	'lc.title_desc'         => tra( 'Image Title' ).  ' - '.tra( 'descending' ),
@@ -157,11 +160,10 @@ if (!empty($_REQUEST['fisheyeAdminSubmit'])) {
 	foreach ($formGalleryLists as $item => $data) {
 		simple_set_toggle($item, FISHEYE_PKG_NAME);
 	}
-	$gBitSystem->storeConfig('fisheye_list_thumbnail_size', $_REQUEST['list_thumbnail_size'], FISHEYE_PKG_NAME);
-	$gBitSystem->storeConfig('fisheye_gallery_default_thumbnail_size', $_REQUEST['default_gallery_thumbnail_size'], FISHEYE_PKG_NAME);
-	$gBitSystem->storeConfig('fisheye_gallery_default_rows_per_page', $_REQUEST['rows_per_page'], FISHEYE_PKG_NAME);
-	$gBitSystem->storeConfig('fisheye_gallery_default_cols_per_page', $_REQUEST['cols_per_page'], FISHEYE_PKG_NAME);
-	$gBitSystem->storeConfig('fisheye_gallery_default_sort_mode', $_REQUEST['fisheye_gallery_default_sort_mode'], FISHEYE_PKG_NAME);
+
+	foreach( array( 'fisheye_list_thumbnail_size', 'fisheye_gallery_default_thumbnail_size', 'default_gallery_pagination', 'rows_per_page', 'cols_per_page', 'total_per_page', 'lines_per_page', 'galleriffic_style', 'fisheye_gallery_default_sort_mode' ) as $key ) {
+		$gBitSystem->storeConfig($key, $_REQUEST[$key], FISHEYE_PKG_NAME);
+	}
 
 	// Image Display Settings
 	foreach ($formImageLists as $item => $data) {

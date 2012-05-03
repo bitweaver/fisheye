@@ -613,7 +613,18 @@ class FisheyeGallery extends FisheyeBase {
     */
 	function getLayout() {
 		global $gBitSystem;
-		return $this->getPreference( 'gallery_pagination', $gBitSystem->getConfig( 'default_gallery_pagination', 'fixed_grid' ) );
+		return $this->getPreference( 'gallery_pagination', $gBitSystem->getConfig( 'default_gallery_pagination', FISHEYE_PAGINATION_GALLERIFFIC ) );
+	}
+
+	public static function getAllLayouts() {
+		return array(
+			FISHEYE_PAGINATION_FIXED_GRID      => 'Fixed Grid',
+			FISHEYE_PAGINATION_AUTO_FLOW       => 'Auto-Flow Images',
+			FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number',
+			FISHEYE_PAGINATION_SIMPLE_LIST     => 'Simple List',
+			FISHEYE_PAGINATION_MATTEO		   => 'Matteo',
+			FISHEYE_PAGINATION_GALLERIFFIC     => 'Galleriffic'
+		);
 	}
 
     /**
@@ -987,8 +998,8 @@ class FisheyeGallery extends FisheyeBase {
 			if( empty( $pListHash['no_thumbnails'] ) ) {
 				$thumbsize = !empty( $pListHash['thumbnail_size'] ) ? $pListHash['thumbnail_size'] : 'small';
 				foreach( array_keys( $data ) as $galleryId ) {
-					$data[$galleryId]['display_url'] = self::getDisplayUrlFromHash( $data[$galleryId] );
-					$data[$galleryId]['display_uri'] = self::getDisplayUriFromHash( $data[$galleryId] );
+					$data[$galleryId]['display_url'] = static::getDisplayUrlFromHash( $data[$galleryId] );
+					$data[$galleryId]['display_uri'] = static::getDisplayUriFromHash( $data[$galleryId] );
 					if( $thumbImage = $this->getThumbnailImage( $data[$galleryId]['content_id'], $data[$galleryId]['preview_content_id'], $data[$galleryId]['preview_content_type_guid'] ) ) {
 						$data[$galleryId]['thumbnail_url'] = $thumbImage->getThumbnailUrl( $thumbsize );
 						$data[$galleryId]['thumbnail_uri'] = $thumbImage->getThumbnailUri( $thumbsize );

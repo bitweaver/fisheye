@@ -646,7 +646,7 @@ class FisheyeImage extends FisheyeBase {
 		$info = &$this->mInfo;
 		$info['image_id'] = $this->mImageId;
 		$info['gallery_path'] = $this->mGalleryPath;
-		return self::getDisplayUrlFromHash( $info );
+		return static::getDisplayUrlFromHash( $info );
 	}
 
     /**
@@ -657,7 +657,7 @@ class FisheyeImage extends FisheyeBase {
     */
 	public function getImageUrl( $pImageId ) {
 		$info = array( 'image_id' => $pImageId );
-		return self::getDisplayUrlFromHash( $info );
+		return static::getDisplayUrlFromHash( $info );
 	}
 
 	/**
@@ -845,7 +845,7 @@ class FisheyeImage extends FisheyeBase {
 				$ret[$row['hash_key']] = $row;
 				$imageId = $row['image_id'];
 				if( empty( $pListHash['no_thumbnails'] ) ) {
-					$ret[$imageId]['display_url']      = self::getDisplayUrlFromHash( $ret );
+					$ret[$imageId]['display_url']      = static::getDisplayUrlFromHash( $row );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
 					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( array(
 						'source_file'   => $this->getSourceFile( $row ),

@@ -27,17 +27,7 @@ if( $gBitUser->hasPermission( 'p_fisheye_change_thumb_size' ) ) {
 	$gBitSmarty->assign( 'thumbnailSizes', get_image_size_options( NULL ));
 }
 
-$gBitSmarty->assign( 'galleryPaginationTypes',
-	array(
-		FISHEYE_PAGINATION_FIXED_GRID      => 'Fixed Grid',
-		FISHEYE_PAGINATION_AUTO_FLOW       => 'Auto-Flow Images',
-		FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number',
-		FISHEYE_PAGINATION_SIMPLE_LIST     => 'Simple List',
-		FISHEYE_PAGINATION_MATTEO		   => 'Matteo',
-
-		FISHEYE_PAGINATION_GALLERIFFIC     => 'Galleriffic'
-	)
-);
+$gBitSmarty->assign( 'galleryPaginationTypes', $gContent::getAllLayouts() );
 
 if( !empty( $_REQUEST['savegallery'] ) ) {
 	if( $_REQUEST['gallery_pagination'] == 'auto_flow' ) {
