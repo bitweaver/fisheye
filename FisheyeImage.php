@@ -607,11 +607,7 @@ class FisheyeImage extends FisheyeBase {
     */
 	public static function getDisplayUrlFromHash( &$pParamHash ) {
 		$ret = '';
-<<<<<<< HEAD
-		$size = (!empty( $pHash['size'] ) && is_string( $pHash['size'] ) && isset( $info['thumbnail_url'][$pHash['size']] ) ) ? $pHash['size'] : NULL ;
-=======
-		$size = ( is_string( $pParamHash['size'] ) && isset( $pParamHash['thumbnail_url'][$pParamHash['size']] ) ) ? $pParamHash['size'] : NULL ;
->>>>>>> 362dbf212c3beec1927ce942e61eb68774ba4b06
+		$size = (!empty( $pParamHash['size'] ) && is_string( $pParamHash['size'] ) && isset( $pParamHash['thumbnail_url'][$pParamHash['size']] ) ) ? $pParamHash['size'] : NULL ;
 
 		global $gBitSystem;
 		if( @BitBase::verifyId( $pParamHash['image_id'] ) ) {
@@ -638,8 +634,6 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-<<<<<<< HEAD
-=======
     /**
     * Function that returns link to display an image
     * @return the url to display the gallery.
@@ -662,7 +656,6 @@ class FisheyeImage extends FisheyeBase {
 		return static::getDisplayUrlFromHash( $info );
 	}
 
->>>>>>> 362dbf212c3beec1927ce942e61eb68774ba4b06
 	/**
 	 * Generate a valid display link for the Blog
 	 *
