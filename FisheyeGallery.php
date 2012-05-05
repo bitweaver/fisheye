@@ -289,21 +289,17 @@ class FisheyeGallery extends FisheyeBase {
 		return $ret;
 	}
 
-	function exportHtml( $pPaginate = FALSE ) {
-		$ret = NULL;
-		$ret['metadata'] = array(	'type' => $this->getContentType(),
-						'landscape' => FALSE,
-						'url' => $this->getContentUrl(),
-						'content_id' => $this->mContentId,
-					);
-		if( $this->loadImages() ) {
-			foreach( array_keys( $this->mItems ) as $key ) {
-				if( $pPaginate ) {
-					if( $exp = $this->mItems[$key]->exportHtml( $pPaginate ) ) {
-						$ret['content']['page'][$this->getItemPage($key)][] = $exp;
+	function exportHash( $pPaginate = FALSE ) {
+		if( $ret = parent::exportHash() ) {
+			if( $this->loadImages() ) {
+				foreach( array_keys( $this->mItems ) as $key ) {
+					if( $pPaginate ) {
+						if( $exp = $this->mItems[$key]->exportHash( $pPaginate ) ) {
+							$ret['content']['page'][$this->getItemPage($key)][] = $exp;
+						}
+					} else {
+						$ret['content'][] = $this->mItems[$key]->exportHash( $pPaginate );
 					}
-				} else {
-					$ret['content'][] = $this->mItems[$key]->exportHtml( $pPaginate );
 				}
 			}
 		}
@@ -327,7 +323,7 @@ class FisheyeGallery extends FisheyeBase {
 			$ret =  $this->mInfo['preview_content']->mInfo;
 		}
 		// override  $this->mInfo['preview_content']->mInfo['display_url'] so we don't drive directly to the image
-		$ret['display_url'] = $this->getContentUrl();
+		$ret['display_url'] = $this->getDisplayUrl();
 		return $ret;
 	}
 
@@ -656,13 +652,6 @@ class FisheyeGallery extends FisheyeBase {
 		return $ret;
 	}
 
-	public function getContentUrl( $pGalleryId=NULL ) {
-		if( !$pGalleryId && $this->isValid() ) {
-			$pGalleryId = $this->mGalleryId;
-			$pHash['gallery'] = $this->mGalleryPath;
-		}
-		return self::getDisplayUrl( $pGalleryId, $pPath );
-	}
 	function getTree( $pListHash ) {
 		global $gBitDb;
 

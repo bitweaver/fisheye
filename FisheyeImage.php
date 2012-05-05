@@ -123,7 +123,7 @@ class FisheyeImage extends FisheyeBase {
 					reset( $this->mStorage );
 					$this->mInfo['image_file'] = current( $this->mStorage );
 					// override original display_url that mime knows where we keep the image
-					$this->mInfo['image_file']['display_url'] = $this->getContentUrl();
+					$this->mInfo['image_file']['display_url'] = $this->getDisplayUrl();
 				} else {
 					$this->mInfo['image_file'] = NULL;
 				}
@@ -156,19 +156,15 @@ class FisheyeImage extends FisheyeBase {
 		}
 	}
 
-	function exportHtml( $pData = NULL ) {
+	function exportHash() {
 		$ret = NULL;
 		// make sure we have a valid image file.
-		if( $this->isValid() && ($details = $this->getImageDetails() ) ) {
-
-			$ret = array(	'type' => $this->getContentType(),
-							'landscape' => $this->isLandscape(),
-							'url' => $this->getContentUrl(),
-							'content_id' => $this->mContentId,
-							'title' => $this->getTitle(),
-							'has_description' => !empty( $this->mInfo['data'] ),
-							'is_favorite' => $this->getField('is_favorite'),
-						);
+		if( ($ret = parent::exportHash()) && ($details = $this->getImageDetails() ) ) {
+			$ret = array_merge( $ret, array(	'type' => $this->getContentType(),
+												'landscape' => $this->isLandscape(),
+												'has_description' => !empty( $this->mInfo['data'] ),
+												'is_favorite' => $this->getField('is_favorite'),
+											) );
 		}
 		return $ret;
 	}
@@ -611,7 +607,7 @@ class FisheyeImage extends FisheyeBase {
     */
 	public static function getDisplayUrlFromHash( &$pHash ) {
 		$ret = '';
-		$size = ( is_string( $pHash['size'] ) && isset( $info['thumbnail_url'][$pHash['size']] ) ) ? $pHash['size'] : NULL ;
+		$size = (!empty( $pHash['size'] ) && is_string( $pHash['size'] ) && isset( $info['thumbnail_url'][$pHash['size']] ) ) ? $pHash['size'] : NULL ;
 
 		global $gBitSystem;
 		if( @BitBase::verifyId( $pHash['image_id'] ) ) {
@@ -638,18 +634,6 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	function getContentUrl( $pImageId=NULL ) {
-		$ret = '';
-		if( !@BitBase::verifyId( $pImageId ) ) {
-			$pImageId = $this->mImageId;
-			$info = &$this->mInfo;
-		} else {
-			$info = NULL;
-		}
-
-
-		return self::getDisplayUrl( $pImageId, $info );
-	}
 	/**
 	 * Generate a valid display link for the Blog
 	 *
