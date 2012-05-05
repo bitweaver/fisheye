@@ -1,3 +1,20 @@
+{literal}
+<script type="text/javascript">//<![CDATA[
+function updateGalleryPagination() {
+	BitBase.hideById('fixed_grid-pagination');
+	BitBase.hideById('auto_flow-pagination');
+	BitBase.hideById('position_number-pagination');
+	BitBase.hideById('simple_list-pagination');
+	BitBase.hideById('matteo-pagination');
+	BitBase.hideById('galleriffic-pagination');
+
+	var input = document.getElementById('gallery-pagination');
+    var i  = input.selectedIndex;
+    var select = input.options[i].value;
+	BitBase.showById(select+'-pagination');
+}
+//]]></script>
+{/literal}
 {strip}
 
 {form}
@@ -81,19 +98,32 @@
 				</div>
 
 				<div class="row">
-					{formlabel label="Default number of rows and columns"}
-					{forminput}
-						<label>
-							<input type="text" size="2" maxlength="2" name="rows_per_page" value="{$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/>&nbsp;
-							{tr}Rows Per Page{/tr}
-						</label>
-						<br />
-						<label>
-							<input type="text" size="2" maxlength="2" name="cols_per_page" value="{$gBitSystem->getConfig('fisheye_gallery_default_cols_per_page')}"/>&nbsp;
-							{tr}Columns Per Page{/tr}
-						</label>
-						{formhelp note="If you have chosen the &lt;div&gt; layout method, these number will merely be multiplied to generate the maximum number of images per page."}
-					{/forminput}
+					{html_options id="gallery-pagination" name="default_gallery_pagination" id="gallery-pagination" options=$galleryPaginationTypes selected=$gBitSystem->getConfig('default_gallery_pagination',$smarty.const.FISHEYE_PAGINATION_GALLERIFFIC) onchange="updateGalleryPagination();"}
+
+					<div id="fixed_grid-pagination">
+						<input type="text" id="gallery-rows-per-page" name="rows_per_page" size="2" maxlength="2" value="{$gContent->mInfo.rows_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/> {tr}Rows per page{/tr}<br/>
+						<input type="text" id="gallery-cols-per-page" name="cols_per_page" size="2" maxlength="2" value="{$gContent->mInfo.cols_per_page|default:$gBitSystem->getConfig('fisheye_gallery_default_cols_per_page')}"/> {tr}Columns per page{/tr}
+						{formhelp note="The images will be displayed in a fixed grid. You can specify the number of thumbnails to display per page.<br /><strong>[rows] * [columns] = [number of images]</strong>."}
+					</div>
+					<div id="auto_flow-pagination">
+						<input type="text" id="gallery-rows-per-page" name="total_per_page" size="2" maxlength="2" value="{$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/> {tr}Total images per page{/tr}
+						{formhelp note="The layout of the images on each gallery page will automatically adjust to the browsers width. You can specify the total number of thumbnails to display per page."}
+					</div>
+					<div id="position_number-pagination">
+						{formhelp note="This option allows you to designate each specific image on each page. The image order number entered on the Image Order page will determine the exact location of each image. Fractional numbers indicate PAGE.POSITION and will specifiy variable images per page, such as: 1.1, 1.2, 2.1, 3.1, 3.2, 3.3"}
+					</div>
+					<div id="simple_list-pagination">
+						<input type="text" id="gallery-rows-per-page" name="lines_per_page" size="2" maxlength="2" value="{$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/> {tr}Total lines per page{/tr}
+						{formhelp note="This option allows a single column display of images with mime details where available."}
+					</div>
+					<div id="matteo-pagination">
+						<input type="text" id="gallery-rows-per-page" name="images_per_page" size="2" maxlength="2" value="{$gBitSystem->getConfig('fisheye_gallery_default_rows_per_page')}"/> {tr}Total images per page{/tr}
+						{formhelp note="This option provides an ajax powered scrolling display using the mbGallery jquery library."}
+					</div>
+					<div id="galleriffic-pagination">
+						<input type="text" id="galleriffic-style" name="galleriffic_style" size="2" maxlength="2" value="{$gBitSystem->getConfig('fisheye_gallery_default_galleriffic_style')}"/> {tr}Galleriffic layout style{/tr}
+						{formhelp note="This option provides a javascript powered tabbed thumbnail list display using the galleriffic jquery library."}
+					</div>
 				</div>
 
 				<div class="row">
@@ -139,3 +169,6 @@
 {/form}
 
 {/strip}
+<script type="text/javascript">//<![CDATA[
+updateGalleryPagination();
+//]]></script>

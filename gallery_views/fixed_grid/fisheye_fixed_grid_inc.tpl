@@ -25,7 +25,7 @@
 
 			<td style="width:{$tdWidth}%; vertical-align:top;"> <!-- Begin Image Cell -->
 				{box class="box `$galItem->mInfo.content_type_guid`"}
-					<a href="{$galItem->getContentUrl()|escape}">
+					<a href="{$galItem->getDisplayUrl()|escape}">
 						<img class="thumb" src="{$galItem->getThumbnailUri()}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
 					</a>
 					{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
@@ -46,6 +46,7 @@
 		{foreachelse}
 			<tr><td class="norecords">{tr}This gallery is empty{/tr}. <a href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">Upload pictures!</a></td></tr>
 		{/foreach}
+
 		{if $imageCount % $cols_per_page != 0}</tr>{/if}
 		</table>
 	</div>	<!-- end .body -->
@@ -58,5 +59,4 @@
 		{include file="bitpackage:liberty/comments.tpl"}
 	{/if}
 </div>	<!-- end .fisheye -->
-{/strip}
-	
+{/strip}	

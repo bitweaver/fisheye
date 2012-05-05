@@ -23,14 +23,14 @@ $gBitSystem->verifyPermission( 'p_fisheye_upload' );
 if( !empty( $_REQUEST['save_image'] ) ) {
 	$upErrors = fisheye_handle_upload( $_FILES );
 	if( empty( $upErrors ) ) {
-		bit_redirect( $gContent->getContentUrl() );
+		bit_redirect( $gContent->getDisplayUrl() );
 	} else {
 		$gBitSmarty->assign( 'errors', $upErrors );
 	}
 }
 
 if ( !empty($_REQUEST['on_complete'])){
-	if($_REQUEST['on_complete'] == 'refreshparent'){	
+	if($_REQUEST['on_complete'] == 'refreshparent'){
 		$gBitSmarty->assign('onComplete','window.opener.location.reload(true);self.close();');
 	}
 

@@ -55,4 +55,3 @@ $gContent->addHit();
 
 $gBitSystem->setBrowserTitle( $gContent->getTitle().' '.tra('Gallery') );
 $gBitSystem->display( $gContent->getRenderTemplate() , NULL, array( 'display_mode' => 'display' ));
-

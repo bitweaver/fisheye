@@ -52,7 +52,7 @@ class FisheyeImage extends FisheyeBase {
 			$lookupContentId = $pLookupHash['content_id'];
 			$lookupContentGuid = NULL;
 		}
-	
+
 		if( BitBase::verifyId( $lookupContentId ) ) {
 			$ret = LibertyBase::getLibertyObject( $lookupContentId, $lookupContentGuid );
 		}
@@ -383,7 +383,7 @@ class FisheyeImage extends FisheyeBase {
 							}
 							break;
 						 // *) transform="";;
-					}	
+					}
 				}
 			}
 			if( is_numeric( $pDegrees ) ) {
@@ -406,7 +406,7 @@ class FisheyeImage extends FisheyeBase {
 
 	/**
 	 * convertColorspace
-	 * 
+	 *
 	 * @param string $pColorSpace - target color space, only 'grayscale' is currently supported, and only when using the MagickWand image processor
 	 * @access public
 	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
@@ -526,7 +526,7 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	function getStorageBranch( $pParamHash = array() ) {
-		$pParamHash['sub_dir'] =  $this->getParameter( $pParamHash, 'sub_dir', liberty_mime_get_storage_sub_dir_name( array( 'type'=>$this->getField( 'mime_type' ), 'name'=>$this->getField('file_name') ) ) );
+		$pParamHash['sub_dir'] = $this->getParameter( $pParamHash, 'sub_dir', liberty_mime_get_storage_sub_dir_name( array( 'type'=>$this->getField( 'mime_type' ), 'name'=>$this->getField('file_name') ) ) );
 		$pParamHash['user_id'] = $this->getParameter( $pParamHash, 'user_id', $this->getField('user_id') );
 		return parent::getStorageBranch( $pParamHash ).$this->getParameter( $pParamHash, 'attachment_id', $this->getField('attachment_id') ).'/';
 	}
@@ -605,35 +605,64 @@ class FisheyeImage extends FisheyeBase {
     * @param pMixed if a string, it is assumed to be the size, if an array, it is assumed to be a mInfo hash
     * @return the url to display the gallery.
     */
-	public static function getDisplayUrlFromHash( &$pHash ) {
+	public static function getDisplayUrlFromHash( &$pParamHash ) {
 		$ret = '';
+<<<<<<< HEAD
 		$size = (!empty( $pHash['size'] ) && is_string( $pHash['size'] ) && isset( $info['thumbnail_url'][$pHash['size']] ) ) ? $pHash['size'] : NULL ;
+=======
+		$size = ( is_string( $pParamHash['size'] ) && isset( $pParamHash['thumbnail_url'][$pParamHash['size']] ) ) ? $pParamHash['size'] : NULL ;
+>>>>>>> 362dbf212c3beec1927ce942e61eb68774ba4b06
 
 		global $gBitSystem;
-		if( @BitBase::verifyId( $pHash['image_id'] ) ) {
+		if( @BitBase::verifyId( $pParamHash['image_id'] ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = FISHEYE_PKG_URL.'image/'.$pHash['image_id'];
-				if( !empty( $pHash['gallery_path'] ) ) {
-					$ret .= $pHash['gallery_path'];
+				$ret = FISHEYE_PKG_URL.'image/'.$pParamHash['image_id'];
+				if( !empty( $pParamHash['gallery_path'] ) ) {
+					$ret .= $pParamHash['gallery_path'];
 				}
 				if( $size ) {
 					$ret .= '/'.$size;
 				}
 			} else {
-				$ret = FISHEYE_PKG_URL.'view_image.php?image_id='.$pHash['image_id'];
-				if( !empty( $this ) && !empty( $pHash['gallery_path'] ) ) {
-					$ret .= '&gallery_path='.$pHash['gallery_path'];
+				$ret = FISHEYE_PKG_URL.'view_image.php?image_id='.$pParamHash['image_id'];
+				if( !empty( $this ) && !empty( $pParamHash['gallery_path'] ) ) {
+					$ret .= '&gallery_path='.$pParamHash['gallery_path'];
 				}
 				if( $size ) {
 					$ret .= '&size='.$size;
 				}
 			}
-		} elseif( @BitBase::verifyId( $pHash['content_id'] ) ) {
-			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pHash['content_id'];
+		} elseif( @BitBase::verifyId( $pParamHash['content_id'] ) ) {
+			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pParamHash['content_id'];
 		}
 		return $ret;
 	}
 
+<<<<<<< HEAD
+=======
+    /**
+    * Function that returns link to display an image
+    * @return the url to display the gallery.
+    */
+	public function getDisplayUrl() {
+		$info = &$this->mInfo;
+		$info['image_id'] = $this->mImageId;
+		$info['gallery_path'] = $this->mGalleryPath;
+		return static::getDisplayUrlFromHash( $info );
+	}
+
+    /**
+    * Function that returns link to display an image
+    * Used to display thumbnails for navigation bar
+    * @param pImageId id of image to link
+    * @return the url to display the image.
+    */
+	public function getImageUrl( $pImageId ) {
+		$info = array( 'image_id' => $pImageId );
+		return static::getDisplayUrlFromHash( $info );
+	}
+
+>>>>>>> 362dbf212c3beec1927ce942e61eb68774ba4b06
 	/**
 	 * Generate a valid display link for the Blog
 	 *
@@ -679,7 +708,7 @@ class FisheyeImage extends FisheyeBase {
 		}
 		return $ret;
 	}
-		
+
 
 	function getThumbnailContentId() {
 		return( $this->mContentId );
@@ -733,9 +762,9 @@ class FisheyeImage extends FisheyeBase {
 			$query = "SELECT COUNT(`image_id`)
 					FROM `".BIT_DB_PREFIX."fisheye_image`
 					WHERE `image_id` = ?";
-					
+
 			$bindVars = array($this->mImageId);
-			
+
 			if($this->mDb->getOne($query, $bindVars) > 0){
 				$ret = TRUE;
 			}
@@ -819,7 +848,7 @@ class FisheyeImage extends FisheyeBase {
 				$ret[$row['hash_key']] = $row;
 				$imageId = $row['image_id'];
 				if( empty( $pListHash['no_thumbnails'] ) ) {
-					$ret[$imageId]['display_url']      = self::getDisplayUrlFromHash( $ret );
+					$ret[$imageId]['display_url']      = static::getDisplayUrlFromHash( $row );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
 					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( array(
 						'source_file'   => $this->getSourceFile( $row ),
@@ -834,8 +863,8 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	/**
-	 * isCommentable 
-	 * 
+	 * isCommentable
+	 *
 	 * @access public
 	 * @return TRUE on success, FALSE on failure
 	 */

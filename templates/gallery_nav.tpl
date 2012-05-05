@@ -1,5 +1,9 @@
 {strip}
-	<div class="gallerybar">
+	{if $gGallery->mInfo.previous_image_id or $gGallery->mInfo.next_image_id}
+		<div class="gallerynav">
+	{else}
+		<div class="gallerybar">
+	{/if}
 		<div class="path">
 			{assign var=breadCrumbs value=$gContent->getBreadcrumbLinks()}
 			{if $gGallery}
@@ -15,7 +19,7 @@
 			<div class="navigation">
 				<span class="left">
 					{if $gGallery->mInfo.previous_image_id}
-						<a href="{$gContent->getContentUrl($gGallery->mInfo.previous_image_id)|escape}">
+						<a href="{$gContent->getImageUrl($gGallery->mInfo.previous_image_id)|escape}">
 							{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
 								{biticon ipackage="icons" iname="go-previous" iexplain=previous iforce="icon"}
 							{else}
@@ -31,7 +35,7 @@
 
 				<span class="right">
 					{if $gGallery->mInfo.next_image_id}
-						<a href="{$gContent->getContentUrl($gGallery->mInfo.next_image_id)|escape}">
+						<a href="{$gContent->getImageUrl($gGallery->mInfo.next_image_id)|escape}">
 							{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
 								{biticon ipackage="icons" iname="go-next" iexplain=next iforce="icon"}
 							{else}

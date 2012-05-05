@@ -100,7 +100,6 @@ function updateGalleryPagination() {
 									<input type="text" id="galleriffic-style" name="galleriffic_style" size="2" maxlength="2" value="{$gContent->mInfo.galleriffic_style|default:$gBitSystem->getConfig('fisheye_gallery_default_galleriffic_style')}"/> {tr}Galleriffic layout style{/tr}
 									{formhelp note="This option provides a javascript powered tabbed thumbnail list display using the galleriffic jquery library."}
 								</div>
-
 							{/forminput}
 						</div>
 

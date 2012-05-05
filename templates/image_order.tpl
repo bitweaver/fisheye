@@ -28,7 +28,7 @@
 					{if ($gContent->getPreference('gallery_pagination')==$smarty.const.FISHEYE_PAGINATION_POSITION_NUMBER && $lastMantissa != $thisMantissa) || ($gContent->mInfo.images_per_page && $imageCount % $gContent->mInfo.images_per_page == 0)}
 					<tr class="{cycle values='even,odd' assign='pageClass'}">
 						<th colspan="3" class="pagebreak">
-							{tr}Gallery Page{/tr} {$pageCount} 
+							{tr}Gallery Page{/tr} {$pageCount}
 						</th>
 					</tr>
 						{counter name=pageCount print=false}
@@ -36,7 +36,7 @@
 					<tr class="{$pageClass}">
 						{counter name=imageCount print=false}
 						<td class="{$galItem->mType.content_type_guid}">
-							<a href="{$galItem->getContentUrl()|escape}"><img class="thumb" src="{$gContent->mItems.$itemContentId->getThumbnailUri()|replace:"&":"&amp;"}{if $batchEdit.$itemContentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galItem->getTitle()|escape}" /></a>
+							<a href="{$galItem->getDisplayUrl()|escape}"><img class="thumb" src="{$gContent->mItems.$itemContentId->getThumbnailUri()|replace:"&":"&amp;"}{if $batchEdit.$itemContentId ne ''}?{math equation="1 + rand(1,9999)"}{/if}" alt="{$galItem->getTitle()|escape}" /></a>
 						</td>
 
 						<td>

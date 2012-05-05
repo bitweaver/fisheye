@@ -50,7 +50,7 @@ if( !empty( $_REQUEST['g2_form'] ) ){
 	//If we don't have g2_form, they must be asking the gallery to be opened upon export completion
 	$gallery = new FisheyeGallery();
 	$gallery = $gallery->lookup(array('content_id' => $_REQUEST['g2_itemId'] ));
-	bit_redirect( $gallery->getContentUrl() );
+	bit_redirect( $gallery->getDisplayUrl() );
 }
 
 
