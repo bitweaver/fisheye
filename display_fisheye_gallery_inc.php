@@ -29,10 +29,11 @@ switch( $gContent->getLayout() ) {
 		$gBitThemes->loadCss( FISHEYE_PKG_PATH."gallery_view/matteo/mb_layout.css", TRUE );
 		$gBitThemes->loadAjax( 'jquery' );
 		$gBitThemes->loadJavascript( UTIL_PKG_PATH.'/javascript/libs/jquery/plugins/mbgallery/mbGallery.js', FALSE, 500, FALSE );
+		$gBitThemes->loadJavascript( UTIL_PKG_PATH.'/javascript/libs/jquery/plugins/mbgallery/mbGalleryBox.js', FALSE, 501, FALSE );
 		break;
 	case 'galleriffic':
 		$imagesPerPage = -1;
-		// Need to add options for different styles of layout 
+		// Need to add options for different styles of layout
 		$gBitThemes->loadCss( FISHEYE_PKG_PATH."/gallery_views/galleriffic/css/galleriffic_style_1.css", TRUE );
 		$gBitThemes->loadAjax( 'jquery' );
 		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/galleriffic/js/jquery.galleriffic.js', FALSE, 500, FALSE );
