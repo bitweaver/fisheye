@@ -60,7 +60,7 @@ class FisheyeBase extends LibertyMime
 				$significand = substr( $newPosition, 0, $radixPosition );
 				$mantissa = preg_replace( '/[^0-9]/', '', substr( $newPosition, $radixPosition + 1 ) );
 				$newPosition = $significand.'.'.$mantissa;
-			} 
+			}
 			$cleanPosition = preg_replace( '/\./', '', $newPosition );
 			$sql = "UPDATE `".BIT_DB_PREFIX."fisheye_gallery_image_map` SET `item_position` = ?
 					WHERE `item_content_id` = ? AND `gallery_content_id` = ? AND (`item_position` IS NULL OR `item_position`!=?)";
@@ -97,9 +97,9 @@ not ready for primetime
 				$whereSql = '';
 
 				$query = "SELECT fg.gallery_id, branch
-						  FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`gallery_content_id`', '`item_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text) 
-							INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id) 
-							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`) 
+						  FROM connectby('`".BIT_DB_PREFIX."fisheye_gallery_image_map`', '`gallery_content_id`', '`item_content_id`', ?, 0, '/') AS t(cb_item_content_id int,cb_gallery_content_id int, level int, branch text)
+							INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fg.`content_id`=cb_item_content_id)
+							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON(lc.`content_id`=fg.`content_id`)
 						  ORDER BY level DESC, branch, lc.`title`";
 				if( $ret = $gBitDb->GetAssoc( $query, array( $this->mContentId ) ) ) {
 				}
@@ -180,11 +180,11 @@ not ready for primetime
 								if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
 									$pos = NULL;
 								} else {
-									$query = "SELECT MAX(`item_position`) 
-											  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim 
-												INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fgim.`gallery_content_id`=fg.`content_id`) 
+									$query = "SELECT MAX(`item_position`)
+											  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+												INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON(fgim.`gallery_content_id`=fg.`content_id`)
 											  WHERE fg.`gallery_id`=?";
-									$pos = $this->mDb->getOne( $query, array( $galleryId ) ) + 10; 
+									$pos = $this->mDb->getOne( $query, array( $galleryId ) ) + 10;
 								}
 
 								$galleries[$galleryId]->addItem( $this->mContentId, $pos );
