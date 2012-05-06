@@ -801,11 +801,7 @@ class FisheyeImage extends FisheyeBase {
 			$bindVars[] = $pListHash['max_age'];
 		}
 
-		if( @$this->verifyId( $pListHash['group_id'] ) ) {
-			$joinSql .= " INNER JOIN `".BIT_DB_PREFIX."users_groups_map` ugm ON (ugm.`user_id`=uu.`user_id`) ";
-			$whereSql .= " AND ugm.`group_id` = ? ";
-			$bindVars[] = $pListHash['group_id'];
-		}
+		$this->getServicesSql( 'content_user_collection_function', $selectSql, $joinSql, $whereSql, $bindVars, $this, $pListHash );
 
 		$orderby = '';
 		if( !empty( $pListHash['recent_images'] )) {
