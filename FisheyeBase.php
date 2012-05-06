@@ -19,7 +19,7 @@ class FisheyeBase extends LibertyMime
 	function FisheyeBase() {
 		$this->mGalleryPath = '';
 		if( get_class( $this ) == 'fisheyegallery' ) {
-			LibertyContent::LibertyContent();
+			parent::__construct();
 		} else {
 			parent::__construct();
 		}
