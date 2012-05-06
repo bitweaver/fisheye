@@ -21,7 +21,7 @@ class FisheyeBase extends LibertyMime
 		if( get_class( $this ) == 'fisheyegallery' ) {
 			LibertyContent::LibertyContent();
 		} else {
-			LibertyMime::LibertyMime();
+			parent::__construct();
 		}
 	}
 
