@@ -783,12 +783,14 @@ class FisheyeGallery extends FisheyeBase {
 	}
 
 	function getTreeSort( &$pTree ) {
-		foreach( array_keys( $pTree ) as $k ) {
-			if( !empty( $pTree[$k]['children'] ) ) {
-				FisheyeGallery::getTreeSort( $pTree[$k]['children'] );
+		if( $pTree ) {
+			foreach( array_keys( $pTree ) as $k ) {
+				if( !empty( $pTree[$k]['children'] ) ) {
+					FisheyeGallery::getTreeSort( $pTree[$k]['children'] );
+				}
 			}
+			uasort( $pTree, array( 'FisheyeGallery', 'getTreeSortCmp' ) );
 		}
-		uasort( $pTree, array( 'FisheyeGallery', 'getTreeSortCmp' ) );
 	}
 
 	static function getTreeSortCmp( $a, $b ) {
