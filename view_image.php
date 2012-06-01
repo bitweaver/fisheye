@@ -35,7 +35,7 @@ if( is_object( $gGallery ) && $gGallery->isCommentable() ) {
 	$comments_vars = Array('fisheyeimage');
 	$comments_prefix_var='fisheyeimage:';
 	$comments_object_var='fisheyeimage';
-	$comments_return_url = $_SERVER['PHP_SELF']."?image_id=".$gContent->mImageId;
+	$comments_return_url = $_SERVER['SCRIPT_NAME']."?image_id=".$gContent->mImageId;
 	include_once( LIBERTY_PKG_PATH.'comments_inc.php' );
 }
 
