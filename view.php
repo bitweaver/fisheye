@@ -10,6 +10,7 @@
  */
 require_once( '../kernel/setup_inc.php' );
 
+$gBitSystem->verifyPackage( 'fisheye' );
 require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
 require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 

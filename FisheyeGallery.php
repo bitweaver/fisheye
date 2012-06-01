@@ -667,6 +667,7 @@ class FisheyeGallery extends FisheyeBase {
 	function getTree( $pListHash ) {
 		global $gBitDb;
 
+		$ret = array();
 		if( $this->mDb->isAdvancedPostgresEnabled() ) {
 			$bindVars = array();
 			$containVars = array();
