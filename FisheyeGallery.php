@@ -280,7 +280,7 @@ class FisheyeGallery extends FisheyeBase {
 					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` )
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` )
-						LEFT OUTER JOIN `".BIT_DB_PREFIX."` fisheye_image fi ON ( fgim.`item_content_id`=fi.`content_id` )
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_image` fi ON ( fgim.`item_content_id`=fi.`content_id` )
 						$joinSql
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
 					WHERE fgim.`gallery_content_id` = ? $whereSql
