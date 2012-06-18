@@ -335,7 +335,8 @@ class FisheyeGallery extends FisheyeBase {
 			$bindVars = array($this->mContentId);
 			$whereSql = $selectSql = $joinSql = $orderSql = '';
 			$rows = $offset = NULL;
-			$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+			$paramHash['no_fatal'] = TRUE;
+			$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars, NULL, $paramHash );
 			$query = 'SELECT COUNT(*) AS "count"
 					FROM `'.BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
 					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` )
