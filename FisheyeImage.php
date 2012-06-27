@@ -532,7 +532,7 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	function getStoragePath( $pParamHash, $pRootDir=NULL ) {
-		$pParamHash['sub_dir'] = liberty_mime_get_storage_sub_dir_name( array( 'type'=>$this->getField( 'mime_type' ), 'name'=>$this->getField('file_name') ) );
+		$pParamHash['sub_dir'] = liberty_mime_get_storage_sub_dir_name( array( 'type'=>BitBase::getParameter( $pParamHash, 'mime_type', $this->getField( 'mime_type' ) ), 'name'=>BitBase::getParameter( $pParamHash, 'file_name', $this->getField('file_name') ) ) );
 		$pParamHash['user_id'] = $this->getParameter( $pParamHash, 'user_id', $this->getField('user_id') );
 		return parent::getStoragePath( $pParamHash ).$this->getParameter( $pParamHash, 'attachment_id', $this->getField('attachment_id') ).'/';
 	}
@@ -843,6 +843,7 @@ class FisheyeImage extends FisheyeBase {
 						'source_file'   => $this->getSourceFile( $row ),
 						'default_image' => FISHEYE_PKG_URL.'image/generating_thumbnails.png',
 						'size'          => $thumbSize,
+						'type'			=> $row['mime_type'],
 					));
 				}
 			}
