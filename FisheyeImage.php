@@ -350,7 +350,7 @@ class FisheyeImage extends FisheyeBase {
 		if( $this->getField( 'file_name' ) || $this->load() ) {
 			$fileHash['source_file'] = $this->getSourceFile();
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
-			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
+			$fileHash['type'] = $gBitSystem->verifyMimeType( $fileHash['source_file'] );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
 			$fileHash['dest_branch'] = dirname( $this->getSourceFile() ).'/';
 			$fileHash['name'] = $this->getField( 'file_name' );
@@ -412,11 +412,12 @@ class FisheyeImage extends FisheyeBase {
 	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
 	 */
 	function convertColorspace( $pColorSpace ) {
+		global $gBitSystem;
 		$ret = FALSE;
 		if( $this->getField( 'file_name' ) || $this->load() ) {
 			$fileHash['source_file'] = $this->getSourceFile();
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
-			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
+			$fileHash['type'] = $gBitSystem->verifyMimeType( $fileHash['source_file'] );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
 			$fileHash['dest_branch'] = dirname( $this->getSourceFile() ).'/';
 			$fileHash['name'] = $this->getField( 'file_name' );
@@ -438,7 +439,7 @@ class FisheyeImage extends FisheyeBase {
 		if( $this->getField( 'file_name' ) || $this->load() ) {
 			$fileHash['source_file'] = $this->getSourceFile();
 			$fileHash['dest_base_name'] = preg_replace('/(.+)\..*$/', '$1', basename( $fileHash['source_file'] ) );
-			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
+			$fileHash['type'] = $gBitSystem->verifyMimeType( $fileHash['source_file'] );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
 			$fileHash['dest_branch'] = $this->getStorageBranch();
 			$fileHash['name'] = $this->getField( 'file_name' );
@@ -503,9 +504,10 @@ class FisheyeImage extends FisheyeBase {
 
 
 	function renderThumbnails( $pThumbSizes=NULL ) {
+		global $gBitSystem;
 		if( $this->getField( 'file_name' ) || $this->load() ) {
 			$fileHash['source_file'] = $this->getSourceFile();
-			$fileHash['type'] = 'image/'.strtolower( substr( $fileHash['source_file'], (strrpos( $fileHash['source_file'], '.' )+1) ) );
+			$fileHash['type'] = $gBitSystem->verifyMimeType( $fileHash['source_file'] );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
 			$fileHash['dest_branch'] = $this->getStorageBranch();
 			$fileHash['name'] = $this->getField( 'file_name' );
@@ -548,7 +550,7 @@ class FisheyeImage extends FisheyeBase {
 			$checkFiles = array( $pFilePath, dirname( $pFilePath ).'/original.jpg' );
 		} else {
 			$sourceFile  = $this->getSourceFile();
-			$checkFiles = array( $this->getSourceFile() );
+			$checkFiles = array( $sourceFile );
 			// was an original file created?
 			$originalFile = dirname( $sourceFile ).'/original.jpg';
 			if( file_exists( $originalFile ) && !is_link( $originalFile ) ) {
