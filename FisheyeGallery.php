@@ -156,7 +156,7 @@ class FisheyeGallery extends FisheyeBase {
 	function loadCurrentImage( $pCurrentImageId ) {
 		if( $this->isValid() && @$this->verifyId( $pCurrentImageId ) ) {
 			// this code sucks but works - XOXO spiderr
-			$query = "SELECT fgim.*, fi.`image_id`, lf.`file_name`, lf.`user_id`, la.`attachment_id`
+			$query = "SELECT fgim.*, fi.`image_id`, lf.`file_name`, lf.`user_id`, lf.`mime_type`, la.`attachment_id`
 					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
 						INNER JOIN `".BIT_DB_PREFIX."fisheye_image` fi ON ( fi.`content_id`=fgim.`item_content_id` )
 						INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON ( fi.`content_id`=la.`content_id` )
