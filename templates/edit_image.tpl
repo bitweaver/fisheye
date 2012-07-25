@@ -24,7 +24,7 @@
 									<img src="{$gContent->mInfo.thumbnail_url.medium}?{math equation="1 + rand(1,9999)"}" alt="{$gContent->getTitle()|escape}" />
 									<br />
 									<small>
-										<a href="{$gContent->getSourceUrl()}">{tr}Full size{/tr}</a>
+										<a href="{$gContent->getDownloadUrl()}">{tr}Full size{/tr}</a>
 										{if $gContent->mInfo.width && $gContent->mInfo.height}
 											: {$gContent->mInfo.width} x {$gContent->mInfo.height}
 										{/if}
@@ -50,7 +50,7 @@
 						</div>
 
 						<div class="row">
-							{if $gContent->mInfo.source_url}
+							{if $gContent->getDownloadUrl()}
 								{formfeedback warning="{tr}Uploading a new image will replace the currently existing one.{/tr}"}
 								{assign var=repl value=Replacement}
 							{/if}

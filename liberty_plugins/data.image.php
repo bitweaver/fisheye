@@ -74,7 +74,7 @@ function data_image( $pData, $pParams ) {
 		if( $item->load() ) {
 			// insert source url if we need the original file
 			if( !empty( $pParams['size'] ) && $pParams['size'] == 'original' ) {
-				$thumbUrl = $item->mInfo['source_url'];
+				$thumbUrl = $item->getDownloadUrl();
 			} elseif( $item->mInfo['thumbnail_url'] ) {
 				$thumbUrl = ( !empty( $pParams['size'] ) && !empty( $item->mInfo['thumbnail_url'][$pParams['size']] ) ? $item->mInfo['thumbnail_url'][$pParams['size']] : $item->mInfo['thumbnail_url']['medium'] );
 			}
@@ -100,8 +100,8 @@ function data_image( $pData, $pParams ) {
 			// if this image is linking to something, wrap the image with the <a>
 			$ret = '<a href="'.trim( $wrapper['link'] ).'">'.$ret.'</a>';
 		} elseif ( empty( $pParams['size'] ) || $pParams['size'] != 'original' ) {
-			if ( !empty( $item->mInfo['source_url'] ) ) {
-				$ret = '<a href="'.trim( $item->mInfo['source_url'] ).'">'.$ret.'</a>';
+			if ( $item->getDownloadUrl() ) {
+				$ret = '<a href="'.trim( $item->getDownloadUrl() ).'">'.$ret.'</a>';
 			} else if ( !empty( $item->mInfo['media_url'] ) ) {
 				$ret = '<a href="'.trim( $item->mInfo['media_url'] ).'">'.$ret.'</a>';
 			} 

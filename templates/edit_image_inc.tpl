@@ -26,9 +26,9 @@
 				<br />
 				<small>
 					{if $gContent->mInfo.width && $gContent->mInfo.height}
-						{tr}Full size{/tr} - <a href="{$gContent->mInfo.source_url}">{$gContent->mInfo.width} x {$gContent->mInfo.height}</a>
-					{elseif $gContent->mInfo.source_url}
-						<a href="{$gContent->mInfo.source_url}">{tr}Full size{/tr}</a>
+						{tr}Full size{/tr} - <a href="{$gContent->getDownloadUrl()}">{$gContent->mInfo.width} x {$gContent->mInfo.height}</a>
+					{elseif $gContent->getDownloadUrl()}
+						<a href="{$gContent->getDownloadUrl()}">{tr}Full size{/tr}</a>
 					{/if}
 				</small>
 			{else}

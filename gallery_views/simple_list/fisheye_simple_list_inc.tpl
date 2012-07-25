@@ -30,7 +30,7 @@
 						{if $galItem->mInfo.content_type_guid != 'fisheyegallery' }
 							{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
 								{if $gContent->hasUpdatePermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )}
-									<a href="{$galItem->mInfo.source_url|escape}">
+									<a href="{$galItem->getDownloadUrl()|escape}">
 								{else}
 									<a href="{$galItem->mInfo.thumbnail_url.large}">
 								{/if}
