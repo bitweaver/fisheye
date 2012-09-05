@@ -941,7 +941,7 @@ class FisheyeGallery extends FisheyeBase {
 
 		if( @$this->verifyId( $pListHash['user_id'] ) ) {
 			$whereSql .= " AND lc.`user_id` = ? ";
-			$bindVars[] = $pListHash['user_id'];
+			$bindVars[] = (int)$pListHash['user_id'];
 		}
 
 		if( !empty( $pListHash['find'] ) ) {
