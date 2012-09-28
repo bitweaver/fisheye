@@ -739,7 +739,7 @@ class FisheyeGallery extends FisheyeBase {
 				unset( $pListHash['contain_item'] );
 			}
 			foreach( $pListHash as $key=>$val ) {
-				$whereSql .= " $key=? AND ";
+				$whereSql .= " AND lc.$key=? ";
 				$bindVars[] = $val;
 			}
 
