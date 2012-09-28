@@ -126,7 +126,7 @@ not ready for primetime
 			$bindVars = array();
 			// We need to get min_content_status_id
 			$pListHash = array();
-			$this->prepGetList($pListHash);
+			LibertyContent::prepGetList($pListHash);
 			foreach( $path as $galleryId ) {
 				if( $galleryId ) {
 					$p++; $c++;

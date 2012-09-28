@@ -921,7 +921,7 @@ class FisheyeGallery extends FisheyeBase {
 
 		$pListHash['valid_sort_modes'] = array( 'real_name', 'login', 'hits', 'title', 'created', 'last_modified', 'last_hit', 'event_time', 'ip' );
 
-		$this->prepGetList( $pListHash );
+		LibertyContent::prepGetList( $pListHash );
 		$bindVars = array();
 		$selectSql = $joinSql = $whereSql = $sortSql = '';
 
@@ -941,7 +941,7 @@ class FisheyeGallery extends FisheyeBase {
 
 		if( @$this->verifyId( $pListHash['user_id'] ) ) {
 			$whereSql .= " AND lc.`user_id` = ? ";
-			$bindVars[] = $pListHash['user_id'];
+			$bindVars[] = (int)$pListHash['user_id'];
 		}
 
 		if( !empty( $pListHash['find'] ) ) {

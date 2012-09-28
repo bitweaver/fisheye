@@ -772,7 +772,7 @@ class FisheyeImage extends FisheyeBase {
 	function getList( &$pListHash ) {
 		global $gBitUser,$gBitSystem;
 
-		$this->prepGetList( $pListHash );
+		LibertyContent::prepGetList( $pListHash );
 
 		$ret = $bindVars = array();
 		$distinct = '';
