@@ -100,7 +100,9 @@ function data_image( $pData, $pParams ) {
 			// if this image is linking to something, wrap the image with the <a>
 			$ret = '<a href="'.trim( $wrapper['link'] ).'">'.$ret.'</a>';
 		} elseif ( empty( $pParams['size'] ) || $pParams['size'] != 'original' ) {
-			if ( $item->getDownloadUrl() ) {
+			if ( $gBitSystem->isFeatureActive( 'site_fancy_zoom' ) and !empty( $item->mInfo['source_url'] ) ) {
+				$ret = '<a href="'.trim( $item->mInfo['source_url'] ).'">'.$ret.'</a>';
+			} else if ( $item->getDownloadUrl() ) {
 				$ret = '<a href="'.trim( $item->getDownloadUrl() ).'">'.$ret.'</a>';
 			} else if ( !empty( $item->mInfo['media_url'] ) ) {
 				$ret = '<a href="'.trim( $item->mInfo['media_url'] ).'">'.$ret.'</a>';
