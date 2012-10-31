@@ -28,8 +28,8 @@ switch( $gContent->getLayout() ) {
 	case 'matteo':
 		$gBitThemes->loadCss( FISHEYE_PKG_PATH."gallery_view/matteo/mb_layout.css", TRUE );
 		$gBitThemes->loadAjax( 'jquery' );
-		$gBitThemes->loadJavascript( UTIL_PKG_PATH.'/javascript/libs/jquery/plugins/mbgallery/mbGallery.js', FALSE, 500, FALSE );
-		$gBitThemes->loadJavascript( UTIL_PKG_PATH.'/javascript/libs/jquery/plugins/mbgallery/mbGalleryBox.js', FALSE, 501, FALSE );
+		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/matteo/mbGallery.js', FALSE, 500, FALSE );
+		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/matteo/mbGalleryBox.js', FALSE, 501, FALSE );
 		break;
 	case 'galleriffic':
 		$imagesPerPage = -1;

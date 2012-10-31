@@ -619,12 +619,12 @@ class FisheyeGallery extends FisheyeBase {
 
 	public static function getAllLayouts() {
 		return array(
+			FISHEYE_PAGINATION_GALLERIFFIC     => 'Galleriffic',
 			FISHEYE_PAGINATION_FIXED_GRID      => 'Fixed Grid',
 			FISHEYE_PAGINATION_AUTO_FLOW       => 'Auto-Flow Images',
 			FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number',
 			FISHEYE_PAGINATION_SIMPLE_LIST     => 'Simple List',
-			FISHEYE_PAGINATION_MATTEO		   => 'Matteo',
-			FISHEYE_PAGINATION_GALLERIFFIC     => 'Galleriffic'
+//			FISHEYE_PAGINATION_MATTEO		   => 'Matteo',
 		);
 	}
 
