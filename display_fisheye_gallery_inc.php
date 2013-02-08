@@ -13,8 +13,8 @@ if (!empty($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {
 	$page = 0;
 }
 
-if ($page > $gContent->mInfo['num_pages']) {
-	$page = $gContent->mInfo['num_pages'];
+if( $page > $gContent->getField( 'num_pages' ) ) {
+	$page = $gContent->getField( 'num_pages' );
 } elseif ($page < 1) {
 	$page = 1;
 }
