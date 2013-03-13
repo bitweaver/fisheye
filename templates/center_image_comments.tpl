@@ -3,7 +3,7 @@
 {if $modLastComments}
 <div class="listing fisheye">
 	<div class="header">
-		<h1>{tr}{$moduleTitle|default:'Image Comments'}{/tr}</h1>
+		<h2>{tr}{$moduleTitle|default:'Image Comments'}{/tr}</h2>
 	</div>
 
 	<div class="body">
