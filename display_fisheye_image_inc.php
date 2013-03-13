@@ -5,7 +5,7 @@
  */
 
 if( !$gContent->isValid() ) {
-	$gBitSystem->fatalError( tra( "No image exists with the given ID" ) ,'error.tpl', '', HttpStatusCodes::HTTP_NOT_FOUND );
+	$gBitSystem->fatalError( tra( "No image exists with the given ID" ) ,'error.tpl', '', HttpStatusCodes::HTTP_GONE );
 }
 
 $displayHash = array( 'perm_name' => 'p_fisheye_view' );
