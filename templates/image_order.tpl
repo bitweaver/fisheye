@@ -80,7 +80,7 @@
 			<br />
 			<br />
 
-			<div class="row">
+			<div class="control-group">
 				{formlabel label="Batch commands" for=""}
 				{forminput}
 					<select name="batch_command">
@@ -129,7 +129,7 @@
 				{/forminput}
 			</div>
 
-			<div class="row">
+			<div class="control-group">
 				{formlabel label="Re-order Gallery by" for="reorder_gallery"}
 				{forminput}
 					<select name="reorder_gallery" id="reorder_gallery">
@@ -144,7 +144,7 @@
 				{/forminput}
 			</div>
 
-			<div class="row submit">
+			<div class="control-group submit">
 				<input type="submit" name="cancel" value="{tr}Back{/tr}"/> <input type="submit" name="updateImageOrder" value="{tr}Save Changes{/tr}"/>
 			</div>
 		{/form}

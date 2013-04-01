@@ -4,21 +4,21 @@
 	<input type="hidden" name="image_id" value="{$imageId}"/>
 	<input type="hidden" name="ajax" value="{$smarty.request.ajax}" />
 
-	<div class="row">
+	<div class="control-group">
 		{formlabel label="Title" for="image-title"}
 		{forminput}
 			<input type="text" name="title" id="image-title" value="{$gContent->getTitle('',FALSE)|escape}" maxlength="160" size="40"/>
 		{/forminput}
 	</div>
 
-	<div class="row">
+	<div class="control-group">
 		{formlabel label="Description" for="image-desc"}
 		{forminput}
 			<textarea name="edit" id="image-desc" rows="4" cols="40">{$gContent->mInfo.data|escape}</textarea>
 		{/forminput}
 	</div>
 
-	<div class="row">
+	<div class="control-group">
 		{formlabel label="Current Image"}
 		{forminput}
 			{if $gContent->mInfo.thumbnail_url.medium}
@@ -37,7 +37,7 @@
 		{/forminput}
 	</div>
 
-	<div class="row">
+	<div class="control-group">
 		{formlabel label="Rotate Image"}
 		{forminput}
 			<label><input type="radio" name="rotate_image" value="-90"/> {biticon ipackage="fisheye" iname="rotate_ccw" iexplain="Rotate Counter Clockwise"}</label> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -47,11 +47,11 @@
 		{/forminput}
 	</div>
 
-	<div class="row">
+	<div class="control-group">
 		{include file="bitpackage:fisheye/resize_image_select.tpl"}
 	</div>
 
-	<div class="row submit">
+	<div class="control-group submit">
 		<input type="submit" name="saveImage" value="Save Image"/>
 	</div>
 {/form}

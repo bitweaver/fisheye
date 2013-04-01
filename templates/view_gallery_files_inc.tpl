@@ -1,15 +1,13 @@
 {strip}
 {minifind}
 
-<div class="navbar">
-	<ul class="sortby">
-		<li>{biticon ipackage="icons" iname="emblem-symbolic-link" iexplain="sort by"}</li>
-		<li>{smartlink ititle="Created" isort="created" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
-		<li>{smartlink ititle="Last Modified" isort="last_modified" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
-		<li>{smartlink ititle="File Type" isort="file_type" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
-		<li>{smartlink ititle="File Size" isort="size" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
-	</ul>
-</div>
+<ul class="inline navbar sortby">
+	<li>{biticon ipackage="icons" iname="emblem-symbolic-link" iexplain="sort by"}</li>
+	<li>{smartlink ititle="Created" isort="created" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
+	<li>{smartlink ititle="Last Modified" isort="last_modified" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
+	<li>{smartlink ititle="File Type" isort="file_type" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
+	<li>{smartlink ititle="File Size" isort="size" numPages=$gContent->mInfo.num_pages gallery_id=$gContent->mGalleryId gallery_path=$gContent->mGalleryPath page=$pageCount}</li>
+</ul>
 
 <table class="clear data">
 	<caption>{tr}Downloadable Files{/tr}</caption>

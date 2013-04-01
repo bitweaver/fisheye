@@ -37,7 +37,7 @@
 							{include file="bitpackage:kernel/upload_slot_inc.tpl" hash_key=imagedata}
 						{else}
 							
-							<div class="row">
+							<div class="control-group">
 								{formlabel label="Select File(s)"}
 								{forminput}
 									<input type="file" name="file0" id="fileupload" />
@@ -45,7 +45,7 @@
 								{/forminput}
 							</div>
 
-							<div class="row">
+							<div class="control-group">
 								{formlabel label="Selected File(s)" for=""}
 								{forminput}
 									<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/libs/multifile.js"></script>
@@ -67,7 +67,7 @@
 				{/jstabs}
 
 			<div class="width48p floatright box">
-				<div class="row">
+				<div class="control-group">
 					{if !$gBitUser->hasPermission( 'p_fisheye_create' )}
 						{formfeedback warning="Please make sure you select a gallery to load your images into, otherwise your images will be discarded"}
 					{/if}
@@ -88,7 +88,7 @@
 			</div>
 			<div class="width50p floatleft">
 				{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
-					<div class="row">
+					<div class="control-group">
 						{formlabel label="Process Archive(s)" for="process_archive"}
 						{forminput}
 							<input type="checkbox" id="process_archive" name="process_archive" value="true" checked="checked" />
@@ -100,7 +100,7 @@
 				{/if}
 
 				{if function_exists('exif_read_data')}
-					<div class="row">
+					<div class="control-group">
 						{formlabel label="Auto-Rotate Images" for="rotate_image"}
 						{forminput}
 							<input type="checkbox" id="rotate_image" name="rotate_image" value="auto" checked="checked" />
@@ -109,7 +109,7 @@
 					</div>
 				{/if}
 
-				<div class="row">
+				<div class="control-group">
 					{formlabel label="Use Filenames" for="use_filenames"}
 					{forminput}
 						<input type="checkbox" id="use_filenames" name="use_filenames" value="true"/>
@@ -117,7 +117,7 @@
 					{/forminput}
 				</div>
 
-				<div class="row">
+				<div class="control-group">
 					{include file="bitpackage:fisheye/resize_image_select.tpl"}
 				</div>
 			</div>
@@ -126,7 +126,7 @@
 
 			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_mini_tpl"}
 
-			<div class="row submit">
+			<div class="control-group submit">
 				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
 				<input type="submit" id="submitbutton" value="{tr}Upload File(s){/tr}" {if $submitClick}onclick="{$submitClick}"{/if}/>
 			</div>

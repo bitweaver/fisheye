@@ -7,26 +7,24 @@
 	<div class="body">
 		{minifind}
 
-		<div class="navbar">
-			<ul class="sortby">
-				<li>{biticon ipackage="icons" iname="emblem-symbolic-link" iexplain="sort by" iforce="icon"}</li>
-				{if $gBitSystem->isFeatureActive('fisheye_list_title')}
-					<li>{smartlink ititle="Gallery Name" isort="title" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
-				{/if}
-				{if $gBitSystem->isFeatureActive('fisheye_list_user')}
-					<li>{smartlink ititle="Owner" isort=$gBitSystem->getConfig('users_display_name') user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
-				{/if}
-				{if $gBitSystem->isFeatureActive('fisheye_list_created')}
-					<li>{smartlink ititle="Created" isort="created" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
-				{/if}
-				{if $gBitSystem->isFeatureActive('fisheye_list_lastmodif')}
-					<li>{smartlink ititle="Last Modified" isort="last_modified" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
-				{/if}
-				{if $gBitSystem->isFeatureActive('fisheye_list_hits')}
-					<li>{smartlink ititle="Hits" isort="hits" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
-				{/if}
-			</ul>
-		</div>
+		<ul class="inline navbar sortby">
+			<li>{biticon ipackage="icons" iname="emblem-symbolic-link" iexplain="sort by" iforce="icon"}</li>
+			{if $gBitSystem->isFeatureActive('fisheye_list_title')}
+				<li>{smartlink ititle="Gallery Name" isort="title" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
+			{/if}
+			{if $gBitSystem->isFeatureActive('fisheye_list_user')}
+				<li>{smartlink ititle="Owner" isort=$gBitSystem->getConfig('users_display_name') user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
+			{/if}
+			{if $gBitSystem->isFeatureActive('fisheye_list_created')}
+				<li>{smartlink ititle="Created" isort="created" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
+			{/if}
+			{if $gBitSystem->isFeatureActive('fisheye_list_lastmodif')}
+				<li>{smartlink ititle="Last Modified" isort="last_modified" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
+			{/if}
+			{if $gBitSystem->isFeatureActive('fisheye_list_hits')}
+				<li>{smartlink ititle="Hits" isort="hits" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
+			{/if}
+		</ul>
 
 		<ul class="clear data">
 			{foreach from=$galleryList key=galleryId item=gal}

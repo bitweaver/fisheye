@@ -17,7 +17,7 @@
 						<input type="hidden" name="image_id" value="{$imageId}"/>
 						<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 
-						<div class="row">
+						<div class="control-group">
 							{formlabel label="Current Image"}
 							{forminput}
 								{if $gContent->mInfo.thumbnail_url.medium}
@@ -35,21 +35,21 @@
 							{/forminput}
 						</div>
 
-						<div class="row">
+						<div class="control-group">
 							{formlabel label="Title" for="image-title"}
 							{forminput}
 								<input type="text" name="title" id="image-title" value="{$gContent->getTitle(0,0)|escape}" maxlength="160" size="50"/>
 							{/forminput}
 						</div>
 
-						<div class="row">
+						<div class="control-group">
 							{formlabel label="Description" for="image-desc"}
 							{forminput}
 								<textarea name="edit" id="image-desc" rows="4" cols="50">{$gContent->mInfo.data|escape}</textarea>
 							{/forminput}
 						</div>
 
-						<div class="row">
+						<div class="control-group">
 							{if $gContent->getDownloadUrl()}
 								{formfeedback warning="{tr}Uploading a new image will replace the currently existing one.{/tr}"}
 								{assign var=repl value=Replacement}
@@ -60,14 +60,14 @@
 							{/forminput}
 						</div>
 
-						<div class="row">
+						<div class="control-group">
 							{formlabel label="Regenerate Thumbnails"}
 							{forminput}
 								<input type="checkbox" name="generate_thumbnails" value="1"/>
 							{/forminput}
 						</div>
 
-						<div class="row">
+						<div class="control-group">
 							{formlabel label="Rotate Image"}
 							{forminput}
 {if function_exists('exif_read_data')}
@@ -82,11 +82,11 @@
 
 						{include file=$gLibertySystem->getMimeTemplate('edit',$gContent->mInfo.attachment_plugin_guid) attachment=$gContent->mInfo}
 
-						<div class="row">
+						<div class="control-group">
 							{include file="bitpackage:fisheye/resize_image_select.tpl"}
 						</div>
 
-						<div class="row">
+						<div class="control-group">
 							{formlabel label="Add This Image to These Galleries"}
 							{forminput}
 								{if $galleryTree}
@@ -108,7 +108,7 @@
 				{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_tab_tpl"}
 			{/jstabs}
 
-			<div class="row submit">
+			<div class="control-group submit">
 				<input type="submit" name="saveImage" value="Save Image"/>
 			</div>
 		{/form}
