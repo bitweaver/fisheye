@@ -53,7 +53,7 @@
 						<img src="{$galItem->mPreviewImage->mInfo.thumbnail_url.avatar}" alt="{$galItem->mInfo.title|escape}"/>
 					</a>
 					<div class="heading">
-						<h2>{biticon iname="emblem-photos" isize="small" iexplain=$galItem->getContentTypeName()|escape}{$galItem->getDisplayLink()}</h2><span class="image-count">({$galItem->getImageCount()} {tr}Items{/tr})</span>
+						<h2>{booticon iname="icon-picture"   isize="small" iexplain=$galItem->getContentTypeName()|escape}{$galItem->getDisplayLink()}</h2><span class="image-count">({$galItem->getImageCount()} {tr}Items{/tr})</span>
 					</div>
 					<div class="caption">
 						<div class="image-desc">{$galItem->mInfo.description|escape}</div>
