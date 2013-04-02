@@ -31,7 +31,7 @@
 				<li class="item {cycle values='odd,even'} {$gal.content_type_guid}">
 					<div class="security">
 						{if $gal.is_hidden=='y' || $gal.is_private=='y' || $gal.access_answer}
-							{biticon ipackage="icons" iname="emblem-readonly" iexplain="Security" label=TRUE}
+							{booticon iname="icon-lock" ipackage="icons" iexplain="Security" label=TRUE}
 						{/if}
 						{if $gal.is_hidden=='y'}
 							{tr}Hidden{/tr}
@@ -56,7 +56,7 @@
 						{displayname hash=$gal nolink=TRUE} &raquo; <a href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gal.user_id}">{tr}Galleries{/tr}</a>
 					{/if}
 					{* if $galleryList[ix]->isProtected()}
-						{biticon ipackage="icons" iname="emblem-readonly" iexplain="Protected"}
+						{booticon iname="icon-lock" ipackage="icons" iexplain="Protected"}
 					{/if *}
 					{if $gBitSystem->isFeatureActive('fisheye_list_description')}
 						<p>{$gal.data|truncate:200}</p>

@@ -115,8 +115,8 @@
 							<a href="{$galItem->getDisplayUrl()}">{biticon ipackage="icons" iname="document-open" iexplain="View File"}</a>
 						{/if}
 						{if $gContent->isOwner( $galItem->mInfo ) || $gBitUser->isAdmin()}
-							<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}&amp;action=edit">{biticon ipackage="icons" iname="accessories-text-editor" iexplain="Edit File"}</a>
-							<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}&amp;delete=1">{biticon ipackage="icons" iname="edit-delete" iexplain="Remove File"}</a>
+							<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}&amp;action=edit">{booticon iname="icon-edit" ipackage="icons" iexplain="Edit File"}</a>
+							<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}&amp;delete=1">{booticon iname="icon-trash" ipackage="icons" iexplain="Remove File"}</a>
 						{/if}
 					{/if}
 				</td>
