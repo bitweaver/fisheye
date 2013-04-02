@@ -112,7 +112,7 @@
 							<a href="{$galItem->mInfo.download_url}">{biticon ipackage="icons" iname="emblem-downloads" iexplain="Download File"}</a>
 						{/if}
 						{if $gBitUser->hasPermission( 'p_treasury_view_item' )}
-							<a href="{$galItem->getDisplayUrl()}">{biticon ipackage="icons" iname="document-open" iexplain="View File"}</a>
+							<a href="{$galItem->getDisplayUrl()}">{booticon iname="icon-folder-open"  ipackage="icons"  iexplain="View File"}</a>
 						{/if}
 						{if $gContent->isOwner( $galItem->mInfo ) || $gBitUser->isAdmin()}
 							<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$galItem->mInfo.content_id}&amp;action=edit">{booticon iname="icon-edit" ipackage="icons" iexplain="Edit File"}</a>
