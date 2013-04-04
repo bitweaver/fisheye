@@ -145,7 +145,7 @@
 			</div>
 
 			<div class="control-group submit">
-				<input type="submit" name="cancel" value="{tr}Back{/tr}"/> <input type="submit" name="updateImageOrder" value="{tr}Save Changes{/tr}"/>
+				<input type="submit" class="btn" name="cancel" value="{tr}Back{/tr}"/> <input type="submit" name="updateImageOrder" value="{tr}Save Changes{/tr}"/>
 			</div>
 		{/form}
 	</div><!-- end .body -->

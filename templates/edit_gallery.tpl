@@ -156,9 +156,9 @@ function updateGalleryPagination() {
 
 			<div class="control-group submit">
 				{if $gContent->isValid()}
-					<input type="submit" name="cancelgallery" value="Cancel"/>
+					<input type="submit" class="btn" name="cancelgallery" value="Cancel"/>
 				{/if}
-				<input type="submit" name="savegallery" value="Save Gallery"/>
+				<input type="submit" class="btn" name="savegallery" value="Save Gallery"/>
 			</div>
 		{/form}
 
