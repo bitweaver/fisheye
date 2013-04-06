@@ -67,7 +67,7 @@ function data_image( $pData, $pParams ) {
 		$thumbUrl = $pParams['src'];
 	} elseif( @BitBase::verifyId( $pParams['id'] ) && $gBitSystem->isPackageActive( 'fisheye' )) {
 		require_once( FISHEYE_PKG_PATH.'FisheyeImage.php' );
-		require_once $gBitSmarty->_get_plugin_filepath( 'modifier', 'display_bytes' );
+		$gBitSmarty->loadPlugin( 'smarty_modifier_display_bytes' );
 
 		$item = new FisheyeImage( $pParams['id'], NULL );
 

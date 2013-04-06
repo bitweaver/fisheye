@@ -1,5 +1,6 @@
 {strip}
-<ul>
+<a class="dropdown-toggle" data-toggle="dropdown" href="#"> {tr}{$packageMenuTitle}{/tr} <b class="caret"></b></a>
+<ul class="{$packageMenuClass}">
 	{if $gBitUser->hasPermission('p_fisheye_view')}
 		<li><a class="item" href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php">{booticon iname="icon-list" iexplain="List Galleries" ilocation=menu}</a></li>
 	{/if}
