@@ -27,14 +27,14 @@ function updateGalleryPagination() {
 
 				{foreach from=$formGalleryGeneral key=item item=output}
 					<div class="control-group">
-						{formlabel label=`$output.label` for=$item}
+						{formlabel label=$output.label for=$item}
 						{forminput}
 							{if $output.type eq 'text'}
 								<input type="text" name="{$item}" id="{$item}" value="{$gBitSystem->getConfig($item)}"/>
 							{elseif $output.type=='checkbox'}
 								{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
 							{/if}
-							{formhelp note=`$output.note`}
+							{formhelp note=$output.note}
 						{/forminput}
 					</div>
 				{/foreach}
@@ -49,10 +49,10 @@ function updateGalleryPagination() {
 
 				{foreach from=$formGalleryListLists key=item item=output}
 					<div class="control-group">
-						{formlabel label=`$output.label` for=$item}
+						{formlabel label=$output.label for=$item}
 						{forminput}
 							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
-							{formhelp note=`$output.note`}
+							{formhelp note=$output.note}
 						{/forminput}
 					</div>
 				{/foreach}
@@ -75,10 +75,10 @@ function updateGalleryPagination() {
 
 				{foreach from=$formGalleryLists key=item item=output}
 					<div class="control-group">
-						{formlabel label=`$output.label` for=$item}
+						{formlabel label=$output.label for=$item}
 						{forminput}
 							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
-							{formhelp note=`$output.note` page=`$output.page`}
+							{formhelp note=$output.note page=$output.page}
 						{/forminput}
 					</div>
 				{/foreach}
@@ -143,10 +143,10 @@ function updateGalleryPagination() {
 
 				{foreach from=$formImageLists key=item item=output}
 					<div class="control-group">
-						{formlabel label=`$output.label` for=$item}
+						{formlabel label=$output.label for=$item}
 						{forminput}
 							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
-							{formhelp note=`$output.note`}
+							{formhelp note=$output.note}
 						{/forminput}
 					</div>
 				{/foreach}
