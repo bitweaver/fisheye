@@ -28,7 +28,7 @@ $listHash['sort_mode'] = 'random';
 
 $images = $image->getList( $listHash );
 $moduleTitle = 'Banner Image';
-$gBitSmarty->assign( 'moduleTitle', $title );
-$gBitSmarty->assign( 'modImages', $images );
-$gBitSmarty->assign( 'module_params', $module_params );
+$_template->tpl_vars['moduleTitle'] = new Smarty_variable( $title );
+$_template->tpl_vars['modImages'] = new Smarty_variable( $images );
+$_template->tpl_vars['module_params'] = new Smarty_variable( $module_params );
 ?>

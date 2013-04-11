@@ -34,7 +34,7 @@ if( $display ) {
 	if( $gQueryUserId ) {
 		$listHash['user_id'] = $gQueryUserId;
 	} elseif( !empty( $_REQUEST['user_id'] ) ) {
-		$gBitSmarty->assign( 'userGallery', $_REQUEST['user_id'] );
+		$_template->tpl_vars['userGallery'] = new Smarty_variable( $_REQUEST['user_id'] );
 		$listHash['user_id'] = $_REQUEST['user_id'];
 	} elseif( !empty( $module_params['recent_users'] ) ) {
 		$listHash['recent_users'] = TRUE;
@@ -75,15 +75,15 @@ if( $display ) {
 		}
 
 		$listHash['sort_mode'] = $sort_mode;
-		$gBitSmarty->assign( 'moduleTitle', $moduleTitle );
+		$_template->tpl_vars['moduleTitle'] = new Smarty_variable( $moduleTitle );
 	} else {
-		$gBitSmarty->assign( 'moduleTitle', $title );
+		$_template->tpl_vars['moduleTitle'] = new Smarty_variable( $title );
 	}
 
-	$gBitSmarty->assign( 'imageSort', $sort_mode );
-	$gBitSmarty->assign( 'modImages', $images );
-	$gBitSmarty->assign( 'module_params', $module_params );
-	$gBitSmarty->assign( 'maxlen', isset( $module_params["maxlen"] ) ? $module_params["maxlen"] : 0 );
-	$gBitSmarty->assign( 'maxlendesc', isset( $module_params["maxlendesc"] ) ? $module_params["maxlendesc"] : 0 );
+	$_template->tpl_vars['imageSort'] = new Smarty_variable( $sort_mode );
+	$_template->tpl_vars['modImages'] = new Smarty_variable( $images );
+	$_template->tpl_vars['module_params'] = new Smarty_variable( $module_params );
+	$_template->tpl_vars['maxlen'] = new Smarty_variable( isset( $module_params["maxlen"] ) );
+	$_template->tpl_vars['maxlendesc'] = new Smarty_variable( isset( $module_params["maxlendesc"] ) );
 }
 ?>
