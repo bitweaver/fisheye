@@ -23,7 +23,7 @@ $pluginParams = array (
 	'plugin_type'   => DATA_PLUGIN,
 
 	// display icon in quicktags bar
-	'biticon'       => '{biticon ilocation=quicktag iname=image-x-generic iexplain="Image"}',
+	'booticon'       => '{booticon iname="icon-picture" iexplain="Image"}',
 	'taginsert'     => '{image id= size= nolink=}',
 
 	// functions
