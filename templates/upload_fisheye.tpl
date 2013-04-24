@@ -89,11 +89,10 @@
 			<div class="width50p floatleft">
 				{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
 					<div class="control-group">
-						{formlabel label="Process Archive(s)" for="process_archive"}
-						{forminput}
-							<input type="checkbox" id="process_archive" name="process_archive" value="true" checked="checked" />
+						<label class="checkbox">
+							<input type="checkbox" id="process_archive" name="process_archive" value="true" checked="checked" />Process Archive(s)
 							{formhelp note="If you don't want to have archived files processed and extracted, please uncheck the above box."}
-						{/forminput}
+						</label>
 					</div>
 				{else}
 					<input type="hidden" name="process_archive" value="true" />
@@ -101,20 +100,18 @@
 
 				{if function_exists('exif_read_data')}
 					<div class="control-group">
-						{formlabel label="Auto-Rotate Images" for="rotate_image"}
-						{forminput}
-							<input type="checkbox" id="rotate_image" name="rotate_image" value="auto" checked="checked" />
+						<label class="checkbox">
+							<input type="checkbox" id="rotate_image" name="rotate_image" value="auto" checked="checked" />Auto-Rotate Images
 							{formhelp note="If your camera was turned sideways when the image was taken, this will attempt to orient the image correctly."}
-						{/forminput}
+						</label>
 					</div>
 				{/if}
 
 				<div class="control-group">
-					{formlabel label="Use Filenames" for="use_filenames"}
-					{forminput}
-						<input type="checkbox" id="use_filenames" name="use_filenames" value="true"/>
+					<label class="checkbox">
+						<input type="checkbox" id="use_filenames" name="use_filenames" value="true"/>Use Filenames
 						{formhelp note="If you would like to name your images based upon their filenames rather than their EXIF data."}
-					{/forminput}
+					</label>
 				</div>
 
 				<div class="control-group">

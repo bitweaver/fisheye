@@ -14,7 +14,7 @@
 
 			{formfeedback hash=$formfeedback}
 
-			<table class="data">
+			<table class="table data">
 				<tr>
 					<th scope="col" style="width:200px;">{tr}Thumbnail{/tr}</th>
 					<th scope="col">{tr}Title and Position{/tr}</th>

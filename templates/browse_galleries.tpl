@@ -7,7 +7,7 @@
 
 	<div class="body">
 
-		<table class="data">
+		<table class="table data">
 			<tr>
 				<th><a href="{$smarty.const.FISHEYE_PKG_URL}browse.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Gallery Name{/tr}</a></th>
 			</tr>

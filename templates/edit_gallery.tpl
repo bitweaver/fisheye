@@ -51,20 +51,18 @@ function updateGalleryPagination() {
 
 						{if $gBitUser->hasPermission('p_fisheye_create_public_gal')}
 							<div class="control-group">
-								{formlabel label="Public Gallery" for="is_public"}
-								{forminput}
-									<input type="checkbox" name="is_public" id="is_public" value="y" {if $gContent->getPreference('is_public') eq 'y'}checked="checked"{/if} />
+								<label class="checkbox">
+									<input type="checkbox" name="is_public" id="is_public" value="y" {if $gContent->getPreference('is_public') eq 'y'}checked="checked"{/if} />Public Gallery
 									{formhelp note="Allow other users to upload to this gallery."}
-								{/forminput}
+								</label>
 							</div>
 						{/if}
 
 						<div class="control-group">
-							{formlabel label="Show Original Images" for="link_original_images"}
-							{forminput}
-								<input type="checkbox" name="link_original_images" id="link_original_images" value="y" {if $gContent->getPreference('link_original_images') eq 'y'}checked="checked"{/if} />
+							<label class="checkbox">
+								<input type="checkbox" name="link_original_images" id="link_original_images" value="y" {if $gContent->getPreference('link_original_images') eq 'y'}checked="checked"{/if} />Show Original Images
 								{formhelp note="Display a link to the original image for anyone viewing the images in the gallery."}
-							{/forminput}
+							</label>
 						</div>
 
 						<div class="control-group">
@@ -118,11 +116,10 @@ function updateGalleryPagination() {
 						{/if}
 
 						<div class="control-group">
-							{formlabel label="Image Comments" for=allow_comments}
-							{forminput}
-								<input type="checkbox" name="allow_comments" id="allow_comments" value="y" {if !$gContent->isValid() || $gContent->getPreference('allow_comments') eq 'y'}checked="checked"{/if} />
+							<label class="checkbox">
+								<input type="checkbox" name="allow_comments" id="allow_comments" value="y" {if !$gContent->isValid() || $gContent->getPreference('allow_comments') eq 'y'}checked="checked"{/if} />Image Comments
 								{formhelp note="Allow posting comments for an image."}
-							{/forminput}
+							</label>
 						</div>
 
 						{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}

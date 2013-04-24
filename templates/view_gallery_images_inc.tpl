@@ -26,7 +26,7 @@
 	<div class="clear"></div>
 {elseif $gContent->getLayout() == 'simple_list'}
 	{assign var=thumbsize value='small'}
-	<table class="data">
+	<table class="table data">
 		<caption>{tr}List of files{/tr} <span class="total">[ {$galInfo.total_records|default:0} ]</span></caption>
 		<tr>
 			{if $thumbsize}
