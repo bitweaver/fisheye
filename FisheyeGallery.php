@@ -829,13 +829,19 @@ class FisheyeGallery extends FisheyeBase {
 	function generateList( $pListHash, $pOptions, $pLocate = FALSE ) {
 		$ret = '';
 		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {
+				
+			$class = 'unstyled';
 			$ret = "<ul ";
 			foreach( array( 'class', 'name', 'id', 'onchange' ) as $key ) {
 				if( !empty( $pOptions[$key] ) ) {
-					$ret .= " $key=\"$pOptions[$key]\" ";
+					if( $key = 'class' ) {
+						$class .= ' '.$pOptions[$key];
+					} else {
+						$ret .= " $key=\"$pOptions[$key]\" ";
+					}
 				}
 			}
-			$ret .= ">";
+			$ret .= ' class="'.$class.'">';
 			$ret .= FisheyeGallery::generateListItems( $hash, $pOptions, $pLocate );
 			$ret .= "</ul>";
 		}
@@ -846,21 +852,26 @@ class FisheyeGallery extends FisheyeBase {
 	function generateListItems( &$pHash, $pOptions, $pLocate ) {
 		$ret = '';
 		foreach( array_keys( $pHash ) as $conId ) {
+			$class = !empty( $pOptions['radio_checkbox'] ) ? 'checkbox' : '';
 			$ret .= '<li id="fisheyegallery'.$pHash[$conId]['content']['gallery_id'].'" gallery_id="'.$pHash[$conId]['content']['gallery_id'].'" ';
 			if( !empty( $pOptions['item_attributes'] ) ) {
 				foreach( $pOptions['item_attributes'] as $key=>$value ) {
-					$ret .= " $key=\"$value\" ";
+					if( $key = 'class' ) {
+						$class .= ' '.$value;
+					} else {
+						$ret .= " $key=\"$value\" ";
+					}
 				}
 			}
-			$ret .= ' >';
+			$ret .= ' class="'.$class.'">';
 			if ( $pLocate || $pHash[$conId]['content']['content_id'] != $this->mContentId ) {
 				if( !empty( $pOptions['radio_checkbox'] ) ) {
 					$ret .= '<input type="checkbox" name="gallery_additions[]" value="'.$pHash[$conId]['content']['gallery_id'].'" ';
 					if( !empty( $pHash[$conId]['content']['in_gallery'] ) || $pHash[$conId]['content']['content_id'] == $this->mContentId ) {
 						$ret .=	' checked="checked" ';
+					}
+					$ret .= '/>';
 				}
-				$ret .= '/>';
-			}
 			}
 			if ( $pHash[$conId]['content']['content_id'] == $this->mContentId
 				or ( isset( $pHash[$conId]['content']['in_gallery'] ) and $pHash[$conId]['content']['in_gallery'] ) ) {
