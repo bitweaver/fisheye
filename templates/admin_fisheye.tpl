@@ -60,7 +60,7 @@ function updateGalleryPagination() {
 				<div class="control-group">
 					{formlabel label="List Thumbnail Size"}
 					{forminput}
-						{html_options values=$imageSizes options=$imageSizes name="list_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_list_thumbnail_size')}
+						{html_options values=$imageSizes options=$imageSizes name="fisheye_list_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_list_thumbnail_size')}
 					{/forminput}
 				</div>
 			{/legend}
@@ -129,7 +129,7 @@ function updateGalleryPagination() {
 				<div class="control-group">
 					{formlabel label="Default Thumbnail Size" for="default_gallery_thumbnail_size"}
 					{forminput}
-						{html_options values=$imageSizes options=$imageSizes name="default_gallery_thumbnail_size" id="default_gallery_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size')}
+						{html_options values=$imageSizes options=$imageSizes name="fisheye_gallery_default_thumbnail_size" id="default_gallery_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size')}
 					{/forminput}
 				</div>
 			{/legend}

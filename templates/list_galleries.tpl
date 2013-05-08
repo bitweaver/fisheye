@@ -33,7 +33,7 @@
 		<div class="row-fluid">
 		<ul class="thumbnails">
 			{foreach from=$galleryList key=galleryId item=gal}
-				<li class="span4 {$gal.content_type_guid}">
+				<li class="span3 {$gal.content_type_guid}">
 					<div class="thumbnail">
 						{if $gBitSystem->isFeatureActive('fisheye_list_thumbnail') && $gal.display_url}
 						<a href="{$gal.display_url}"><img class="thumb" src="{$gal.thumbnail_uri}" alt="{$gal.title|escape}" title="{$gal.title|escape}" /></a>
