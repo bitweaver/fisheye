@@ -834,7 +834,7 @@ class FisheyeGallery extends FisheyeBase {
 			$ret = "<ul ";
 			foreach( array( 'class', 'name', 'id', 'onchange' ) as $key ) {
 				if( !empty( $pOptions[$key] ) ) {
-					if( $key = 'class' ) {
+					if( $key == 'class' ) {
 						$class .= ' '.$pOptions[$key];
 					} else {
 						$ret .= " $key=\"$pOptions[$key]\" ";

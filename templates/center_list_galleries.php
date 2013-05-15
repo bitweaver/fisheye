@@ -1,6 +1,9 @@
 <?php
 global $gQueryUser;
-extract( $moduleParams );
+if( !empty( $moduleParams ) ) {
+	extract( $moduleParams );
+}
+
 $gFisheyeGallery = new FisheyeGallery();
 
 /* Get a list of galleries which matches the imput paramters (default is to list every gallery in the system) */
