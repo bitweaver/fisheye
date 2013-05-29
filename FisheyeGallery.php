@@ -856,7 +856,7 @@ class FisheyeGallery extends FisheyeBase {
 			$ret .= '<li id="fisheyegallery'.$pHash[$conId]['content']['gallery_id'].'" gallery_id="'.$pHash[$conId]['content']['gallery_id'].'" ';
 			if( !empty( $pOptions['item_attributes'] ) ) {
 				foreach( $pOptions['item_attributes'] as $key=>$value ) {
-					if( $key = 'class' ) {
+					if( $key == 'class' ) {
 						$class .= ' '.$value;
 					} else {
 						$ret .= " $key=\"$value\" ";
