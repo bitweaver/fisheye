@@ -545,7 +545,7 @@ class FisheyeImage extends FisheyeBase {
 
 	// Get resolution, etc
 	function getImageDetails($pFilePath = NULL) {
-		$info = NULL;
+		$info = array();
 		if( file_exists( $pFilePath ) ) {
 			$checkFiles = array( $pFilePath, dirname( $pFilePath ).'/original.jpg' );
 		} else {
