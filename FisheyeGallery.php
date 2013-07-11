@@ -718,7 +718,7 @@ class FisheyeGallery extends FisheyeBase {
 				FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query, $splitVars ) );
 				FisheyeGallery::getTreeSort( $ret );
 			}
-				} else if ( $this->mDb->mType == 'firebird' ) {
+		} else if ( $this->mDb->mType == 'firebird' ) {
 			$bindVars = array();
 			$containVars = array();
 			$selectSql = '';

@@ -1,12 +1,12 @@
 <?php
 /**
-* Gallery2 Remote support for fisheye
-*
-* @package  fisheye
-* @version  $Header$
-* @author   spider <spider@steelsun.com>
-* @author   tylerbello <tylerbello@gmail.com>
-*/
+ * Gallery2 Remote support for fisheye
+ *
+ * @package  fisheye
+ * @version  $Header$
+ * @author   spider <spider@steelsun.com>
+ * @author   tylerbello <tylerbello@gmail.com>
+ */
 
 // +----------------------------------------------------------------------+
 // | Copyright (c) 2004, bitweaver.org
@@ -44,8 +44,9 @@ define( 'FEG2REMOTE_CREATE_ALBUM_FAILED', 502 );
 define( 'FEG2REMOTE_MOVE_ALBUM_FAILED', 503 );
 define( 'FEG2REMOTE_ROTATE_IMAGE_FAILED', 504 );
 
-
-
+/**
+ * @package  fisheye
+ */
 class FisheyeRemote {
 
 	var $mResponse = array();

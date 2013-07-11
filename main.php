@@ -21,7 +21,9 @@
 // +----------------------------------------------------------------------+
 
 chdir( dirname( __FILE__ ) );
-
+/**
+ * Setup
+ */
 require_once( '../kernel/setup_inc.php' );
 
 //Point of access for FisheyeRemote requests
