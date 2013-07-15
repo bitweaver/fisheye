@@ -128,10 +128,10 @@ class FisheyeImage extends FisheyeBase {
 					$this->mInfo['image_file'] = NULL;
 				}
 
-				if( empty( $this->mInfo['height'] ) ||  empty( $this->mInfo['height'] ) ) {
+				if( empty( $this->mInfo['width'] ) ||  empty( $this->mInfo['height'] ) ) {
 					$details = $this->getImageDetails();
 					// bounds checking on the width and height - corrupt photos can be ridiculously huge or negative
-					if( $details['width'] > 0 AND $details['width'] < 9999 AND $details['height'] > 0 AND $details['height'] < 9999 ) {
+					if( !empty($details) AND $details['width'] > 0 AND $details['width'] < 9999 AND $details['height'] > 0 AND $details['height'] < 9999 ) {
 						$this->mInfo['width'] = $details['width'];
 						$this->mInfo['height'] = $details['height'];
 						$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=?, `height`=? WHERE `content_id`=?", array( $this->mInfo['width'], $this->mInfo['height'], $this->mContentId ) );
@@ -300,7 +300,7 @@ class FisheyeImage extends FisheyeBase {
 							WHERE `image_id` = ?";
 					$bindVars = array($this->mContentId, $imageDetails['width'], $imageDetails['height'], $this->mImageId);
 				} else {
-					$this->mImageId = $this->mDb->GenID( 'fisheye_image_id_seq' );
+					$this->mImageId = defined( 'LINKED_ATTACHMENTS' ) ? $this->mContentId : $this->mDb->GenID('fisheye_image_id_seq');
 					$this->mInfo['image_id'] = $this->mImageId;
 					$sql = "INSERT INTO `".BIT_DB_PREFIX."fisheye_image` (`image_id`, `content_id`, `width`, `height`) VALUES (?,?,?,?)";
 					$bindVars = array($this->mImageId, $this->mContentId, $imageDetails['width'], $imageDetails['height']);
