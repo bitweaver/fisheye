@@ -664,7 +664,7 @@ class FisheyeGallery extends FisheyeBase {
 				}
 			}
 		} elseif( @BitBase::verifyId( $pParamHash['content_id'] ) ) {
-			$ret = FISHEYE_PKG_URL.'view_image.php?content_id='.$pParamHash['content_id'];
+			$ret = FISHEYE_PKG_URL.'view.php?content_id='.$pParamHash['content_id'];
 		}
 		return $ret;
 	}
