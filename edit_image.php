@@ -16,7 +16,11 @@ global $gBitSystem;
 
 include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
 
-$gContent->verifyUpdatePermission();
+if( $gContent->isValid() ) {
+	$gContent->verifyUpdatePermission();
+} else {
+	bit_redirect( FISHEYE_PKG_URL.'?user_id='.$gBitUser->mUserId );
+}
 
 //Utility function, maybe should be moved for use elsewhere. Seems like it has a multitude of possible hook points
 function convertSmartQuotes($string)
@@ -135,7 +139,7 @@ if( $gContent->mContentId ) {
 if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
 	unset( $getHash['user_id'] );
 } elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
-	$getHash['show_public'] = TRUE;
+//	$getHash['show_public'] = TRUE;
 }
 $galleryTree = $gFisheyeGallery->generateList( $getHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle'), 'radio_checkbox' => TRUE, ), true );
 $gBitSmarty->assign_by_ref( 'galleryTree', $galleryTree );
