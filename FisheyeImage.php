@@ -560,7 +560,8 @@ class FisheyeImage extends FisheyeBase {
 
 		foreach( $checkFiles as $cf ) {
 			if ($cf && file_exists( $cf ) && filesize( $cf ) ) {
-				if( $info = getimagesize( rtrim( $cf ) ) ) {
+				if( $imageSize = getimagesize( rtrim( $cf ) ) ) {
+					$info = $imageSize;
 					$info['width'] = $info[0];
 					$info['height'] = $info[1];
 					$info['size'] = filesize( $cf );
