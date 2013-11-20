@@ -28,7 +28,7 @@ if( !empty( $_REQUEST['refresh'] ) ) {
 include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
 
 if( $gContent && $gContent->isValid() ) {
-	$gBitSystem->setCanonicalLink( $gContent->getDisplayUri() );
+	$gBitSystem->setCanonicalLink( $gContent->getDisplayUrl() );
 }
 
 global $gHideModules;
