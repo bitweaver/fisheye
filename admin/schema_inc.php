@@ -78,6 +78,7 @@ $gBitInstaller->registerPreferences( FISHEYE_PKG_NAME, array(
 
 // ### Default User Permissions
 $gBitInstaller->registerUserPermissions( FISHEYE_PKG_NAME, array(
+	array('p_fisheye_list_galleries', 'Can list image galleries', 'basic', FISHEYE_PKG_NAME),
 	array('p_fisheye_view', 'Can view image galleries', 'basic', FISHEYE_PKG_NAME),
 	array('p_fisheye_create', 'Can create an image gallery', 'registered', FISHEYE_PKG_NAME),
 	array('p_fisheye_update', 'Can update image gallery', 'editors', FISHEYE_PKG_NAME),
