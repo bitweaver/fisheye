@@ -13,6 +13,8 @@ require_once( '../kernel/setup_inc.php' );
 require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
 global $gBitSystem, $gBitSmarty, $gFisheyeGallery;
 
+//$gBitSystem->verifyPermission( 'p_fisheye_list_galleries' );
+
 $gFisheyeGallery = new FisheyeGallery();
 
 /* Get a list of galleries which matches the input parameters (default is to list every gallery in the system) */
