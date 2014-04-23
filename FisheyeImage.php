@@ -710,12 +710,18 @@ class FisheyeImage extends FisheyeBase {
 		return( $this->mContentId );
 	}
 
-	function getThumbnailUrl( $pSize = 'small', $pInfoHash = NULL, $pSecondaryId = NULL, $pDefault=TRUE ) {
+	function getThumbnailUrl( $pSize = 'small', $pSecondaryId = NULL, $pDefault=TRUE ) {
 		$ret = NULL;
-		if( !empty( $pInfoHash ) ) {
-			// do some stuff if we are given a hash of stuff
-		} elseif( isset( $this->mInfo['thumbnail_url'][$pSize] ) ) {
+		if( $this->isValid() && isset( $this->mInfo['thumbnail_url'][$pSize] ) ) {
 			$ret = $this->mInfo['thumbnail_url'][$pSize];
+		}
+		return $ret;
+	}
+
+	public static function getThumbnailUrlFromHash( &$pMixed, $pSize = 'small', $pSecondaryId = NULL, $pDefault=TRUE ) {
+		$ret = NULL;
+		if( isset( $pMixed['thumbnail_url'][$pSize] ) ) {
+			$ret = $pMixed['thumbnail_url'][$pSize];
 		}
 		return $ret;
 	}
