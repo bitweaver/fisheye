@@ -104,7 +104,7 @@
 			{/jstabs}
 
 			<div class="control-group submit">
-				<input type="submit" class="btn" name="saveImage" value="Save Image"/>
+				<input type="submit" class="btn btn-default" name="saveImage" value="Save Image"/>
 			</div>
 		{/form}
 	</div> <!-- end .body -->

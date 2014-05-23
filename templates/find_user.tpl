@@ -28,7 +28,7 @@
 				Username: <input type="text" name="find" value="{$find}"/>
 			</div>
 			<div class="formsubmit">
-				<input type="submit" class="btn" name="submitUserSearch" value="Search"/>
+				<input type="submit" class="btn btn-default" name="submitUserSearch" value="Search"/>
 			</div>
 		</form>
 	</div>
