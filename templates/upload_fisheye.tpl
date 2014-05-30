@@ -37,7 +37,7 @@
 							{include file="bitpackage:kernel/upload_slot_inc.tpl" hash_key=imagedata}
 						{else}
 							
-							<div class="control-group">
+							<div class="form-group">
 								{formlabel label="Select File(s)"}
 								{forminput}
 									<input type="file" name="file0" id="fileupload" />
@@ -45,7 +45,7 @@
 								{/forminput}
 							</div>
 
-							<div class="control-group">
+							<div class="form-group">
 								{formlabel label="Selected File(s)" for=""}
 								{forminput}
 									<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/libs/multifile.js"></script>
@@ -67,7 +67,7 @@
 				{/jstabs}
 
 			<div class="width48p floatright box">
-				<div class="control-group">
+				<div class="form-group">
 					{if !$gBitUser->hasPermission( 'p_fisheye_create' )}
 						{formfeedback warning="Please make sure you select a gallery to load your images into, otherwise your images will be discarded"}
 					{/if}
@@ -88,7 +88,7 @@
 			</div>
 			<div class="width50p floatleft">
 				{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
-					<div class="control-group">
+					<div class="form-group">
 						<label class="checkbox">
 							<input type="checkbox" id="process_archive" name="process_archive" value="true" checked="checked" />Process Archive(s)
 							{formhelp note="If you don't want to have archived files processed and extracted, please uncheck the above box."}
@@ -99,7 +99,7 @@
 				{/if}
 
 				{if function_exists('exif_read_data')}
-					<div class="control-group">
+					<div class="form-group">
 						<label class="checkbox">
 							<input type="checkbox" id="rotate_image" name="rotate_image" value="auto" checked="checked" />Auto-Rotate Images
 							{formhelp note="If your camera was turned sideways when the image was taken, this will attempt to orient the image correctly."}
@@ -107,14 +107,14 @@
 					</div>
 				{/if}
 
-				<div class="control-group">
+				<div class="form-group">
 					<label class="checkbox">
 						<input type="checkbox" id="use_filenames" name="use_filenames" value="true"/>Use Filenames
 						{formhelp note="If you would like to name your images based upon their filenames rather than their EXIF data."}
 					</label>
 				</div>
 
-				<div class="control-group">
+				<div class="form-group">
 					{include file="bitpackage:fisheye/resize_image_select.tpl"}
 				</div>
 			</div>
@@ -123,7 +123,7 @@
 
 			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_mini_tpl"}
 
-			<div class="control-group submit">
+			<div class="form-group submit">
 				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
 				<input type="submit" class="btn btn-default" id="submitbutton" value="{tr}Upload File(s){/tr}" {if $submitClick}onclick="{$submitClick}"{/if}/>
 			</div>

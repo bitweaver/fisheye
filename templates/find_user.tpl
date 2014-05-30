@@ -24,7 +24,7 @@
 	<div class="finduser">
 	<h2>User Search</h2>
 		<form name="formUserSearch" action="{$smarty.server.SCRIPT_NAME}">
-			<div class="control-group">
+			<div class="form-group">
 				Username: <input type="text" name="find" value="{$find}"/>
 			</div>
 			<div class="formsubmit">
@@ -39,7 +39,7 @@
 		<table>
 		<tr><th>Username</th><th>Real Name</th><th>User Id</th><th>Actions</th></tr>
 		{section name=ix loop=$foundUsers}
-			<tr class="control-group">
+			<tr class="form-group">
 				<td>{$foundUsers[ix].login}</td>
 				<td>{$foundUsers[ix].real_name}</td>
 				<td>{$foundUsers[ix].user_id}</td>

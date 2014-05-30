@@ -35,14 +35,14 @@ function updateGalleryPagination() {
 
 						<input type="hidden" name="gallery_id" value="{$galleryId|escape}"/>
 
-						<div class="control-group">
+						<div class="form-group">
 							{formlabel label="Title" for="gallery-title" mandatory="y"}
 							{forminput}
 								<input type="text" name="title" id="gallery-title" value="{$gContent->getTitle()|escape}" maxlength="160" size="50"/>
 							{/forminput}
 						</div>
 
-						<div class="control-group">
+						<div class="form-group">
 							{formlabel label="Description" for="gallery-desc"}
 							{forminput}
 								<textarea name="edit" id="gallery-desc" rows="4" cols="50">{$gContent->mInfo.data|escape}</textarea>
@@ -50,7 +50,7 @@ function updateGalleryPagination() {
 						</div>
 
 						{if $gBitUser->hasPermission('p_fisheye_create_public_gal')}
-							<div class="control-group">
+							<div class="form-group">
 								<label class="checkbox">
 									<input type="checkbox" name="is_public" id="is_public" value="y" {if $gContent->getPreference('is_public') eq 'y'}checked="checked"{/if} />Public Gallery
 									{formhelp note="Allow other users to upload to this gallery."}
@@ -58,14 +58,14 @@ function updateGalleryPagination() {
 							</div>
 						{/if}
 
-						<div class="control-group">
+						<div class="form-group">
 							<label class="checkbox">
 								<input type="checkbox" name="link_original_images" id="link_original_images" value="y" {if $gContent->getPreference('link_original_images') eq 'y'}checked="checked"{/if} />Show Original Images
 								{formhelp note="Display a link to the original image for anyone viewing the images in the gallery."}
 							</label>
 						</div>
 
-						<div class="control-group">
+						<div class="form-group">
 							{formlabel label="Gallery Pagination" for="gallery-pagination"}
 							{forminput}
 								{html_options name="gallery_pagination" id="gallery-pagination" options=$galleryPaginationTypes selected=$gContent->getPreference('gallery_pagination',$gBitSystem->getConfig('default_gallery_pagination',$smarty.const.FISHEYE_PAGINATION_FIXED_GRID)) onchange="updateGalleryPagination();"}
@@ -102,7 +102,7 @@ function updateGalleryPagination() {
 						</div>
 
 						{if $thumbnailSizes}
-							<div class="control-group">
+							<div class="form-group">
 								{formlabel label="Thumbnail Size" for="thumbnail_size"}
 								{forminput}
 									{if $gContent->mInfo.thumbnail_size}
@@ -115,7 +115,7 @@ function updateGalleryPagination() {
 							</div>
 						{/if}
 
-						<div class="control-group">
+						<div class="form-group">
 							<label class="checkbox">
 								<input type="checkbox" name="allow_comments" id="allow_comments" value="y" {if !$gContent->isValid() || $gContent->getPreference('allow_comments') eq 'y'}checked="checked"{/if} />Image Comments
 								{formhelp note="Allow posting comments for an image."}
@@ -132,7 +132,7 @@ function updateGalleryPagination() {
 					{jstab title="Gallery Memberships"}
 						{legend legend="Gallery Memberships"}
 							{tr}If you would like this gallery to be a sub-gallery, check the parent gallery below. It is possible to belong to multiple galleries. If no parent is checked, this gallery will appear as a top-level gallery.{/tr}
-							<div class="control-group">
+							<div class="form-group">
 								{formlabel label=$gContent->getContentTypeName()|cat:" Belongs to These Galleries"}
 								{forminput}
 									{if $galleryTree}
@@ -151,7 +151,7 @@ function updateGalleryPagination() {
 				{/if}
 			{/jstabs}
 
-			<div class="control-group submit">
+			<div class="form-group submit">
 				{if $gContent->isValid()}
 					<input type="submit" class="btn btn-default" name="cancelgallery" value="Cancel"/>
 				{/if}

@@ -21,12 +21,12 @@ function updateGalleryPagination() {
 	{jstabs}
 		{jstab title="Settings"}
 			{legend legend="General Settings"}
-				<div class="control-group">
+				<div class="form-group">
 					{formhelp note="To change the Image Processing engine, you need to change the setting in Liberty Settings" link="kernel/admin/index.php?page=liberty/Liberty Settings"}
 				</div>
 
 				{foreach from=$formGalleryGeneral key=item item=output}
-					<div class="control-group">
+					<div class="form-group">
 						{formlabel label=$output.label for=$item}
 						{forminput}
 							{if $output.type eq 'text'}
@@ -43,12 +43,12 @@ function updateGalleryPagination() {
 
 		{jstab title="List"}
 			{legend legend="Gallery List Options"}
-				<div class="control-group">
+				<div class="form-group">
 					{formhelp note="The options below determine what information is shown on the List Galleries page."}
 				</div>
 
 				{foreach from=$formGalleryListLists key=item item=output}
-					<div class="control-group">
+					<div class="form-group">
 						{formlabel label=$output.label for=$item}
 						{forminput}
 							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
@@ -57,7 +57,7 @@ function updateGalleryPagination() {
 					</div>
 				{/foreach}
 
-				<div class="control-group">
+				<div class="form-group">
 					{formlabel label="List Thumbnail Size"}
 					{forminput}
 						{html_options values=$imageSizes options=$imageSizes name="fisheye_list_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_list_thumbnail_size')}
@@ -69,12 +69,12 @@ function updateGalleryPagination() {
 		{jstab title="Galleries"}
 			{legend legend="Gallery Display Settings"}
 				<input type="hidden" name="page" value="{$page}" />
-				<div class="control-group">
+				<div class="form-group">
 					{formhelp note="The options below determine what information is shown on a gallery display page."}
 				</div>
 
 				{foreach from=$formGalleryLists key=item item=output}
-					<div class="control-group">
+					<div class="form-group">
 						{formlabel label=$output.label for=$item}
 						{forminput}
 							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
@@ -83,7 +83,7 @@ function updateGalleryPagination() {
 					</div>
 				{/foreach}
 
-				<div class="control-group">
+				<div class="form-group">
 					{formlabel label="Default sort order" for="fisheye_gallery_default_sort_mode"}
 					{forminput}
 						{html_options values=$sortOptions options=$sortOptions name="fisheye_gallery_default_sort_mode" id="fisheye_gallery_default_sort_mode" selected=$gBitSystem->getConfig('fisheye_gallery_default_sort_mode')}
@@ -93,11 +93,11 @@ function updateGalleryPagination() {
 			{/legend}
 
 			{legend legend="Default Gallery Display Settings"}
-				<div class="control-group">
+				<div class="form-group">
 					{formhelp note="The settings below determine what the default display options will be set to for new galleries."}
 				</div>
 
-				<div class="control-group">
+				<div class="form-group">
 					{html_options id="gallery-pagination" name="default_gallery_pagination" id="gallery-pagination" options=$galleryPaginationTypes selected=$gBitSystem->getConfig('default_gallery_pagination',$smarty.const.FISHEYE_PAGINATION_GALLERIFFIC) onchange="updateGalleryPagination();"}
 
 					<div id="fixed_grid-pagination">
@@ -126,7 +126,7 @@ function updateGalleryPagination() {
 					</div>
 				</div>
 
-				<div class="control-group">
+				<div class="form-group">
 					{formlabel label="Default Thumbnail Size" for="default_gallery_thumbnail_size"}
 					{forminput}
 						{html_options values=$imageSizes options=$imageSizes name="fisheye_gallery_default_thumbnail_size" id="default_gallery_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size')}
@@ -137,12 +137,12 @@ function updateGalleryPagination() {
 
 		{jstab title="Images"}
 			{legend legend="Image Display Settings"}
-				<div class="control-group">
+				<div class="form-group">
 					{formhelp note="The options below determine what information is displayed on the image display page."}
 				</div>
 
 				{foreach from=$formImageLists key=item item=output}
-					<div class="control-group">
+					<div class="form-group">
 						{formlabel label=$output.label for=$item}
 						{forminput}
 							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
@@ -153,7 +153,7 @@ function updateGalleryPagination() {
 			{/legend}
 
 			{legend legend="Default Image Display Settings"}
-				<div class="control-group">
+				<div class="form-group">
 					{formlabel label="Default Thumbnail Size"}
 					{forminput}
 						{html_options values=$imageSizes options=$imageSizes name="default_image_thumbnail_size" selected=$gBitSystem->getConfig('fisheye_image_default_thumbnail_size')}
@@ -162,7 +162,7 @@ function updateGalleryPagination() {
 			{/legend}
 		{/jstab}
 
-		<div class="control-group submit">
+		<div class="form-group submit">
 			<input type="submit" class="btn btn-default" name="fisheyeAdminSubmit" value="{tr}Change Preferences{/tr}" />
 		</div>
 	{/jstabs}
