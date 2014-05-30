@@ -8,7 +8,7 @@
 	</header>
 
 	<section class="body">
-		<ul class="inline navbar sortby">
+		<ul class="list-inline navbar sortby">
 			<li>{booticon iname="icon-circle-arrow-right"  ipackage="icons"  iexplain="sort by" iforce="icon"}</li>
 			{if $gBitSystem->isFeatureActive('fisheye_list_title')}
 				<li>{smartlink ititle="Gallery Name" isort="title" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
