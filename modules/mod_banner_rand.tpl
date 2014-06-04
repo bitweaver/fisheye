@@ -1,9 +1,10 @@
 {strip}
 <div id="banner">
-	<div id="background">
+	<ul id="background">
 		{foreach from=$modImages item=modImg}
-		        <img src="{$modImg.thumbnail_url}" title="{$modImg.title|escape}" alt="{$modImg.title|escape}" />
+		        <li><img src="/liberty/download_file.php?attachment_id={$modImg.image_id}" title="{$modImg.title|escape}" alt="{$modImg.title|escape}" /></li>
 		{/foreach}
-	</div>
+	</ul>
+	<div id="overlay"></div>
 </div>
 {/strip}
