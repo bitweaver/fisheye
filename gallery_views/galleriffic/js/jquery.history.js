@@ -27,8 +27,8 @@ jQuery.extend({
 		if (jQuery.browser.msie) {
 			// To stop the callback firing twice during initilization if no hash present
 			if (jQuery.historyCurrentHash == '') {
-				jQuery.historyCurrentHash = '#';
-			}
+			jQuery.historyCurrentHash = '#';
+		}
 		
 			// add hidden iframe for IE
 			jQuery("body").prepend('<iframe id="jQuery_history" style="display: none;"'+
