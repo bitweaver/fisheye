@@ -67,7 +67,7 @@
 		</ul>			
 		</div>
 	</div>
-
+	<div class="clear"></div>
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
 
 	{if $gContent->getPreference('allow_comments') eq 'y'}
@@ -221,4 +221,5 @@ jQuery(document).ready(function($) {
 {/literal}
 /*]]>*/</script>
 
-</div>{/strip}
+</div>
+{/strip}
