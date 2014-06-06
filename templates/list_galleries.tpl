@@ -30,7 +30,7 @@
 			</li>
 		</ul>
 
-		<div class="row">
+		<div class="form-group">
 		<ul class="thumbnails">
 			{foreach from=$galleryList key=galleryId item=gal}
 				<li class="col-md-3 {$gal.content_type_guid}">
