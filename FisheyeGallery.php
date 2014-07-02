@@ -731,7 +731,6 @@ class FisheyeGallery extends FisheyeBase {
 				$bindVars[] = $pListHash['contain_item'];
 				$containVars[] = $pListHash['contain_item'];
 			}
-
 			$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
 			if( isset( $pListHash['contain_item'] ) ) {
@@ -768,12 +767,14 @@ class FisheyeGallery extends FisheyeBase {
 							WHERE lc.`content_type_guid` = 'fisheyegallery' $whereSql
 						  ORDER BY T.BRANCH, fgimo.`item_position`";
 
-//			$splitVars[] = $conId;
+
+
 			if( !empty( $bindVars ) ) {
 				FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query, $bindVars ) );
 			} else {
 				FisheyeGallery::splitConnectByTree( $ret, $gBitDb->GetAssoc( $query ) );
 			}
+
 		} else {
 // this needs replacing with a more suitable list query ...
 			$pListHash['show_empty'] = TRUE;
@@ -829,7 +830,7 @@ class FisheyeGallery extends FisheyeBase {
 	function generateList( $pListHash, $pOptions, $pLocate = FALSE ) {
 		$ret = '';
 		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {
-				
+
 			$class = 'unstyled';
 			$ret = "<ul ";
 			foreach( array( 'class', 'name', 'id', 'onchange' ) as $key ) {
