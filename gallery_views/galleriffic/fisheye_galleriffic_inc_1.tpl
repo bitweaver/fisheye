@@ -28,7 +28,7 @@
 						<img src="{$galItem->mInfo.thumbnail_url.avatar}" alt="{$galItem->mInfo.title|escape}" />
 					</a>
 					<h2 class="heading">
-						<div class="image-heading">{biticon iname="image-x-generic" isize="small" iexplain=$galItem->getContentTypeName()|escape}{$galItem->getDisplayLink()}</div>
+						<div class="image-heading">{booticon iname="icon-picture" isize="small" iexplain=$galItem->getContentTypeName()|escape}{$galItem->getDisplayLink()}</div>
 					</h2>
 					<div class="caption">
 						<div class="meta floatright">
@@ -119,9 +119,9 @@ jQuery(document).ready(function($) {
 		renderSSControls:          true,
 		renderNavControls:         true,
 		playLinkText:              '',
-		playLinkImage:             '{/literal}{biticon iname="media-playback-start" isize="small" iexplain="Play Slideshow"}{literal}',
+		playLinkImage:             '{/literal}{booticon iname="icon-control-start" isize="small" iexplain="Play Slideshow"}{literal}',
 		pauseLinkText:             '',
-		pauseLinkImage:            '{/literal}{biticon iname="media-playback-pause" isize="small" iexplain="Pause Slideshow"}{literal}',
+		pauseLinkImage:            '{/literal}{booticon iname="icon-control-pause" isize="small" iexplain="Pause Slideshow"}{literal}',
 		prevLinkText:              '&laquo;',
 		nextLinkText:              '&raquo;',
 		nextPageLinkText:          'Next &rsaquo;',
