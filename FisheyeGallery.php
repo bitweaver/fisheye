@@ -226,6 +226,7 @@ class FisheyeGallery extends FisheyeBase {
 				$offset = $rowCount * ($pPage - 1);
 			} else {
 				$rowCount = $pImagesPerPage;
+				$offset = $rowCount * ($pPage - 1);
 			}
 		}
 
