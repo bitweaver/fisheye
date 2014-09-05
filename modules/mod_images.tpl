@@ -2,7 +2,7 @@
 {strip}
 {if $gBitSystem->isPackageActive( 'fisheye' ) && $modImages}
 	{bitmodule title="$moduleTitle" name="fisheye_images"}
-		<ul>
+		<ul class="list-unstyled">
 			{foreach from=$modImages item=modImg}
 				<li class="{cycle values='odd,even'} item">
 					<a href="{$modImg.display_url}" title="{$modImg.title|escape} - {$modImg.last_modified|bit_short_datetime}, by {displayname user=$modImg.modifier_user real_name=$modImg.modifier_real_name nolink=1}{if (strlen($modImg.title) > $maxlen) AND ($maxlen > 0)}, {$modImg.title|escape}{/if}">
