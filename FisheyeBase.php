@@ -80,6 +80,11 @@ class FisheyeBase extends LibertyMime
 		// Default does nothing
 	}
 
+	// Possible derived read-only object such as Facebook, Instagram, etc.. default is TRUE
+	function isEditable() {
+		return TRUE;
+	}
+
 	// THis is a function that creates a mack daddy function to get a breadcrumb path with a single query.
 	// Do not muck with this query unless you really, truly understand what is going on.
 /*
