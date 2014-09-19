@@ -26,8 +26,8 @@ class FisheyeGallery extends FisheyeBase {
 	var $mGalleryId;		// fisheye_gallery.gallery_id
 	var $mItems;			// Array of FisheyeImage class instances which belong to this gallery
 
-	function FisheyeGallery($pGalleryId = NULL, $pContentId = NULL) {
-		FisheyeBase::FisheyeBase();		// Call base constructor
+	function __construct($pGalleryId = NULL, $pContentId = NULL) {
+		parent::__construct();
 		$this->mGalleryId = (int)$pGalleryId;		// Set member variables according to the parameters we were passed
 		$this->mContentId = (int)$pContentId;		// liberty_content.content_id which this gallery references
 		$this->mItems = array();					// Assume no images (if $pAutoLoad is TRUE we will populate this array later)
