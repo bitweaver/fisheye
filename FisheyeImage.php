@@ -675,7 +675,7 @@ class FisheyeImage extends FisheyeBase {
 		}
 
 		if( empty( $pTitle ) ) {
-			$pTitle = FisheyeImage::getTitle( $pMixed );
+			$pTitle = FisheyeImage::getTitleFromHash( $pMixed );
 		}
 
 		$ret = $pTitle;
@@ -685,11 +685,8 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	function getTitle( $pHash=NULL, $pDefault=TRUE ) {
-		if( empty( $pHash ) && !empty( $this ) ) {
-			$pMixed = $this->mInfo;
-		}
-		$ret = trim( parent::getTitle( $pHash, $pDefault ) );
+	function getTitleFromHash( $pHash, $pDefault=TRUE ) {
+		$ret = trim( parent::getTitleFromHash( $pHash, $pDefault ) );
 		if( empty( $ret ) && $pDefault ) {
 			$storage = (!empty( $this->mStorage ) ? current( $this->mStorage ) : NULL);
 			if( !empty( $storage['file_name'] ) ) {
