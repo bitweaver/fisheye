@@ -115,6 +115,7 @@ not ready for primetime
 */
 
 	function getBreadcrumbLinks( $pIncludeSelf = FALSE ) {
+bt();
 		$ret = '';
 		if( !$this->getField( 'gallery_path' ) ) {
 			if( $this->isValid() && $parents = $this->getParentGalleries() ) {
