@@ -115,13 +115,16 @@ not ready for primetime
 */
 
 	function getBreadcrumbLinks( $pIncludeSelf = FALSE ) {
-		$ret = '';
+		global $gBitSystem;
+		//$ret['fisheye'] = $gBitSystem->getConfig('site_title');
+		$ret = array();
 		if( !$this->getField( 'gallery_path' ) ) {
 			if( $this->isValid() && $parents = $this->getParentGalleries() ) {
 				$gal = current( $parents );
 				$this->setGalleryPath( '/'.$gal['gallery_id'] );
 			}
-		} else {
+		}
+		if( $this->getField( 'gallery_path' ) ) {
 			$path = explode( '/', ltrim( $this->getField( 'gallery_path' ), '/' ) );
 			$p = 0;
 			$c = 1;
@@ -151,18 +154,15 @@ not ready for primetime
 			array_push( $bindVars, $this->mContentId );
 			$rs = $this->mDb->query( "SELECT ".rtrim( $selectSql, ',')." FROM ".rtrim( $joinSql, ',')." WHERE $whereSql", $bindVars );
 			if( !empty( $rs->fields ) ) {
-				$path = '';
 				for( $i = 1; $i <= (count( $rs->fields ) / 2); $i++ ) {
-					$urlHash['gallery_id'] = $rs->fields['gallery_id'.$i];
-					$urlHash['gallery_path'] = $path;
-					$ret .= ' <a class="breadcrumb" href="'.FisheyeGallery::getDisplayUrlFromHash( $urlHash ).'" gallery_id = "'.$rs->fields['gallery_id'.$i].'" >'.$rs->fields['title'.$i].'</a> &raquo; ';
-					$path .= '/'.$rs->fields['gallery_id'.$i];
+					$ret[$rs->fields['gallery_id'.$i]] = $rs->fields['title'.$i];
 				}
 			}
-			if( $pIncludeSelf ) {
-				$ret .= $this->getTitle();
-			}
 		}
+		if( $this->isValid() && $pIncludeSelf ) {
+			$ret[$this->mGalleryId] = $this->getTitle();
+		}
+
 		return $ret;
 	}
 

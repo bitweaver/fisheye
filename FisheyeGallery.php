@@ -1057,43 +1057,48 @@ class FisheyeGallery extends FisheyeBase {
 			}else{
 				addGalleryRecursive( $this->mGalleryId , $path, $zip);
 			}
-				$zip->close();
+			$zip->close();
 
-				//escape backslashes
-				$outputFileTitle = str_replace("\\",'\\\\',$this->getTitle());
-				//escape double quotes
-				$outputFileTitle = str_replace('"','\\"',$outputFileTitle);
+			//escape backslashes
+			$outputFileTitle = str_replace("\\",'\\\\',$this->getTitle());
+			//escape double quotes
+			$outputFileTitle = str_replace('"','\\"',$outputFileTitle);
 
-				header('Content-Description: File Transfer');
-				header('Content-Type: application/octet-stream');
-				Header ("Content-disposition: attachment; filename=\"".$outputFileTitle.".zip\"");
-				header('Content-Transfer-Encoding: binary');
-				header('Expires: 0');
-				header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-				header('Pragma: public');
-				Header ("Content-Length: ".filesize( $filename ) );
-				ob_end_flush();
-				readfile($filename);
-				unlink($filename);
-			}
+			header('Content-Description: File Transfer');
+			header('Content-Type: application/octet-stream');
+			Header ("Content-disposition: attachment; filename=\"".$outputFileTitle.".zip\"");
+			header('Content-Transfer-Encoding: binary');
+			header('Expires: 0');
+			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+			header('Pragma: public');
+			Header ("Content-Length: ".filesize( $filename ) );
+			ob_end_flush();
+			readfile($filename);
+			unlink($filename);
 		}
 	}
 
-	function addGalleryRecursive( $pGalleryId , $pPath = '/', &$pZip ){
+	public static function getServiceIcon() {
+		return '<i class="icon-camera"></i>';
+	}
 
-		$gallery = new FisheyeGallery($pGalleryId);
-		$gallery->load();
-		$gallery->loadImages();
-		$pPath .= $gallery->getTitle().'/';
-		foreach ( $gallery->mItems as $item ){
-			if( is_a( $item , 'FisheyeImage' ) ){
-				$sourcePath = $item->getSourceFile();
-				$title = $item->getTitle();
-				$pZip->addFile($sourcePath, $pPath.$title.substr($sourcePath,strrpos($sourcePath,'.')) );
-			}elseif ( is_a( $item , 'FisheyeGallery' ) ){
-				addGalleryRecursive($item->mGalleryId,$pPath,$pZip);
-			}
+}
+
+function addGalleryRecursive( $pGalleryId , $pPath = '/', &$pZip ){
+
+	$gallery = new FisheyeGallery($pGalleryId);
+	$gallery->load();
+	$gallery->loadImages();
+	$pPath .= $gallery->getTitle().'/';
+	foreach ( $gallery->mItems as $item ){
+		if( is_a( $item , 'FisheyeImage' ) ){
+			$sourcePath = $item->getSourceFile();
+			$title = $item->getTitle();
+			$pZip->addFile($sourcePath, $pPath.$title.substr($sourcePath,strrpos($sourcePath,'.')) );
+		}elseif ( is_a( $item , 'FisheyeGallery' ) ){
+			addGalleryRecursive($item->mGalleryId,$pPath,$pZip);
 		}
 	}
+}
 
 ?>
