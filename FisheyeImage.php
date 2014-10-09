@@ -890,6 +890,10 @@ class FisheyeImage extends FisheyeBase {
 		}
 		return $ret;
 	}
+
+	public static function getServiceKey() {
+		return 'fisheye';
+	}
 }
 
 ?>

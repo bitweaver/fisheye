@@ -11,10 +11,12 @@ require_once( LIBERTY_PKG_PATH.'LibertyMime.php' );		// FisheyeGallery base clas
 /**
  * @package fisheye
  */
-class FisheyeBase extends LibertyMime
+abstract class FisheyeBase extends LibertyMime
 {
 	// Path of gallery images to get breadcrumbs
 	var $mGalleryPath;
+
+	abstract public static function getServiceKey();
 
 	function FisheyeBase() {
 		$this->mGalleryPath = '';

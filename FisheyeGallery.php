@@ -1082,6 +1082,9 @@ class FisheyeGallery extends FisheyeBase {
 		return '<i class="icon-camera"></i>';
 	}
 
+	public static function getServiceKey() {
+		return 'fisheye';
+	}
 }
 
 function addGalleryRecursive( $pGalleryId , $pPath = '/', &$pZip ){
