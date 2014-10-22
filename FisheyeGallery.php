@@ -892,7 +892,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	// Generate a select drop menu of listed galleries
 	function generateMenu( $pListHash, $pOptions, $pLocate=NULL ) {
-		$ret = "<select ";
+		$ret = "<select class='form-control' ";
 		foreach( array( 'class', 'name', 'id', 'onchange' ) as $key ) {
 			if( !empty( $pOptions[$key] ) ) {
 				$ret .= " $key=\"$pOptions[$key]\" ";
