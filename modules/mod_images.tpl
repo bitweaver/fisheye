@@ -1,4 +1,3 @@
-{* $Header$ *}
 {strip}
 {if $gBitSystem->isPackageActive( 'fisheye' ) && $modImages}
 	{bitmodule title="$moduleTitle" name="fisheye_images"}
