@@ -21,7 +21,7 @@ $display = TRUE;
 
 $listHash = $module_params;
 
-$listHash['size'] = $title;
+$listHash['size'] = 'extra-large';
 $listHash['gallery_id'] = $module_rows;
 $listHash['max_records'] = 5;
 $listHash['sort_mode'] = 'random';
