@@ -24,7 +24,7 @@
 
 	{if $gGallery}
 		<div class="navigation">
-			<span class="left">
+			<span class="pull-left">
 				{if $gGallery->mInfo.previous_image_id}
 					<a href="{$gContent->getImageUrl($gGallery->mInfo.previous_image_id)|escape}">
 						{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
@@ -40,7 +40,7 @@
 				{else}&nbsp;{/if}
 			</span>
 
-			<span class="right">
+			<span class="pull-right">
 				{if $gGallery->mInfo.next_image_id}
 					<a href="{$gContent->getImageUrl($gGallery->mInfo.next_image_id)|escape}">
 						{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}

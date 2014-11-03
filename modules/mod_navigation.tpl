@@ -1,7 +1,7 @@
 {strip}
 {if $gGallery}
 	{bitmodule title="$moduleTitle" name="fisheye_navigation"}
-		<div class="left">
+		<div class="pull-left">
 			{if $gGallery->mInfo.previous_image_id}
 				<a href="{$gContent->getImageUrl($gGallery->mInfo.previous_image_id)|escape}">
 					<img src="{$gGallery->mInfo.previous_image_avatar}" />
@@ -11,7 +11,7 @@
 			{else}&nbsp;{/if}
 		</div>
 
-		<div class="right">
+		<div class="pull-right">
 			{if $gGallery->mInfo.next_image_id}
 				<a href="{$gContent->getImageUrl($gGallery->mInfo.next_image_id)|escape}">
 					<img src="{$gGallery->mInfo.next_image_avatar}" />
