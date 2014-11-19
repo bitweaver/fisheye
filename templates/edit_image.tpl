@@ -60,9 +60,9 @@
 
 						<div class="form-group">
 							{forminput}
-								<label class="checkbox">
+								{forminput label="checkbox"}
 									<input type="checkbox" name="generate_thumbnails" value="1"/> {tr}Regenerate Thumbnails{/tr}
-								</label>
+								{/forminput}
 							{/forminput}
 						</div>
 
@@ -70,11 +70,11 @@
 							{formlabel label="Rotate Image"}
 							{forminput}
 {if function_exists('exif_read_data')}
-								<label class="radio"><input type="radio" name="rotate_image" value="auto"/> {biticon ipackage="fisheye" iname="rotate_auto" iexplain="Auto Rotate"}</label> &nbsp;&nbsp;&nbsp;&nbsp;
+								<label class="radio-inline"><input type="radio" name="rotate_image" value="auto"/> {booticon iname="icon-chevron-sign-up" iexplain="Auto Rotate"}</label>
 {/if}
-								<label class="radio"><input type="radio" name="rotate_image" value="-90"/> {biticon ipackage="fisheye" iname="rotate_ccw" iexplain="Rotate Counter Clockwise"}</label> &nbsp;&nbsp;&nbsp;&nbsp;
-								<label class="radio">{biticon ipackage="fisheye" iname="rotate_cw" iexplain="Rotate Clockwise"} <input type="radio" name="rotate_image" value="90"/></label>
-								<label class="radio"> <input type="radio" name="rotate_image" value="" checked="checked"/> {tr}don't rotate{/tr}</label>
+								<label class="radio-inline"><input type="radio" name="rotate_image" value="-90"/> {booticon iname="icon-rotate-left" iexplain="Rotate Counter Clockwise"}</label>
+								<label class="radio-inline"><input type="radio" name="rotate_image" value="90"/> {booticon iname="icon-rotate-left" iexplain="Rotate Clockwise"}</label>
+								<label class="radio-inline"><input type="radio" name="rotate_image" value="" checked="checked"/> {tr}don't rotate{/tr}</label>
 							{/forminput}
 						</div>
 
