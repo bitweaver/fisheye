@@ -65,28 +65,9 @@
 
 					{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_tab_tpl"}
 				{/jstabs}
-
-			<div class="width48p floatright box">
-				<div class="form-group">
-					{if !$gBitUser->hasPermission( 'p_fisheye_create' )}
-						{formfeedback warning="Please make sure you select a gallery to load your images into, otherwise your images will be discarded"}
-					{/if}
-					{formlabel label="Add File(s) to these Galleries"}
-					{forminput}
-						{if $galleryTree}
-							<div class="gallerytree">
-								{$galleryTree}
-							</div>						
-						{else}
-							<p class="norecords">
-								{tr}No Galleries Found{/tr}.<br />
-								{tr}The following gallery will automatically be created for you{/tr}: <strong>{displayname hash=$gBitUser->mInfo nolink=1}'s Gallery</strong>
-							</p>
-						{/if}
-					{/forminput}
-				</div>
 			</div>
-			<div class="width50p floatleft">
+
+			<div class="col-sm-6">
 				{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
 					<div class="form-group">
 						{forminput label="checkbox"}
@@ -117,16 +98,37 @@
 				<div class="form-group">
 					{include file="bitpackage:fisheye/resize_image_select.tpl"}
 				</div>
-			</div>
-
 			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}
 
 			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_mini_tpl"}
 
-			<div class="form-group submit">
-				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
-				<input type="submit" class="btn btn-default" id="submitbutton" value="{tr}Upload File(s){/tr}" {if $submitClick}onclick="{$submitClick}"{/if}/>
 			</div>
+			<div class="col-sm-6">
+				<div class="well">
+					<div class="form-group">
+						{if !$gBitUser->hasPermission( 'p_fisheye_create' )}
+							{formfeedback warning="Please make sure you select a gallery to load your images into, otherwise your images will be discarded"}
+						{/if}
+						{formlabel label="Add File(s) to these Galleries"}
+						{forminput}
+							{if $galleryTree}
+								<div class="gallerytree">
+									{$galleryTree}
+								</div>						
+							{else}
+								<p class="norecords">
+									{tr}No Galleries Found{/tr}.<br />
+									{tr}The following gallery will automatically be created for you{/tr}: <strong>{displayname hash=$gBitUser->mInfo nolink=1}'s Gallery</strong>
+								</p>
+							{/if}
+						{/forminput}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group submit clear">
+				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
+				<input type="submit" class="btn btn-primary" id="submitbutton" value="{tr}Upload File(s){/tr}" {if $submitClick}onclick="{$submitClick}"{/if}/>
 			</div>
 		{/form}
 	</div> <!-- end .body -->

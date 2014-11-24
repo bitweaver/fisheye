@@ -865,7 +865,7 @@ class FisheyeGallery extends FisheyeBase {
 					}
 				}
 			}
-			$ret .= ' class="'.$class.'">';
+			$ret .= ' class="'.$class.'"><label>';
 			if ( $pLocate || $pHash[$conId]['content']['content_id'] != $this->mContentId ) {
 				if( !empty( $pOptions['radio_checkbox'] ) ) {
 					$ret .= '<input type="checkbox" name="gallery_additions[]" value="'.$pHash[$conId]['content']['gallery_id'].'" ';
@@ -877,11 +877,11 @@ class FisheyeGallery extends FisheyeBase {
 			}
 			if ( $pHash[$conId]['content']['content_id'] == $this->mContentId
 				or ( isset( $pHash[$conId]['content']['in_gallery'] ) and $pHash[$conId]['content']['in_gallery'] ) ) {
-				$ret .= '<b>'.htmlspecialchars( $pHash[$conId]['content']['title'] ).'</b>';
+				$ret .= '<span class="active">'.htmlspecialchars( $pHash[$conId]['content']['title'] ).'</span>';
 			} else {
 				$ret .= htmlspecialchars( $pHash[$conId]['content']['title'] );
 			}
-			$ret .= '</li>';
+			$ret .= '</label></li>';
 			if( !empty( $pHash[$conId]['children'] ) ) {
 				$ret .= '<li><ul>'.FisheyeGallery::generateListItems( $pHash[$conId]['children'], $pOptions, $pLocate ).'</ul></li>';
 			}
