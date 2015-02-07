@@ -653,7 +653,7 @@ class FisheyeGallery extends FisheyeBase {
 	public static function getDisplayUrlFromHash( &$pParamHash ) {
 		$path = NULL;
 
-		if( BitBase::verifyId( $pParamHash['gallery_id'] ) ) {
+		if( BitBase::verifyIdParameter( $pParamHash, 'gallery_id' ) ) {
 			$ret = FISHEYE_PKG_URL;
 			global $gBitSystem;
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
