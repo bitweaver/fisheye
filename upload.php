@@ -59,12 +59,12 @@ $gBitSmarty->assign_by_ref( 'galleryTree', $galleryTree );
 if( $gLibertySystem->hasService( 'upload' ) ) {
 	$gContent->invokeServices( "content_pre_upload_function", $_REQUEST );
 } else {
-	$gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/multifile.js', TRUE );
+	$gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/multifile.js', TRUE );
 }
 
 if( $gBitThemes->isAjaxRequest() ) {
 	if( !empty( $upErrors ) ) {
-		print json_encode( $upErrors )
+		print json_encode( $upErrors );
 	}
 } else {
 	$displayMode = !empty($_REQUEST['display_mode']) ? $_REQUEST['display_mode'] : 'edit';

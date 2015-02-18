@@ -36,7 +36,7 @@ switch( $gContent->getLayout() ) {
 		// Need to add options for different styles of layout
 		$gBitThemes->loadCss( FISHEYE_PKG_PATH."/gallery_views/galleriffic/css/galleriffic_style_1.css", TRUE );
 		$gBitThemes->loadAjax( 'jquery' );
-		$gBitThemes->loadJavascript( UTIL_PKG_PATH.'/javascript/libs/jquery/plugins/migrate/jquery.migrate.js', FALSE, 500, FALSE );
+		$gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/jquery/plugins/migrate/jquery.migrate.js', FALSE, 500, FALSE );
 		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/galleriffic/js/jquery.galleriffic.js', FALSE, 500, FALSE );
 		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/galleriffic/js/jquery.history.js', FALSE, 501, FALSE );
 		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/galleriffic/js/jquery.opacityrollover.js', FALSE, 502, FALSE );
