@@ -20,7 +20,7 @@ require_once( FISHEYE_PKG_PATH.'upload_inc.php');
 
 $gBitSystem->verifyPermission( 'p_fisheye_upload' );
 
-if( !empty( $_REQUEST['save_image'] ) ) {
+if( !empty( $_FILES ) ) {
 	$upErrors = fisheye_handle_upload( $_FILES );
 	if( empty( $upErrors ) ) {
 		bit_redirect( $gContent->getDisplayUrl() );
@@ -58,14 +58,15 @@ $gBitSmarty->assign_by_ref( 'galleryTree', $galleryTree );
 
 if( $gLibertySystem->hasService( 'upload' ) ) {
 	$gContent->invokeServices( "content_pre_upload_function", $_REQUEST );
-} elseif( $gBitSystem->isFeatureActive( 'fisheye_extended_upload_slots' ) ) {
-	$gBitThemes->loadAjax( 'mochikit' );
 } else {
 	$gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/multifile.js', TRUE );
 }
 
-$displayMode = !empty($_REQUEST['display_mode']) ? $_REQUEST['display_mode'] : 'edit';
-
-$gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' , array( 'display_mode' => $displayMode ));
+if( $gBitThemes->isAjaxRequest() ) {
+vd( $_REQUEST );
+} else {
+	$displayMode = !empty($_REQUEST['display_mode']) ? $_REQUEST['display_mode'] : 'edit';
+	$gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' , array( 'display_mode' => $displayMode ));
+}
 
 ?>
