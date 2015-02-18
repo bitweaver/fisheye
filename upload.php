@@ -63,7 +63,9 @@ if( $gLibertySystem->hasService( 'upload' ) ) {
 }
 
 if( $gBitThemes->isAjaxRequest() ) {
-vd( $_REQUEST );
+	if( !empty( $upErrors ) ) {
+		print json_encode( $upErrors )
+	}
 } else {
 	$displayMode = !empty($_REQUEST['display_mode']) ? $_REQUEST['display_mode'] : 'edit';
 	$gBitSystem->display( 'bitpackage:fisheye/upload_fisheye.tpl', 'Upload Images' , array( 'display_mode' => $displayMode ));
