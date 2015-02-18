@@ -48,7 +48,7 @@
 							<div class="form-group">
 								{formlabel label="Selected File(s)" for=""}
 								{forminput}
-									<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/libs/multifile.js"></script>
+									<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/multifile.js"></script>
 									<div id="fileslist"></div>
 									<div class="clear"></div>
 									{formhelp note="These files will be uploaded when you hit the upload button below."}
