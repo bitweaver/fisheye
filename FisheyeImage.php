@@ -138,12 +138,13 @@ class FisheyeImage extends FisheyeBase {
 					}
 				}
 			}
+			$ret = count($this->mInfo);
 		} else {
 			// We don't have an image_id or a content_id so there is no way to know what to load
-			return NULL;
+			$ret = NULL;
 		}
 
-		return count($this->mInfo);
+		return $ret;
 	}
 
 	function storeDimensions( $pDetails ) {
