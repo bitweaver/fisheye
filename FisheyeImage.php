@@ -686,7 +686,7 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	static public function getTitleFromHash( $pHash, $pDefault=TRUE ) {
+	static public function getTitleFromHash( &$pHash, $pDefault=TRUE ) {
 		$ret = trim( parent::getTitleFromHash( $pHash, $pDefault ) );
 		if( empty( $ret ) && $pDefault ) {
 			$storage = (!empty( $this ) && !empty( $this->mStorage ) ? current( $this->mStorage ) : NULL);
@@ -716,7 +716,7 @@ class FisheyeImage extends FisheyeBase {
 		return( $this->mContentId );
 	}
 
-	function getThumbnailUrl( $pSize = 'small', $pSecondaryId = NULL, $pDefault=TRUE ) {
+	function getThumbnailUrl( $pSize = 'small', $pInfoHash = NULL, $pSecondaryId = NULL, $pDefault=TRUE ) {
 		$ret = NULL;
 		if( $this->isValid() && isset( $this->mInfo['thumbnail_url'][$pSize] ) ) {
 			$ret = $this->mInfo['thumbnail_url'][$pSize];
