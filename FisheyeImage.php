@@ -510,7 +510,7 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['source_file'] = $this->getSourceFile();
 			$fileHash['type'] = $gBitSystem->verifyMimeType( $fileHash['source_file'] );
 			$fileHash['size'] = filesize( $fileHash['source_file'] );
-			$fileHash['dest_branch'] = $this->getStorageBranch();
+			$fileHash['dest_branch'] = $this->getStorageBranch( $fileHash );
 			$fileHash['name'] = $this->getField( 'file_name' );
 			$fileHash['thumbnail_sizes'] = $pThumbSizes;
 			// just generate thumbnails
@@ -854,6 +854,7 @@ class FisheyeImage extends FisheyeBase {
 				if( empty( $pListHash['no_thumbnails'] ) ) {
 					$ret[$imageId]['display_url']      = static::getDisplayUrlFromHash( $row );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
+					$ret[$imageId]['source_url']      = $this->getStorageUrl( $row ).$row['file_name'];
 					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( array(
 						'source_file'   => $this->getSourceFile( $row ),
 						'default_image' => FISHEYE_PKG_URL.'image/generating_thumbnails.png',
@@ -863,7 +864,6 @@ class FisheyeImage extends FisheyeBase {
 				}
 			}
 		}
-
 		return $ret;
 	}
 
