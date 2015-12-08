@@ -18,7 +18,7 @@ abstract class FisheyeBase extends LibertyMime
 
 	abstract public static function getServiceKey();
 
-	function FisheyeBase() {
+	function __construct() {
 		$this->mGalleryPath = '';
 		if( get_class( $this ) == 'fisheyegallery' ) {
 			parent::__construct();

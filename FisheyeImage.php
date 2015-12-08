@@ -18,8 +18,8 @@ define('FISHEYEIMAGE_CONTENT_TYPE_GUID', 'fisheyeimage');
 class FisheyeImage extends FisheyeBase {
 	var $mImageId;
 
-	function FisheyeImage($pImageId = NULL, $pContentId = NULL) {
-		FisheyeBase::FisheyeBase();
+	function __construct($pImageId = NULL, $pContentId = NULL) {
+		parent::__construct();
 		$this->mImageId = (int)$pImageId;
 		$this->mContentId = (int)$pContentId;
 
