@@ -54,7 +54,7 @@ if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->h
 
 $galleryTree = $gContent->generateList( $getHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle'), 'radio_checkbox' => TRUE, ), true );
 
-$gBitSmarty->assign_by_ref( 'galleryTree', $galleryTree );
+$gBitSmarty->assignByRef( 'galleryTree', $galleryTree );
 
 if( $gLibertySystem->hasService( 'upload' ) ) {
 	$gContent->invokeServices( "content_pre_upload_function", $_REQUEST );

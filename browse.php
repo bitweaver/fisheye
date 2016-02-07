@@ -16,7 +16,7 @@ global $gBitSystem, $gBitSmarty;
 
 $gFisheyeGallery = new FisheyeGallery();
 $galleryList = $gFisheyeGallery->getList( $_REQUEST );
-$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
+$gBitSmarty->assignByRef( 'galleryList', $galleryList );
 
 $gBitSystem->display( "bitpackage:fisheye/browse_galleries.tpl" , NULL, array( 'display_mode' => 'display' ));
 

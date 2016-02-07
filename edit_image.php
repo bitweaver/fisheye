@@ -123,7 +123,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 }
 
 $errors = $gContent->mErrors;
-$gBitSmarty->assign_by_ref('errors', $errors);
+$gBitSmarty->assignByRef('errors', $errors);
 
 $gContent->loadParentGalleries();
 
@@ -142,7 +142,7 @@ if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->h
 //	$getHash['show_public'] = TRUE;
 }
 $galleryTree = $gFisheyeGallery->generateList( $getHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle'), 'radio_checkbox' => TRUE, ), true );
-$gBitSmarty->assign_by_ref( 'galleryTree', $galleryTree );
+$gBitSmarty->assignByRef( 'galleryTree', $galleryTree );
 
 $gBitSmarty->assign('requested_gallery', !empty($_REQUEST['gallery_id']) ? $_REQUEST['gallery_id'] : NULL);
 

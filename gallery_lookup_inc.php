@@ -20,6 +20,6 @@ if( !empty( $_REQUEST['gallery_path'] ) ) {
 	$gContent->setGalleryPath( '/'.$gal['gallery_id'] );
 }
 
-$gBitSmarty->assign_by_ref('gContent', $gContent);
-$gBitSmarty->assign_by_ref('galleryId', $gContent->mGalleryId);
+$gBitSmarty->assignByRef('gContent', $gContent);
+$gBitSmarty->assignByRef('galleryId', $gContent->mGalleryId);
 
