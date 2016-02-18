@@ -49,7 +49,7 @@
 			FROM `".BIT_DB_PREFIX."liberty_process_queue` pq
 			WHERE pq.begin_date IS NULL
 			ORDER BY pq.queue_date";
-	$rs = $gBitSystem->mDb->query( $sql, NULL, $thumbCount );
+	$rs = $gBitSystem->mDb->query( $sql, FALSE, $thumbCount );
 
 	$processContent = array();
 	while( !$rs->EOF ) {
