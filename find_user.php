@@ -24,7 +24,7 @@ if (!empty($_REQUEST['submitUserSearch'])) {
 } else {
 	$foundUsers = NULL;
 }
-$gBitSmarty->assign_by_ref('foundUsers', $foundUsers);
+$gBitSmarty->assignByRef('foundUsers', $foundUsers);
 
 $gBitSmarty->display('bitpackage:fisheye/find_user.tpl');
 ?>

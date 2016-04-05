@@ -38,24 +38,24 @@ if( !empty( $module_params['max_records'] ) ){
 
 $galleryList = $gFisheyeGallery->getList( $listHash );
 // support for div/ul/li listing of galleries
-$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
+$gBitSmarty->assignByRef( 'galleryList', $galleryList );
 
 
 
 /* Process the input parameters this page accepts */
 if (!empty($gQueryUser) && $gQueryUser->isRegistered()) {
-	$gBitSmarty->assign_by_ref('gQueryUserId', $gQueryUser->mUserId);
+	$gBitSmarty->assignByRef('gQueryUserId', $gQueryUser->mUserId);
 	$template = 'user_galleries.tpl';
 } else {
 	$template = 'list_galleries.tpl';
 }
 if (!empty($_REQUEST['offset']) && is_numeric($_REQUEST['offset'])) {
-	$gBitSmarty->assign_by_ref('iMaxRows', $iMaxRows);
+	$gBitSmarty->assignByRef('iMaxRows', $iMaxRows);
 }
 if (!empty($_REQUEST['sort_mode'])) {
-	$gBitSmarty->assign_by_ref('iSortMode', $_REQUEST['sort_mode']);
+	$gBitSmarty->assignByRef('iSortMode', $_REQUEST['sort_mode']);
 }
 if (!empty($_REQUEST['search'])) {
-	$gBitSmarty->assign_by_ref('iSearchString', $iSearchtring);
+	$gBitSmarty->assignByRef('iSearchString', $iSearchtring);
 }
 ?>

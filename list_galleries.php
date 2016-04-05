@@ -24,7 +24,7 @@ if (!empty($_REQUEST['user_id']) && is_numeric($_REQUEST['user_id'])) {
 	if( $_REQUEST['user_id'] == $gBitUser->mUserId ) {
 		$_REQUEST['show_empty'] = TRUE;
 	}
-	$gBitSmarty->assign_by_ref('gQueryUserId', $_REQUEST['user_id']);
+	$gBitSmarty->assignByRef('gQueryUserId', $_REQUEST['user_id']);
 	$template = 'user_galleries.tpl';
 } else {
 	$template = 'list_galleries.tpl';
@@ -35,12 +35,12 @@ $_REQUEST['thumbnail_size'] = $gBitSystem->getConfig( 'fisheye_list_thumbnail_si
 $galleryList = $gFisheyeGallery->getList( $_REQUEST );
 $gFisheyeGallery->invokeServices( 'content_list_function', $_REQUEST );
 // Pagination Data
-$gBitSmarty->assign_by_ref( 'listInfo', $_REQUEST['listInfo'] );
+$gBitSmarty->assignByRef( 'listInfo', $_REQUEST['listInfo'] );
 $gBitSmarty->assign( 'galleryList', $galleryList );
 
 // Display the template
 $gDefaultCenter = "bitpackage:fisheye/$template";
-$gBitSmarty->assign_by_ref( 'gDefaultCenter', $gDefaultCenter );
+$gBitSmarty->assignByRef( 'gDefaultCenter', $gDefaultCenter );
 $gBitSystem->display( 'bitpackage:kernel/dynamic.tpl', 'List Galleries' , array( 'display_mode' => 'list' ));
 
 ?>

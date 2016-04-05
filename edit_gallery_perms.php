@@ -44,7 +44,7 @@ if (!empty($_REQUEST['submitNewPermissions'])) {
 }
 
 $userPerms = $gContent->loadPermissions();
-$gBitSmarty->assign_by_ref('userPerms', $gContent->mPerms);
+$gBitSmarty->assignByRef('userPerms', $gContent->mPerms);
 
 if (!empty($_REQUEST['submitUpdatePerms'])) {
 	$existingPerms = $_REQUEST['existingPerms'];

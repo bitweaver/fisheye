@@ -46,10 +46,10 @@ switch( $gContent->getLayout() ) {
 
 $imageOffset = $imagesPerPage * ($page-1);
 
-$gBitSmarty->assign_by_ref('pageCount', $page);
-$gBitSmarty->assign_by_ref('imagesPerPage', $imagesPerPage);
-$gBitSmarty->assign_by_ref('imageOffset', $imageOffset);
-$gBitSmarty->assign_by_ref('rows_per_page', $gContent->mInfo['rows_per_page']);
+$gBitSmarty->assignByRef('pageCount', $page);
+$gBitSmarty->assignByRef('imagesPerPage', $imagesPerPage);
+$gBitSmarty->assignByRef('imageOffset', $imageOffset);
+$gBitSmarty->assignByRef('rows_per_page', $gContent->mInfo['rows_per_page']);
 $gBitSmarty->assign('cols_per_page', $gContent->getField( 'cols_per_page', 10 ) );
 
 $gContent->loadImages( $page, $imagesPerPage );

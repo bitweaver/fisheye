@@ -91,12 +91,12 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 
 // Initalize the errors list which contains any errors which occured during storage
 $errors = (!empty($gContent->mErrors) ? $gContent->mErrors : array());
-$gBitSmarty->assign_by_ref('errors', $errors);
+$gBitSmarty->assignByRef('errors', $errors);
 
 $gBitSystem->setOnloadScript( 'updateGalleryPagination();' );
 
 $gallery = $gContent->getParentGalleries();
-$gBitSmarty->assign_by_ref( 'parentGalleries', $gallery );
+$gBitSmarty->assignByRef( 'parentGalleries', $gallery );
 $getHash = array(
 	'user_id'       => $gBitUser->mUserId,
 //	'max_records'   => -1,
@@ -114,7 +114,7 @@ if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->h
 //	$getHash['show_public'] = TRUE;
 }
 $galleryTree = $gContent->generateList( $getHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle'), 'radio_checkbox' => TRUE, ) );
-$gBitSmarty->assign_by_ref( 'galleryTree', $galleryTree );
+$gBitSmarty->assignByRef( 'galleryTree', $galleryTree );
 
 $gContent->invokeServices( 'content_edit_function' );
 

@@ -34,7 +34,7 @@ if (!empty($_REQUEST['cancel'])) {
 		$batchCon = array_flip( $_REQUEST['batch'] );
 		// increment the first element from 0 to 1 (element 0 index before flip) so any conditional tests will pass, particularly in the .tpl
 		$batchCon[key($batchCon)]++;
-		$gBitSmarty->assign_by_ref( 'batchEdit', $batchCon );
+		$gBitSmarty->assignByRef( 'batchEdit', $batchCon );
 	}
 
 	if( !empty( $_REQUEST['is_favorite'] ) ) {
@@ -211,10 +211,10 @@ if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->h
 //	$listHash['show_public'] = TRUE;
 }
 $galleryList = $gContent->getList( $listHash );
-$gBitSmarty->assign_by_ref( 'galleryList', $galleryList );
+$gBitSmarty->assignByRef( 'galleryList', $galleryList );
 $gContent->loadImages();
 
-$gBitSmarty->assign_by_ref('formfeedback', $feedback);
+$gBitSmarty->assignByRef('formfeedback', $feedback);
 
 $gBitThemes->loadAjax( 'mochikit' );
 $gBitSystem->display( 'bitpackage:fisheye/image_order.tpl', tra( 'Edit Gallery Images' ).': '.$gContent->getTitle() , array( 'display_mode' => 'display' ));
