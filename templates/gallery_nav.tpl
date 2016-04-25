@@ -14,7 +14,7 @@
 			{if $breadCrumbs}
 				{foreach from=$breadCrumbs item=breadTitle key=breadId}
 					{if $breadId==$gContent->mGalleryId}<li class="active">{$breadTitle}</li>
-					{else}<li><a href="/fisheye/gallery/{$breadId}">{$breadTitle}</a></li>{/if}
+					{else}<li><a href="{$smarty.const.FISHEYE_PKG_URL}/gallery/{$breadId}">{$breadTitle}</a></li>{/if}
 				{/foreach}
 			{/if}
 		</ol>
@@ -44,7 +44,7 @@
 				{if $gGallery->mInfo.next_image_id}
 					<a href="{$gContent->getImageUrl($gGallery->mInfo.next_image_id)|escape}">
 						{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
-							{biticon ipackage="icons" iname="go-next" iexplain=next iforce="icon"}
+							{bootticon iname="icon-arrow-right" iexplain=next}
 						{else}
 							{tr}next{/tr}&nbsp;&raquo;
 						{/if}
