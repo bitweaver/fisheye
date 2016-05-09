@@ -28,8 +28,12 @@ class FisheyeGallery extends FisheyeBase {
 
 	function __construct($pGalleryId = NULL, $pContentId = NULL) {
 		parent::__construct();
-		$this->mGalleryId = (int)$pGalleryId;		// Set member variables according to the parameters we were passed
-		$this->mContentId = (int)$pContentId;		// liberty_content.content_id which this gallery references
+		if( $this->verifyId( $pGalleryId ) ) {
+			$this->mGalleryId = (int)$pGalleryId;		// Set member variables according to the parameters we were passed
+		}
+		if( $this->verifyId( $pContentId ) ) {
+			$this->mContentId = (int)$pContentId;		// liberty_content.content_id which this gallery references
+		}
 		$this->mItems = array();					// Assume no images (if $pAutoLoad is TRUE we will populate this array later)
 		$this->mAdminContentPerm = 'p_fisheye_admin';
 
@@ -84,6 +88,8 @@ class FisheyeGallery extends FisheyeBase {
 		$selectSql = $joinSql = $whereSql = '';
 
 		if( @$this->verifyId( $this->mGalleryId ) ) {
+vd( $this->mGalleryId );
+vd( $this->verifyId( $this->mGalleryId ) );
 			$whereSql = " WHERE fg.`gallery_id` = ?";
 			$bindVars = array( $this->mGalleryId );
 		} elseif ( @$this->verifyId( $this->mContentId ) ) {
