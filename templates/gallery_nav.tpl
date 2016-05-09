@@ -44,7 +44,7 @@
 				{if $gGallery->mInfo.next_image_id}
 					<a href="{$gContent->getImageUrl($gGallery->mInfo.next_image_id)|escape}">
 						{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
-							{bootticon iname="icon-arrow-right" iexplain=next}
+							{booticon iname="icon-arrow-right" iexplain=next}
 						{else}
 							{tr}next{/tr}&nbsp;&raquo;
 						{/if}
