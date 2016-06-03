@@ -88,8 +88,6 @@ class FisheyeGallery extends FisheyeBase {
 		$selectSql = $joinSql = $whereSql = '';
 
 		if( @$this->verifyId( $this->mGalleryId ) ) {
-vd( $this->mGalleryId );
-vd( $this->verifyId( $this->mGalleryId ) );
 			$whereSql = " WHERE fg.`gallery_id` = ?";
 			$bindVars = array( $this->mGalleryId );
 		} elseif ( @$this->verifyId( $this->mContentId ) ) {
