@@ -38,6 +38,10 @@ class FisheyeImage extends FisheyeBase {
 		$this->mAdminContentPerm = 'p_fisheye_admin';
 	}
 
+	public function __sleep() {
+		return array_merge( parent::__sleep(), array( 'mImageId' ) );
+	}
+
 	public static function lookup( $pLookupHash ) {
 		global $gBitDb;
 		$ret = NULL;
@@ -154,6 +158,7 @@ class FisheyeImage extends FisheyeBase {
 			$this->mDb->query( $query, array( $pDetails['width'], $pDetails['height'], $this->mContentId ) );
 			$this->mInfo['width'] = $pDetails['width'];
 			$this->mInfo['height'] = $pDetails['height'];
+			$this->clearFromCache();
 		}
 	}
 
@@ -322,6 +327,7 @@ class FisheyeImage extends FisheyeBase {
 			} else {
 				$this->mDb->RollbackTrans();
 			}
+			$this->clearFromCache();
 		} else {
 			$this->mErrors[] = "There were errors while attempting to save this gallery image";
 		}
@@ -393,6 +399,7 @@ class FisheyeImage extends FisheyeBase {
 				if( $rotateFunc( $fileHash ) ) {
 					liberty_clear_thumbnails( $fileHash );
 					$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=`height`, `height`=`width` WHERE `content_id`=?", array( $this->mContentId ) );
+					$this->clearFromCache();
 					$this->generateThumbnails( FALSE, $pImmediateRender );
 				} else {
 					$this->mErrors['rotate'] = $fileHash['error'];
