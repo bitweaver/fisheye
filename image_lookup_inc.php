@@ -31,9 +31,7 @@ if( empty( $_REQUEST['gallery_id'] ) ) {
 }
 // the image is considered the primary content, however the gallery is useful
 if( !empty($_REQUEST['gallery_id']) && is_numeric($_REQUEST['gallery_id']) ) {
-	$gGallery = new FisheyeGallery( $_REQUEST['gallery_id'], NULL, FALSE );
-	$gGallery->load();
-	$gGallery->loadCurrentImage( $gContent->mImageId );
+	$gGallery = FisheyeGallery::lookup( $_REQUEST );
 	$gBitSmarty->assignByRef('gGallery', $gGallery);
 	$gBitSmarty->assignByRef('galleryId', $_REQUEST['gallery_id']);
 }

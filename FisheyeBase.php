@@ -18,13 +18,13 @@ abstract class FisheyeBase extends LibertyMime
 
 	abstract public static function getServiceKey();
 
+	public function __sleep() {
+		return array_merge( parent::__sleep(), array( 'mGalleryPath' ) );
+	}
+
 	function __construct() {
 		$this->mGalleryPath = '';
-		if( get_class( $this ) == 'fisheyegallery' ) {
-			parent::__construct();
-		} else {
-			parent::__construct();
-		}
+		parent::__construct();
 	}
 
 	// regular expression to determine if the title was computer generated
@@ -179,7 +179,7 @@ not ready for primetime
 					// image has been requested to be put in a new gallery
 					if( empty( $inGalleries[$galleryId] ) ) {
 						if( empty( $galleries[$galleryId] ) ) {
-							$galleries[$galleryId] = new FisheyeGallery( $galleryId );
+							$galleries[$galleryId] = FisheyeGallery::lookup( array( 'gallery_id' => $galleryId ) );
 							$galleries[$galleryId]->load();
 						}
 						if( $galleries[$galleryId]->isValid() ) {

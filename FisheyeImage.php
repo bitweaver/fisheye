@@ -38,8 +38,13 @@ class FisheyeImage extends FisheyeBase {
 		$this->mAdminContentPerm = 'p_fisheye_admin';
 	}
 
+	public function __wakeup() {
+		return parent::__wakeup();
+	}
+
 	public function __sleep() {
-		return array_merge( parent::__sleep(), array( 'mImageId' ) );
+		$ret = array_merge( parent::__sleep(), array( 'mImageId' ) );
+		return $ret;
 	}
 
 	public static function lookup( $pLookupHash ) {
@@ -57,8 +62,8 @@ class FisheyeImage extends FisheyeBase {
 			$lookupContentGuid = NULL;
 		}
 
-		if( BitBase::verifyId( $lookupContentId ) ) {
-			$ret = LibertyBase::getLibertyObject( $lookupContentId, $lookupContentGuid );
+		if( static::verifyId( $lookupContentId ) ) {
+			$ret = static::getLibertyObject( $lookupContentId, $lookupContentGuid );
 		}
 
 		return $ret;

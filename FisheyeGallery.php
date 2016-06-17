@@ -56,6 +56,14 @@ class FisheyeGallery extends FisheyeBase {
 		$this->mAdminContentPerm = 'p_fisheye_admin';
 	}
 
+	public function __wakeup() {
+		return parent::__wakeup();
+	}
+
+	public function __sleep() {
+		return array_merge( parent::__sleep(), array( 'mGalleryId', 'mItems' ) );
+	}
+
 	function isValid() {
 		return( @$this->verifyId( $this->mGalleryId ) || @$this->verifyId( $this->mContentId ) );
 	}
@@ -75,8 +83,8 @@ class FisheyeGallery extends FisheyeBase {
 			$lookupContentGuid = NULL;
 		}
 
-		if( BitBase::verifyId( $lookupContentId ) ) {
-			$ret = LibertyBase::getLibertyObject( $lookupContentId, $lookupContentGuid );
+		if( static::verifyId( $lookupContentId ) ) {
+			$ret = parent::getLibertyObject( $lookupContentId, $lookupContentGuid );
 		}
 
 		return $ret;
@@ -196,75 +204,75 @@ class FisheyeGallery extends FisheyeBase {
 		}
 	}
 
-	function loadImages( $pPage=-1, $pImagesPerPage=-1) {
+	function loadImages( $pPage=-1, $pImagesPerPage=-1, $pRefresh=FALSE ) {
 		global $gLibertySystem, $gBitSystem, $gBitUser;
 		if( !$this->isValid() ) {
 			return NULL;
 		}
-		$bindVars = array($this->mContentId);
-		$whereSql = $selectSql = $joinSql = $orderSql = '';
-		$rowCount = $offset = NULL;
-		$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+		if( empty( $this->mItems ) || $pRefresh ) {
+			$bindVars = array($this->mContentId);
+			$whereSql = $selectSql = $joinSql = $orderSql = '';
+			$rowCount = $offset = NULL;
+			$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
-		if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
-			$orderSql = ", ".$this->mDb->convertSortmode( $gBitSystem->getConfig( 'fisheye_gallery_default_sort_mode' ) );
-		} else {
-			$orderSql = ", fgim.`item_content_id`";
-		}
-
-		// load for just a single page
-		if( $pPage != -1 ) {
-			if( $this->getLayout() == FISHEYE_PAGINATION_POSITION_NUMBER ) {
-				$query = "SELECT DISTINCT(FLOOR(`item_position`))
-						  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
-						  WHERE gallery_content_id=?
-						  ORDER BY floor(item_position)";
-				$mantissa = $this->mDb->getOne( $query, array( $this->mContentId ), 1, ($pPage - 1) );
-				// gallery image order with no positions set will have NULL mantissa, and all images will be shown
-				if( !is_null( $mantissa ) ) {
-					$whereSql .= " AND floor(item_position)=? ";
-					array_push( $bindVars, $mantissa );
-				}
-			} elseif( $this->getLayout() == FISHEYE_PAGINATION_FIXED_GRID ) {
-				$rowCount = $this->getField( 'rows_per_page' ) * $this->getField( 'cols_per_page' );
-				$offset = $rowCount * ($pPage - 1);
+			if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
+				$orderSql = ", ".$this->mDb->convertSortmode( $gBitSystem->getConfig( 'fisheye_gallery_default_sort_mode' ) );
 			} else {
-				$rowCount = $pImagesPerPage;
-				$offset = $rowCount * ($pPage - 1);
+				$orderSql = ", fgim.`item_content_id`";
 			}
-		}
 
-		$this->mItems = array();
-
-		$query = "SELECT fgim.*, lc.`user_id`, lct.*, ufm.`favorite_content_id` AS is_favorite $selectSql
-				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
-					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` )
-					INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` )
-					$joinSql
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
-				WHERE fgim.`gallery_content_id` = ? $whereSql
-				ORDER BY fgim.`item_position` $orderSql";
-		$rs = $this->mDb->query($query, $bindVars, $rowCount, $offset);
-
-		$rows = $rs->getRows();
-		foreach ($rows as $row) {
-			$pass = TRUE;
-			if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-				$pass = $gBitUser->hasPermission( 'p_fisheye_admin' ) || !@$this->verifyId( $row['security_id'] ) || ( $row['user_id'] == $gBitUser->mUserId ) || @$this->verifyId( $_SESSION['gatekeeper_security'][$row['security_id']] );
+			// load for just a single page
+			if( $pPage != -1 ) {
+				if( $this->getLayout() == FISHEYE_PAGINATION_POSITION_NUMBER ) {
+					$query = "SELECT DISTINCT(FLOOR(`item_position`))
+							  FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map`
+							  WHERE gallery_content_id=?
+							  ORDER BY floor(item_position)";
+					$mantissa = $this->mDb->getOne( $query, array( $this->mContentId ), 1, ($pPage - 1) );
+					// gallery image order with no positions set will have NULL mantissa, and all images will be shown
+					if( !is_null( $mantissa ) ) {
+						$whereSql .= " AND floor(item_position)=? ";
+						array_push( $bindVars, $mantissa );
+					}
+				} elseif( $this->getLayout() == FISHEYE_PAGINATION_FIXED_GRID ) {
+					$rowCount = $this->getField( 'rows_per_page' ) * $this->getField( 'cols_per_page' );
+					$offset = $rowCount * ($pPage - 1);
+				} else {
+					$rowCount = $pImagesPerPage;
+					$offset = $rowCount * ($pPage - 1);
+				}
 			}
-			if( $pass ) {
-				$type = $gLibertySystem->mContentTypes[$row['content_type_guid']];
-				require_once( constant( strtoupper( $type['handler_package'] ).'_PKG_PATH' ).$type['handler_file'] );
-				$item = new $type['handler_class']( NULL, $row['item_content_id'] );
-				if( is_object( $item ) && $item->load() ) {
-					$item->loadThumbnail( $this->mInfo['thumbnail_size'] );
-					$item->setGalleryPath( $this->mGalleryPath.'/'.$this->mGalleryId );
-					$item->mInfo['item_position'] = $row['item_position'];
-					$this->mItems[$row['item_content_id']] = $item;
+
+			$this->mItems = array();
+
+			$query = "SELECT fgim.*, lc.`user_id`, lct.*, ufm.`favorite_content_id` AS is_favorite $selectSql
+					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lct.`content_type_guid`=lc.`content_type_guid` )
+						$joinSql
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_favorites_map` ufm ON ( ufm.`favorite_content_id`=lc.`content_id` AND lc.`user_id`=ufm.`user_id` )
+					WHERE fgim.`gallery_content_id` = ? $whereSql
+					ORDER BY fgim.`item_position` $orderSql";
+			$rs = $this->mDb->query($query, $bindVars, $rowCount, $offset);
+
+			$rows = $rs->getRows();
+			foreach ($rows as $row) {
+				$pass = TRUE;
+				if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
+					$pass = $gBitUser->hasPermission( 'p_fisheye_admin' ) || !@$this->verifyId( $row['security_id'] ) || ( $row['user_id'] == $gBitUser->mUserId ) || @$this->verifyId( $_SESSION['gatekeeper_security'][$row['security_id']] );
+				}
+				if( $pass ) {
+					$type = $gLibertySystem->mContentTypes[$row['content_type_guid']];
+					require_once( constant( strtoupper( $type['handler_package'] ).'_PKG_PATH' ).$type['handler_file'] );
+					if( $item = parent::getLibertyObject( $row['item_content_id'], $row['content_type_guid'] ) ) {
+						$item->loadThumbnail( $this->mInfo['thumbnail_size'] );
+						$item->setGalleryPath( $this->mGalleryPath.'/'.$this->mGalleryId );
+						$item->mInfo['item_position'] = $row['item_position'];
+						$this->mItems[$row['item_content_id']] = $item;
+					}
 				}
 			}
 		}
-
 		return count( $this->mItems );
 	}
 
@@ -462,7 +470,7 @@ class FisheyeGallery extends FisheyeBase {
 		}
 
 		if( @$this->verifyId( $pThumbnailContentId ) ) {
-			$ret = LibertyBase::getLibertyObject( $pThumbnailContentId, $pThumbnailContentType );
+			$ret = parent::getLibertyObject( $pThumbnailContentId, $pThumbnailContentType );
 			if( is_a( $ret, 'FisheyeGallery' ) ) {
 				//recurse down in to find the first image
 				if( $ret = $ret->getThumbnailImage() ) {
@@ -1093,7 +1101,7 @@ class FisheyeGallery extends FisheyeBase {
 
 function addGalleryRecursive( $pGalleryId , $pPath = '/', &$pZip ){
 
-	$gallery = new FisheyeGallery($pGalleryId);
+	$gallery = FisheyeGallery::lookup( array( 'galley_id' => $pGalleryId ) );
 	$gallery->load();
 	$gallery->loadImages();
 	$pPath .= $gallery->getTitle().'/';
