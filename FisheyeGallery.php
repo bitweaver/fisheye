@@ -61,7 +61,7 @@ class FisheyeGallery extends FisheyeBase {
 	}
 
 	public function __sleep() {
-		return array_merge( parent::__sleep(), array( 'mGalleryId', 'mItems' ) );
+		return array_merge( parent::__sleep(), array( 'mGalleryId' ) );
 	}
 
 	function isValid() {
@@ -844,7 +844,7 @@ class FisheyeGallery extends FisheyeBase {
 		$ret = '';
 		if( $hash = FisheyeGallery::getTree( $pListHash ) ) {
 
-			$class = 'unstyled';
+			$class = ' structure-toc';
 			$ret = "<ul ";
 			foreach( array( 'class', 'name', 'id', 'onchange' ) as $key ) {
 				if( !empty( $pOptions[$key] ) ) {
@@ -856,7 +856,7 @@ class FisheyeGallery extends FisheyeBase {
 				}
 			}
 			$ret .= ' class="'.$class.'">';
-			$ret .= FisheyeGallery::generateListItems( $hash, $pOptions, $pLocate );
+			$ret .= self::generateListItems( $hash, $pOptions, $pLocate );
 			$ret .= "</ul>";
 		}
 		return $ret;

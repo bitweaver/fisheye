@@ -38,10 +38,6 @@ class FisheyeImage extends FisheyeBase {
 		$this->mAdminContentPerm = 'p_fisheye_admin';
 	}
 
-	public function __wakeup() {
-		return parent::__wakeup();
-	}
-
 	public function __sleep() {
 		$ret = array_merge( parent::__sleep(), array( 'mImageId' ) );
 		return $ret;
