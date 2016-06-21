@@ -8,7 +8,7 @@
 		<link rel="next" title="{tr}Next{/tr}" href="{$gContent->getImageUrl($gGallery->mInfo.next_image_id)|escape}" />
 	{/if}
 {/if}
-{if $gBitSystem->isPackageActive( 'rss' ) and $gBitSystem->isFeatureActive( 'fisheye_rss' ) and $smarty.const.ACTIVE_PACKAGE eq 'fisheye' and $gBitUser->hasPermission( 'p_fisheye_view' )}
+{if $gBitSystem->isPackageActive( 'rss' ) and $gBitSystem->isFeatureActive( 'fisheye_rss' ) and $gBitSystem->getActivePackage() eq 'fisheye' and $gBitUser->hasPermission( 'p_fisheye_view' )}
 	{if $gGallery}
 		{assign var=fisheye_rss_gal_id value=$gGallery->mGalleryId}
 	{elseif $gContent}
