@@ -19,7 +19,7 @@
 							{formlabel label="Current Image"}
 							{forminput}
 								{if $gContent->mInfo.thumbnail_url.medium}
-									<img src="{$gContent->mInfo.thumbnail_url.medium}?{math equation="1 + rand(1,9999)"}" alt="{$gContent->getTitle()|escape}" />
+									<img class="img-responsive" src="{$gContent->mInfo.thumbnail_url.medium}?{math equation="1 + rand(1,9999)"}" alt="{$gContent->getTitle()|escape}" />
 									<br />
 									<small>
 										<a href="{$gContent->getDownloadUrl()}">{tr}Full size{/tr}</a>
@@ -28,7 +28,7 @@
 										{/if}
 									</small>
 								{else}
-									<img src="{$smarty.const.FISHEYE_PKG_URL}image/no_image.png" alt="{$gContent->getTitle()|escape}" />
+									<img class="img-responsive" src="{$smarty.const.FISHEYE_PKG_URL}image/no_image.png" alt="{$gContent->getTitle()|escape}" />
 								{/if}
 							{/forminput}
 						</div>
