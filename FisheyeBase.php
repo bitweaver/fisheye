@@ -83,7 +83,7 @@ abstract class FisheyeBase extends LibertyMime
 	}
 
 	// Possible derived read-only object such as Facebook, Instagram, etc.. default is TRUE
-	function isEditable() {
+	function isEditable( $pContentId = NULL ) {
 		return TRUE;
 	}
 
