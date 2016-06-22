@@ -14,7 +14,7 @@
  * @subpackage functions
  */
 
-	global $gBitSystem, $_SERVER;
+	global $gBitSystem, $gBitDb, $_SERVER;
 
 	$_SERVER['SCRIPT_URL'] = '';
 	$_SERVER['HTTP_HOST'] = '';
@@ -43,7 +43,7 @@
 
 	$thumbCount = ( !empty( $argv[1] ) ) ? $argv[1] : ( !empty( $_REQUEST['thumbnails'] ) ? $_REQUEST['thumbnails'] : 10);
 
-	$gBitSystem->mDb->StartTrans();
+	$gBitDb->StartTrans();
 
 	$sql = "SELECT pq.content_id AS hash_key, pq.*
 			FROM `".BIT_DB_PREFIX."liberty_process_queue` pq
@@ -59,7 +59,7 @@
 		$rs2 = $gBitSystem->mDb->query( $sql2, array( date( 'U' ), $rs->fields['content_id'] ) );
 		$rs->MoveNext();
 	}
-	$gBitSystem->mDb->CompleteTrans();
+	$gBitDb->CompleteTrans();
 
 	$log = array();
 	$total = date( 'U' );

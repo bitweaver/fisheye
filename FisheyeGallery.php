@@ -510,7 +510,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	function store(&$pStorageHash) {
 		if ($this->verifyGalleryData($pStorageHash)) {
-			$this->mDb->StartTrans();
+			$this->StartTrans();
 			if( LibertyContent::store($pStorageHash)) {
 				$this->mContentId = $pStorageHash['content_id'];
 				$this->mInfo['content_id'] = $this->mContentId;
@@ -526,7 +526,7 @@ class FisheyeGallery extends FisheyeBase {
 					$bindVars = array($this->mGalleryId, $this->mContentId, $pStorageHash['rows_per_page'], $pStorageHash['cols_per_page'], $pStorageHash['thumbnail_size']);
 				}
 				$rs = $this->mDb->query($query, $bindVars);
-				$this->mDb->CompleteTrans();
+				$this->CompleteTrans();
 			} else {
 				$this->mDb->RollbackTrans();
 				$this->mErrors[] = "There were errors while attempting to save this gallery";
@@ -569,7 +569,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	function expunge( $pRecursiveDelete = FALSE ) {
 		if( $this->isValid() ) {
-			$this->mDb->StartTrans();
+			$this->StartTrans();
 
 			if( $this->loadImages() ) {
 				foreach( array_keys( $this->mItems ) as $key ) {
@@ -596,7 +596,7 @@ class FisheyeGallery extends FisheyeBase {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery` WHERE `content_id`=?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ) );
 			if( LibertyContent::expunge() ) {
-				$this->mDb->CompleteTrans();
+				$this->CompleteTrans();
 			} else {
 				$this->mDb->RollbackTrans();
 				error_log( "Error expunging fisheye gallery: " . vc($this->mErrors ) );

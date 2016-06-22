@@ -280,7 +280,7 @@ class FisheyeImage extends FisheyeBase {
 			// we have already done all the permission checking needed for this user to upload an image
 			$pParamHash['no_perm_check'] = TRUE;
 
-			$this->mDb->StartTrans();
+			$this->StartTrans();
 			$pParamHash['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
 			if( LibertyMime::store( $pParamHash ) ) {
 				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['attachment_id'] ) {
@@ -324,7 +324,7 @@ class FisheyeImage extends FisheyeBase {
 						$this->resizeOriginal( $pParamHash['resize'] );
 					}
 				}
-				$this->mDb->CompleteTrans();
+				$this->CompleteTrans();
 			} else {
 				$this->mDb->RollbackTrans();
 			}
@@ -742,7 +742,7 @@ class FisheyeImage extends FisheyeBase {
 
 	function expunge($pExpungeAttachment = TRUE) {
 		if( $this->isValid() ) {
-			$this->mDb->StartTrans();
+			$this->StartTrans();
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` WHERE `item_content_id` = ?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
 			$query = "UPDATE `".BIT_DB_PREFIX."fisheye_gallery` SET `preview_content_id`=NULL WHERE `preview_content_id` = ?";
@@ -750,7 +750,7 @@ class FisheyeImage extends FisheyeBase {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."fisheye_image` WHERE `content_id` = ?";
 			$rs = $this->mDb->query($query, array( $this->mContentId ));
 			if( LibertyMime::expunge($pExpungeAttachment) ) {
-				$this->mDb->CompleteTrans();
+				$this->CompleteTrans();
 				$this->mImageId = NULL;
 				$this->mContentId = NULL;
 			} else {
