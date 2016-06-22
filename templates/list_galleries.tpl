@@ -87,7 +87,7 @@
 
 			</div>
 		</div>
-	{if $gal@iteration % $quarterValue == 0}
+	{if $quarterValue > 0 && $gal@iteration % $quarterValue == 0}
 	</div>
 	<div class="col-xs-6 col-sm-4 col-md-3">
 	{/if}
