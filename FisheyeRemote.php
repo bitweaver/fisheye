@@ -49,9 +49,9 @@ define( 'FEG2REMOTE_ROTATE_IMAGE_FAILED', 504 );
  */
 class FisheyeRemote {
 
-	var $mResponse = array();
+	public $mResponse = array();
 
-	var $mSubGalIdx = 1;
+	public $mSubGalIdx = 1;
 
 	function getApiVersion() {
 		return '2.14';

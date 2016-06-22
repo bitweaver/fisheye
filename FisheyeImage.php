@@ -16,7 +16,7 @@ define('FISHEYEIMAGE_CONTENT_TYPE_GUID', 'fisheyeimage');
  * @package fisheye
  */
 class FisheyeImage extends FisheyeBase {
-	var $mImageId;
+	public $mImageId;
 
 	function __construct($pImageId = NULL, $pContentId = NULL) {
 		parent::__construct();

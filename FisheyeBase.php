@@ -14,7 +14,7 @@ require_once( LIBERTY_PKG_PATH.'LibertyMime.php' );		// FisheyeGallery base clas
 abstract class FisheyeBase extends LibertyMime
 {
 	// Path of gallery images to get breadcrumbs
-	var $mGalleryPath;
+	public $mGalleryPath;
 
 	abstract public static function getServiceKey();
 

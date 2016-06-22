@@ -23,8 +23,8 @@ define( 'FISHEYE_PAGINATION_GALLERIFFIC', 'galleriffic' );
  * @package fisheye
  */
 class FisheyeGallery extends FisheyeBase {
-	var $mGalleryId;		// fisheye_gallery.gallery_id
-	var $mItems;			// Array of FisheyeImage class instances which belong to this gallery
+	public $mGalleryId;		// fisheye_gallery.gallery_id
+	public $mItems;			// Array of FisheyeImage class instances which belong to this gallery
 
 	function __construct($pGalleryId = NULL, $pContentId = NULL) {
 		parent::__construct();
