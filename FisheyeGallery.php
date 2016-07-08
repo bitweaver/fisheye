@@ -68,7 +68,7 @@ class FisheyeGallery extends FisheyeBase {
 		return( @$this->verifyId( $this->mGalleryId ) || @$this->verifyId( $this->mContentId ) );
 	}
 
-	public static function lookup( $pLookupHash ) {
+	public static function lookup( $pLookupHash, $pLoadFromCache=TRUE ) {
 		global $gBitDb;
 		$ret = NULL;
 
@@ -84,7 +84,7 @@ class FisheyeGallery extends FisheyeBase {
 		}
 
 		if( static::verifyId( $lookupContentId ) ) {
-			$ret = parent::getLibertyObject( $lookupContentId, $lookupContentGuid );
+			$ret = parent::getLibertyObject( $lookupContentId, $lookupContentGuid, $pLoadFromCache );
 		}
 
 		return $ret;
@@ -264,7 +264,7 @@ class FisheyeGallery extends FisheyeBase {
 				if( $pass ) {
 					$type = $gLibertySystem->mContentTypes[$row['content_type_guid']];
 					require_once( constant( strtoupper( $type['handler_package'] ).'_PKG_PATH' ).$type['handler_file'] );
-					if( $item = parent::getLibertyObject( $row['item_content_id'], $row['content_type_guid'] ) ) {
+					if( $item = parent::getLibertyObject( $row['item_content_id'], $row['content_type_guid'], $this->isCacheableObject() ) ) {
 						$item->loadThumbnail( $this->mInfo['thumbnail_size'] );
 						$item->setGalleryPath( $this->mGalleryPath.'/'.$this->mGalleryId );
 						$item->mInfo['item_position'] = $row['item_position'];
@@ -470,7 +470,7 @@ class FisheyeGallery extends FisheyeBase {
 		}
 
 		if( @$this->verifyId( $pThumbnailContentId ) ) {
-			$ret = parent::getLibertyObject( $pThumbnailContentId, $pThumbnailContentType );
+			$ret = parent::getLibertyObject( $pThumbnailContentId, $pThumbnailContentType, $this->isCacheableObject() );
 			if( is_a( $ret, 'FisheyeGallery' ) ) {
 				//recurse down in to find the first image
 				if( $ret = $ret->getThumbnailImage() ) {
