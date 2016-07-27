@@ -28,7 +28,7 @@ $gContent->verifyUpdatePermission();
 if (!empty($_REQUEST['cancel'])) {
 	header( 'Location: '.$gContent->getDisplayUrl() );
 	die;
-} elseif (!empty($_REQUEST['updateImageOrder'])) {
+} elseif (!empty($_REQUEST['save_order'])) {
 	if( !empty( $_REQUEST['batch'] ) ) {
 		// flip so we can do instant hash lookup
 		$batchCon = array_flip( $_REQUEST['batch'] );
@@ -76,6 +76,7 @@ if (!empty($_REQUEST['cancel'])) {
 				}
 				break;
 		}
+
 		natcasesort( $reorder );
 		$sortPos = 10;
 		foreach( $reorder as $conId => $sortVal ) {
@@ -167,6 +168,7 @@ if (!empty($_REQUEST['cancel'])) {
 				}
 				// if we are reordered, that takes precident
 				$newPos = preg_replace( '/[^\d\.]/', '', (!empty( $newOrder[$contentId] ) ? $newOrder[$contentId] : $newPos) );
+
 				if ($galleryItem->mInfo['title'] != $_REQUEST['image_title'][$contentId]) {
 					$storageHash = array('title' => $_REQUEST['image_title'][$contentId]);
 					// make sure we don't delete the 'data' field on en masse title updating
