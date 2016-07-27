@@ -145,7 +145,7 @@
 			</div>
 
 			<div class="form-group submit">
-				<input type="submit" class="btn btn-default" name="cancel" value="{tr}Back{/tr}"/> <input type="submit" class="btn btn-primary" name="save_order" value="{tr}Save Changes{/tr}"/>
+				<input type="submit" class="btn btn-default" name="cancel" value="{tr}Back{/tr}"/> <input type="submit" class="btn btn-primary" name="save_order" value="{tr}Save{/tr}"/>
 			</div>
 		{/form}
 	</div><!-- end .body -->
