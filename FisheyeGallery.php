@@ -1101,17 +1101,18 @@ class FisheyeGallery extends FisheyeBase {
 
 function addGalleryRecursive( $pGalleryId , $pPath = '/', &$pZip ){
 
-	$gallery = FisheyeGallery::lookup( array( 'galley_id' => $pGalleryId ) );
-	$gallery->load();
-	$gallery->loadImages();
-	$pPath .= $gallery->getTitle().'/';
-	foreach ( $gallery->mItems as $item ){
-		if( is_a( $item , 'FisheyeImage' ) ){
-			$sourcePath = $item->getSourceFile();
-			$title = $item->getTitle();
-			$pZip->addFile($sourcePath, $pPath.$title.substr($sourcePath,strrpos($sourcePath,'.')) );
-		}elseif ( is_a( $item , 'FisheyeGallery' ) ){
-			addGalleryRecursive($item->mGalleryId,$pPath,$pZip);
+	if( $gallery = FisheyeGallery::lookup( array( 'galley_id' => $pGalleryId ) ) ) {
+		$gallery->load();
+		$gallery->loadImages();
+		$pPath .= $gallery->getTitle().'/';
+		foreach ( $gallery->mItems as $item ){
+			if( is_a( $item , 'FisheyeImage' ) ){
+				$sourcePath = $item->getSourceFile();
+				$title = $item->getTitle();
+				$pZip->addFile($sourcePath, $pPath.$title.substr($sourcePath,strrpos($sourcePath,'.')) );
+			} elseif ( is_a( $item , 'FisheyeGallery' ) ) {
+				addGalleryRecursive($item->mGalleryId,$pPath,$pZip);
+			}
 		}
 	}
 }
