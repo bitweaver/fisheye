@@ -1101,7 +1101,7 @@ class FisheyeGallery extends FisheyeBase {
 
 function addGalleryRecursive( $pGalleryId , $pPath = '/', &$pZip ){
 
-	if( $gallery = FisheyeGallery::lookup( array( 'galley_id' => $pGalleryId ) ) ) {
+	if( $gallery = FisheyeGallery::lookup( array( 'gallery_id' => $pGalleryId ) ) ) {
 		$gallery->load();
 		$gallery->loadImages();
 		$pPath .= $gallery->getTitle().'/';
