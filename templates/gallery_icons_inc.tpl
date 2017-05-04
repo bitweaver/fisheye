@@ -1,7 +1,7 @@
 <div class="floaticon">
 	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon' serviceHash=$gContent->mInfo}
 	{if $gContent->hasUserPermission( 'p_fisheye_download_gallery_arc' ) }	
-		<a title="{tr}Download Gallery{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}&amp;download=1">{booticon iname="icon-arrow-down" iexplain="Download Gallery"}</a>
+		<a title="{tr}Download Gallery{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}&amp;download=1">{booticon iname="icon-cloud-download" iexplain="Download Gallery"}</a>
 	{/if}
 	{if $gContent->hasUpdatePermission()}
 		<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}">{booticon iname="icon-edit"  ipackage="icons"  iexplain="Edit"}</a>
