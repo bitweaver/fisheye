@@ -179,8 +179,9 @@ not ready for primetime
 					// image has been requested to be put in a new gallery
 					if( empty( $inGalleries[$galleryId] ) ) {
 						if( empty( $galleries[$galleryId] ) ) {
-							$galleries[$galleryId] = FisheyeGallery::lookup( array( 'gallery_id' => $galleryId ) );
-							$galleries[$galleryId]->load();
+							if( $galleries[$galleryId] = FisheyeGallery::lookup( array( 'gallery_id' => $galleryId ) ) ) {
+								$galleries[$galleryId]->load();
+							}
 						}
 						if( $galleries[$galleryId]->isValid() ) {
 							if( $galleries[$galleryId]->hasUserPermission( 'p_fisheye_upload', TRUE, FALSE ) || $galleries[$galleryId]->isPublic() ) {
