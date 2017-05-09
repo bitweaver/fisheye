@@ -24,9 +24,9 @@
 			{/if}
 
 			<td style="width:{$tdWidth}%; vertical-align:top;"> <!-- Begin Image Cell -->
-				{box class="box `$galItem->mInfo.content_type_guid`"}
+				{box class="box `$galItem->mInfo.content_type_guid`" style="margin-left:0;"}
 					<a href="{$galItem->getDisplayUrl()|escape}">
-						<img class="thumb" src="{$galItem->getThumbnailUri($gContent->getField('thumbnail_size'))}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
+						<img class="thumb img-responsive" src="{$galItem->getThumbnailUri($gContent->getField('thumbnail_size'))}" alt="{$galItem->mInfo.title|escape|default:'image'}" />
 					</a>
 					{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_titles' )}
 						<h2>{$galItem->mInfo.title|escape}</h2>

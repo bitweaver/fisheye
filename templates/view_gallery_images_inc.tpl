@@ -62,13 +62,13 @@
 									<a href="{$galItem->mInfo.thumbnail_url.large}">
 								{/if}
 							{/if}
-							<img src="{$galItem->mInfo.thumbnail_url.$thumbsize}" alt="{$galItem->getTitle()|escape}" title="{$galItem->getTitle()|escape}" />
+							<img src="{$galItem->mInfo.thumbnail_url.$thumbsize}" alt="{$galItem->getTitle()|escape}" title="{$galItem->getTitle()|escape}" class="img-responsive"/>
 							{if $gBitSystem->isFeatureActive( 'site_fancy_zoom' )}
 								</a>
 							{/if}
 						{else}
 							<a href="{$galItem->getDisplayUrl()|escape}">
-								<img class="thumb" src="{$galItem->getThumbnailUri()}" alt="{$galItem->getTitle()|escape|default:'image'}" />
+								<img class="thumb img-responsive" src="{$galItem->getThumbnailUri()}" alt="{$galItem->getTitle()|escape|default:'image'}" />
 							</a>
 						{/if}
 					</td>
@@ -153,7 +153,7 @@
 						<h2>{$galItem->getTitle()|escape}</h2>
 					{/if}
 					<a href="{$galItem->getDisplayUrl()|escape}">
-						<img class="thumb" src="{$galItem->getThumbnailUri()}" alt="{$galItem->getTitle()|escape|default:'image'}" />
+						<img class="img-responsive thumb" src="{$galItem->getThumbnailUri()}" alt="{$galItem->getTitle()|escape|default:'image'}" />
 					</a>
 					{if $gBitSystem->isFeatureActive( 'fisheye_gallery_list_image_descriptions' )}
 						<p>{$galItem->mInfo.data|escape}</p>
