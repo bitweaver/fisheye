@@ -183,7 +183,7 @@ not ready for primetime
 								$galleries[$galleryId]->load();
 							}
 						}
-						if( $galleries[$galleryId]->isValid() ) {
+						if( $galleries[$galleryId] && $galleries[$galleryId]->isValid() ) {
 							if( $galleries[$galleryId]->hasUserPermission( 'p_fisheye_upload', TRUE, FALSE ) || $galleries[$galleryId]->isPublic() ) {
 								if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
 									$pos = NULL;
