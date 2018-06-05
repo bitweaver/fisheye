@@ -1,0 +1,10 @@
+.square	{position: relative;width: 95%;padding-bottom: 95%;margin:2.5%;background-position:center center;background-repeat:no-repeat;background-size:cover;border-radius: 5px;}
+.square img	{height:100%;width:100%;position:absolute; opacity: 0;filter: alpha(opacity=0);}
+.gallery-description	{line-height: 1.25em; min-height: 2.5em;}
+h3.gallery-title	{line-height: 1em;margin: 0;font-size: 1.15em; padding: 10px;background-color: rgba(0, 0, 0, .5);position: absolute;bottom:0;width:100%;border-radius: 0 0 5px 5px;}
+h3.gallery-title a	{color:#fff;text-shadow: 0px 0px 4px #000}
+@media only screen and (max-width: 768px)	{
+.galleries>div:nth-child(even)	{padding-left: 5px;}
+.galleries>div:nth-child(odd)	{padding-right: 5px;}
+h3.gallery-title	{font-size: 1.1em;padding: 10px;}
+}
