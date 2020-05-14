@@ -675,7 +675,7 @@ class FisheyeImage extends FisheyeBase {
 	 * @param	array	Not used
 	 * @return	object	Fully formatted html link for use by Liberty
 	 */
-	function getDisplayLink( $pTitle=NULL, $pMixed=NULL, $pAnchor=NULL ) {
+	static function getDisplayLink( $pTitle=NULL, $pMixed=NULL, $pAnchor=NULL ) {
 		global $gBitSystem;
 
 		$pTitle = trim( $pTitle );
