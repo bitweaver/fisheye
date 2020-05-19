@@ -614,7 +614,7 @@ class FisheyeImage extends FisheyeBase {
     /**
     * Function that returns link to display a piece of content
     * @param pImageId id of gallery to link
-    * @param pMixed if a string, it is assumed to be the size, if an array, it is assumed to be a mInfo hash
+    * @param pParamHash if a string, it is assumed to be the size, if an array, it is assumed to be a mInfo hash
     * @return the url to display the gallery.
     */
 	public static function getDisplayUrlFromHash( &$pParamHash ) {
@@ -675,21 +675,18 @@ class FisheyeImage extends FisheyeBase {
 	 * @param	array	Not used
 	 * @return	object	Fully formatted html link for use by Liberty
 	 */
-	static function getDisplayLink( $pTitle=NULL, $pMixed=NULL, $pAnchor=NULL ) {
+	static function getDisplayLinkFromHash( &$pParamHash, $pTitle=NULL, $pAnchor=NULL ) {
 		global $gBitSystem;
 
 		$pTitle = trim( $pTitle );
-		if( empty( $pMixed ) && !empty( $this ) ) {
-			$pMixed = $this->mInfo;
-		}
 
 		if( empty( $pTitle ) ) {
-			$pTitle = FisheyeImage::getTitleFromHash( $pMixed );
+			$pTitle = FisheyeImage::getTitleFromHash( $pParamHash );
 		}
 
 		$ret = $pTitle;
 		if( $gBitSystem->isPackageActive( 'fisheye' ) ) {
-			$ret = '<a title="'.$pTitle.'" href="'.FisheyeImage::getDisplayUrlFromHash( $pMixed ).'">'.$pTitle.'</a>';
+			$ret = '<a title="'.$pTitle.'" href="'.FisheyeImage::getDisplayUrlFromHash( $pParamHash ).'">'.$pTitle.'</a>';
 		}
 		return $ret;
 	}
@@ -732,10 +729,10 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	public static function getThumbnailUrlFromHash( &$pMixed, $pSize = 'small', $pSecondaryId = NULL, $pDefault=TRUE ) {
+	public static function getThumbnailUrlFromHash( &$pParamHash, $pSize = 'small', $pSecondaryId = NULL, $pDefault=TRUE ) {
 		$ret = NULL;
-		if( isset( $pMixed['thumbnail_url'][$pSize] ) ) {
-			$ret = $pMixed['thumbnail_url'][$pSize];
+		if( isset( $pParamHash['thumbnail_url'][$pSize] ) ) {
+			$ret = $pParamHash['thumbnail_url'][$pSize];
 		}
 		return $ret;
 	}
