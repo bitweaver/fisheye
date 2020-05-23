@@ -65,7 +65,7 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
-	function load( $pContentId = NULL, $pPluginParams = NULL ) {
+	public function load() {
 		if( $this->isValid() ) {
 			global $gBitSystem;
 			$gateSql = NULL;
@@ -115,7 +115,7 @@ class FisheyeImage extends FisheyeBase {
 				}
 
 				// LibertyMime will load the attachment details in $this->mStorage
-				LibertyMime::load( NULL, $pPluginParams );
+				parent::load();
 
 				// parse the data after parent load so we have our html prefs
 				$this->mInfo['parsed_data'] = $this->parseData();

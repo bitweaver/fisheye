@@ -204,7 +204,7 @@ class FisheyeGallery extends FisheyeBase {
 		}
 	}
 
-	function loadImages( $pPage=-1, $pImagesPerPage=-1, $pRefresh=FALSE ) {
+	public function loadImages( $pPage=-1, $pImagesPerPage=-1, $pRefresh=FALSE ) {
 		global $gLibertySystem, $gBitSystem, $gBitUser;
 		if( !$this->isValid() ) {
 			return NULL;
