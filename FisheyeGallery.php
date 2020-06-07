@@ -309,6 +309,7 @@ class FisheyeGallery extends FisheyeBase {
 
 	function exportHash( $pPaginate = FALSE ) {
 		if( $ret = parent::exportHash() ) {
+			$ret['type'] = $this->getContentType();
 			if( $this->loadImages() ) {
 				foreach( array_keys( $this->mItems ) as $key ) {
 					if( $pPaginate ) {
