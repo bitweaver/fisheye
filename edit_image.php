@@ -86,7 +86,9 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 			header( 'Location: '.FISHEYE_PKG_URL."image_order.php?refresh=1&gallery_id=".$_REQUEST['gallery_id'] );
 			die;
 		}
-		$gContent->addToGalleries( $_REQUEST['gallery_additions'] );
+		if( !empty( $_REQUEST['gallery_additions'] ) ) {
+			$gContent->addToGalleries( $_REQUEST['gallery_additions'] );
+		}
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();
 		}
