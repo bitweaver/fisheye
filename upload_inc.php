@@ -44,7 +44,7 @@ function fisheye_handle_upload( &$pFiles ) {
 	// No gallery was specified, let's try to find one or create one.
 	if( empty( $_REQUEST['gallery_additions'] ) ) {
 		if( $gBitUser->hasPermission( 'p_fisheye_create' )) {
-			$_REQUEST['gallery_additions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
+			$upData['gallery_additions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
 		} else {
 			$gBitSystem->fatalError( tra( "You don't have permissions to create a new gallery. Please select an existing one to insert your images to." ));
 		}
@@ -93,19 +93,11 @@ function fisheye_get_default_gallery_id( $pUserId, $pNewName ) {
 	$upList = $gal->getList( $getHash );
 	if( !empty( $upList ) ) {
 		$ret = key( $upList );
-	} else { // if( $gBitUser->hasPermission( 'p_fisheye_create' ) ) {
+	} else { 
 		$galleryHash = array( 'title' => $pNewName );
 		if( $gal->store( $galleryHash ) ) {
 			$ret = $gal->mGalleryId;
 		}
-/*
-	} else {
-		$getHash = array( 'max_records' => 1, 'sort_mode' => 'created_desc' );
-		$upList = $gal->getList( $getHash );
-		if( !empty( $upList ) ) {
-			$ret = key( $upList );
-		}
-*/
 	}
 
 	global $gContent;
@@ -136,12 +128,14 @@ function fisheye_store_upload( &$pFileHash, $pImageData = array(), $pAutoRotate=
 		if( !$image->store( $pImageData ) ) {
 			$ret = $image->mErrors;
 		} else {
+			$pFileHash['content_id'] = $image->getField( 'content_id' );
+			$pFileHash['image_id'] = $image->getField( 'image_id' );
 			$image->load();
 			// play with image some more if user has requested it
 			if( $pAutoRotate ) {
 				$image->rotateImage( 'auto' );
 			}
-			$image->addToGalleries( $_REQUEST['gallery_additions'] );
+			$image->addToGalleries( BitBase::getParameter( $pFileHash, 'gallery_additions' ) );
 			$gFisheyeUploads[] = $image;
 		}
 
@@ -169,6 +163,7 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 			$gContent = &$pParentGallery;
 		}
 
+		$pFileHash['gallery_id'] = $pParentGallery->getField( 'gallery_id' );
 		fisheye_process_directory( $destDir, $pParentGallery, $pRoot );
 	} else {
 		global $gBitUser;

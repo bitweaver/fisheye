@@ -177,6 +177,14 @@ not ready for primetime
 			if( count( $pGalleryArray ) ) {
 				foreach( $pGalleryArray as $galleryId ) {
 					// image has been requested to be put in a new gallery
+					if( !is_numeric( $galleryId ) ) {
+						switch( $galleryId ) {
+							case 'newest':
+								$galleryId = $this->mDb->getAssoc( "SELECT `gallery_id` FROM `".BIT_DB_PREFIX."fisheye_gallery` fg INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (fg.`content_id`=lg.`content_id`) WHERE `user_id` = ? ORDER BY gallery_id DESC", array( $this->getField( 'user_id' ) ) );
+								break;
+												
+						}
+					}
 					if( empty( $inGalleries[$galleryId] ) ) {
 						if( empty( $galleries[$galleryId] ) ) {
 							if( $galleries[$galleryId] = FisheyeGallery::lookup( array( 'gallery_id' => $galleryId ) ) ) {

@@ -260,7 +260,7 @@ class FisheyeRemote {
 			$parentGallery = new FisheyeGallery();
 			if( $parentGallery = $parentGallery->lookup(array('content_id' => $pParamHash['set_albumName'] ) ) ) {
 				$parentGallery->load();
-				$_REQUEST['gallery_additions'] = array($parentGallery->mGalleryId);
+				$storeHash['gallery_additions'] = array($parentGallery->mGalleryId);
 			}
 			if( $errors = fisheye_store_upload( $uploadFile , $storeHash ) ){
 			 	$response = $this->createResponse( FEG2REMOTE_UPLOAD_PHOTO_FAIL, 'Export Failed' );
