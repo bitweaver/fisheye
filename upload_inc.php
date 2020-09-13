@@ -135,7 +135,7 @@ function fisheye_store_upload( &$pFileHash, $pImageData = array(), $pAutoRotate=
 			if( $pAutoRotate ) {
 				$image->rotateImage( 'auto' );
 			}
-			$image->addToGalleries( BitBase::getParameter( $pFileHash, 'gallery_additions' ) );
+			$image->addToGalleries( BitBase::getParameter( $pImageData, 'gallery_additions' ) );
 			$gFisheyeUploads[] = $image;
 		}
 
