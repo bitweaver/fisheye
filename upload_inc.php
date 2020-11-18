@@ -163,7 +163,9 @@ function fisheye_process_archive( &$pFileHash, &$pParentGallery, $pRoot=FALSE ) 
 			$gContent = &$pParentGallery;
 		}
 
-		$pFileHash['gallery_id'] = $pParentGallery->getField( 'gallery_id' );
+		if( !empty( $pParentGallery ) ) {
+			$pFileHash['gallery_id'] = $pParentGallery->getField( 'gallery_id' );
+		}
 		fisheye_process_directory( $destDir, $pParentGallery, $pRoot );
 	} else {
 		global $gBitUser;
