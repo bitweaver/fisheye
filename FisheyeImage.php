@@ -396,8 +396,8 @@ class FisheyeImage extends FisheyeBase {
 			}
 			if( is_numeric( $pDegrees ) ) {
 				$fileHash['degrees'] = $pDegrees;
-				$rotateFunc = liberty_get_function( 'rotate' );
-				if( $rotateFunc( $fileHash ) ) {
+				
+				if( ($rotateFunc = liberty_get_function( 'rotate' )) && $rotateFunc( $fileHash ) ) {
 					liberty_clear_thumbnails( $fileHash );
 					$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_image` SET `width`=`height`, `height`=`width` WHERE `content_id`=?", array( $this->mContentId ) );
 					$this->clearFromCache();
@@ -455,9 +455,7 @@ class FisheyeImage extends FisheyeBase {
 			$fileHash['max_height'] = $fileHash['max_width'] = $pResizeOriginal;
 			// make a copy of the fileHash that we can compare output after processing
 			$preResize = $fileHash;
-			$resizeFunc = liberty_get_function( 'resize' );
-
-			if( $resizeFile = $resizeFunc( $fileHash ) ) {
+			if( ($resizeFunc = liberty_get_function( 'resize' )) && ($resizeFile = $resizeFunc( $fileHash )) ) {
 				clearstatcache();
 				// Ack this is evil direct bashing of the liberty tables! XOXO spiderr
 				// should be a cleaner way eventually
