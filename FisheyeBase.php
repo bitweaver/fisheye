@@ -161,7 +161,8 @@ not ready for primetime
 				}
 			}
 		}
-		if( $this->isValid() && $pIncludeSelf ) {
+
+		if( $this->isValid() && $pIncludeSelf && is_a( $this, 'FisheyeGallery' ) ) {
 			$ret[$this->mGalleryId] = $this->getTitle();
 		}
 
