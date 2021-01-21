@@ -8,7 +8,7 @@ $registerHash = array(
 );
 $gBitSystem->registerPackage( $registerHash );
 
-if( $gBitSystem->isPackageActive( 'fisheye' ) && $gBitUser->hasPermission( 'p_fisheye_view' )) {
+if( $gBitSystem->isPackageActive( 'fisheye' ) ) {
 
 	// Default Preferences Defines
 	define ( 'FISHEYE_DEFAULT_ROWS_PER_PAGE', 5 );
