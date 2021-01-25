@@ -49,4 +49,11 @@ $gContent->addHit();
 if( $gContent->hasUpdatePermission() || $gGallery && $gGallery->getPreference( 'link_original_images' )) {
 	$gContent->mInfo['image_file']['original'] = TRUE;
 }
+
+if( $gContent->hasUpdatePermission() ) {
+	if( !empty( $_REQUEST['rethumb'] ) ) {
+		$gContent->generateThumbnails( FALSE, TRUE );
+	}
+}
+
 require_once( FISHEYE_PKG_PATH.'display_fisheye_image_inc.php' );
