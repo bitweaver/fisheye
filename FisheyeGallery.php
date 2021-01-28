@@ -464,8 +464,10 @@ class FisheyeGallery extends FisheyeBase {
 							WHERE fgim.`gallery_content_id` = ?
 							ORDER BY ".$this->mDb->convertSortmode('random');
 					$rs = $this->mDb->query($query, array( $pContentId ), 1);
-					$pThumbnailContentId = $rs->fields['item_content_id'];
-					$pThumbnailContentType = $rs->fields['content_type_guid'];
+					if( !empty( $rs->fields ) ) {
+						$pThumbnailContentId = $rs->fields['item_content_id'];
+						$pThumbnailContentType = $rs->fields['content_type_guid'];
+					}
 				}
 			}
 		}
