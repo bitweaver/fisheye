@@ -117,9 +117,6 @@ class FisheyeImage extends FisheyeBase {
 				// LibertyMime will load the attachment details in $this->mStorage
 				parent::load();
 
-				// parse the data after parent load so we have our html prefs
-				$this->mInfo['parsed_data'] = $this->parseData();
-
 				// Copy mStorage to mInfo['image_file'] for easy access
 				if( !empty( $this->mStorage ) && count( $this->mStorage ) > 0 ) {
 					// it seems that this is not necessary and causes confusing copies of the same stuff all over the place
