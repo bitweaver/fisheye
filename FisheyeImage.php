@@ -595,7 +595,7 @@ class FisheyeImage extends FisheyeBase {
     * @return the fully specified path to file to be included
     */
 	function getRenderFile() {
-		return FISHEYE_PKG_PATH."display_fisheye_image_inc.php";
+		return FISHEYE_PKG_INCLUDE_PATH.'display_fisheye_image_inc.php';
 	}
 
     /**

@@ -6,7 +6,7 @@
 /**
  * required setup
  */
-require_once( LIBERTY_PKG_PATH.'LibertyMime.php' );		// FisheyeGallery base class
+require_once( LIBERTY_PKG_CLASS_PATH.'LibertyMime.php' );		// FisheyeGallery base class
 
 /**
  * @package fisheye

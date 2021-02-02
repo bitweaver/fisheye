@@ -15,7 +15,7 @@ require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 
 global $gBitSystem;
 
-include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
+include_once( FISHEYE_PKG_INCLUDE_PATH.'gallery_lookup_inc.php' );
 
 if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
 	global $gGatekeeper;

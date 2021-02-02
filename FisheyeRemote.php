@@ -255,7 +255,7 @@ class FisheyeRemote {
 			$storeHash['summary'] = !empty( $pParamHash['extrafield.Summary'] ) ? $pParamHash['extrafield.Summary'] : NULL;
 			$storeHash['edit'] = !empty( $pParamHash['extrafield.Description'] ) ? $pParamHash['extrafield.Description'] : NULL;
 
-			require_once (FISHEYE_PKG_PATH.'upload_inc.php');	
+			require_once (FISHEYE_PKG_INCLUDE_PATH.'upload_inc.php');	
 		
 			$parentGallery = new FisheyeGallery();
 			if( $parentGallery = $parentGallery->lookup(array('content_id' => $pParamHash['set_albumName'] ) ) ) {

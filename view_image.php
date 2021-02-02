@@ -25,7 +25,7 @@ if( !empty( $_REQUEST['refresh'] ) ) {
 	$gBitSmarty->assign( 'refresh', '?refresh='.time() );
 }
 
-include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
+include_once( FISHEYE_PKG_INCLUDE_PATH.'image_lookup_inc.php' );
 
 if( $gContent && $gContent->isValid() ) {
 	$gBitSystem->setCanonicalLink( $gContent->getDisplayUrl() );
@@ -40,7 +40,7 @@ if( is_object( $gGallery ) && $gGallery->isCommentable() ) {
 	$comments_prefix_var='fisheyeimage:';
 	$comments_object_var='fisheyeimage';
 	$comments_return_url = $_SERVER['SCRIPT_NAME']."?image_id=".$gContent->mImageId;
-	include_once( LIBERTY_PKG_PATH.'comments_inc.php' );
+	include_once( LIBERTY_PKG_INCLUDE_PATH.'comments_inc.php' );
 }
 
 $gContent->addHit();
@@ -56,4 +56,4 @@ if( $gContent->hasUpdatePermission() ) {
 	}
 }
 
-require_once( FISHEYE_PKG_PATH.'display_fisheye_image_inc.php' );
+require_once( FISHEYE_PKG_INCLUDE_PATH.'display_fisheye_image_inc.php' );

@@ -22,7 +22,7 @@ if (empty($_REQUEST['gallery_id'])) {
 	die;
 }
 
-include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
+include_once( FISHEYE_PKG_INCLUDE_PATH.'gallery_lookup_inc.php' );
 
 if (empty($gContent->mContentId)) {
 	$gBitSmarty->assign( 'msg', tra( "The specified gallery does not exist" ));

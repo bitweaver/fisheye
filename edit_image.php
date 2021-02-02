@@ -14,7 +14,7 @@ require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 
 global $gBitSystem;
 
-include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
+include_once( FISHEYE_PKG_INCLUDE_PATH.'image_lookup_inc.php' );
 
 if( $gContent->isValid() ) {
 	$gContent->verifyUpdatePermission();

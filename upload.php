@@ -15,8 +15,8 @@ require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 global $gBitSystem;
 global $fisheyeErrors, $fisheyeWarnings, $fisheyeSuccess, $gFisheyeUploads;
 
-include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
-require_once( FISHEYE_PKG_PATH.'upload_inc.php');
+include_once( FISHEYE_PKG_INCLUDE_PATH.'gallery_lookup_inc.php' );
+require_once( FISHEYE_PKG_INCLUDE_PATH.'upload_inc.php');
 
 $gBitSystem->verifyPermission( 'p_fisheye_upload' );
 
@@ -36,7 +36,7 @@ if ( !empty($_REQUEST['on_complete'])){
 
 }
 
-require_once( LIBERTY_PKG_PATH.'calculate_max_upload_inc.php' );
+require_once( LIBERTY_PKG_INCLUDE_PATH.'calculate_max_upload_inc.php' );
 
 $gContent->invokeServices( 'content_edit_function' );
 

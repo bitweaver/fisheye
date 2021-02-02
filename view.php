@@ -18,7 +18,7 @@ global $gBitSystem, $fisheyeErrors, $fisheyeWarnings, $fisheyeSuccess;
 
 //$gDebug = TRUE;
 
-include_once( FISHEYE_PKG_PATH.'gallery_lookup_inc.php' );
+include_once( FISHEYE_PKG_INCLUDE_PATH.'gallery_lookup_inc.php' );
 
 if( $gContent && $gContent->isValid() ) {
 	$gBitSystem->setCanonicalLink( $gContent->getDisplayUrl() );
@@ -39,7 +39,7 @@ if( $gContent->isCommentable() ) {
 	$comments_prefix_var='fisheyegallery:';
 	$comments_object_var='fisheyegallery';
 	$comments_return_url = $_SERVER['SCRIPT_NAME']."?gallery_id=".$gContent->mGalleryId;
-	include_once( LIBERTY_PKG_PATH.'comments_inc.php' );
+	include_once( LIBERTY_PKG_INCLUDE_PATH.'comments_inc.php' );
 }
 
 if (!empty($_REQUEST['download'])){			
@@ -48,7 +48,7 @@ if (!empty($_REQUEST['download'])){
 	$gContent->verifyUserPermission('p_fisheye_download_gallery_arc');
 	$gContent->download();
 } else {
-	require_once( FISHEYE_PKG_PATH.'display_fisheye_gallery_inc.php' );
+	require_once( FISHEYE_PKG_INCLUDE_PATH.'display_fisheye_gallery_inc.php' );
 }
 
 ?>

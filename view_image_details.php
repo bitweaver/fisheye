@@ -16,7 +16,7 @@ require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
 
 global $gBitSystem, $gDebug;
 
-include_once( FISHEYE_PKG_PATH.'image_lookup_inc.php' );
+include_once( FISHEYE_PKG_INCLUDE_PATH.'image_lookup_inc.php' );
 
 $gContent->invokeServices( 'content_display_function', $displayHash );
 
@@ -26,7 +26,7 @@ if( is_object( $gGallery ) && $gGallery->isCommentable() ) {
 	$comments_prefix_var='fisheyeimage:';
 	$comments_object_var='fisheyeimage';
 	$comments_return_url = FISHEYE_PKG_URL."view_image.php?image_id=".$gContent->mImageId;
-	include_once( LIBERTY_PKG_PATH.'comments_inc.php' );
+	include_once( LIBERTY_PKG_INCLUDE_PATH.'comments_inc.php' );
 }
 
 $gBitSmarty->display( 'bitpackage:fisheye/view_image_details.tpl' );
