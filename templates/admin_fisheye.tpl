@@ -27,15 +27,18 @@ function updateGalleryPagination() {
 
 				{foreach from=$formGalleryGeneral key=item item=output}
 					<div class="form-group">
-						{formlabel label=$output.label for=$item}
-						{forminput}
-							{if $output.type eq 'text'}
-								<input type="text" name="{$item}" id="{$item}" value="{$gBitSystem->getConfig($item)}"/>
-							{elseif $output.type=='checkbox'}
-								{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
-							{/if}
-							{formhelp note=$output.note}
-						{/forminput}
+						{if $output.type=='checkbox'}
+							{forminput label="checkbox"}
+								{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item} {$output.label}
+								{formhelp note=$output.note}
+							{/forminput}
+						{else}
+							{formlabel label=$output.label for=$item}
+							{forminput}
+								<input type="text" class="form-control" name="{$item}" id="{$item}" value="{$gBitSystem->getConfig($item)}"/>
+								{formhelp note=$output.note}
+							{/forminput}
+						{/if}
 					</div>
 				{/foreach}
 			{/legend}
@@ -49,9 +52,8 @@ function updateGalleryPagination() {
 
 				{foreach from=$formGalleryListLists key=item item=output}
 					<div class="form-group">
-						{formlabel label=$output.label for=$item}
-						{forminput}
-							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
+						{forminput label="checkbox"}
+							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item} {$output.label}
 							{formhelp note=$output.note}
 						{/forminput}
 					</div>
@@ -75,9 +77,8 @@ function updateGalleryPagination() {
 
 				{foreach from=$formGalleryLists key=item item=output}
 					<div class="form-group">
-						{formlabel label=$output.label for=$item}
-						{forminput}
-							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
+						{forminput label="checkbox"}
+							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item} {$output.label}
 							{formhelp note=$output.note page=$output.page}
 						{/forminput}
 					</div>
@@ -143,9 +144,8 @@ function updateGalleryPagination() {
 
 				{foreach from=$formImageLists key=item item=output}
 					<div class="form-group">
-						{formlabel label=$output.label for=$item}
-						{forminput}
-							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item}
+						{forminput label="checkbox"}
+							{html_checkboxes name="$item" values="y" checked=$gBitSystem->getConfig($item) labels=false id=$item} {$output.label}
 							{formhelp note=$output.note}
 						{/forminput}
 					</div>
@@ -161,11 +161,11 @@ function updateGalleryPagination() {
 				</div>
 			{/legend}
 		{/jstab}
+	{/jstabs}
 
 		<div class="form-group submit">
 			<input type="submit" class="btn btn-default" name="fisheyeAdminSubmit" value="{tr}Change Preferences{/tr}" />
 		</div>
-	{/jstabs}
 {/form}
 
 {/strip}
