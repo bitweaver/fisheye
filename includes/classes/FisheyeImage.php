@@ -6,7 +6,7 @@
 /**
  * required setup
  */
-require_once( FISHEYE_PKG_PATH.'FisheyeBase.php' );
+require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeBase.php' );
 // Needed for getting event_time and possible image title and data
 require_once( LIBERTY_PKG_PATH.'plugins/mime.image.php' );
 

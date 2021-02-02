@@ -66,7 +66,7 @@ function data_gallery( $pData, $pParams ) {
 	if( !empty( $pParams['src'] ) ) {
 		$thumbUrl = $pParams['src'];
 	} elseif( @BitBase::verifyId( $pParams['id'] ) && $gBitSystem->isPackageActive( 'fisheye' )) {
-		require_once( FISHEYE_PKG_PATH.'FisheyeImage.php' );
+		require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeImage.php' );
 		$gBitSmarty->loadPlugin( 'smarty_modifier_display_bytes' );
 
 		$gallery = new FisheyeImage();

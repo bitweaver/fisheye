@@ -13,7 +13,7 @@ extract( $moduleParams );
 /**
  * required setup
  */
-require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php' );
+require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeGallery.php' );
 
 $image = new FisheyeImage();
 

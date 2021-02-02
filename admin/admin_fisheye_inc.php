@@ -125,7 +125,7 @@ $formImageLists = array(
 );
 $gBitSmarty->assign( 'formImageLists', $formImageLists);
 
-require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php' );
+require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeGallery.php' );
 $gBitSmarty->assign( 'galleryPaginationTypes', FisheyeGallery::getAllLayouts() );
 
 $sortOptions = array(

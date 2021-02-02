@@ -23,7 +23,7 @@ $imagesPerPage = $gContent->getField( 'rows_per_page' ) * $gContent->getField( '
 
 switch( $gContent->getLayout() ) {
 	case 'auto_flow':
-		$gBitThemes->loadCss( FISHEYE_PKG_PATH."div_layout.css", TRUE );
+		$gBitThemes->loadCss( FISHEYE_PKG_PATH."css/div_layout.css", TRUE );
 		break;
 	case 'matteo':
 		$gBitThemes->loadCss( FISHEYE_PKG_PATH."gallery_view/matteo/mb_layout.css", TRUE );

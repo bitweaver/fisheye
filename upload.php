@@ -9,8 +9,8 @@
  */
 require_once( '../kernel/setup_inc.php' );
 
-require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php');
-require_once( FISHEYE_PKG_PATH.'FisheyeImage.php');
+require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeGallery.php');
+require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeImage.php');
 
 global $gBitSystem;
 global $fisheyeErrors, $fisheyeWarnings, $fisheyeSuccess, $gFisheyeUploads;

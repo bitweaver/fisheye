@@ -14,7 +14,7 @@ $gBitSystem->verifyPackage( 'fisheye' );
 $gBitSystem->verifyPackage( 'rss' );
 $gBitSystem->verifyFeature( 'fisheye_rss' );
 
-require_once( FISHEYE_PKG_PATH."FisheyeImage.php" );
+require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeImage.php' );
 require_once( RSS_PKG_INCLUDE_PATH.'rss_inc.php' );
 
 $rss->title = $gBitSystem->getConfig( 'fisheye_rss_title', $gBitSystem->getConfig( 'site_title' ).' - '.tra( 'Image Galleries' ) );

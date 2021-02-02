@@ -219,7 +219,7 @@ class FisheyeRemote {
 	}	
 
     function cmdFetchAlbums( $pParamHash ) {
-		require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php' );
+		require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeGallery.php' );
 		global $gBitUser;
 		if( $gBitUser->isRegistered() ) {
 			$treeGallery = new FisheyeGallery();

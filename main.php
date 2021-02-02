@@ -28,7 +28,7 @@ require_once( '../kernel/setup_inc.php' );
 
 //Point of access for FisheyeRemote requests
 require_once( 'FisheyeRemote.php' );
-require_once( FISHEYE_PKG_PATH.'FisheyeGallery.php' );
+require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeGallery.php' );
 
 $gFisheyeRemote = new FisheyeRemote();
 

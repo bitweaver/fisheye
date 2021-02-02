@@ -43,6 +43,6 @@ if( $gBitSystem->isPackageActive( 'fisheye' ) ) {
 		}
 	}
 
-	include_once( FISHEYE_PKG_PATH.'FisheyeGallery.php' );
+	include_once( FISHEYE_PKG_CLASS_PATH.'FisheyeGallery.php' );
 }
 ?>

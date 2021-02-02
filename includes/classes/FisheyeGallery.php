@@ -6,7 +6,7 @@
 /**
  * required setup
  */
-require_once( FISHEYE_PKG_PATH.'FisheyeImage.php' );		// A gallery is composed of FisheyeImages
+require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeImage.php' );		// A gallery is composed of FisheyeImages
 
 define('FISHEYEGALLERY_CONTENT_TYPE_GUID', 'fisheyegallery' );
 
@@ -254,7 +254,6 @@ class FisheyeGallery extends FisheyeBase {
 					WHERE fgim.`gallery_content_id` = ? $whereSql
 					ORDER BY fgim.`item_position` $orderSql";
 			$rs = $this->mDb->query($query, $bindVars, $rowCount, $offset);
-
 			$rows = $rs->getRows();
 			foreach ($rows as $row) {
 				$pass = TRUE;
@@ -262,8 +261,6 @@ class FisheyeGallery extends FisheyeBase {
 					$pass = $gBitUser->hasPermission( 'p_fisheye_admin' ) || !@$this->verifyId( $row['security_id'] ) || ( $row['user_id'] == $gBitUser->mUserId ) || @$this->verifyId( $_SESSION['gatekeeper_security'][$row['security_id']] );
 				}
 				if( $pass ) {
-					$type = $gLibertySystem->mContentTypes[$row['content_type_guid']];
-					require_once( constant( strtoupper( $type['handler_package'] ).'_PKG_PATH' ).$type['handler_file'] );
 					if( $item = parent::getLibertyObject( $row['item_content_id'], $row['content_type_guid'], $this->isCacheableObject() ) ) {
 						$item->loadThumbnail( $this->mInfo['thumbnail_size'] );
 						$item->setGalleryPath( $this->mGalleryPath.'/'.$this->mGalleryId );

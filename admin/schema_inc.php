@@ -98,8 +98,8 @@ if( defined( 'RSS_PKG_NAME' )) {
 
 // ### Register content types
 $gBitInstaller->registerContentObjects( FISHEYE_PKG_NAME, array( 
-	'FisheyeGallery'=>FISHEYE_PKG_PATH.'FisheyeGallery.php',
-	'FisheyeImage'=>FISHEYE_PKG_PATH.'FisheyeImage.php',
+	'FisheyeGallery'=>FISHEYE_PKG_CLASS_PATH.'FisheyeGallery.php',
+	'FisheyeImage'=>FISHEYE_PKG_CLASS_PATH.'FisheyeImage.php',
 ));
 
 // Requirements
