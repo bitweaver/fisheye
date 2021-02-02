@@ -9,7 +9,7 @@
 	</header>
 
 	<section class="body">
-		<ul class="list-inline navbar sortby">
+		<ul class="list-inline sortby">
 			<li>{booticon iname="icon-circle-arrow-right"  ipackage="icons"  iexplain="sort by" iforce="icon"}</li>
 			{if $gBitSystem->isFeatureActive('fisheye_list_title')}
 				<li>{smartlink ititle="Gallery Name" isort="title" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
@@ -26,9 +26,6 @@
 			{if $gBitSystem->isFeatureActive('fisheye_list_hits')}
 				<li>{smartlink ititle="Hits" isort="hits" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
 			{/if}
-			<li>
-		{pagination}
-			</li>
 		</ul>
 
 		<div class="form-group">
@@ -87,6 +84,10 @@
 			{/foreach}	
 			</div>
 		</div>
+
+		<nav>
+			{pagination}
+		</nav>
 
 		</section>	<!-- end .body -->
 	</div>	<!-- end .fisheye -->
