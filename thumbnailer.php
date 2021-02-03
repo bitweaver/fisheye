@@ -32,7 +32,7 @@
 
 	// running from cron can cause us not to be in the right dir.
 	chdir( dirname( __FILE__ ) );
-	require_once( '../kernel/setup_inc.php' );
+	require_once( '../kernel/includes/setup_inc.php' );
 	require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeImage.php' );
 
 	// add some protection for arbitrary thumbail execution.

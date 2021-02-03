@@ -8,7 +8,7 @@
 /**
  * required setup
  */
-include_once( "../kernel/setup_inc.php" );
+include_once( "../kernel/includes/setup_inc.php" );
 
 if (empty($gBitThemes->mStyles['styleSheet'])) {
 	$gBitThemes->mStyles['styleSheet'] = $gBitThemes->getStyleCss();
