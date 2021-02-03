@@ -854,7 +854,7 @@ class FisheyeImage extends FisheyeBase {
 				if( empty( $pListHash['no_thumbnails'] ) ) {
 					$ret[$imageId]['display_url']      = static::getDisplayUrlFromHash( $row );
 					$ret[$imageId]['has_machine_name'] = $this->isMachineName( $ret[$imageId]['title'] );
-					$ret[$imageId]['source_url']      = $this->getStorageUrl( $row ).$row['file_name'];
+					$ret[$imageId]['source_url']      = liberty_mime_get_storage_url( $row ).$row['file_name'];
 					$ret[$imageId]['thumbnail_url']    = liberty_fetch_thumbnail_url( array(
 						'source_file'   => $this->getSourceFile( $row ),
 						'default_image' => FISHEYE_PKG_URL.'image/generating_thumbnails.png',
