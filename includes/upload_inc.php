@@ -23,6 +23,15 @@ function fisheye_handle_upload( &$pFiles ) {
 	$i = 0;
 	usort( $pFiles, 'fisheye_sort_uploads' );
 
+	// No gallery was specified, let's try to find one or create one.
+	if( empty( $_REQUEST['gallery_additions'] ) ) {
+		if( $gBitUser->hasPermission( 'p_fisheye_create' )) {
+			$_REQUEST['gallery_additions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
+		} else {
+			$gBitSystem->fatalError( tra( "You don't have permissions to create a new gallery. Please select an existing one to insert your images to." ));
+		}
+	}
+
 	foreach( array_keys( $pFiles ) as $key ) {
 		$pFiles[$key]['type'] = $gBitSystem->verifyMimeType( $pFiles[$key]['tmp_name'] );
 		if( preg_match( '/(^image|pdf|vnd)/i', $pFiles[$key]['type'] ) ) {
@@ -36,18 +45,8 @@ function fisheye_handle_upload( &$pFiles ) {
 		} elseif( !empty( $pFiles[$key]['tmp_name'] ) && !empty( $pFiles[$key]['name'] ) ) {
 			$upArchives[$key] = $pFiles[$key];
 		}
+
 		$i++;
-	}
-
-	$gallery_additions = array();
-
-	// No gallery was specified, let's try to find one or create one.
-	if( empty( $_REQUEST['gallery_additions'] ) ) {
-		if( $gBitUser->hasPermission( 'p_fisheye_create' )) {
-			$upData['gallery_additions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
-		} else {
-			$gBitSystem->fatalError( tra( "You don't have permissions to create a new gallery. Please select an existing one to insert your images to." ));
-		}
 	}
 
 	foreach( array_keys( $upArchives ) as $key ) {
@@ -135,7 +134,11 @@ function fisheye_store_upload( &$pFileHash, $pImageData = array(), $pAutoRotate=
 			if( $pAutoRotate ) {
 				$image->rotateImage( 'auto' );
 			}
-			$image->addToGalleries( BitBase::getParameter( $pImageData, 'gallery_additions' ) );
+			if( !($galleryAdditions = BitBase::getParameter( $pImageData, 'gallery_additions' )) ) {
+				global $gBitUser;
+				$galleryAdditions = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
+			}
+			$image->addToGalleries( $galleryAdditions );
 			$gFisheyeUploads[] = $image;
 		}
 

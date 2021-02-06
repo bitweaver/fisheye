@@ -2,4 +2,11 @@
 	RewriteEngine  on
 	RewriteRule    ^image/([0-9]+)(/[0-9/]+)*/?([A-Za-z]+)*$  view_image.php?image_id=$1&gallery_path=$2&size=$3  [L,QSA]
 	RewriteRule    ^gallery([0-9/]+)*/([0-9]+)/?$  view.php?gallery_id=$2&gallery_path=$1  [L,QSA]
+
+    RewriteCond	%{SCRIPT_FILENAME}  -f [OR]
+    RewriteCond	%{SCRIPT_FILENAME}/index.php    -f
+    RewriteRule	^(.*)$            - [L]
+
+    RewriteCond	%{SCRIPT_FILENAME}.php    -f
+    RewriteRule	^(.*)$            $1.php [L,QSA]
 </IfModule>
