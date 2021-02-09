@@ -175,7 +175,7 @@ not ready for primetime
 		if( $this->isValid() ) {
 			$inGalleries = $this->mDb->getAssoc( "SELECT `gallery_id`,`gallery_content_id` FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON (fgim.`gallery_content_id`=fg.`content_id`) WHERE `item_content_id` = ?", array( $this->mContentId ) );
 			$galleries = array();
-			if( count( $pGalleryArray ) ) {
+			if( is_array( $pGalleryArray ) && count( $pGalleryArray ) ) {
 				foreach( $pGalleryArray as $galleryId ) {
 					// image has been requested to be put in a new gallery
 					if( !is_numeric( $galleryId ) ) {
