@@ -3,7 +3,7 @@ global $gBitSystem, $gBitUser, $gBitSmarty, $gBitThemes;
 
 $registerHash = array(
 	'package_name' => 'fisheye',
-	'package_path' => dirname( __FILE__ ).'/',
+	'package_path' => dirname( dirname( __FILE__ ) ).'/',
 	'homeable' => TRUE,
 );
 $gBitSystem->registerPackage( $registerHash );
