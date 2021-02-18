@@ -410,7 +410,7 @@ class FisheyeGallery extends FisheyeBase {
 			$this->loadThumbnail();
 		}
 
-		if( is_object( $this->mInfo['preview_content'] ) ) {
+		if( !empty( $this->mInfo['preview_content'] ) && is_object( $this->mInfo['preview_content'] ) ) {
 			return $this->mInfo['preview_content']->getThumbnailUri( $pSize );
 		}
 	}
