@@ -162,7 +162,7 @@ class FisheyeGallery extends FisheyeBase {
 			}
 		}
 
-		return count($this->mInfo);
+		return !empty( $this->mInfo );
 	}
 
 	function loadCurrentImage( $pCurrentImageId ) {
