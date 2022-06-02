@@ -877,7 +877,7 @@ class FisheyeGallery extends FisheyeBase {
 					}
 				}
 			}
-			$ret .= ' class="'.$class.'"><label>';
+			$ret .= ' class="'.$class.'"><i class="icon-folder-close-alt"></i> ';
 			if ( $pLocate || $pHash[$conId]['content']['content_id'] != $this->mContentId ) {
 				if( !empty( $pOptions['radio_checkbox'] ) ) {
 					$ret .= '<input type="checkbox" name="gallery_additions[]" value="'.$pHash[$conId]['content']['gallery_id'].'" ';
@@ -893,7 +893,7 @@ class FisheyeGallery extends FisheyeBase {
 			} else {
 				$ret .= htmlspecialchars( $pHash[$conId]['content']['title'] );
 			}
-			$ret .= '</label></li>';
+			$ret .= '</li>';
 			if( !empty( $pHash[$conId]['children'] ) ) {
 				$ret .= '<li><ul>'.FisheyeGallery::generateListItems( $pHash[$conId]['children'], $pOptions, $pLocate ).'</ul></li>';
 			}
