@@ -6,7 +6,7 @@
 {strip}
 <div class="admin fisheye">
 	<div class="header">
-		<h1>{booticon iname="icon-cloud-upload" ipackage="icons" iexplain="^"} {tr}Upload Photos{/tr}</h1>
+		<h1>{booticon iname="fa-cloud-arrow-up" iexplain="^"} {tr}Upload Photos{/tr}</h1>
 	</div>
 
 	<div class="body">
@@ -16,7 +16,7 @@
 					{jstab title="Upload Files"}
 						{formfeedback note=$quotaMessage}
 
-						<p class="warning">{booticon iname="icon-warning-sign"  ipackage="icons"  iexplain=Warning iforce=icon} {tr}The maximum file size you can upload is {$uploadMax} Megabytes{/tr}</p>
+						<p class="warning">{booticon iname="fa-triangle-exclamation" iexplain=Warning} {tr}The maximum file size you can upload is {$uploadMax} Megabytes{/tr}</p>
 						{formfeedback error=$errors}
 
 						{formhelp note="Here you can upload files. You can upload single files, or you can upload archived files (.zip's, .tar's, etc.) Archived uploads will automatically be decompressed, and a gallery will created for every gallery in it. If you have nested folders, the hierarchy will be maintained for you with nested galleries." force=true}

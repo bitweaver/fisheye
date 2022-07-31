@@ -28,7 +28,7 @@
 				{if $gGallery->mInfo.previous_image_id}
 					<a href="{$gContent->getImageUrl($gGallery->mInfo.previous_image_id)|escape}">
 						{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
-							{booticon iname="icon-arrow-left"  ipackage="icons"  iexplain=previous iforce="icon"}
+							{booticon iname="fa-arrow-left"  ipackage="icons"  iexplain=previous}
 						{else}
 							&laquo;&nbsp;{tr}previous{/tr}
 						{/if}
@@ -44,7 +44,7 @@
 				{if $gGallery->mInfo.next_image_id}
 					<a href="{$gContent->getImageUrl($gGallery->mInfo.next_image_id)|escape}">
 						{if $gBitSystem->isFeatureActive( 'gallerybar_use_icons' )}
-							{booticon iname="icon-arrow-right" iexplain=next}
+							{booticon iname="fa-arrow-right" iexplain=next}
 						{else}
 							{tr}next{/tr}&nbsp;&raquo;
 						{/if}
