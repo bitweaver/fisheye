@@ -30,7 +30,7 @@
 						<img src="{$galItem->mInfo.thumbnail_url.avatar}" alt="{$galItem->mInfo.title|escape}" />
 					</a>
 					<h2 class="heading">
-						<div class="image-heading">{booticon iname="icon-picture" isize="small" iexplain=$galItem->getContentTypeName()|escape}{$galItem->getDisplayLink()}</div>
+						<div class="image-heading">{booticon iname="fa-image-landscape" iexplain=$galItem->getContentTypeName()|escape}{$galItem->getDisplayLink()}</div>
 					</h2>
 					<div class="caption">
 						<div class="meta floatright">
@@ -55,7 +55,7 @@
 						<img src="{$galItem->mPreviewImage->mInfo.thumbnail_url.avatar}" alt="{$galItem->mInfo.title|escape}"/>
 					</a>
 					<div class="heading">
-						<h2>{booticon iname="icon-picture"   isize="small" iexplain=$galItem->getContentTypeName()|escape}{$galItem->getDisplayLink()}</h2><span class="image-count">({$galItem->getImageCount()} {tr}Items{/tr})</span>
+						<h2>{booticon iname="fa-image-landscape" iexplain=$galItem->getContentTypeName()|escape}{$galItem->getDisplayLink()}</h2><span class="image-count">({$galItem->getImageCount()} {tr}Items{/tr})</span>
 					</div>
 					<div class="caption">
 						<div class="image-desc">{$galItem->mInfo.description|escape}</div>
@@ -121,9 +121,9 @@ jQuery(document).ready(function($) {
 		renderSSControls:          true,
 		renderNavControls:         true,
 		playLinkText:              '',
-		playLinkImage:             '{/literal}{booticon iname="icon-control-start" isize="small" iexplain="Play Slideshow"}{literal}',
+		playLinkImage:             '{/literal}{booticon iname="fa-circle-play" class="fa-small" iexplain="Play Slideshow"}{literal}',
 		pauseLinkText:             '',
-		pauseLinkImage:            '{/literal}{booticon iname="icon-control-pause" isize="small" iexplain="Pause Slideshow"}{literal}',
+		pauseLinkImage:            '{/literal}{booticon iname="fa-circle-pause" class="fa-small" iexplain="Pause Slideshow"}{literal}',
 		prevLinkText:              '&laquo;',
 		nextLinkText:              '&raquo;',
 		nextPageLinkText:          'Next &rsaquo;',

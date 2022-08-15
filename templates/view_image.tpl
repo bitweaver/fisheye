@@ -8,9 +8,9 @@
 		<div class="floaticon">
 			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon' serviceHash=$gContent->mInfo}
 			{if $gContent->hasUpdatePermission()}
-				<a title="{tr}Refresh{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image/{$gContent->mImageId}?rethumb=1">{booticon iname="icon-refresh" ipackage="icons" iexplain="Refresh"}</a>
-				<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image?image_id={$gContent->mImageId}">{booticon iname="icon-edit" ipackage="icons" iexplain="Edit Image"}</a>
-				<a title="{tr}Delete{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image?image_id={$gContent->mImageId}&amp;delete=1">{booticon iname="icon-trash" ipackage="icons" iexplain="Delete Image"}</a>
+				<a title="{tr}Refresh{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image/{$gContent->mImageId}?rethumb=1">{booticon iname="fa-arrows-rotate" iexplain="Refresh"}</a>
+				<a title="{tr}Edit{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image?image_id={$gContent->mImageId}">{booticon iname="fa-pen-to-square" iexplain="Edit Image"}</a>
+				<a title="{tr}Delete{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit_image?image_id={$gContent->mImageId}&amp;delete=1">{booticon iname="fa-trash" iexplain="Delete Image"}</a>
 			{/if}
 		</div>
 	{/if}

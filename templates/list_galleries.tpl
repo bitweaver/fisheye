@@ -10,7 +10,7 @@
 
 	<section class="body">
 		<ul class="list-inline sortby">
-			<li>{booticon iname="icon-circle-arrow-right"  ipackage="icons"  iexplain="sort by" iforce="icon"}</li>
+			<li>{booticon iname="fa-circle-arrow-right" iexplain="sort by"}</li>
 			{if $gBitSystem->isFeatureActive('fisheye_list_title')}
 				<li>{smartlink ititle="Gallery Name" isort="title" user_id=$gQuerUserId offset=$iMaxRows home=$userInfo.login search=$iSearchString}</li>
 			{/if}
@@ -38,7 +38,7 @@
 					{assign var=thumbnailUri value=$gBitSystem->getParameter( $gal, 'thumbnail_uri', "`$smarty.const.FISHEYE_PKG_URL`image/no_image.png")}
 					<a href="{$gal.display_url}"><div class="square" style="background-image:url('{$thumbnailUri}');"alt="{$gal.title|escape}" title="{$gal.title|truncate:50|escape}" {if !empty($gal.data)} data-toggle="popover" data-trigger="click hover focus" data-placement="top" data-content="{$gal.data|truncate:100}"{else}{/if}><img src="{$thumbnailUri}" alt="{$gal.title|escape}"><h3 class="gallery-title"><a href="{$gal.display_url}">{if $gBitSystem->isFeatureActive('fisheye_list_title')}{$gal.title|truncate:25|escape}{else}Gallery {$gal.gallery_id}{/if}</a></h3><div class="security" style="position:absolute; top:5%;right:5%;color:#fff;">
 							{if $gal.is_hidden=='y' || $gal.is_private=='y' || $gal.access_answer}
-								{booticon iname="icon-lock" ipackage="icons" iexplain="Security" label=TRUE}
+								{booticon iname="fa-lock" iexplain="Security" label=TRUE}
 							{/if}
 							{if $gal.is_hidden=='y'}
 								<span style="padding:5px;">{tr}Hidden{/tr}</span>
@@ -57,7 +57,7 @@
 						<strong>{displayname hash=$gal nolink=TRUE}</strong> <small><a href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gal.user_id}" style="display:block;">{tr}Galleries{/tr}</a></small>
 					{/if}
 					{* if $galleryList[ix]->isProtected()}
-						{booticon iname="icon-lock" ipackage="icons" iexplain="Protected"}
+						{booticon iname="fa-lock" iexplain="Protected"}
 					{/if *}
 
 					{if $gBitSystem->isFeatureActive('fisheye_list_created' ) or $gBitSystem->isFeatureActive('fisheye_list_lastmodif' )}

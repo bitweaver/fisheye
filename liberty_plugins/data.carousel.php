@@ -23,7 +23,7 @@ $pluginParams = array (
 	'plugin_type'   => DATA_PLUGIN,
 
 	// display icon in quicktags bar
-	'booticon'       => '{booticon iname="icon-picture" iexplain="Image"}',
+	'booticon'       => '{booticon iname="fa-image-landscape" iexplain="Image"}',
 	'taginsert'     => '{carousel id= size= nolink=}',
 
 	// functions

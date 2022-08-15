@@ -1091,7 +1091,7 @@ class FisheyeGallery extends FisheyeBase {
 	}
 
 	public static function getServiceIcon() {
-		return '<i class="icon-camera"></i>';
+		return '<i class="fa fal fa-camera"></i>';
 	}
 
 	public static function getServiceKey() {

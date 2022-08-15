@@ -70,10 +70,10 @@
 							{formlabel label="Rotate Image"}
 							{forminput}
 {if function_exists('exif_read_data')}
-								<label class="radio-inline"><input type="radio" name="rotate_image" value="auto"/> {booticon iname="icon-chevron-sign-up" iexplain="Auto Rotate"}</label>
+								<label class="radio-inline"><input type="radio" name="rotate_image" value="auto"/> {booticon iname="fa-chevron-up" iexplain="Auto Rotate"}</label>
 {/if}
-								<label class="radio-inline"><input type="radio" name="rotate_image" value="-90"/> {booticon iname="icon-rotate-left" iexplain="Rotate Counter Clockwise"}</label>
-								<label class="radio-inline"><input type="radio" name="rotate_image" value="90"/> {booticon iname="icon-rotate-left" iexplain="Rotate Clockwise"}</label>
+								<label class="radio-inline"><input type="radio" name="rotate_image" value="-90"/> {booticon iname="fa-arrow-rotate-left" iexplain="Rotate Counter Clockwise"}</label>
+								<label class="radio-inline"><input type="radio" name="rotate_image" value="90"/> {booticon iname="fa-arrow-rotate-left" iexplain="Rotate Clockwise"}</label>
 								<label class="radio-inline"><input type="radio" name="rotate_image" value="" checked="checked"/> {tr}don't rotate{/tr}</label>
 							{/forminput}
 						</div>
