@@ -93,7 +93,7 @@
 	</div>	<!-- end .fisheye -->
 	{/strip}
 	{literal}
-	<script src="/storage/static/js/popover.js" type="text/javascript"></script>
+	<script src="/storage/static/js/popover.js"></script>
 	<script>
 		$('background-image').error(function(){
         $(this).attr('src', '/storage/static/images/no-image.png');

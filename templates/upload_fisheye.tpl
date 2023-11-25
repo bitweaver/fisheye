@@ -45,11 +45,11 @@
 							<div class="form-group">
 								{formlabel label="Selected File(s)" for=""}
 								{forminput}
-									<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/multifile.js"></script>
+									<script src="{$smarty.const.UTIL_PKG_URL}javascript/multifile.js"></script>
 									<div id="fileslist"></div>
 									<div class="clear"></div>
 									{formhelp note="These files will be uploaded when you hit the upload button below."}
-									<script type="text/javascript">/* <![CDATA[ Multi file upload */
+									<script>/* <![CDATA[ Multi file upload */
 										var multi_selector = new MultiSelector( document.getElementById( 'fileslist' ), 10 );
 										multi_selector.addElement( document.getElementById( 'fileupload' ) );
 									/* ]]> */</script>

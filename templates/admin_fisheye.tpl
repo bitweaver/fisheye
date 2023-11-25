@@ -1,5 +1,5 @@
 {literal}
-<script type="text/javascript">//<![CDATA[
+<script>//<![CDATA[
 function updateGalleryPagination() {
 	BitBase.hideById('fixed_grid-pagination');
 	BitBase.hideById('auto_flow-pagination');
@@ -169,6 +169,6 @@ function updateGalleryPagination() {
 {/form}
 
 {/strip}
-<script type="text/javascript">//<![CDATA[
+<script>//<![CDATA[
 updateGalleryPagination();
 //]]></script>

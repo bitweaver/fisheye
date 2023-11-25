@@ -70,7 +70,7 @@
 				<tr>
 					<td colspan="4" align="right">
 						<label>{tr}Use Random Gallery Image{/tr} <input type="radio" name="gallery_preview_content_id" id="gallery_preview_content_id" value="" {if $gContent->mInfo.preview_content_id == ""}checked="checked"{/if} /></label><br/>
-						<script type="text/javascript">/* <![CDATA[ */
+						<script>/* <![CDATA[ */
 							document.write("<label>{tr}Batch select all images{/tr} <input name=\"switcher\" id=\"switcher\" type=\"checkbox\" onclick=\"BitBase.switchCheckboxes(this.form.id,'batch[]','switcher')\" /></label>");
 						/* ]]> */</script>
 					</td>
