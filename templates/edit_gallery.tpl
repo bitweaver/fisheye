@@ -1,5 +1,5 @@
 {literal}
-<script type="text/javascript">//<![CDATA[
+<script>//<![CDATA[
 function updateGalleryPagination() {
 	document.getElementById('fixed_grid-pagination').style.display = 'none';
 	document.getElementById('auto_flow-pagination').style.display = 'none';
