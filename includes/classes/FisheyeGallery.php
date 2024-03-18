@@ -117,17 +117,18 @@ class FisheyeGallery extends FisheyeBase {
 						LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON (uuc.`user_id` = lc.`user_id`)
 					$whereSql";
 
-			if( $rs = $this->mDb->query($query, $bindVars) ) {
-				$this->mInfo = $rs->fields;
-				$this->mContentId = $rs->fields['content_id'];
+			if( $rowHash = $this->mDb->GetRow($query, $bindVars) ) {
+				$this->mInfo = $rowHash;
+				$this->mContentId = $rowHash['content_id'];
+
 				LibertyContent::load();
 				if( @$this->verifyId($this->mInfo['gallery_id'] ) ) {
 
 					$this->mGalleryId = $this->mInfo['gallery_id'];
 					$this->mContentId = $this->mInfo['content_id'];
 
-					$this->mInfo['creator'] = (isset( $rs->fields['creator_real_name'] ) ? $rs->fields['creator_real_name'] : $rs->fields['creator_user'] );
-					$this->mInfo['editor'] = (isset( $rs->fields['modifier_real_name'] ) ? $rs->fields['modifier_real_name'] : $rs->fields['modifier_user'] );
+					$this->mInfo['creator'] = (isset( $rowHash['creator_real_name'] ) ? $rowHash['creator_real_name'] : $rowHash['creator_user'] );
+					$this->mInfo['editor'] = (isset( $rowHash['modifier_real_name'] ) ? $rowHash['modifier_real_name'] : $rowHash['modifier_user'] );
 
 					// Set some basic defaults for how to display a gallery if they're not already set
 					if (empty($this->mInfo['thumbnail_size'])) {

@@ -9,7 +9,7 @@
 /**
  * fisheye_handle_upload
  */
-function fisheye_handle_upload( &$pFiles ) {
+function fisheye_handle_upload( &$pFiles, &$pRequest ) {
 	global $gBitUser, $gContent, $gBitSystem, $fisheyeErrors, $fisheyeWarnings, $fisheyeSuccess, $gFisheyeUploads;
 
 	// first of all set the execution time for this process to unlimited
@@ -31,6 +31,15 @@ function fisheye_handle_upload( &$pFiles ) {
 			$gBitSystem->fatalError( tra( "You don't have permissions to create a new gallery. Please select an existing one to insert your images to." ));
 		}
 	}
+
+	if( !is_object( $gContent ) || !$gContent->isValid() ) {
+		$gContent = new FisheyeGallery( $_REQUEST['gallery_additions'][0] );
+		if( !$gContent->load() ) {
+			unset( $gContent );
+			$_REQUEST['gallery_additions'] = array( fisheye_get_default_gallery_id( $gBitUser->mUserId, $gBitUser->getDisplayName()."'s Gallery" ) );
+		}
+	}
+
 
 	foreach( array_keys( $pFiles ) as $key ) {
 		$pFiles[$key]['type'] = $gBitSystem->verifyMimeType( $pFiles[$key]['tmp_name'] );
@@ -59,11 +68,6 @@ function fisheye_handle_upload( &$pFiles ) {
 			$upImages[$key]['resize'] = $_REQUEST['resize'];
 		}
 		$upErrors = array_merge( $upErrors, fisheye_store_upload( $upImages[$key], $upData[$key], !empty( $_REQUEST['rotate_image'] )));
-	}
-
-	if( !is_object( $gContent ) || !$gContent->isValid() ) {
-		$gContent = new FisheyeGallery( $_REQUEST['gallery_additions'][0] );
-		$gContent->load();
 	}
 
 	if( !empty( $gFisheyeUploads ) ){
