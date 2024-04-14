@@ -21,7 +21,7 @@ require_once( FISHEYE_PKG_INCLUDE_PATH.'upload_inc.php');
 $gBitSystem->verifyPermission( 'p_fisheye_upload' );
 
 if( !empty( $_FILES ) ) {
-	$upErrors = fisheye_handle_upload( $_FILES );
+	$upErrors = fisheye_handle_upload( $_FILES, $_REQUEST );
 	if( empty( $upErrors ) ) {
 		bit_redirect( $gContent->getDisplayUrl() );
 	} else {
