@@ -234,7 +234,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 						$galleryHash = array( 'title' => str_replace( '_', ' ', $fileName ) );
 						if( $newGallery->store( $galleryHash ) ) {
 							if( $pRoot ) {
-								$newGallery->addToGalleries( $_REQUEST['gallery_additions'] );
+								$newGallery->addToGalleries( BitBase::getParameter( $_REQUEST, 'gallery_additions' ) );
 							}
 							if( is_object( $pParentGallery ) ) {
 								$pParentGallery->addItem( $newGallery->mContentId, $order );
@@ -253,7 +253,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 					$imageHash = array( '_files_override' => array( $scanFile ) );
 					if( $newImage->store( $imageHash ) ) {
 						if( $pRoot ) {
-							$newImage->addToGalleries( $_REQUEST['gallery_additions'] );
+							$newImage->addToGalleries( BitBase::getParameter( $_REQUEST, 'gallery_additions' ) );
 						}
 						if( !is_object( $pParentGallery ) ) {
 							global $gBitUser;
@@ -312,7 +312,7 @@ function fisheye_process_ftp_directory( $pProcessDir ) {
 					$dirGallery = new FisheyeGallery();
 					$galleryHash = array( 'title' => str_replace( '_', ' ', $fileName ) );
 					if( $dirGallery->store( $galleryHash ) ) {
-						$dirGallery->addToGalleries( $_REQUEST['gallery_additions'] );
+						$dirGallery->addToGalleries( BitBase::getParameter( $_REQUEST, 'gallery_additions' ) );
 						$errors = array_merge( $errors, fisheye_process_directory( $pProcessDir.'/'.$fileName, $dirGallery ) );
 					} else {
 						$errors = array_merge( $errors, array_values( $dirGallery->mErrors ) );
@@ -324,7 +324,7 @@ function fisheye_process_ftp_directory( $pProcessDir ) {
 						$newImage = new FisheyeImage();
 						$imageHash = array( 'upload' => $scanFile );
 						if( $newImage->store( $imageHash ) ) {
-							$newImage->addToGalleries( $_REQUEST['gallery_additions'] );
+							$newImage->addToGalleries( BitBase::getParameter( $_REQUEST, 'gallery_additions' ) );
 
 							// if we have a gallery to add these images to, load one of them
 							if( !empty( $_REQUEST['gallery_additions'][0] ) && @!is_object( $imageGallery ) ) {
