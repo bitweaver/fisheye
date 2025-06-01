@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>Find User</title>
-	<script type="text/javascript" src="{$smarty.const.UTIL_PKG_URL}javascript/bitweaver.js"></script>
+	<script src="{$smarty.const.UTIL_PKG_URL}javascript/bitweaver.js"></script>
 
 	<style type="text/css"><!--
 		{if $gBitSystem->mStyles.styleSheet}@import url({$gBitSystem->mStyles.styleSheet});{/if}
 	--></style>
 
 	{literal}
-		<script type="text/javascript">//<![CDATA[
+		<script>//<![CDATA[
 		function returnUserInfo(userId, username) {
 			self.opener.document.getElementById("found_user_id").value = userId;
 			self.opener.document.getElementById("found_username").innerHTML = username;
