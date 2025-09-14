@@ -660,7 +660,6 @@
 					// Construct new hidden heading for the image
 					newHeading = this.$headingContainer
 						.append('<span class="image-heading current"></span>')
-						.find('span.current').css('opacity', '0')
 						.append(imageData.heading);
 				}
 
