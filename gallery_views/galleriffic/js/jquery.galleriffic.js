@@ -659,7 +659,7 @@
 				if (this.$headingContainer) {
 					// Construct new hidden heading for the image
 					newHeading = this.$headingContainer
-						.append('<span class="image-heading current"></span>')
+						.html('<span class="image-heading current"></span>')
 						.append(imageData.heading);
 				}
 
