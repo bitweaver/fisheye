@@ -253,7 +253,7 @@ function fisheye_process_directory( $pDestinationDir, &$pParentGallery, $pRoot=F
 					$imageHash = array( '_files_override' => array( $scanFile ) );
 					if( $newImage->store( $imageHash ) ) {
 						if( $pRoot ) {
-							$newImage->addToGalleries( $_REQUEST['gallery_additions'] );
+							$newImage->addToGalleries( BitBase::getParameter( $_REQUEST, 'gallery_additions' ) );
 						}
 						if( !is_object( $pParentGallery ) ) {
 							global $gBitUser;
