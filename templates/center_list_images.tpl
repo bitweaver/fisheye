@@ -9,13 +9,13 @@
 
 		<div class="body">
 			{foreach from=$thumbnailList key=galleryId item=img}
-				<a href="{$img.display_url}">
+				<a rel="ugc" href="{$img.display_url}">
 					<img class="thumb" src="{$img.thumbnail_url}" alt="{$img.title|escape}" title="{$img.title|escape}" />
 				</a>
 			{foreachelse}
 				{tr}No records found{/tr}
 			{/foreach}
-			<p><a href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gQueryUserId}">{tr}View More{/tr}...</a></p>
+			<p><a rel="ugc" href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gQueryUserId}">{tr}View More{/tr}...</a></p>
 		</div><!-- end .body -->
 	</div><!-- end .fisheye -->
 {/if}

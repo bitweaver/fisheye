@@ -48,7 +48,7 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 		// make sure var is fully stuffed with current data
 		$gContent->load();
 		// set the mappings, or if nothing checked, nuke them all
-		$gContent->addToGalleries( !empty( $_REQUEST['gallery_additions'] ) ? $_REQUEST['gallery_additions'] : NULL );
+		$gContent->addToGalleries( BitBase::getParameter( $_REQUEST, 'gallery_additions' ) );
 
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();
