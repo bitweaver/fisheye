@@ -36,7 +36,7 @@
 				<div class="{$gal.content_type_guid} thumbnail">
 					{if $gBitSystem->isFeatureActive('fisheye_list_thumbnail') && $gal.display_url}
 					{assign var=thumbnailUri value=$gBitSystem->getParameter( $gal, 'thumbnail_uri', "`$smarty.const.FISHEYE_PKG_URL`image/no_image.png")}
-					<a href="{$gal.display_url}"><div class="square" style="background-image:url('{$thumbnailUri}');"alt="{$gal.title|escape}" title="{$gal.title|truncate:50|escape}" {if !empty($gal.data)} data-toggle="popover" data-trigger="click hover focus" data-placement="top" data-content="{$gal.data|truncate:100}"{else}{/if}><img src="{$thumbnailUri}" alt="{$gal.title|escape}"><h3 class="gallery-title"><a href="{$gal.display_url}">{if $gBitSystem->isFeatureActive('fisheye_list_title')}{$gal.title|truncate:25|escape}{else}Gallery {$gal.gallery_id}{/if}</a></h3><div class="security" style="position:absolute; top:5%;right:5%;color:#fff;">
+					<a rel="ugc" href="{$gal.display_url}"><div class="square" style="background-image:url('{$thumbnailUri}');"alt="{$gal.title|escape}" title="{$gal.title|truncate:50|escape}" {if !empty($gal.data)} data-toggle="popover" data-trigger="click hover focus" data-placement="top" data-content="{$gal.data|truncate:100}"{else}{/if}><img src="{$thumbnailUri}" alt="{$gal.title|escape}"><h3 class="gallery-title"><a rel="ugc" href="{$gal.display_url}">{if $gBitSystem->isFeatureActive('fisheye_list_title')}{$gal.title|truncate:25|escape}{else}Gallery {$gal.gallery_id}{/if}</a></h3><div class="security" style="position:absolute; top:5%;right:5%;color:#fff;">
 							{if $gal.is_hidden=='y' || $gal.is_private=='y' || $gal.access_answer}
 								{booticon iname="fa-lock" iexplain="Security" label=TRUE}
 							{/if}
@@ -54,7 +54,7 @@
 					<div class="caption">
 
 					{if $gBitSystem->isFeatureActive('fisheye_list_user')}
-						<strong>{displayname hash=$gal nolink=TRUE}</strong> <small><a href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gal.user_id}" style="display:block;">{tr}Galleries{/tr}</a></small>
+						<strong>{displayname hash=$gal nolink=TRUE}</strong> <small><a rel="ugc" href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gal.user_id}" style="display:block;">{tr}Galleries{/tr}</a></small>
 					{/if}
 					{* if $galleryList[ix]->isProtected()}
 						{booticon iname="fa-lock" iexplain="Protected"}

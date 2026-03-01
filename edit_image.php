@@ -87,7 +87,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 			die;
 		}
 		if( !empty( $_REQUEST['gallery_additions'] ) ) {
-			$gContent->addToGalleries( $_REQUEST['gallery_additions'] );
+			$gContent->addToGalleries( BitBase::getParameter( $_REQUEST, 'gallery_additions' ) );
 		}
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();
