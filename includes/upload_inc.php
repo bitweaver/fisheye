@@ -72,7 +72,7 @@ function fisheye_handle_upload( &$pFiles, &$pRequest ) {
 
 	if( !empty( $gFisheyeUploads ) ){
 		$_REQUEST['uploaded_objects'] = &$gFisheyeUploads;
-		if( is_a( $gContent, 'LibertyContent' ) ) {	
+		if( !empty( $gContent ) && is_a( $gContent, 'LibertyContent' ) ) {	
 			$gContent->invokeServices( "content_post_upload_function", $_REQUEST );
 		}
 	}
