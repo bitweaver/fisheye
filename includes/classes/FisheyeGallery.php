@@ -437,7 +437,7 @@ class FisheyeGallery extends FisheyeBase {
 		}
 
 		if( !@$this->verifyId( $pThumbnailContentId ) ) {
-			if( @$this->verifyId( $this->mInfo['preview_content_id'] ) ) {
+			if( $this->verifyId( $this->mInfo['preview_content_id'] ?? null ) ) {
 				$pThumbnailContentId = $this->mInfo['preview_content_id'];
 			} else {
 				if( $this->mDb->isAdvancedPostgresEnabled() ) {

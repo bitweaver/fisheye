@@ -550,7 +550,7 @@ class FisheyeImage extends FisheyeBase {
 	// Get resolution, etc
 	function getImageDetails($pFilePath = NULL) {
 		$info = array();
-		if( file_exists( $pFilePath ) ) {
+		if( $pFilePath && file_exists( $pFilePath ) ) {
 			$checkFiles = array( $pFilePath, dirname( $pFilePath ).'/original.jpg' );
 		} else {
 			$sourceFile  = $this->getSourceFile();
@@ -801,7 +801,7 @@ class FisheyeImage extends FisheyeBase {
 			$pListHash['sort_mode'] = 'uu.user_id_desc';
 		}
 
-		if( @$this->verifyId( $pListHash['gallery_id'] ) ) {
+		if( $this->verifyId( $pListHash['gallery_id'] ?? null ) ) {
 			$whereSql .= " AND fg.`gallery_id` = ? ";
 			$bindVars[] = $pListHash['gallery_id'];
 		}
