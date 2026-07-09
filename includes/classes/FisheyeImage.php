@@ -687,7 +687,7 @@ class FisheyeImage extends FisheyeBase {
 	}
 
 	static public function getTitleFromHash( &$pHash, $pDefault=TRUE ) {
-		$ret = trim( parent::getTitleFromHash( $pHash, $pDefault ) );
+		$ret = trim( parent::getTitleFromHash( $pHash, $pDefault ) ?? '' );
 		if( empty( $ret ) && $pDefault ) {
 			$storage = (!empty( $this ) && !empty( $this->mStorage ) ? current( $this->mStorage ) : NULL);
 			if( !empty( $storage['file_name'] ) ) {
