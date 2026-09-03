@@ -23,6 +23,10 @@
 - Reuse registered package paths and URLs instead of hard-coded deployment
   paths.
 - Treat request parameters as untrusted even when a controller is admin-only.
+- Validate integer primary-key request parameters with `BitBase::verifyId()` /
+  `verifyIdParameter()`, not `is_numeric()`. `is_numeric()` accepts values above
+  PostgreSQL `integer` range and can produce `value "…" is out of range for type
+  integer` errors on gallery/image/content lookups.
 
 ## Schema changes
 

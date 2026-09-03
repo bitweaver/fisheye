@@ -20,7 +20,7 @@ $gFisheyeGallery = new FisheyeGallery();
 /* Get a list of galleries which matches the input parameters (default is to list every gallery in the system) */
 $_REQUEST['root_only'] = TRUE;
 /* Process the input parameters this page accepts */
-if (!empty($_REQUEST['user_id']) && is_numeric($_REQUEST['user_id'])) {
+if( BitBase::verifyIdParameter( $_REQUEST, 'user_id' ) ) {
 	if( $_REQUEST['user_id'] == $gBitUser->mUserId ) {
 		$_REQUEST['show_empty'] = TRUE;
 	}
