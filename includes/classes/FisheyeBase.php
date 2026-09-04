@@ -39,7 +39,7 @@ abstract class FisheyeBase extends LibertyMime
 		}
 		$ret = NULL;
 
-		if( is_numeric( $pContentId ) ) {
+		if( $this->verifyId( $pContentId ) ) {
 			$sql = "SELECT fg.`gallery_id` AS `hash_key`, fg.*, lc.`title`
 					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg, `".BIT_DB_PREFIX."liberty_content` lc, `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
 					WHERE fgim.`item_content_id` = ? AND fgim.`gallery_content_id`=fg.`content_id` AND fg.`content_id`=lc.`content_id`";
@@ -236,7 +236,7 @@ not ready for primetime
 			$pItemContentId = $this->mContentId;
 		}
 		$ret = FALSE;
-		if ( is_numeric( $this->mGalleryId ) && is_numeric( $pGalleryContentId ) ) {
+		if( $this->verifyId( $this->mGalleryId ) && $this->verifyId( $pGalleryContentId ) ) {
 
 			if( $this->mDb->isAdvancedPostgresEnabled() ) {
 				global $gBitDb, $gBitSmarty;
