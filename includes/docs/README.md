@@ -32,3 +32,4 @@ Does not own generic attachment storage or site-specific image production workfl
 - [Security](security.md) — trust boundaries and direct-HTTP access requirements.
 - [Gallery and image lifecycle](gallery-image-lifecycle.md) — content classes,
   mappings, uploads, storage, metadata, thumbnails, transforms, and deletion.
+  Includes `FisheyeBase::isMachineName` (Smart Captions / UUID filenames).

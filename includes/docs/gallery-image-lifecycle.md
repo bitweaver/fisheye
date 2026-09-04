@@ -77,6 +77,20 @@ EXIF and other metadata can contain private location/device/user information.
 Do not expose all extracted fields automatically. Normalize orientation before
 assuming width/height semantics.
 
+### Machine titles (`FisheyeBase::isMachineName`)
+
+Book Machine Smart Captions and gallery `has_machine_name` skip titles that
+are camera filenames or UUID filenames. The check:
+
+1. Trims the string and strips a short file extension (`.JPG`, `.HEIC`, …).
+2. Replaces `_` with `-` so `IMG_1234` matches the historic camera class.
+3. Matches digits-only / `IMG`/`DSCN`/`PICT`/… prefixes, **or** an RFC 4122
+   UUID (`248E4309-904B-49E5-85B1-24F951D8A61A`).
+
+Keep this in lockstep with native `SmartCaption.isMachineName`
+(`Xcode-PrestoPhoto`). Product copy and overlay contract:
+`designer/includes/docs/smart-captions.md`.
+
 ## Permissions
 
 Check:

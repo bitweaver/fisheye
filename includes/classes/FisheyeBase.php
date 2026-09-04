@@ -27,9 +27,24 @@ abstract class FisheyeBase extends LibertyMime
 		parent::__construct();
 	}
 
-	// regular expression to determine if the title was computer generated
+	// Computer-generated titles: camera filenames (DSCN0415, IMG_1234.HEIC)
+	// and UUID filenames (248E4309-904B-49E5-85B1-24F951D8A61A.JPG — Photos
+	// originalFilename when there is no camera name). Keep in lockstep with
+	// PrestoKit SmartCaption.isMachineName. Designer docs:
+	// designer/includes/docs/smart-captions.md
 	function isMachineName( $pString ) {
-		return( preg_match( '/(^[0-9][-0-9 ]*$)|(^[-0-9 ]*(img|dsc|dscn|pict|htg|dscf|p)[-0-9 ][-0-9 ]*.*$)/i', trim( $pString ) ) );
+		$name = trim( (string)$pString );
+		if( $name === '' ) {
+			return FALSE;
+		}
+		// Strip a short extension so IMG_1234.HEIC / UUID.JPG match the body.
+		$name = preg_replace( '/\.[A-Za-z0-9]{2,4}$/', '', $name );
+		// Camera names use underscore; the historic class is [-0-9 ].
+		$name = str_replace( '_', '-', $name );
+		return (bool)preg_match(
+			'/(^[0-9][-0-9 ]*$)|(^[-0-9 ]*(img|dsc|dscn|pict|htg|dscf|p)[-0-9 ][-0-9 ]*.*$)|(^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$)/i',
+			$name
+		);
 	}
 
 	// Gets a list of galleries which this item is attached to
