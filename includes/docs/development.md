@@ -27,6 +27,9 @@
   `verifyIdParameter()`, not `is_numeric()`. `is_numeric()` accepts values above
   PostgreSQL `integer` range and can produce `value "…" is out of range for type
   integer` errors on gallery/image/content lookups.
+- `FisheyeImage::getImageDetails()` must not call `dirname()` until
+  `getSourceFile()` returns a non-empty path. PHP 8.1+ deprecates
+  `dirname(null)` when the image has no stored original.
 
 ## Schema changes
 

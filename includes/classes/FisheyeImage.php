@@ -555,10 +555,11 @@ class FisheyeImage extends FisheyeBase {
 		} else {
 			$sourceFile  = $this->getSourceFile();
 			$checkFiles = array( $sourceFile );
-			// was an original file created?
-			$originalFile = dirname( $sourceFile ).'/original.jpg';
-			if( file_exists( $originalFile ) && !is_link( $originalFile ) ) {
-				$checkFiles[] = $originalFile;
+			if( !empty( $sourceFile ) ) {
+				$originalFile = dirname( $sourceFile ).'/original.jpg';
+				if( file_exists( $originalFile ) && !is_link( $originalFile ) ) {
+					$checkFiles[] = $originalFile;
+				}
 			}
 		}
 
