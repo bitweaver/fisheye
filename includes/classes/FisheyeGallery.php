@@ -1064,13 +1064,23 @@ class FisheyeGallery extends FisheyeBase {
 
 			$filename = tempnam(TEMP_PKG_PATH,"galleryzip");
 			$path = '/';
+			// OVERWRITE deletes the empty file tempnam() created. A failed
+			// open then leaves nothing, and unlink() warns for each suffix.
+			if( $filename !== FALSE && is_file( $filename ) ) {
+				unlink( $filename );
+			}
 
-			if( $zip->open ($filename, ZIPARCHIVE::OVERWRITE) !== TRUE ){
+			if( $filename === FALSE || $zip->open( $filename, ZIPARCHIVE::CREATE ) !== TRUE ){
 				$this->mErrors['download'] = "Unable to create zip file";
+				return;
 			}else{
 				addGalleryRecursive( $this->mGalleryId , $path, $zip);
 			}
 			$zip->close();
+			if( !is_file( $filename ) ) {
+				$this->mErrors['download'] = "Unable to create zip file";
+				return;
+			}
 
 			//escape backslashes
 			$outputFileTitle = str_replace("\\",'\\\\',$this->getTitle());
@@ -1087,7 +1097,9 @@ class FisheyeGallery extends FisheyeBase {
 			Header ("Content-Length: ".filesize( $filename ) );
 			ob_end_flush();
 			readfile($filename);
-			unlink($filename);
+			if( is_file( $filename ) ) {
+				unlink($filename);
+			}
 		}
 	}
 
