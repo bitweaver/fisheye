@@ -42,7 +42,7 @@ abstract class FisheyeBase extends LibertyMime
 		// Camera names use underscore; the historic class is [-0-9 ].
 		$name = str_replace( '_', '-', $name );
 		return (bool)preg_match(
-			'/(^[0-9][-0-9 ]*$)|(^[-0-9 ]*(img|dsc|dscn|pict|htg|dscf|p)[-0-9 ][-0-9 ]*.*$)|(^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$)/i',
+			'/(^[0-9][-0-9 ]*$)|(^[-0-9 ]*(img|dsc|dscn|pict|htg|dscf|p)[-0-9 ][-0-9 ]*.*$)|(^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}[ T.-][0-9]{2}[.:][0-9]{2}[.:][0-9]{2}([.-][0-9]+)?$)/i',
 			$name
 		);
 	}

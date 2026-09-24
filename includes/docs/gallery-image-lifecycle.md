@@ -84,8 +84,9 @@ are camera filenames or UUID filenames. The check:
 
 1. Trims the string and strips a short file extension (`.JPG`, `.HEIC`, …).
 2. Replaces `_` with `-` so `IMG_1234` matches the historic camera class.
-3. Matches digits-only / `IMG`/`DSCN`/`PICT`/… prefixes, **or** an RFC 4122
-   UUID (`248E4309-904B-49E5-85B1-24F951D8A61A`).
+3. Matches digits-only / `IMG`/`DSCN`/`PICT`/… prefixes, an RFC 4122
+   UUID (`248E4309-904B-49E5-85B1-24F951D8A61A`), **or** a Photos date
+   filename (`2017-04-10 10.05.27.jpg`).
 
 Keep this in lockstep with native `SmartCaption.isMachineName`
 (`Xcode-PrestoPhoto`). Product copy and overlay contract:
