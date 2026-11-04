@@ -695,7 +695,9 @@ class FisheyeImage extends FisheyeBase {
 				$ret = $storage['file_name'];
 			} else {
 				global $gLibertySystem;
-				$ret = $gLibertySystem->getContentTypeName( $pHash['content_type_guid'] );
+				if( !empty( $pHash['content_type_guid'] ) ) {
+					$ret = $gLibertySystem->getContentTypeName( $pHash['content_type_guid'] );
+				}
 				if( !empty( $pHash['image_id'] ) ) {
 					$ret .= " ".$pHash['image_id'];
 				}
