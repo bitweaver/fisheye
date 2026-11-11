@@ -17,6 +17,12 @@ define( 'FISHEYE_PAGINATION_SIMPLE_LIST', 'simple_list' );
 define( 'FISHEYE_PAGINATION_MATTEO', 'matteo' );
 define( 'FISHEYE_PAGINATION_GALLERIFFIC', 'galleriffic' );
 
+// Display modes. The FISHEYE_PAGINATION_* values above are legacy stored values, see normalizeLayout()
+define( 'FISHEYE_LAYOUT_ORGANIZE', 'organize' );
+define( 'FISHEYE_LAYOUT_JUSTIFIED', 'justified' );
+define( 'FISHEYE_LAYOUT_MASONRY', 'masonry' );
+define( 'FISHEYE_LAYOUT_DETAILS', 'details' );
+
 /**
  * FisheyeBase extends LibertyMime, which this class doesn't need, but we need a common base class
  *
@@ -131,14 +137,15 @@ class FisheyeGallery extends FisheyeBase {
 					$this->mInfo['editor'] = (isset( $rowHash['modifier_real_name'] ) ? $rowHash['modifier_real_name'] : $rowHash['modifier_user'] );
 
 					// Set some basic defaults for how to display a gallery if they're not already set
+					// these are site settings, not gallery preferences
 					if (empty($this->mInfo['thumbnail_size'])) {
-						$this->mInfo['thumbnail_size'] = $this->getPreference( 'fisheye_gallery_default_thumbnail_size', NULL );
+						$this->mInfo['thumbnail_size'] = $gBitSystem->getConfig( 'fisheye_gallery_default_thumbnail_size', NULL );
 					}
 					if (empty($this->mInfo['rows_per_page'])) {
-						$this->mInfo['rows_per_page'] = $this->getPreference('fisheye_gallery_default_rows_per_page', FISHEYE_DEFAULT_ROWS_PER_PAGE);
+						$this->mInfo['rows_per_page'] = $gBitSystem->getConfig( 'fisheye_gallery_default_rows_per_page', FISHEYE_DEFAULT_ROWS_PER_PAGE );
 					}
 					if (empty($this->mInfo['cols_per_page'])) {
-						$this->mInfo['cols_per_page'] = $this->getPreference('fisheye_gallery_default_cols_per_page', FISHEYE_DEFAULT_COLS_PER_PAGE);
+						$this->mInfo['cols_per_page'] = $gBitSystem->getConfig( 'fisheye_gallery_default_cols_per_page', FISHEYE_DEFAULT_COLS_PER_PAGE );
 					}
 					if (empty($this->mInfo['access_answer'])) {
 						$this->mInfo['access_answer'] = '';
@@ -274,6 +281,393 @@ class FisheyeGallery extends FisheyeBase {
 		return count( $this->mItems );
 	}
 
+	/**
+	 * Sort choices for getItemList(), keyed by request value
+	 * @return array of ORDER BY fragments; NULL is the gallery's own order
+	 */
+	public static function getItemSortOptions() {
+		return array(
+			'position'      => NULL,
+			'title_asc'     => 'lc.`title` ASC',
+			'title_desc'    => 'lc.`title` DESC',
+			'taken_asc'     => 'lc.`event_time` ASC',
+			'taken_desc'    => 'lc.`event_time` DESC',
+			'uploaded_asc'  => 'lc.`created` ASC',
+			'uploaded_desc' => 'lc.`created` DESC',
+			'size_asc'      => 'lf.`file_size` ASC',
+			'size_desc'     => 'lf.`file_size` DESC',
+		);
+	}
+
+	// Gatekeeper check for a map row, same rule as loadImages()
+	private function isItemRowVisible( $pRow ) {
+		global $gBitSystem, $gBitUser;
+		$ret = TRUE;
+		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
+			$ret = $gBitUser->hasPermission( 'p_fisheye_admin' ) || !@$this->verifyId( $pRow['security_id'] ) || ( $pRow['user_id'] == $gBitUser->mUserId ) || @$this->verifyId( $_SESSION['gatekeeper_security'][$pRow['security_id']] );
+		}
+		return $ret;
+	}
+
+	/**
+	 * Fetch one page of the images in this gallery as plain row hashes.
+	 * Unlike loadImages() no object is loaded per image, so the cost of a page
+	 * does not grow with the size of the gallery. Nested galleries are not
+	 * included, see getSubItems().
+	 *
+	 * @param array $pListHash page, max_records, sort (key of getItemSortOptions) and thumbnail_size; cant, num_pages and offset are set on return
+	 *        no_thumbnails skips the thumbnail lookups and the keys that depend on them.
+	 *        With around_content_id (and span, default 8) the page is instead the window of rows either side of that item, and position (1-based) is set on return.
+	 * @return array of row hashes keyed by content_id
+	 */
+	public function getItemList( &$pListHash ) {
+		global $gBitSystem;
+		$ret = array();
+		$pListHash['cant'] = 0;
+		$pListHash['num_pages'] = 1;
+		$pListHash['offset'] = 0;
+		if( !$this->isValid() ) {
+			return $ret;
+		}
+
+		$bindVars = array( $this->mContentId );
+		$whereSql = $selectSql = $joinSql = '';
+		$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+
+		$fromSql = "FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."fisheye_image` fi ON ( fi.`content_id`=lc.`content_id` )
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON ( la.`content_id`=fi.`content_id` )
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_files` lf ON ( lf.`file_id`=la.`foreign_id` )
+						$joinSql
+					WHERE fgim.`gallery_content_id` = ? $whereSql";
+
+		$pListHash['cant'] = (int)$this->mDb->getOne( "SELECT COUNT(*) $fromSql", $bindVars );
+
+		$sortOptions = static::getItemSortOptions();
+		$sort = BitBase::getParameter( $pListHash, 'sort', 'position' );
+		if( !empty( $sortOptions[$sort] ) ) {
+			$orderSql = $sortOptions[$sort];
+		} else {
+			$pListHash['sort'] = 'position';
+			$orderSql = "fgim.`item_position`";
+			if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
+				$orderSql .= ", ".$this->mDb->convertSortmode( $gBitSystem->getConfig( 'fisheye_gallery_default_sort_mode' ) );
+			}
+		}
+		// content id keeps pages stable when the sort column has ties
+		$orderSql .= ", fgim.`item_content_id`";
+
+		if( BitBase::verifyId( BitBase::getParameter( $pListHash, 'around_content_id' ) ) ) {
+			// a window of neighbours: find where the item sits in this order, then read span rows either side
+			$span = max( 0, (int)BitBase::getParameter( $pListHash, 'span', 8 ) );
+			$aroundVars = $bindVars;
+			$aroundVars[] = $pListHash['around_content_id'];
+			$pListHash['position'] = (int)$this->mDb->getOne( "SELECT ranked.`item_rank` FROM ( SELECT fgim.`item_content_id`, ROW_NUMBER() OVER ( ORDER BY $orderSql ) AS `item_rank` $fromSql ) ranked WHERE ranked.`item_content_id` = ?", $aroundVars );
+			if( !$pListHash['position'] ) {
+				return $ret;
+			}
+			$pListHash['offset'] = max( 0, $pListHash['position'] - 1 - $span );
+			$maxRecords = $pListHash['position'] - $pListHash['offset'] + $span;
+			$pListHash['max_records'] = $maxRecords;
+		} else {
+			$maxRecords = (int)BitBase::getParameter( $pListHash, 'max_records', $gBitSystem->getConfig( 'fisheye_gallery_page_size', 60 ) );
+			if( $maxRecords < 1 ) {
+				$maxRecords = 60;
+			}
+			$pListHash['max_records'] = $maxRecords;
+			$pListHash['num_pages'] = max( 1, (int)ceil( $pListHash['cant'] / $maxRecords ) );
+			$page = min( max( 1, (int)BitBase::getParameter( $pListHash, 'page', 1 ) ), $pListHash['num_pages'] );
+			$pListHash['page'] = $page;
+			$pListHash['offset'] = $maxRecords * ($page - 1);
+		}
+
+		$query = "SELECT lc.`content_id`, lc.`content_type_guid`, lc.`user_id`, lc.`title`, lc.`data`, lc.`created`, lc.`event_time`,
+						fgim.`item_position`, fi.`image_id`, fi.`width`, fi.`height`,
+						la.`attachment_id`, lf.`file_name`, lf.`mime_type`, lf.`file_size` $selectSql
+					$fromSql
+					ORDER BY $orderSql";
+		if( $rs = $this->mDb->query( $query, $bindVars, $maxRecords, $pListHash['offset'] ) ) {
+			$thumbSize = BitBase::getParameter( $pListHash, 'thumbnail_size', 'small' );
+			$galleryPath = $this->mGalleryPath.'/'.$this->mGalleryId;
+			$tempImage = new FisheyeImage();
+			$number = $pListHash['offset'];
+			while( $row = $rs->fetchRow() ) {
+				$number++;
+				if( !$this->isItemRowVisible( $row ) ) {
+					continue;
+				}
+				// legacy table data included a partial path, as in FisheyeImage::getList()
+				$row['file_name'] = basename( (string)$row['file_name'] );
+				$row['number'] = $number;
+				$row['gallery_path'] = $galleryPath;
+				$row['display_url'] = FisheyeImage::getDisplayUrlFromHash( $row );
+				$row['aspect'] = ( $row['width'] > 0 && $row['height'] > 0 ) ? min( 4, max( 0.3, round( $row['width'] / $row['height'], 4 ) ) ) : 1.5;
+
+				if( !empty( $pListHash['no_thumbnails'] ) ) {
+					// rows only, for callers that change data and draw nothing
+					$ret[$row['content_id']] = $row;
+					continue;
+				}
+
+				$thumbUrl = NULL;
+				if( !empty( $row['file_name'] ) ) {
+					$thumbUrl = liberty_fetch_thumbnail_url( array(
+						'source_file' => $tempImage->getSourceFile( $row ),
+						'size'        => $thumbSize,
+						'type'        => $row['mime_type'],
+						'mime_image'  => FALSE,
+						'default_image' => FISHEYE_PKG_URL.'image/generating_thumbnails.png',
+					));
+				}
+				if( empty( $thumbUrl ) || strpos( $thumbUrl, 'generating_thumbnails.png' ) !== FALSE ) {
+					// placeholder is a package file, not a storage file
+					$row['thumbnail_pending'] = TRUE;
+					// the query string is the drawing's version, so a redrawn file is not served from a cache
+					$row['thumbnail_uri'] = FISHEYE_PKG_URL.'image/generating_thumbnails.png?v=2';
+				} else {
+					$row['thumbnail_url'] = array( $thumbSize => $thumbUrl );
+					$row['thumbnail_uri'] = FisheyeImage::getThumbnailUriFromHash( $row, $thumbSize );
+				}
+				$ret[$row['content_id']] = $row;
+			}
+		}
+		// the signed-in user's favorites among these items, one query for the gallery
+		global $gBitUser;
+		if( $ret && $gBitUser->isRegistered() ) {
+			$query = "SELECT ufm.`favorite_content_id`
+					FROM `".BIT_DB_PREFIX."users_favorites_map` ufm
+						INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON ( fgim.`item_content_id`=ufm.`favorite_content_id` )
+					WHERE ufm.`user_id` = ? AND fgim.`gallery_content_id` = ?";
+			if( $rs = $this->mDb->query( $query, array( $gBitUser->mUserId, $this->mContentId ) ) ) {
+				while( $row = $rs->fetchRow() ) {
+					if( isset( $ret[$row['favorite_content_id']] ) ) {
+						$ret[$row['favorite_content_id']]['is_favorite'] = TRUE;
+					}
+				}
+			}
+		}
+		return $ret;
+	}
+
+	/**
+	 * Move items to a new place in the gallery's own order.
+	 * The moved items keep their order among themselves. The gallery is then
+	 * numbered 10, 20, 30 in its new order; rows that already hold their number
+	 * are not written.
+	 *
+	 * @param array $pContentIds content ids of the items to move; ids not in this gallery are ignored
+	 * @param int $pBeforeContentId place them before this item, or
+	 * @param int $pAfterContentId place them after this item; with neither they go to the end
+	 * @return boolean TRUE when something was moved
+	 */
+	public function moveItems( $pContentIds, $pBeforeContentId = NULL, $pAfterContentId = NULL ) {
+		global $gBitSystem;
+		$ret = FALSE;
+		if( !$this->isValid() || empty( $pContentIds ) || !is_array( $pContentIds ) ) {
+			return $ret;
+		}
+
+		// the same order a gallery page is drawn in, see getItemList()
+		$orderSql = "fgim.`item_position`";
+		if( $gBitSystem->isFeatureActive( 'fisheye_gallery_default_sort_mode' ) ) {
+			$orderSql .= ", ".$this->mDb->convertSortmode( $gBitSystem->getConfig( 'fisheye_gallery_default_sort_mode' ) );
+		}
+		$orderSql .= ", fgim.`item_content_id`";
+		$query = "SELECT fgim.`item_content_id`, fgim.`item_position`
+				FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` )
+				WHERE fgim.`gallery_content_id` = ?
+				ORDER BY $orderSql";
+		$positions = array();
+		if( $rs = $this->mDb->query( $query, array( $this->mContentId ) ) ) {
+			while( $row = $rs->fetchRow() ) {
+				$positions[(int)$row['item_content_id']] = $row['item_position'];
+			}
+		}
+
+		$wanted = array_flip( array_map( 'intval', $pContentIds ) );
+		$moving = $rest = array();
+		foreach( array_keys( $positions ) as $contentId ) {
+			if( isset( $wanted[$contentId] ) ) {
+				$moving[] = $contentId;
+			} else {
+				$rest[] = $contentId;
+			}
+		}
+		if( !$moving ) {
+			return $ret;
+		}
+
+		$index = count( $rest );
+		if( ( $found = array_search( (int)$pBeforeContentId, $rest, TRUE ) ) !== FALSE ) {
+			$index = $found;
+		} elseif( ( $found = array_search( (int)$pAfterContentId, $rest, TRUE ) ) !== FALSE ) {
+			$index = $found + 1;
+		}
+
+		// Number every row in its new place by tens. Other code reads these positions as the hard order
+		// of the gallery, so a drag leaves whole numbers with room between them. Only rows whose number changes are written.
+		$newPositions = array();
+		$newOrder = array_merge( array_slice( $rest, 0, $index ), $moving, array_slice( $rest, $index ) );
+		foreach( $newOrder as $i => $contentId ) {
+			$position = ( $i + 1 ) * 10;
+			if( !is_numeric( $positions[$contentId] ) || (float)$positions[$contentId] != (float)$position ) {
+				$newPositions[$contentId] = $position;
+			}
+		}
+
+		$this->StartTrans();
+		foreach( $newPositions as $contentId => $position ) {
+			$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."fisheye_gallery_image_map` SET `item_position` = ? WHERE `gallery_content_id` = ? AND `item_content_id` = ?", array( $position, $this->mContentId, $contentId ) );
+		}
+		$this->CompleteTrans();
+		return TRUE;
+	}
+
+	/**
+	 * Galleries a user can choose as the destination of a move or copy.
+	 * @param int $pUserId owner of the galleries
+	 * @param string $pFind optional part of a title
+	 * @param int $pMaxRecords
+	 * @return array of hashes with gallery_id, title and, without a search, children
+	 */
+	public function getPickerList( $pUserId, $pFind = NULL, $pMaxRecords = 200 ) {
+		$ret = array();
+		if( BitBase::verifyId( $pUserId ) ) {
+			if( is_string( $pFind ) && $pFind !== '' ) {
+				// a search answers with a flat list of matches at any depth
+				$bindVars = array( (int)$pUserId, '%'.strtoupper( $pFind ).'%' );
+				$query = "SELECT fg.`gallery_id`, fg.`content_id`, lc.`title`
+						FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
+							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fg.`content_id` )
+						WHERE lc.`user_id` = ? AND UPPER( lc.`title` ) LIKE ?
+						ORDER BY lc.`title`, fg.`gallery_id`";
+				if( $rs = $this->mDb->query( $query, $bindVars, (int)$pMaxRecords ) ) {
+					while( $row = $rs->fetchRow() ) {
+						$ret[] = array( 'gallery_id' => (int)$row['gallery_id'], 'title' => (string)$row['title'] );
+					}
+				}
+			} else {
+				// without a search: the whole tree, top-level galleries by title, nested ones in gallery order
+				$rail = $this->getRailList( $pUserId, (int)$pMaxRecords );
+				$this->loadRailChildren( $rail['galleries'], array(), TRUE );
+				$ret = static::pickerRows( $rail['galleries'] );
+				usort( $ret, function( $a, $b ) { return strnatcasecmp( $a['title'], $b['title'] ); } );
+			}
+		}
+		return $ret;
+	}
+
+	/**
+	 * Gallery ids of every gallery nested in this one, at any depth. One query per level.
+	 * Used to refuse putting a gallery inside one of its own nested galleries.
+	 * @return array of gallery ids keyed by gallery id
+	 */
+	public function getNestedGalleryIds() {
+		$ret = array();
+		$frontier = $this->isValid() ? array( (int)$this->mContentId ) : array();
+		for( $depth = 0; $depth < 12 && $frontier; $depth++ ) {
+			$query = "SELECT fg.`gallery_id`, fg.`content_id`
+					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+						INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON ( fg.`content_id`=fgim.`item_content_id` )
+					WHERE fgim.`gallery_content_id` IN ( ".implode( ',', array_fill( 0, count( $frontier ), '?' ) )." )";
+			$next = array();
+			if( $rs = $this->mDb->query( $query, $frontier ) ) {
+				while( $row = $rs->fetchRow() ) {
+					if( empty( $ret[(int)$row['gallery_id']] ) ) {
+						$ret[(int)$row['gallery_id']] = (int)$row['gallery_id'];
+						$next[] = (int)$row['content_id'];
+					}
+				}
+			}
+			$frontier = $next;
+		}
+		return $ret;
+	}
+
+	/** Reduce rail rows to what the picker needs: gallery_id, title and nested children */
+	private static function pickerRows( $pRows ) {
+		$ret = array();
+		foreach( $pRows as $row ) {
+			$item = array( 'gallery_id' => (int)$row['gallery_id'], 'title' => (string)$row['title'] );
+			if( !empty( $row['children'] ) ) {
+				$item['children'] = static::pickerRows( $row['children'] );
+			}
+			$ret[] = $item;
+		}
+		return $ret;
+	}
+
+	/**
+	 * Fetch the galleries nested directly in this gallery as plain row hashes.
+	 * Two queries however many there are; no object is loaded per gallery.
+	 * The cover is the gallery's chosen preview image, or its first image.
+	 * @return array of hashes with gallery_id, title, display_url, thumbnail_uri and num_images, keyed by content_id
+	 */
+	public function getSubItems() {
+		$ret = array();
+		if( $this->isValid() ) {
+			$bindVars = array( $this->mContentId );
+			$whereSql = $selectSql = $joinSql = '';
+			$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+
+			$query = "SELECT lc.`content_id`, lc.`content_type_guid`, lc.`user_id`, lc.`title`, fg.`gallery_id`,
+						(SELECT COUNT(*) FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` cm WHERE cm.`gallery_content_id`=fg.`content_id`) AS `num_images`,
+						COALESCE( fg.`preview_content_id`, (SELECT cm.`item_content_id` FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` cm
+							INNER JOIN `".BIT_DB_PREFIX."fisheye_image` ci ON ( ci.`content_id`=cm.`item_content_id` )
+							WHERE cm.`gallery_content_id`=fg.`content_id` ORDER BY cm.`item_position`, cm.`item_content_id` LIMIT 1) ) AS `cover_content_id` $selectSql
+					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fgim.`item_content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON ( fg.`content_id`=lc.`content_id` )
+						$joinSql
+					WHERE fgim.`gallery_content_id` = ? $whereSql
+					ORDER BY fgim.`item_position`, lc.`title`";
+			$covers = array();
+			if( $rows = $this->mDb->getAll( $query, $bindVars ) ) {
+				foreach( $rows as $row ) {
+					if( $this->isItemRowVisible( $row ) ) {
+						$row['display_url'] = static::getDisplayUrlFromHash( $row );
+						$row['thumbnail_uri'] = '';
+						if( !empty( $row['cover_content_id'] ) ) {
+							$covers[(int)$row['cover_content_id']][] = $row['content_id'];
+						}
+						$ret[$row['content_id']] = $row;
+					}
+				}
+			}
+
+			if( $covers ) {
+				$query = "SELECT fi.`content_id`, lc.`user_id`, la.`attachment_id`, lf.`file_name`, lf.`mime_type`
+						FROM `".BIT_DB_PREFIX."fisheye_image` fi
+							INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fi.`content_id` )
+							INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON ( la.`content_id`=fi.`content_id` )
+							INNER JOIN `".BIT_DB_PREFIX."liberty_files` lf ON ( lf.`file_id`=la.`foreign_id` )
+						WHERE fi.`content_id` IN ( ".implode( ',', array_fill( 0, count( $covers ), '?' ) )." )";
+				if( $files = $this->mDb->getAll( $query, array_keys( $covers ) ) ) {
+					$tempImage = new FisheyeImage();
+					foreach( $files as $file ) {
+						$file['file_name'] = basename( (string)$file['file_name'] );
+						$thumbUrl = liberty_fetch_thumbnail_url( array(
+							'source_file' => $tempImage->getSourceFile( $file ),
+							'size'        => 'avatar',
+							'type'        => $file['mime_type'],
+							'mime_image'  => FALSE,
+						));
+						if( !empty( $thumbUrl ) ) {
+							$file['thumbnail_url'] = array( 'avatar' => $thumbUrl );
+							$thumbUri = FisheyeImage::getThumbnailUriFromHash( $file, 'avatar' );
+							foreach( $covers[$file['content_id']] as $galleryContentId ) {
+								$ret[$galleryContentId]['thumbnail_uri'] = $thumbUri;
+							}
+						}
+					}
+				}
+			}
+		}
+		return $ret;
+	}
+
 	function getImageList() {
 		global $gLibertySystem, $gBitSystem, $gBitUser;
 		$ret = NULL;
@@ -366,16 +760,17 @@ class FisheyeGallery extends FisheyeBase {
 	function verifyGalleryData(&$pStorageHash) {
 		global $gBitSystem;
 
+		// The display modes no longer read these columns. A save that does not send them keeps what the gallery has, then the site default.
 		if (empty($pStorageHash['rows_per_page'])) {
-			$pStorageHash['rows_per_page'] = $gBitSystem->getConfig('fisheye_gallery_default_rows_per_page', (!empty($this->mInfo['rows_per_page']) ? $this->mInfo['rows_per_page'] : FISHEYE_DEFAULT_ROWS_PER_PAGE));
+			$pStorageHash['rows_per_page'] = !empty( $this->mInfo['rows_per_page'] ) ? $this->mInfo['rows_per_page'] : $gBitSystem->getConfig( 'fisheye_gallery_default_rows_per_page', FISHEYE_DEFAULT_ROWS_PER_PAGE );
 		}
 
 		if (empty($pStorageHash['cols_per_page'])) {
-			$pStorageHash['cols_per_page'] = $gBitSystem->getConfig('fisheye_gallery_default_cols_per_page', (!empty($this->mInfo['cols_per_page']) ? $this->mInfo['cols_per_page'] : FISHEYE_DEFAULT_COLS_PER_PAGE));
+			$pStorageHash['cols_per_page'] = !empty( $this->mInfo['cols_per_page'] ) ? $this->mInfo['cols_per_page'] : $gBitSystem->getConfig( 'fisheye_gallery_default_cols_per_page', FISHEYE_DEFAULT_COLS_PER_PAGE );
 		}
 
 		if (empty($pStorageHash['thumbnail_size'])) {
-			$pStorageHash['thumbnail_size'] = $gBitSystem->getConfig('fisheye_gallery_default_thumbnail_size', (!empty($this->mInfo['thumbnail_size']) ? $this->mInfo['thumbnail_size'] : NULL ));
+			$pStorageHash['thumbnail_size'] = !empty( $this->mInfo['thumbnail_size'] ) ? $this->mInfo['thumbnail_size'] : $gBitSystem->getConfig( 'fisheye_gallery_default_thumbnail_size', NULL );
 		}
 
 		if (empty($pStorageHash['title'])) {
@@ -628,17 +1023,36 @@ class FisheyeGallery extends FisheyeBase {
     */
 	function getLayout() {
 		global $gBitSystem;
-		return $this->getPreference( 'gallery_pagination', $gBitSystem->getConfig( 'default_gallery_pagination', FISHEYE_PAGINATION_GALLERIFFIC ) );
+		return static::normalizeLayout( $this->getPreference( 'gallery_pagination', $gBitSystem->getConfig( 'default_gallery_pagination' ) ) );
+	}
+
+    /**
+    * Maps any stored layout value, including the legacy pagination styles, to a current display mode
+    * @param pLayout stored gallery_pagination or default_gallery_pagination value
+    * @return a key of getAllLayouts()
+    */
+	public static function normalizeLayout( $pLayout ) {
+		$legacy = array(
+			FISHEYE_PAGINATION_FIXED_GRID      => FISHEYE_LAYOUT_ORGANIZE,
+			FISHEYE_PAGINATION_AUTO_FLOW       => FISHEYE_LAYOUT_ORGANIZE,
+			FISHEYE_PAGINATION_POSITION_NUMBER => FISHEYE_LAYOUT_ORGANIZE,
+			FISHEYE_PAGINATION_SIMPLE_LIST     => FISHEYE_LAYOUT_DETAILS,
+			FISHEYE_PAGINATION_MATTEO          => FISHEYE_LAYOUT_JUSTIFIED,
+			FISHEYE_PAGINATION_GALLERIFFIC     => FISHEYE_LAYOUT_JUSTIFIED,
+		);
+		if( is_string( $pLayout ) && isset( $legacy[$pLayout] ) ) {
+			$pLayout = $legacy[$pLayout];
+		}
+		$layouts = static::getAllLayouts();
+		return ( is_string( $pLayout ) && isset( $layouts[$pLayout] ) ) ? $pLayout : FISHEYE_LAYOUT_JUSTIFIED;
 	}
 
 	public static function getAllLayouts() {
 		return array(
-			FISHEYE_PAGINATION_GALLERIFFIC     => 'Galleriffic',
-			FISHEYE_PAGINATION_FIXED_GRID      => 'Fixed Grid',
-			FISHEYE_PAGINATION_AUTO_FLOW       => 'Auto-Flow Images',
-			FISHEYE_PAGINATION_POSITION_NUMBER => 'Image Order Page Number',
-			FISHEYE_PAGINATION_SIMPLE_LIST     => 'Simple List',
-//			FISHEYE_PAGINATION_MATTEO		   => 'Matteo',
+			FISHEYE_LAYOUT_ORGANIZE  => 'Organize',
+			FISHEYE_LAYOUT_JUSTIFIED => 'Showcase',
+			FISHEYE_LAYOUT_MASONRY   => 'Columns',
+			FISHEYE_LAYOUT_DETAILS   => 'Details',
 		);
 	}
 
@@ -673,7 +1087,7 @@ class FisheyeGallery extends FisheyeBase {
 				$ret .= 'gallery'.$path.'/'.$pParamHash['gallery_id'];
 			} else {
 				$ret .= 'view.php?gallery_id='.$pParamHash['gallery_id'];
-				if( !empty( $pHash['path'] ) ) {
+				if( !empty( $pParamHash['path'] ) ) {
 					$ret .= '&gallery_path='.$pParamHash['path'];
 				}
 			}
@@ -1056,6 +1470,264 @@ class FisheyeGallery extends FisheyeBase {
 		$pListHash['cant'] = $cant;
 		LibertyContent::postGetList( $pListHash );
 		return $data;
+	}
+
+	/**
+	 * Sort choices for getLibraryList(), keyed by request value
+	 * @return array of ORDER BY fragments
+	 */
+	public static function getLibrarySortOptions() {
+		return array(
+			'created_desc'  => 'lc.`created` DESC',
+			'created_asc'   => 'lc.`created` ASC',
+			'modified_desc' => 'lc.`last_modified` DESC',
+			'title_asc'     => 'lc.`title` ASC',
+			'title_desc'    => 'lc.`title` DESC',
+		);
+	}
+
+	/**
+	 * Fetch one page of galleries as plain row hashes for the library screen.
+	 * Four queries however many galleries there are: the count, the rows, their
+	 * item counts and their covers. getList() loads a thumbnail object per gallery and remains
+	 * for callers that need its row shape.
+	 *
+	 * @param array $pListHash user_id, find, sort (key of getLibrarySortOptions), page, max_records, root_only, show_empty, covers (images per gallery, 0 for none); cant, num_pages and offset are set on return
+	 * @return array of row hashes keyed by content_id; each has display_url, num_images, num_galleries and covers (thumbnail URIs)
+	 */
+	public function getLibraryList( &$pListHash ) {
+		global $gBitSystem;
+		$ret = array();
+		$bindVars = array();
+		$selectSql = $joinSql = $whereSql = '';
+
+		if( @$this->verifyId( $pListHash['user_id'] ) ) {
+			$whereSql .= " AND lc.`user_id` = ? ";
+			$bindVars[] = (int)$pListHash['user_id'];
+		}
+		if( !empty( $pListHash['find'] ) && is_string( $pListHash['find'] ) ) {
+			$whereSql .= " AND UPPER( lc.`title` ) LIKE ? ";
+			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
+		}
+		if( empty( $pListHash['show_empty'] ) ) {
+			$whereSql .= " AND EXISTS (SELECT 1 FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` efgim WHERE efgim.`gallery_content_id`=fg.`content_id`)";
+		}
+		if( !empty( $pListHash['root_only'] ) ) {
+			$whereSql .= " AND NOT EXISTS (SELECT 1 FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` pfgim WHERE pfgim.`item_content_id`=fg.`content_id`)";
+		}
+		$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+		if( !empty( $whereSql ) ) {
+			$whereSql = substr_replace( $whereSql, ' WHERE ', 0, 4 );
+		}
+
+		$fromSql = "FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( fg.`content_id`=lc.`content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id`=lc.`user_id` )
+						$joinSql
+					$whereSql";
+
+		$pListHash['cant'] = (int)$this->mDb->getOne( "SELECT COUNT(*) $fromSql", $bindVars );
+		$maxRecords = (int)BitBase::getParameter( $pListHash, 'max_records', 48 );
+		if( $maxRecords < 1 ) {
+			$maxRecords = 48;
+		}
+		$pListHash['max_records'] = $maxRecords;
+		$pListHash['num_pages'] = max( 1, (int)ceil( $pListHash['cant'] / $maxRecords ) );
+		$pListHash['page'] = min( max( 1, (int)BitBase::getParameter( $pListHash, 'page', 1 ) ), $pListHash['num_pages'] );
+		$pListHash['offset'] = $maxRecords * ($pListHash['page'] - 1);
+
+		$sortOptions = static::getLibrarySortOptions();
+		$sort = BitBase::getParameter( $pListHash, 'sort' );
+		if( !is_string( $sort ) || empty( $sortOptions[$sort] ) ) {
+			$sort = $pListHash['sort'] = 'created_desc';
+		}
+
+		// counts are fetched afterwards for the listed page only; as select-list subqueries they ran for every gallery before the sort
+		$query = "SELECT lc.`content_id`, lc.`content_type_guid`, lc.`user_id`, lc.`title`, lc.`data`, lc.`created`, lc.`last_modified`,
+						fg.`gallery_id`, fg.`preview_content_id`, uu.`login`, uu.`real_name` $selectSql
+					$fromSql
+					ORDER BY ".$sortOptions[$sort].", fg.`gallery_id`";
+		if( $rs = $this->mDb->query( $query, $bindVars, $maxRecords, $pListHash['offset'] ) ) {
+			while( $row = $rs->fetchRow() ) {
+				$row['display_url'] = static::getDisplayUrlFromHash( $row );
+				$row['num_images'] = $row['num_galleries'] = 0;
+				$row['covers'] = array();
+				$ret[$row['content_id']] = $row;
+			}
+		}
+
+		if( $ret ) {
+			$inSql = implode( ',', array_fill( 0, count( $ret ), '?' ) );
+			$query = "SELECT cm.`gallery_content_id`, COUNT( ci.`content_id` ) AS `num_images`, COUNT( cg.`content_id` ) AS `num_galleries`
+					FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` cm
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_image` ci ON ( ci.`content_id`=cm.`item_content_id` )
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery` cg ON ( cg.`content_id`=cm.`item_content_id` )
+					WHERE cm.`gallery_content_id` IN ( $inSql )
+					GROUP BY cm.`gallery_content_id`";
+			if( $counts = $this->mDb->getAll( $query, array_keys( $ret ) ) ) {
+				foreach( $counts as $count ) {
+					$ret[$count['gallery_content_id']]['num_images'] = (int)$count['num_images'];
+					$ret[$count['gallery_content_id']]['num_galleries'] = (int)$count['num_galleries'];
+				}
+			}
+		}
+
+		$coverCount = (int)BitBase::getParameter( $pListHash, 'covers', 4 );
+		if( $ret && $coverCount > 0 ) {
+			// the first images of every listed gallery in one pass, the chosen preview image first
+			// rank on the map alone, then join the file rows for the few that are kept
+			$query = "SELECT ranked.`gallery_content_id`, ranked.`item_content_id` AS `content_id`, lc.`user_id`, la.`attachment_id`, lf.`file_name`, lf.`mime_type`
+					FROM (
+						SELECT cm.`gallery_content_id`, cm.`item_content_id`,
+							ROW_NUMBER() OVER ( PARTITION BY cm.`gallery_content_id` ORDER BY CASE WHEN cm.`item_content_id`=fg.`preview_content_id` THEN 0 ELSE 1 END, cm.`item_position`, cm.`item_content_id` ) AS `cover_rank`
+						FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` cm
+							INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON ( fg.`content_id`=cm.`gallery_content_id` )
+							INNER JOIN `".BIT_DB_PREFIX."fisheye_image` fi ON ( fi.`content_id`=cm.`item_content_id` )
+						WHERE cm.`gallery_content_id` IN ( ".implode( ',', array_fill( 0, count( $ret ), '?' ) )." )
+					) ranked
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=ranked.`item_content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."liberty_attachments` la ON ( la.`content_id`=ranked.`item_content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."liberty_files` lf ON ( lf.`file_id`=la.`foreign_id` )
+					WHERE ranked.`cover_rank` <= ?
+					ORDER BY ranked.`gallery_content_id`, ranked.`cover_rank`";
+			$coverVars = array_keys( $ret );
+			$coverVars[] = $coverCount;
+			if( $files = $this->mDb->getAll( $query, $coverVars ) ) {
+				$tailSize = BitBase::getParameter( $pListHash, 'thumbnail_size', 'small' );
+				// the first cover is drawn several times larger than the rest
+				$leadSize = BitBase::getParameter( $pListHash, 'lead_thumbnail_size', $tailSize );
+				$tempImage = new FisheyeImage();
+				foreach( $files as $file ) {
+					$thumbSize = empty( $ret[$file['gallery_content_id']]['covers'] ) ? $leadSize : $tailSize;
+					$file['file_name'] = basename( (string)$file['file_name'] );
+					$thumbUrl = liberty_fetch_thumbnail_url( array(
+						'source_file' => $tempImage->getSourceFile( $file ),
+						'size'        => $thumbSize,
+						'type'        => $file['mime_type'],
+						'mime_image'  => FALSE,
+					));
+					if( !empty( $thumbUrl ) ) {
+						$file['thumbnail_url'] = array( $thumbSize => $thumbUrl );
+						$ret[$file['gallery_content_id']]['covers'][] = FisheyeImage::getThumbnailUriFromHash( $file, $thumbSize );
+					}
+				}
+			}
+		}
+		return $ret;
+	}
+
+	/**
+	 * Titles of a user's root galleries, newest first, for the library rail. One query.
+	 * @param int $pUserId owner of the galleries
+	 * @param int $pMaxRecords how many to return; one extra row is fetched to tell if there are more
+	 * @return array with keys galleries (row hashes with gallery_id, title, display_url, num_galleries) and has_more
+	 */
+	public function getRailList( $pUserId, $pMaxRecords = 30 ) {
+		$ret = array( 'galleries' => array(), 'has_more' => FALSE );
+		if( @$this->verifyId( $pUserId ) ) {
+			$bindVars = array( (int)$pUserId );
+			$selectSql = $joinSql = $whereSql = '';
+			$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+			$query = "SELECT lc.`content_id`, lc.`title`, lc.`user_id`, fg.`gallery_id`,
+						(SELECT COUNT(*) FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` cm INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` cg ON ( cg.`content_id`=cm.`item_content_id` ) WHERE cm.`gallery_content_id`=fg.`content_id`) AS `num_galleries` $selectSql
+					FROM `".BIT_DB_PREFIX."fisheye_gallery` fg
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( fg.`content_id`=lc.`content_id` )
+						$joinSql
+					WHERE lc.`user_id` = ? AND NOT EXISTS (SELECT 1 FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` pfgim WHERE pfgim.`item_content_id`=fg.`content_id`) $whereSql
+					ORDER BY lc.`created` DESC, fg.`gallery_id`";
+			if( $rs = $this->mDb->query( $query, $bindVars, $pMaxRecords + 1 ) ) {
+				while( $row = $rs->fetchRow() ) {
+					if( count( $ret['galleries'] ) >= $pMaxRecords ) {
+						$ret['has_more'] = TRUE;
+						break;
+					}
+					if( $this->isItemRowVisible( $row ) ) {
+						$row['display_url'] = static::getDisplayUrlFromHash( $row );
+						$ret['galleries'][$row['gallery_id']] = $row;
+					}
+				}
+			}
+		}
+		return $ret;
+	}
+
+	/**
+	 * Galleries nested directly in the given galleries, for the rail tree. One query however many parents.
+	 * @param array $pGalleryIds gallery ids of the parents
+	 * @return array keyed by parent gallery id; each value is a list of row hashes with gallery_id, title, display_url, num_galleries
+	 */
+	public function getRailChildren( $pGalleryIds ) {
+		$ret = array();
+		$parentIds = array();
+		foreach( (array)$pGalleryIds as $galleryId ) {
+			if( BitBase::verifyId( $galleryId ) ) {
+				$parentIds[(int)$galleryId] = (int)$galleryId;
+			}
+		}
+		if( $parentIds ) {
+			$bindVars = array_values( $parentIds );
+			$selectSql = $joinSql = $whereSql = '';
+			$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+			$query = "SELECT pfg.`gallery_id` AS `parent_gallery_id`, lc.`content_id`, lc.`title`, lc.`user_id`, fg.`gallery_id`,
+						(SELECT COUNT(*) FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` cm INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` cg ON ( cg.`content_id`=cm.`item_content_id` ) WHERE cm.`gallery_content_id`=fg.`content_id`) AS `num_galleries` $selectSql
+					FROM `".BIT_DB_PREFIX."fisheye_gallery` pfg
+						INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim ON ( fgim.`gallery_content_id`=pfg.`content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON ( fg.`content_id`=fgim.`item_content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id`=fg.`content_id` )
+						$joinSql
+					WHERE pfg.`gallery_id` IN ( ".implode( ',', array_fill( 0, count( $parentIds ), '?' ) )." ) $whereSql
+					ORDER BY pfg.`gallery_id`, fgim.`item_position`, lc.`title`, fg.`gallery_id`";
+			if( $rs = $this->mDb->query( $query, $bindVars ) ) {
+				while( $row = $rs->fetchRow() ) {
+					if( $this->isItemRowVisible( $row ) ) {
+						$row['display_url'] = static::getDisplayUrlFromHash( $row );
+						$ret[(int)$row['parent_gallery_id']][] = $row;
+					}
+				}
+			}
+		}
+		return $ret;
+	}
+
+	/**
+	 * Attach nested galleries to rail rows as `children`, one query per level.
+	 * @param array $pGalleries rail rows, changed in place
+	 * @param array $pOpenIds gallery ids whose nested galleries should be attached
+	 * @param boolean $pAll attach every level instead, within the limits below
+	 */
+	public function loadRailChildren( &$pGalleries, $pOpenIds = array(), $pAll = FALSE ) {
+		$open = array_flip( array_map( 'intval', (array)$pOpenIds ) );
+		$level = array();
+		foreach( array_keys( $pGalleries ) as $key ) {
+			$level[] = &$pGalleries[$key];
+		}
+		// a gallery can sit in several parents, and old data can loop; stop at a depth and a row count
+		$seen = array();
+		$total = 0;
+		for( $depth = 0; $depth < 8 && $level && $total < 3000; $depth++ ) {
+			$wanted = array();
+			foreach( array_keys( $level ) as $i ) {
+				$galleryId = (int)$level[$i]['gallery_id'];
+				if( !empty( $level[$i]['num_galleries'] ) && ( $pAll || isset( $open[$galleryId] ) ) && empty( $seen[$galleryId] ) ) {
+					$seen[$galleryId] = TRUE;
+					$wanted[$galleryId] = &$level[$i];
+				}
+			}
+			$next = array();
+			if( $wanted ) {
+				$children = $this->getRailChildren( array_keys( $wanted ) );
+				foreach( array_keys( $wanted ) as $galleryId ) {
+					$wanted[$galleryId]['children'] = !empty( $children[$galleryId] ) ? $children[$galleryId] : array();
+					$total += count( $wanted[$galleryId]['children'] );
+					foreach( array_keys( $wanted[$galleryId]['children'] ) as $key ) {
+						$next[] = &$wanted[$galleryId]['children'][$key];
+					}
+				}
+			}
+			unset( $wanted );
+			$level = $next;
+			unset( $next );
+		}
 	}
 
 	function download(){

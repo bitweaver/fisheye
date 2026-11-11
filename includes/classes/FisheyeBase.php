@@ -240,6 +240,31 @@ not ready for primetime
 		}
 	}
 
+	/**
+	 * The viewer's own choice of a light or dark page, kept in a cookie for a year.
+	 * A `theme` request parameter sets it. Without a choice each page keeps its own default.
+	 * @return string 'light', 'dark', or NULL when the viewer has not chosen
+	 */
+	public static function getViewerTheme() {
+		$ret = NULL;
+		$choices = array( 'light', 'dark' );
+		if( !empty( $_REQUEST['theme'] ) && is_string( $_REQUEST['theme'] ) && in_array( $_REQUEST['theme'], $choices ) ) {
+			$ret = $_REQUEST['theme'];
+			if( !headers_sent() ) {
+				setcookie( 'fisheye_theme', $ret, time() + 31536000, BIT_ROOT_URL );
+			}
+		} elseif( !empty( $_COOKIE['fisheye_theme'] ) && is_string( $_COOKIE['fisheye_theme'] ) && in_array( $_COOKIE['fisheye_theme'], $choices ) ) {
+			$ret = $_COOKIE['fisheye_theme'];
+		}
+		return $ret;
+	}
+
+	/** The two links of the light and dark toggle for a page URL */
+	public static function getThemeUrls( $pUrl ) {
+		$join = ( strpos( $pUrl, '?' ) === FALSE ) ? '?' : '&';
+		return array( 'light' => $pUrl.$join.'theme=light', 'dark' => $pUrl.$join.'theme=dark' );
+	}
+
 	function isPublic() {
 		if( $this->isValid() ) {
 			return ( $this->getPreference( 'is_public' ) == 'y' );

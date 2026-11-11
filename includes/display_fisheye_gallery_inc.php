@@ -7,52 +7,104 @@
 $displayHash = array( 'perm_name' => 'p_fisheye_view' );
 $gContent->invokeServices( 'content_display_function', $displayHash );
 
-if (!empty($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {
-	$page = $_REQUEST['page'];
-} else {
-	$page = 0;
+// Library rail requests from the page script: one gallery's nested galleries, or the whole tree
+if( !empty( $_REQUEST['rail'] ) ) {
+	if( $_REQUEST['rail'] == 'all' ) {
+		$feRail = $gContent->getRailList( $gContent->getField( 'user_id' ) );
+		$gContent->loadRailChildren( $feRail['galleries'], array(), TRUE );
+		$railItems = $feRail['galleries'];
+	} else {
+		$children = $gContent->getRailChildren( array( $gContent->mGalleryId ) );
+		$railItems = !empty( $children[$gContent->mGalleryId] ) ? $children[$gContent->mGalleryId] : array();
+	}
+	$gBitSmarty->assign( 'railItems', $railItems );
+	$gBitSmarty->assign( 'feRailCurrent', BitBase::verifyIdParameter( $_REQUEST, 'current' ) ? (int)$_REQUEST['current'] : 0 );
+	print $gBitSmarty->fetch( 'bitpackage:fisheye/library_rail_items_inc.tpl' );
+	die;
 }
 
-if( $page > $gContent->getField( 'num_pages' ) ) {
-	$page = $gContent->getField( 'num_pages' );
-} elseif ($page < 1) {
-	$page = 1;
+// Display mode: an explicit choice is remembered for the browser session, otherwise the gallery default applies
+$feModes = FisheyeGallery::getAllLayouts();
+$feMode = $gContent->getLayout();
+if( !empty( $_REQUEST['mode'] ) && is_string( $_REQUEST['mode'] ) && isset( $feModes[$_REQUEST['mode']] ) ) {
+	$feMode = $_REQUEST['mode'];
+	if( !headers_sent() ) {
+		setcookie( 'fisheye_mode', $feMode, 0, BIT_ROOT_URL );
+	}
+} elseif( !empty( $_COOKIE['fisheye_mode'] ) && is_string( $_COOKIE['fisheye_mode'] ) && isset( $feModes[$_COOKIE['fisheye_mode']] ) ) {
+	$feMode = $_COOKIE['fisheye_mode'];
 }
 
-$imagesPerPage = $gContent->getField( 'rows_per_page' ) * $gContent->getField( 'cols_per_page', 10 );
-
-switch( $gContent->getLayout() ) {
-	case 'auto_flow':
-		$gBitThemes->loadCss( FISHEYE_PKG_PATH."css/div_layout.css", TRUE );
-		break;
-	case 'matteo':
-		$gBitThemes->loadCss( FISHEYE_PKG_PATH."gallery_view/matteo/mb_layout.css", TRUE );
-		$gBitThemes->loadAjax( 'jquery' );
-		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/matteo/mbGallery.js', FALSE, 500, FALSE );
-		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/matteo/mbGalleryBox.js', FALSE, 501, FALSE );
-		break;
-	case 'galleriffic':
-		$imagesPerPage = -1;
-		// Need to add options for different styles of layout
-		$gBitThemes->loadCss( FISHEYE_PKG_PATH."/gallery_views/galleriffic/css/galleriffic_style_1.css", TRUE );
-		$gBitThemes->loadAjax( 'jquery' );
-		$gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/jquery/plugins/migrate/jquery.migrate.js', FALSE, 500, FALSE );
-		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/galleriffic/js/jquery.galleriffic.js', FALSE, 500, FALSE );
-		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/galleriffic/js/jquery.history.js', FALSE, 501, FALSE );
-		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/galleriffic/js/jquery.opacityrollover.js', FALSE, 502, FALSE );
-		$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'/gallery_views/galleriffic/gftop.js', FALSE, 503, FALSE );
-		break;
+$listHash = array(
+	'page' => ( !empty( $_REQUEST['page'] ) && is_numeric( $_REQUEST['page'] ) ) ? (int)$_REQUEST['page'] : 1,
+	'sort' => ( !empty( $_REQUEST['sort'] ) && is_string( $_REQUEST['sort'] ) ) ? $_REQUEST['sort'] : 'position',
+	// sized for 2x displays: tiles and rows are drawn at up to half these pixel sizes
+	'thumbnail_size' => ( $feMode == FISHEYE_LAYOUT_DETAILS ) ? 'avatar' : 'medium',
+);
+$feItems = $gContent->getItemList( $listHash );
+$gBitSmarty->assign( 'feCanEdit', $gContent->hasUpdatePermission() );
+if( $listHash['sort'] != 'position' ) {
+	// hand the chosen order on to the photo view, so previous and next follow it
+	foreach( $feItems as $contentId => $item ) {
+		$feItems[$contentId]['display_url'] = $item['display_url'].( strpos( $item['display_url'], '?' ) === FALSE ? '?' : '&' ).'sort='.urlencode( $listHash['sort'] );
+	}
 }
 
-$imageOffset = $imagesPerPage * ($page-1);
+// Links that carry parameters use the plain script URL so they do not depend on rewrite rules
+$feBaseUrl = FISHEYE_PKG_URL.'view.php?gallery_id='.$gContent->mGalleryId;
+if( $gContent->getField( 'gallery_path' ) ) {
+	$feBaseUrl .= '&gallery_path='.urlencode( $gContent->getField( 'gallery_path' ) );
+}
 
-$gBitSmarty->assignByRef('pageCount', $page);
-$gBitSmarty->assignByRef('imagesPerPage', $imagesPerPage);
-$gBitSmarty->assignByRef('imageOffset', $imageOffset);
-$gBitSmarty->assignByRef('rows_per_page', $gContent->mInfo['rows_per_page']);
-$gBitSmarty->assign('cols_per_page', $gContent->getField( 'cols_per_page', 10 ) );
+// Showcase and Columns open on the dark stage, the working views on the light ground, unless the viewer has chosen
+$feWide = ( $feMode == FISHEYE_LAYOUT_JUSTIFIED || $feMode == FISHEYE_LAYOUT_MASONRY );
+$feTheme = FisheyeBase::getViewerTheme();
+$gBitSmarty->assign( 'feWide', $feWide );
+$gBitSmarty->assign( 'feDark', $feTheme ? ( $feTheme == 'dark' ) : $feWide );
+$gBitSmarty->assign( 'feThemeUrls', FisheyeBase::getThemeUrls( $feBaseUrl.'&mode='.$feMode.( $listHash['sort'] != 'position' ? '&sort='.urlencode( $listHash['sort'] ) : '' ) ) );
 
-$gContent->loadImages( $page, $imagesPerPage );
+$gBitSmarty->assign( 'feModes', $feModes );
+$gBitSmarty->assign( 'feMode', $feMode );
+$gBitSmarty->assign( 'feItems', $feItems );
+$gBitSmarty->assign( 'feList', $listHash );
+$gBitSmarty->assign( 'feBaseUrl', $feBaseUrl );
+
+if( !empty( $_REQUEST['fragment'] ) ) {
+	// next page of items for the "more" control, without the page chrome
+	header( 'Content-Type: text/html; charset=utf-8' );
+	print $gBitSmarty->fetch( 'bitpackage:fisheye/gallery_items_inc.tpl' );
+	die;
+}
+
+$feSubItems = ( $listHash['page'] == 1 ) ? $gContent->getSubItems() : array();
+$gBitSmarty->assign( 'feSubItems', $feSubItems );
+// library rail: the owner's galleries as a tree, opened along the path to this gallery and, when short, one level below it
+$feRail = $gContent->getRailList( $gContent->getField( 'user_id' ) );
+$feCrumbIds = array_keys( $gContent->getBreadcrumbLinks( TRUE ) );
+// a gallery with a long list of nested galleries starts closed, so the rail stays short
+$feCrumbIds = array_diff( $feCrumbIds, array( $gContent->mGalleryId ) );
+if( count( $feSubItems ) <= 40 ) {
+	$feCrumbIds[] = $gContent->mGalleryId;
+}
+$gContent->loadRailChildren( $feRail['galleries'], $feCrumbIds );
+$gBitSmarty->assign( 'feRail', $feRail );
+$gBitSmarty->assign( 'feRailCurrent', $gContent->mGalleryId );
+$gBitSmarty->assign( 'feSortLabels', array(
+	'position'      => tra( 'Gallery order' ),
+	'taken_desc'    => tra( 'Date taken, newest first' ),
+	'taken_asc'     => tra( 'Date taken, oldest first' ),
+	'uploaded_desc' => tra( 'Uploaded, newest first' ),
+	'uploaded_asc'  => tra( 'Uploaded, oldest first' ),
+	'title_asc'     => tra( 'Title, A to Z' ),
+	'title_desc'    => tra( 'Title, Z to A' ),
+	'size_desc'     => tra( 'File size, largest first' ),
+	'size_asc'      => tra( 'File size, smallest first' ),
+) );
+
+$gBitSystem->setRequestConfig( 'layout-body', '-fluid' );
+$gBitThemes->loadCss( FISHEYE_PKG_PATH.'css/fisheye.css', TRUE, 300, TRUE, FALSE, FALSE );
+$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'js/fisheye.js', FALSE, 600, FALSE, FALSE );
+
 $gContent->addHit();
 
 $gBitSystem->setBrowserTitle( $gContent->getTitle().' '.tra('Gallery') );

@@ -30,6 +30,8 @@ Does not own generic attachment storage or site-specific image production workfl
 - [Development guide](development.md) — safe change workflow, extension points,
   validation, and maintenance guidance.
 - [Security](security.md) — trust boundaries and direct-HTTP access requirements.
+- [Gallery display](gallery-display.md) — display modes, the single-query
+  item list, paging fragments, and the `fe-` stylesheet.
 - [Gallery and image lifecycle](gallery-image-lifecycle.md) — content classes,
   mappings, uploads, storage, metadata, thumbnails, transforms, and deletion.
   Includes `FisheyeBase::isMachineName` (Smart Captions / UUID filenames).
