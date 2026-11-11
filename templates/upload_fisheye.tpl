@@ -1,138 +1,105 @@
-{if !$gLibertySystem->hasService('upload')}
-	{assign var=onSubmit value="javascript:BitBase.disableSubmit('submitbutton');"}
-	{assign var=id value=fishid}
-{/if}
-
+{* Upload photos into a gallery: drop or choose files, each sent on its own with a progress row. *}
 {strip}
-<div class="admin fisheye">
-	<div class="header">
-		<h1>{booticon iname="fa-cloud-arrow-up" iexplain="^"} {tr}Upload Photos{/tr}</h1>
+<div class="fe-app fe-uploadpage">
+	<div class="fe-top">
+		<ol class="fe-crumb">
+			<li><a href="{$smarty.const.FISHEYE_PKG_URL}?user_id={$gBitUser->mUserId}">{tr}Galleries{/tr}</a></li>
+			{if $feTarget}<li><a href="{$feTarget.display_url|escape}" data-fe-target-link>{$feTarget.title|escape}</a></li>{/if}
+			<li aria-current="page">{tr}Upload{/tr}</li>
+		</ol>
 	</div>
 
-	<div class="body">
-		{form enctype="multipart/form-data" onsubmit=$onSubmit id=$id|default:photoupload target=$target action=$action}
-			<div id="uploadblock">
-				{jstabs}
-					{jstab title="Upload Files"}
-						{formfeedback note=$quotaMessage}
+	{form enctype="multipart/form-data" id="photoupload" class="fe-upload" action="`$smarty.const.FISHEYE_PKG_URL`upload.php"}
+		<input type="hidden" name="gallery_id" value="{$feTarget.gallery_id}" data-fe-target-id />
+		<input type="hidden" name="gallery_additions[]" value="{$feTarget.gallery_id}" data-fe-target-id />
+		<input type="hidden" name="save_image" value="save" />
 
-						<p class="warning">{booticon iname="fa-triangle-exclamation" iexplain=Warning} {tr}The maximum file size you can upload is {$uploadMax} Megabytes{/tr}</p>
-						{formfeedback error=$errors}
-
-						{formhelp note="Here you can upload files. You can upload single files, or you can upload archived files (.zip's, .tar's, etc.) Archived uploads will automatically be decompressed, and a gallery will created for every gallery in it. If you have nested folders, the hierarchy will be maintained for you with nested galleries." force=true}
-
-						<input type="hidden" name="gallery_id" value="{$galleryId|escape}"/>
-						<input type="hidden" name="save_image" value="save" />
-						<input type="hidden" name="image_id" value="{$imageId}"/>
-						<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
-
-						<br/>
-						{if $gLibertySystem->hasService('upload')}
-							{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_form_tpl"}
-						{elseif $gBitSystem->isFeatureActive( 'fisheye_extended_upload_slots' )}
-							<h2>{tr}Upload Images{/tr}</h2>
-							{include file="bitpackage:kernel/upload_slot_inc.tpl" hash_key=imagedata}
-						{else}
-							
-							<div class="form-group">
-								{formlabel label="Select File(s)"}
-								{forminput}
-									<input type="file" name="file0" id="fileupload" />
-									{formhelp note="To upload more than one file, click on choose repeatedly."}
-								{/forminput}
-							</div>
-
-							<div class="form-group">
-								{formlabel label="Selected File(s)" for=""}
-								{forminput}
-									<script src="{$smarty.const.UTIL_PKG_URL}javascript/multifile.js"></script>
-									<div id="fileslist"></div>
-									<div class="clear"></div>
-									{formhelp note="These files will be uploaded when you hit the upload button below."}
-									<script>/* <![CDATA[ Multi file upload */
-										var multi_selector = new MultiSelector( document.getElementById( 'fileslist' ), 10 );
-										multi_selector.addElement( document.getElementById( 'fileupload' ) );
-									/* ]]> */</script>
-								{/forminput}
-							</div>
-						{/if}
-					{/jstab}
-
-					{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_tab_tpl"}
-
-					{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_tab_tpl"}
-				{/jstabs}
+		<div class="fe-head">
+			<div class="fe-head-main">
+				<h1>{tr}Upload photos{/tr}</h1>
+				<p class="fe-sub">
+					{if $feTarget}
+						{tr}Adding to{/tr} <b data-fe-target-title>{$feTarget.title|escape}</b>
+					{else}
+						<span data-fe-target-none>{tr}A first gallery will be created for you{/tr}: </span><b data-fe-target-title>{$feNewGalleryName|escape}</b>
+					{/if}
+					<a href="#" class="lnk fe-change" data-fe-target-change hidden>{tr}Change gallery{/tr}</a>
+				</p>
 			</div>
+		</div>
 
-			<div class="col-sm-6">
+		{formfeedback note=$quotaMessage}
+		{formfeedback error=$errors}
+
+		<div class="fe-drop" data-fe-drop>
+			{booticon iname="fa-upload"}
+			<p><b>{tr}Drop photos or zip files here{/tr}</b></p>
+			<p class="fe-sub">
+				{tr}or{/tr} <label class="lnk" for="fe-files">{tr}choose files{/tr}</label> {tr}from this device.{/tr} {tr}The largest file accepted is{/tr} {$uploadMax} MB.
+			</p>
+			{* no name: the script sends each chosen file itself, so the form must not carry them again *}
+			<input type="file" id="fe-files" class="fe-filesinput" multiple data-fe-files data-fe-max="{$feUploadMaxBytes}" />
+		</div>
+
+		<noscript>
+			<p class="fe-nojs">
+				<input type="file" name="file0" /> <input type="submit" class="fe-btn fe-btn-primary" value="{tr}Upload file{/tr}" />
+			</p>
+		</noscript>
+
+		{* one line: strip would join the attributes of a wrapped tag together *}
+		<div class="fe-uploadlist" data-fe-uploadlist hidden data-fe-added="{tr}added{/tr}" data-fe-of="{tr}of{/tr}" data-fe-skipped="{tr}skipped{/tr}" data-fe-failed="{tr}failed{/tr}" data-fe-s-waiting="{tr}Waiting{/tr}" data-fe-s-sending="{tr}Uploading{/tr}" data-fe-s-working="{tr}Processing{/tr}" data-fe-s-done="{tr}Added{/tr}" data-fe-s-large="{tr}Too large{/tr}" data-fe-s-empty="{tr}Empty file{/tr}" data-fe-s-error="{tr}Could not be uploaded{/tr}" data-fe-leave="{tr}Photos are still uploading.{/tr}">
+			<div class="fe-listhead">
+				<b data-fe-uploadsummary></b>
+				<span class="fe-bar-sp"></span>
+				<a class="fe-btn fe-btn-primary" href="{if $feTarget}{$feTarget.display_url|escape}{else}{$smarty.const.FISHEYE_PKG_URL}?user_id={$gBitUser->mUserId}{/if}" data-fe-uploaddone {if $onComplete}data-fe-oncomplete="{$onComplete|escape}"{/if} hidden>{booticon iname="fa-images"}{tr}View gallery{/tr}</a>
+			</div>
+			<ul class="fe-files" data-fe-filelist></ul>
+		</div>
+
+		<details class="fe-options">
+			<summary>{tr}Options{/tr}</summary>
+			<div class="fe-optgrid">
+				{if function_exists('exif_read_data')}
+					<label class="fe-check"><input type="checkbox" name="rotate_image" value="auto" checked="checked" /> <span>{tr}Turn photos upright{/tr}<small>{tr}Uses the orientation the camera recorded.{/tr}</small></span></label>
+				{/if}
+				<label class="fe-check"><input type="checkbox" name="use_filenames" value="true" /> <span>{tr}Name photos after their files{/tr}<small>{tr}Otherwise the name comes from the photo's own data when it has one.{/tr}</small></span></label>
 				{if $gBitUser->hasPermission( 'p_fisheye_upload_nonimages' )}
-					<div class="form-group">
-						{forminput label="checkbox"}
-							<input type="checkbox" id="process_archive" name="process_archive" value="true" checked="checked" />Process Archive(s)
-							{formhelp note="If you don't want to have archived files processed and extracted, please uncheck the above box."}
-						{/forminput}
-					</div>
+					<label class="fe-check"><input type="checkbox" name="process_archive" value="true" checked="checked" /> <span>{tr}Unpack zip files{/tr}<small>{tr}Each folder inside becomes a gallery.{/tr}</small></span></label>
 				{else}
 					<input type="hidden" name="process_archive" value="true" />
 				{/if}
-
-				{if function_exists('exif_read_data')}
-					<div class="form-group">
-						{forminput label="checkbox"}
-							<input type="checkbox" id="rotate_image" name="rotate_image" value="auto" checked="checked" />Auto-Rotate Images
-							{formhelp note="If your camera was turned sideways when the image was taken, this will attempt to orient the image correctly."}
-						{/forminput}
-					</div>
-				{/if}
-
-				<div class="form-group">
-					{forminput label="checkbox"}
-						<input type="checkbox" id="use_filenames" name="use_filenames" value="true"/>Use Filenames
-						{formhelp note="If you would like to name your images based upon their filenames rather than their EXIF data."}
-					{/forminput}
-				</div>
-
-				<div class="form-group">
-					{include file="bitpackage:fisheye/resize_image_select.tpl"}
-				</div>
-			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}
-
-			{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_mini_tpl"}
-
+				<label class="fe-field fe-resize" for="resize">{tr}Reduce originals to{/tr}
+					<select name="resize" id="resize" class="fe-select">
+						<option value="">{tr}Keep the original size{/tr}</option>
+						<option value="1024">1024 {tr}pixels on the long side{/tr}</option>
+						<option value="1600">1600 {tr}pixels on the long side{/tr}</option>
+						<option value="2048">2048 {tr}pixels on the long side{/tr}</option>
+						<option value="2560">2560 {tr}pixels on the long side{/tr}</option>
+						<option value="3264">3264 {tr}pixels on the long side{/tr}</option>
+					</select>
+				</label>
 			</div>
-			<div class="col-sm-6">
-				<div class="well">
-					<div class="form-group">
-						{if !$gBitUser->hasPermission( 'p_fisheye_create' )}
-							{formfeedback warning="Please make sure you select a gallery to load your images into, otherwise your images will be discarded"}
-						{/if}
-						{formlabel label="Add File(s) to these Galleries"}
-						{forminput}
-							{if $galleryTree}
-								<div class="gallerytree">
-									{$galleryTree}
-								</div>						
-							{else}
-								<p class="norecords">
-									{tr}No Galleries Found{/tr}.<br />
-									{tr}The following gallery will automatically be created for you{/tr}: <strong>{displayname hash=$gBitUser->mInfo nolink=1}'s Gallery</strong>
-								</p>
-							{/if}
-						{/forminput}
-					</div>
-				</div>
+			<div class="fe-services">
+				{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}
+				{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_mini_tpl"}
+				{jstabs}
+					{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_tab_tpl"}
+					{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_tab_tpl"}
+				{/jstabs}
 			</div>
+		</details>
+	{/form}
 
-			<div class="form-group submit clear">
-				<noscript><p class="highlight">{tr}Please don't press the save button more than once!<br />Depending on what you are uploading and the system, this can take a few minutes.{/tr}</p></noscript>
-				<input type="submit" class="btn btn-primary" id="submitbutton" value="{tr}Upload File(s){/tr}" {if $submitClick}onclick="{$submitClick}"{/if}/>
-			</div>
-		{/form}
-	</div> <!-- end .body -->
-</div> <!-- end .fisheye -->
+	{* destination dialog, filled by the page script from the signed-in user's galleries *}
+	<dialog class="fe-app fe-picker" data-fe-picker data-fe-url="{$smarty.const.FISHEYE_PKG_URL}organize.php" data-fe-tk="{$gBitUser->mTicket}" data-fe-gallery-url="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id=" aria-label="{tr}Choose a gallery{/tr}">
+		<h2>{tr}Add photos to{/tr}</h2>
+		<label class="fe-search">{booticon iname="fa-search"}<input type="search" data-fe-picker-find placeholder="{tr}Find a gallery{/tr}" autocomplete="off" /></label>
+		<ul data-fe-picker-list data-fe-none="{tr}No galleries match.{/tr}"></ul>
+		{if $gBitUser->hasPermission( 'p_fisheye_create' )}
+				<div class="fe-picker-new"><input type="text" class="fe-input" data-fe-picker-name maxlength="160" placeholder="{tr}New gallery name{/tr}" aria-label="{tr}New gallery name{/tr}" /><button type="button" class="fe-btn" data-fe-picker-create>{booticon iname="fa-folder-plus"}{tr}Create{/tr}</button></div>
+			{/if}
+			<p class="fe-picker-foot"><button type="button" class="fe-btn" data-fe-picker-cancel>{tr}Cancel{/tr}</button></p>
+	</dialog>
+</div>
 {/strip}
-
-{if $gLibertySystem->hasService('upload')}
-	{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_js_tpl"}
-{/if}
-

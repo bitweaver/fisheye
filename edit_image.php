@@ -1,5 +1,8 @@
 <?php
 /**
+ * Photo details: name, description, replacing or turning the file, the
+ * galleries the photo is in, and delete.
+ *
  * @package fisheye
  * @subpackage functions
  */
@@ -45,6 +48,7 @@ if( !empty($_REQUEST['edit'])){
 }
 
 if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] ) ) {
+	$gBitUser->verifyTicket();
 
 	if (empty($_REQUEST['gallery_id']) && empty($_REQUEST['image_id'])) {
 		// We have no way to know what gallery to add an image to or what image to edit!
@@ -86,8 +90,9 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 			header( 'Location: '.FISHEYE_PKG_URL."image_order.php?refresh=1&gallery_id=".$_REQUEST['gallery_id'] );
 			die;
 		}
-		if( !empty( $_REQUEST['gallery_additions'] ) ) {
-			$gContent->addToGalleries( BitBase::getParameter( $_REQUEST, 'gallery_additions' ) );
+		// with nothing ticked the photo stays where it is; a photo is never left in no gallery from this form
+		if( !empty( $_REQUEST['gallery_additions'] ) && is_array( $_REQUEST['gallery_additions'] ) ) {
+			$gContent->addToGalleries( array_filter( $_REQUEST['gallery_additions'], array( 'BitBase', 'verifyId' ) ) );
 		}
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();
@@ -108,18 +113,18 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 	if( !empty( $_REQUEST['cancel'] ) ) {
 		// user cancelled - just continue on, doing nothing
 	} elseif( empty( $_REQUEST['confirm'] ) ) {
-		$formHash['delete'] = TRUE;
-		$formHash['image_id'] = $gContent->mImageId;
-		$gBitSystem->confirmDialog( $formHash,
-			array(
-				'warning' => tra('Are you sure you want to delete this image?') . ' (' . $gContent->getTitle() . ') ' . tra('It will be removed from all galleries to which it belongs.'),
-				'error' => tra('This cannot be undone!'),
-			)
-		);
+		// the package's own confirmation page; with the page script a dialog asks instead and this is not reached
+		$gContent->loadParentGalleries();
+		$gBitSmarty->assign( 'feParentCount', !empty( $gContent->mInfo['parent_galleries'] ) ? count( $gContent->mInfo['parent_galleries'] ) : 0 );
+		$gBitThemes->loadCss( FISHEYE_PKG_PATH.'css/fisheye.css', TRUE, 300, TRUE, FALSE, FALSE );
+		$gBitSystem->display( 'bitpackage:fisheye/delete_image.tpl', tra( 'Delete' ).': '.$gContent->getTitle(), array( 'display_mode' => 'edit' ) );
+		die;
 	} else {
+		$gBitUser->verifyTicket();
 		if( $gContent->expunge() ) {
 			$url = ( is_object( $gGallery ) ? $gGallery->getDisplayUrl() : FISHEYE_PKG_URL );
 			header( "Location: $url" );
+			die;
 		}
 	}
 }
@@ -129,22 +134,8 @@ $gBitSmarty->assignByRef('errors', $errors);
 
 $gContent->loadParentGalleries();
 
-// Get a list of all existing galleries
-$gFisheyeGallery = new FisheyeGallery();
-$getHash = array(
-	'user_id'       => $gBitUser->mUserId,
-);
-if( $gContent->mContentId ) {
-	$getHash['contain_item'] = $gContent->mContentId;
-}
-// modify listHash according to global preferences
-if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
-	unset( $getHash['user_id'] );
-} elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
-//	$getHash['show_public'] = TRUE;
-}
-$galleryTree = $gFisheyeGallery->generateList( $getHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle'), 'radio_checkbox' => TRUE, ), true );
-$gBitSmarty->assignByRef( 'galleryTree', $galleryTree );
+// The galleries the photo is in. Others are added through the gallery picker, so no tree of every gallery is built here.
+$gBitSmarty->assign( 'feParents', !empty( $gContent->mInfo['parent_galleries'] ) ? $gContent->mInfo['parent_galleries'] : array() );
 
 $gBitSmarty->assign('requested_gallery', !empty($_REQUEST['gallery_id']) ? $_REQUEST['gallery_id'] : NULL);
 
@@ -153,6 +144,8 @@ $gContent->invokeServices( 'content_edit_function' );
 if( !empty( $_REQUEST['ajax'] ) ) {
 	echo $gBitSmarty->fetch( 'bitpackage:fisheye/edit_image_inc.tpl', tra('Edit Image: ').$gContent->getTitle() );
 } else {
+	$gBitThemes->loadCss( FISHEYE_PKG_PATH.'css/fisheye.css', TRUE, 300, TRUE, FALSE, FALSE );
+	$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'js/fisheye.js', FALSE, 600, FALSE, FALSE );
 	$gBitSystem->display( 'bitpackage:fisheye/edit_image.tpl', tra('Edit Image: ').$gContent->getTitle() , array( 'display_mode' => 'edit' ));
 }
 ?>

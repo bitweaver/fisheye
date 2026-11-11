@@ -278,7 +278,9 @@ class FisheyeImage extends FisheyeBase {
 			$pParamHash['no_perm_check'] = TRUE;
 
 			$this->StartTrans();
-			$pParamHash['thumbnail'] = !$gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' );
+			// thumbnail_immediate asks for the thumbnails now even when the site queues them for the background thumbnailer
+			$offlineThumbnails = $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) && empty( $pParamHash['thumbnail_immediate'] );
+			$pParamHash['thumbnail'] = !$offlineThumbnails;
 			if( LibertyMime::store( $pParamHash ) ) {
 				if( $currentImageAttachmentId && $currentImageAttachmentId != $this->mInfo['attachment_id'] ) {
 					$this->expungeAttachment($currentImageAttachmentId);
@@ -313,7 +315,7 @@ class FisheyeImage extends FisheyeBase {
 				$rs = $this->mDb->query($sql, $bindVars);
 
 				// check to see if we need offline thumbnailing
-				if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) ) {
+				if( $offlineThumbnails ) {
 					$resize = !empty( $pParamHash['resize'] ) ? (int)$pParamHash['resize'] : NULL;
 					$this->generateThumbnails( $resize );
 				} else {
@@ -630,7 +632,7 @@ class FisheyeImage extends FisheyeBase {
 				}
 			} else {
 				$ret = FISHEYE_PKG_URL.'view_image.php?image_id='.$pParamHash['image_id'];
-				if( !empty( $this ) && !empty( $pParamHash['gallery_path'] ) ) {
+				if( !empty( $pParamHash['gallery_path'] ) ) {
 					$ret .= '&gallery_path='.$pParamHash['gallery_path'];
 				}
 				if( $size ) {

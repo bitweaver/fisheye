@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+	<!-- Shown while an image's thumbnails are being made. Transparent, in one mid grey that reads on light and dark grounds. -->
+	<g fill="none" stroke="#8b949c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+		<rect x="146" y="88" width="108" height="84" rx="8"/>
+		<circle cx="176" cy="116" r="8"/>
+		<path d="M150 160l30-28 20 18 22-24 28 30"/>
+	</g>
+	<g fill="#8b949c">
+		<circle cx="182" cy="204" r="5" opacity=".45"/>
+		<circle cx="200" cy="204" r="5" opacity=".7"/>
+		<circle cx="218" cy="204" r="5"/>
+	</g>
+</svg>

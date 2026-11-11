@@ -1,5 +1,8 @@
 <?php
 /**
+ * Gallery settings: name, the view it opens in, the galleries it sits in,
+ * sharing options, and delete. Also creates a new gallery.
+ *
  * @package fisheye
  * @subpackage functions
  */
@@ -23,41 +26,62 @@ if( $gContent->isValid() ){
 	$gContent->verifyCreatePermission();
 }
 
-if( $gBitUser->hasPermission( 'p_fisheye_change_thumb_size' ) ) {
-	$gBitSmarty->assign( 'thumbnailSizes', get_image_size_options( NULL ));
-}
-
-$gBitSmarty->assign( 'galleryPaginationTypes', $gContent::getAllLayouts() );
+$feLayouts = FisheyeGallery::getAllLayouts();
+$feWarnings = array();
 
 if( !empty( $_REQUEST['savegallery'] ) ) {
-	if( $_REQUEST['gallery_pagination'] == 'auto_flow' ) {
-		$_REQUEST['rows_per_page'] = $_REQUEST['total_per_page'];
-		$_REQUEST['cols_per_page'] = '1';
-	} elseif ( $_REQUEST['gallery_pagination'] == 'simple_list' ) {
-		$_REQUEST['rows_per_page'] = $_REQUEST['lines_per_page'];
-		$_REQUEST['cols_per_page'] = '1';
-	} elseif ( $_REQUEST['gallery_pagination'] == 'matteo' ) {
-		$_REQUEST['rows_per_page'] = $_REQUEST['images_per_page'];
-		$_REQUEST['cols_per_page'] = '1';
-	}
+	$gBitUser->verifyTicket();
+	$wasValid = $gContent->isValid();
+	$oldLayout = $gContent->getLayout();
 	if( $gContent->store( $_REQUEST ) ) {
-		$gContent->storePreference( 'is_public', !empty( $_REQUEST['is_public'] ) ? $_REQUEST['is_public'] : NULL );
-		$gContent->storePreference( 'allow_comments', !empty( $_REQUEST['allow_comments'] ) ? $_REQUEST['allow_comments'] : NULL );
-		$gContent->storePreference( 'gallery_pagination', !empty( $_REQUEST['gallery_pagination'] ) ? $_REQUEST['gallery_pagination'] : NULL );
-		$gContent->storePreference( 'link_original_images', !empty( $_REQUEST['link_original_images'] ) ? $_REQUEST['link_original_images'] : NULL );
+		$gContent->storePreference( 'is_public', ( !empty( $_REQUEST['is_public'] ) && $gBitUser->hasPermission( 'p_fisheye_create_public_gal' ) ) ? 'y' : NULL );
+		$gContent->storePreference( 'allow_comments', !empty( $_REQUEST['allow_comments'] ) ? 'y' : NULL );
+		$gContent->storePreference( 'link_original_images', !empty( $_REQUEST['link_original_images'] ) ? 'y' : NULL );
+		// An untouched choice is not stored, so a gallery that still holds a legacy layout value keeps it
+		$layout = ( !empty( $_REQUEST['gallery_pagination'] ) && is_string( $_REQUEST['gallery_pagination'] ) && isset( $feLayouts[$_REQUEST['gallery_pagination']] ) ) ? $_REQUEST['gallery_pagination'] : NULL;
+		if( $layout && ( !$wasValid || $layout != $oldLayout ) ) {
+			$gContent->storePreference( 'gallery_pagination', $layout );
+		}
 		// make sure var is fully stuffed with current data
 		$gContent->load();
-		// set the mappings, or if nothing checked, nuke them all
-		$gContent->addToGalleries( BitBase::getParameter( $_REQUEST, 'gallery_additions' ) );
+
+		// The checked galleries become the parents; unchecked ones are let go.
+		$parentIds = array();
+		$requested = BitBase::getParameter( $_REQUEST, 'gallery_additions' );
+		if( is_array( $requested ) ) {
+			$nested = NULL;
+			$current = (array)$gContent->getParentGalleries();
+			foreach( $requested as $parentId ) {
+				if( !BitBase::verifyId( $parentId ) || $parentId == $gContent->mGalleryId ) {
+					continue;
+				}
+				if( empty( $current[$parentId] ) ) {
+					// a new parent must not be one of this gallery's own nested galleries
+					if( $nested === NULL ) {
+						$nested = $gContent->getNestedGalleryIds();
+					}
+					if( isset( $nested[(int)$parentId] ) ) {
+						$feWarnings[] = tra( 'A gallery cannot be placed inside one of its own nested galleries. That choice was skipped.' );
+						continue;
+					}
+				}
+				$parentIds[] = (int)$parentId;
+			}
+		}
+		$gContent->addToGalleries( $parentIds );
 
 		if( !empty( $_REQUEST['generate_thumbnails'] ) ) {
 			$gContent->generateThumbnails();
 		}
-		header("location: ".$gContent->getDisplayUrl() );
-		die();
+		if( empty( $feWarnings ) && empty( $gContent->mErrors ) ) {
+			header("location: ".$gContent->getDisplayUrl() );
+			die();
+		}
 	}
 } elseif( !empty( $_REQUEST['delete'] ) ) {
-	$gContent->hasUserPermission( 'p_fisheye_admin', TRUE, tra( "You do not have permission to delete this image gallery" ) );
+	if( !$gContent->isValid() || !$gContent->hasUserPermission( 'p_fisheye_admin' ) ) {
+		$gBitSystem->fatalError( tra( "You do not have permission to delete this image gallery" ), 'error.tpl', '', HttpStatusCodes::HTTP_FORBIDDEN );
+	}
 
 	if( !empty( $_REQUEST['cancel'] ) ) {
 		// user cancelled - just continue on, doing nothing
@@ -75,49 +99,52 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 			)
 		);
 	} else {
+		$gBitUser->verifyTicket();
 		$userId = $gContent->getField( 'user_id' );
 
 		$recurseDelete = (!empty( $_REQUEST['recurse'] ) && ($_REQUEST['recurse'] == 'all') );
 
 		if( $gContent->expunge( $recurseDelete ) ) {
 			header( "Location: ".FISHEYE_PKG_URL.'?user_id='.$userId );
+			die();
 		}
 	}
 
 } elseif( !empty($_REQUEST['cancelgallery'] ) ) {
-	header( 'Location: '.$gContent->getDisplayUrl() );
+	header( 'Location: '.( $gContent->isValid() ? $gContent->getDisplayUrl() : FISHEYE_PKG_URL.'?user_id='.$gBitUser->mUserId ) );
 	die();
 }
 
 // Initalize the errors list which contains any errors which occured during storage
 $errors = (!empty($gContent->mErrors) ? $gContent->mErrors : array());
 $gBitSmarty->assignByRef('errors', $errors);
+$gBitSmarty->assign( 'feWarnings', $feWarnings );
 
-$gBitSystem->setOnloadScript( 'updateGalleryPagination();' );
-
-$gallery = $gContent->getParentGalleries();
-$gBitSmarty->assignByRef( 'parentGalleries', $gallery );
-$getHash = array(
-	'user_id'       => $gBitUser->mUserId,
-//	'max_records'   => -1,
-//	'no_thumbnails' => TRUE,
-//	'sort_mode'     => 'title_asc',
-//	'show_empty'    => TRUE,
+// The four views, with the line shown under each on the form
+$feLayoutNotes = array(
+	FISHEYE_LAYOUT_ORGANIZE  => tra( 'Whole photos with names. Best for sorting and picking.' ),
+	FISHEYE_LAYOUT_JUSTIFIED => tra( 'Full-width rows on a dark stage.' ),
+	FISHEYE_LAYOUT_MASONRY   => tra( 'For mixed portrait and landscape.' ),
+	FISHEYE_LAYOUT_DETAILS   => tra( 'Sortable rows with dates and sizes.' ),
 );
-if( $gContent->mContentId ) {
-	$getHash['contain_item'] = $gContent->mContentId;
+$gBitSmarty->assign( 'feLayouts', $feLayouts );
+$gBitSmarty->assign( 'feLayoutNotes', $feLayoutNotes );
+$feLayout = ( !empty( $_REQUEST['gallery_pagination'] ) && is_string( $_REQUEST['gallery_pagination'] ) && isset( $feLayouts[$_REQUEST['gallery_pagination']] ) ) ? $_REQUEST['gallery_pagination'] : $gContent->getLayout();
+$gBitSmarty->assign( 'feLayout', $feLayout );
+
+// The galleries this one sits in. Others are added through the gallery picker, so no tree of every gallery is built here.
+$feParents = $gContent->isValid() ? (array)$gContent->getParentGalleries() : array();
+$gBitSmarty->assign( 'feParents', $feParents );
+
+$feCover = NULL;
+if( $gContent->isValid() && $gContent->getField( 'num_images' ) ) {
+	$feCover = $gContent->getThumbnailUri( 'small' );
 }
-// modify listHash according to global preferences
-if( $gBitSystem->isFeatureActive( 'fisheye_show_all_to_admins' ) && $gBitUser->hasPermission( 'p_fisheye_admin' ) ) {
-	unset( $getHash['user_id'] );
-} elseif( $gBitSystem->isFeatureActive( 'fisheye_show_public_on_upload' ) ) {
-//	$getHash['show_public'] = TRUE;
-}
-$galleryTree = $gContent->generateList( $getHash,  array( 'name' => "gallery_id", 'id' => "gallerylist", 'item_attributes' => array( 'class'=>'listingtitle'), 'radio_checkbox' => TRUE, ) );
-$gBitSmarty->assignByRef( 'galleryTree', $galleryTree );
+$gBitSmarty->assign( 'feCover', $feCover );
+$gBitSmarty->assign( 'feCanDelete', $gContent->isValid() && $gContent->hasUserPermission( 'p_fisheye_admin' ) );
 
 $gContent->invokeServices( 'content_edit_function' );
 
-$gBitSystem->display( 'bitpackage:fisheye/edit_gallery.tpl', tra('Edit Gallery: ').$gContent->getTitle() , array( 'display_mode' => 'edit' ));
-
-?>
+$gBitThemes->loadCss( FISHEYE_PKG_PATH.'css/fisheye.css', TRUE, 300, TRUE, FALSE, FALSE );
+$gBitThemes->loadJavascript( FISHEYE_PKG_PATH.'js/fisheye.js', FALSE, 600, FALSE, FALSE );
+$gBitSystem->display( 'bitpackage:fisheye/edit_gallery.tpl', ( $gContent->isValid() ? tra( 'Gallery settings' ).': '.$gContent->getTitle() : tra( 'New gallery' ) ), array( 'display_mode' => 'edit' ));

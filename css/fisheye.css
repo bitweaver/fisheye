@@ -1,3 +1,374 @@
+/* Fisheye interface. Everything is scoped under .fe-app and depends on no CSS framework.
+   Sizes are in px so a theme's root font size does not rescale the interface.
+   A theme brands it by overriding the --fe-* custom properties, usually --fe-accent and --fe-select,
+   with a selector that outranks this one, such as body .fe-app. The defaults are neutral. */
+.fe-app{--fe-bg:#fff;--fe-mat:#eef0f2;--fe-ink:#1d2a33;--fe-muted:#66737c;--fe-line:#d9dee2;--fe-accent:#24313a;--fe-select:#2b7de9;--fe-on-select:#fff;--fe-raise:#fff;--fe-radius:3px;
+	background:var(--fe-bg);color:var(--fe-ink);font-size:15px;line-height:1.45;padding:12px 16px 48px;position:relative;font-variant-numeric:tabular-nums}
+/* dark stage for the display modes */
+.fe-app.fe-stage{--fe-bg:#25282c;--fe-mat:#1b1d20;--fe-ink:#f2f3f4;--fe-muted:#9ca4ab;--fe-line:#3b3f45;--fe-accent:#f2f3f4;--fe-select:#ffb02e;--fe-on-select:#1b1d20;--fe-raise:#30343a;--fe-radius:2px;
+	padding:24px 24px 64px;min-height:70vh}
+/* the stage fills the page's content section, so no light border shows around it; the --fe-bg fallback must match the stage value above */
+#bw-main-content:has(.fe-app.fe-stage){background:var(--fe-stage-bg,#25282c)}
+#bw-main-content:has(.fe-app.fe-stage) ~ #bw-main-footer{margin-top:0}
+.fe-app.fe-stage{--fe-bg:var(--fe-stage-bg,#25282c)}
+.fe-app *{box-sizing:border-box}
+.fe-app [hidden]{display:none!important}
+.fe-app a{color:inherit;text-decoration:none}
+.fe-app h1{font-family:inherit;font-weight:700;font-size:30px;line-height:1.15;margin:0;letter-spacing:-.01em;color:var(--fe-ink)}
+.fe-app .fe-sub{color:var(--fe-muted);font-size:14px;margin:6px 0 0}
+.fe-app .fe-desc{font-size:15px;line-height:1.55;margin:10px 0 0;max-width:110ch;white-space:pre-line}
+.fe-app .fe-crumb{font-size:13px;color:var(--fe-muted);margin:0 0 10px;padding:0;list-style:none;display:flex;gap:8px;flex-wrap:wrap;background:none}
+.fe-app .fe-crumb li+li:before{content:"/";margin-right:8px;opacity:.6}
+.fe-app .fe-crumb a:hover{color:var(--fe-ink);text-decoration:underline}
+/* breadcrumb line with the gallery tools at its end; tools stay quiet until hovered */
+.fe-app .fe-top{display:flex;align-items:center;justify-content:space-between;gap:4px 16px;flex-wrap:wrap;margin:0 0 10px;min-height:28px}
+.fe-app .fe-top .fe-crumb{margin:0}
+.fe-app .fe-tools{display:flex;align-items:center;gap:2px;flex-wrap:wrap;margin-left:auto;font-size:13px}
+.fe-app .fe-tools a{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 8px;border-radius:var(--fe-radius);color:var(--fe-muted);white-space:nowrap}
+.fe-app .fe-tools a:hover,.fe-app .fe-tools a:focus-visible{background:var(--fe-mat);color:var(--fe-ink)}
+.fe-app .fe-tools a:focus-visible{outline:2px solid var(--fe-select);outline-offset:1px}
+.fe-app .fe-head{display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:20px}
+.fe-app .fe-head-main{flex:1 1 320px;min-width:0}
+.fe-app .fe-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fe-app .fe-btn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border:1px solid var(--fe-line);border-radius:var(--fe-radius);background:var(--fe-raise);color:var(--fe-ink);font-size:14px;font-weight:600;line-height:1;cursor:pointer;white-space:nowrap}
+.fe-app .fe-btn:hover{border-color:var(--fe-muted)}
+.fe-app .fe-btn:focus-visible,.fe-app .fe-tile:focus-visible,.fe-app .fe-seg a:focus-visible,.fe-app .fe-just a:focus-visible,.fe-app .fe-mason a:focus-visible{outline:2px solid var(--fe-select);outline-offset:2px}
+.fe-app .fe-btn-danger{color:#b3261e}
+.fe-app .fe-btn-danger:hover,.fe-app .fe-btn-danger:focus-visible{border-color:#b3261e;background:color-mix(in srgb,#b3261e 8%,var(--fe-raise))}
+.fe-app.fe-stage .fe-btn-danger{color:#ff8a80}
+.fe-app .fe-btn-primary{background:var(--fe-accent);border-color:var(--fe-accent);color:var(--fe-bg)}
+.fe-app .fe-btn-quiet{border-color:transparent;background:transparent}
+.fe-app .fe-btn[aria-busy]{opacity:.6;cursor:progress}
+/* library rail beside a gallery; collapsible, closed by default on the stage */
+.fe-app .fe-shell{display:grid;grid-template-columns:232px minmax(0,1fr);gap:40px}
+.fe-app .fe-shell.is-rail-closed{grid-template-columns:minmax(0,1fr)}
+.fe-app .fe-shell.is-rail-closed .fe-rail{display:none}
+.fe-app .fe-main{min-width:0}
+.fe-app .fe-rail{font-size:14px;position:relative;align-self:start}
+.fe-app .fe-rail h2{font-family:inherit;font-weight:700;font-size:12px;line-height:1;color:var(--fe-muted);margin:22px 0 8px;letter-spacing:0}
+.fe-app .fe-rail h2:first-of-type{margin-top:4px}
+.fe-app .fe-rail ul{list-style:none;margin:0;padding:0}
+.fe-app .fe-rail li a{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:var(--fe-radius)}
+.fe-app .fe-rail li a:hover{background:var(--fe-mat)}
+.fe-app .fe-rail li a .fa{width:16px;flex:0 0 auto;text-align:center;color:var(--fe-muted)}
+.fe-app .fe-rail li a .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.fe-app .fe-rail li a[aria-current]{background:var(--fe-mat);font-weight:700}
+.fe-app .fe-rail h2{display:flex;align-items:center;justify-content:space-between;min-height:20px}
+.fe-app .fe-railall{width:24px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--fe-radius);color:var(--fe-muted);font-size:14px}
+.fe-app .fe-railall:hover,.fe-app .fe-railall[aria-busy]{background:var(--fe-mat);color:var(--fe-ink)}
+.fe-app .fe-railall[aria-pressed=true] .fa{transform:rotate(180deg)}
+/* gallery tree: a twist column, then the gallery link; nested lists show only on an open item */
+.fe-app .fe-tree li{display:flex;flex-wrap:wrap;align-items:center}
+.fe-app .fe-tree .tw{flex:0 0 18px;width:18px;height:28px;padding:0;display:flex;align-items:center;justify-content:center;gap:0;color:var(--fe-muted)}
+.fe-app .fe-tree a.tw .fa{width:auto;transition:transform .12s}
+.fe-app .fe-tree li.is-open>a.tw .fa{transform:rotate(90deg)}
+.fe-app .fe-tree a.tw[aria-busy]{opacity:.4}
+.fe-app .fe-tree a.g{flex:1 1 0;min-width:0;padding-left:4px}
+.fe-app .fe-tree li>ul{flex:0 0 100%;padding-left:16px;display:none}
+.fe-app .fe-tree li.is-open>ul{display:block}
+.fe-app .fe-railbtn{position:absolute;right:0;top:-8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:var(--fe-radius);color:var(--fe-muted)}
+.fe-app .fe-railbtn:hover{background:var(--fe-mat);color:var(--fe-ink)}
+.fe-app .fe-railopen{display:none;margin:-8px 0 10px -14px;color:var(--fe-muted)}
+.fe-app .fe-shell.is-rail-closed .fe-railopen{display:inline-flex}
+/* toolbar */
+.fe-app .fe-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--fe-line);border-bottom:1px solid var(--fe-line);margin-bottom:20px}
+.fe-app .fe-seg{display:inline-flex;border:1px solid var(--fe-line);border-radius:var(--fe-radius);overflow:hidden}
+.fe-app .fe-seg a{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;font-size:13px;font-weight:600;color:var(--fe-muted);border-left:1px solid var(--fe-line)}
+.fe-app .fe-seg a:first-child{border-left:0}
+.fe-app .fe-seg a:hover{color:var(--fe-ink)}
+/* light and dark toggle: two icons, no names */
+.fe-app .fe-seg.fe-theme a{padding:0 11px}
+.fe-app .fe-view-top .fe-seg.fe-theme{margin-left:auto}
+.fe-app .fe-view-top .fe-seg.fe-theme a{height:28px;padding:0 9px}
+.fe-app .fe-view-top .fe-seg.fe-theme+.fe-tools{margin-left:8px}
+.fe-app .fe-seg a[aria-current]{background:var(--fe-ink);color:var(--fe-bg)}
+.fe-app .fe-bar-sp{flex:1}
+.fe-app .fe-field{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--fe-muted);margin:0}
+.fe-app .fe-field label{margin:0;font-weight:400}
+.fe-app .fe-select{height:34px;padding:0 8px;border:1px solid var(--fe-line);border-radius:var(--fe-radius);background:var(--fe-raise);color:var(--fe-ink);font-size:13px;font-weight:600;max-width:100%}
+.fe-app a.lnk,.fe-app label.lnk{color:var(--fe-select);text-decoration:underline}
+.fe-app .fe-search{display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;border:1px solid var(--fe-line);border-radius:var(--fe-radius);background:var(--fe-raise);color:var(--fe-muted);font-size:14px;min-width:220px;margin:0}
+.fe-app .fe-search:focus-within{border-color:var(--fe-select)}
+.fe-app .fe-search input{border:0;outline:0;background:transparent;color:var(--fe-ink);font-size:14px;flex:1;min-width:0;height:100%;padding:0;box-shadow:none}
+/* library: gallery cards with a cover mosaic of the first photos */
+.fe-app .fe-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:28px 24px}
+.fe-app .fe-card{display:block;min-width:0}
+.fe-app .fe-cover{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;aspect-ratio:1;overflow:hidden;background:var(--fe-mat)}
+.fe-app .fe-cover img{width:100%;height:100%;min-height:0;object-fit:cover;object-position:50% 20%;display:block}
+.fe-app .fe-cover img:first-child{grid-column:1/-1}
+.fe-app .fe-cover.n4{grid-template-rows:2fr 1fr}
+.fe-app .fe-cover.n3{grid-template-columns:repeat(2,1fr);grid-template-rows:2fr 1fr}
+.fe-app .fe-cover.n2{grid-template-columns:1fr;grid-template-rows:2fr 1fr}
+.fe-app .fe-cover.n1{grid-template-columns:1fr}
+.fe-app .fe-cover.n0{display:flex;align-items:center;justify-content:center;font-size:44px;color:var(--fe-muted)}
+.fe-app .fe-card:hover .fe-cover{outline:2px solid var(--fe-ink);outline-offset:2px}
+.fe-app .fe-card:focus-visible{outline:2px solid var(--fe-select);outline-offset:4px}
+.fe-app .fe-card-t{font-size:16px;font-weight:700;margin:10px 0 0;display:flex;gap:8px;align-items:baseline}
+.fe-app .fe-card-t .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.fe-app .fe-card-t .fa{font-size:13px;color:var(--fe-muted)}
+.fe-app .fe-card-m{display:block;font-size:13px;color:var(--fe-muted);margin:2px 0 0}
+/* nested galleries */
+.fe-app .fe-subs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 20px}
+.fe-app .fe-subchip{display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:5px 14px 5px 5px;border:1px solid var(--fe-line);border-radius:var(--fe-radius);font-size:14px;font-weight:600;background:var(--fe-raise)}
+.fe-app .fe-subchip img{width:38px;height:38px;object-fit:cover;object-position:50% 25%;display:block}
+.fe-app .fe-subchip .fa{width:38px;text-align:center;color:var(--fe-muted)}
+.fe-app .fe-subchip span:not(.fa){color:var(--fe-muted);font-weight:400;font-size:12px}
+.fe-app .fe-subs-more{margin:-10px 0 20px}
+.fe-app .fe-subs-more[open] summary{margin-bottom:10px}
+.fe-app .fe-subs-more summary{list-style:none}
+.fe-app .fe-subs-more summary::-webkit-details-marker{display:none}
+/* organize: whole photos on a mat, with names */
+.fe-app .fe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px 16px}
+.fe-app .fe-tile{position:relative;display:block;margin:0;min-width:0}
+.fe-app .fe-frame{position:relative;aspect-ratio:1;background:var(--fe-mat);display:flex;align-items:center;justify-content:center;padding:10px}
+.fe-app .fe-frame img{max-width:100%;max-height:100%;display:block;box-shadow:0 1px 2px rgba(20,30,40,.25)}
+.fe-app .fe-cap{display:flex;gap:8px;font-size:12px;margin-top:5px;color:var(--fe-muted)}
+/* each corner of the frame holds one thing: number top left, select top right, cover bottom left, rotate bottom right */
+.fe-app .fe-tl{position:absolute;left:8px;top:8px;display:flex;align-items:center;gap:6px}
+.fe-app .fe-num{min-width:22px;height:22px;padding:0 6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;line-height:1;background:rgba(20,30,40,.62);color:#fff;border-radius:2px}
+.fe-app .fe-cap .t{color:var(--fe-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+/* organize tools: selection marks, cover tag, drop markers, bulk bar, destination dialog, notices */
+.fe-app .fe-pick{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;border:2px solid #fff;background:rgba(20,30,40,.32);color:transparent;font-size:12px;display:flex;align-items:center;justify-content:center;line-height:1;opacity:0;cursor:pointer;box-shadow:0 0 0 1px rgba(20,30,40,.25)}
+.fe-app .fe-tile:hover .fe-pick,.fe-app .fe-tile:focus-visible .fe-pick,.fe-app .fe-grid.has-picked .fe-pick{opacity:1}
+.fe-app .fe-tile.is-picked .fe-frame{outline:3px solid var(--fe-select);outline-offset:-3px}
+.fe-app .fe-tile.is-picked .fe-pick{background:var(--fe-select);border-color:var(--fe-select);color:var(--fe-on-select);opacity:1}
+.fe-app .fe-turn{position:absolute;right:8px;bottom:8px;display:flex;gap:4px;opacity:0}
+.fe-app .fe-tile:hover .fe-turn,.fe-app .fe-tile:focus-visible .fe-turn{opacity:1}
+.fe-app .fe-turn span[role=button]{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--fe-raise);color:var(--fe-ink);border:1px solid var(--fe-line);cursor:pointer}
+.fe-app .fe-turn span[role=button]:hover{border-color:var(--fe-ink)}
+.fe-app .fe-tile.is-working .fe-frame img{opacity:.35}
+/* favorite: a red heart when set; pointing at the tile offers the toggle either way */
+.fe-app .fe-fav{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;background:var(--fe-raise);color:var(--fe-muted);border:1px solid var(--fe-line);cursor:pointer;opacity:0}
+.fe-app .fe-tile:hover .fe-fav,.fe-app .fe-tile:focus-visible .fe-fav,.fe-app .fe-fav.is-on{opacity:1}
+.fe-app .fe-fav:hover{border-color:var(--fe-ink);color:var(--fe-ink)}
+/* the set heart is drawn here, filled, so it does not depend on the icon font having a solid face */
+.fe-app{--fe-heart:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23d92d3a' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")}
+.fe-app .fe-fav.is-on,.fe-app .fe-fav.is-on:hover{border-color:transparent;background:rgba(255,255,255,.92) var(--fe-heart) center/13px no-repeat}
+.fe-app .fe-fav.is-on .fa{visibility:hidden}
+@media (hover:none){.fe-app .fe-fav{opacity:1}}
+/* image order: the same heart as a checkbox */
+.fe-app .fe-favbox{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin:0;border-radius:50%;cursor:pointer;color:var(--fe-line);font-size:16px}
+.fe-app .fe-favbox input{position:absolute;opacity:0;width:1px;height:1px}
+.fe-app .fe-favbox:hover{color:var(--fe-muted)}
+.fe-app .fe-favbox:has(input:checked){background:var(--fe-heart) center/18px no-repeat}
+.fe-app .fe-favbox:has(input:checked) .fa{visibility:hidden}
+.fe-app .fe-favbox:has(input:focus-visible){outline:2px solid var(--fe-select);outline-offset:1px}
+@media (hover:none){.fe-app .fe-turn{opacity:1}}
+.fe-app .fe-covertag{display:none;position:absolute;left:8px;bottom:8px;font-size:11px;font-weight:700;background:var(--fe-ink);color:var(--fe-bg);padding:2px 7px;border-radius:2px}
+.fe-app .fe-tile.is-cover .fe-covertag{display:block}
+.fe-app .fe-tile[draggable=true]{cursor:grab}
+.fe-app .fe-tile.is-dragging{opacity:.35}
+.fe-app .fe-tile.is-drop-before:before,.fe-app .fe-tile.is-drop-after:before{content:"";position:absolute;top:0;bottom:22px;width:4px;background:var(--fe-select);border-radius:2px;z-index:2}
+.fe-app .fe-tile.is-drop-before:before{left:-10px}
+.fe-app .fe-tile.is-drop-after:before{right:-10px}
+.fe-app .fe-grid[aria-busy]{opacity:.6;pointer-events:none}
+.fe-app .fe-bulk{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:30;width:max-content;max-width:calc(100vw - 24px);display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:8px 12px;background:var(--fe-ink);color:var(--fe-bg);border-radius:4px;font-size:14px;box-shadow:0 8px 24px rgba(10,20,30,.28)}
+.fe-app .fe-bulk b{margin:0 10px 0 4px;white-space:nowrap}
+.fe-app .fe-bulk a{color:inherit;display:inline-flex;gap:7px;align-items:center;padding:6px 10px;border-radius:3px;font-weight:600;white-space:nowrap}
+.fe-app .fe-bulk a:hover,.fe-app .fe-bulk a:focus-visible{background:rgba(255,255,255,.16)}
+.fe-app .fe-bulk a[aria-disabled=true]{opacity:.4;pointer-events:none}
+.fe-app .fe-bulk .sp{flex:1;min-width:8px}
+/* icons alone by default; the help button adds the names */
+.fe-app .fe-bulk a span:not(.fa){display:none}
+.fe-app .fe-bulk.has-labels a span:not(.fa){display:inline}
+.fe-app .fe-bulk a{min-width:34px;justify-content:center}
+.fe-app .fe-bulk a .fa{font-size:15px}
+.fe-app .fe-bulk a.x{margin-left:-6px}
+.fe-app .fe-bulk .div{width:1px;align-self:stretch;margin:2px 6px;background:rgba(255,255,255,.25)}
+.fe-app .fe-bulk a[aria-pressed=true]{background:rgba(255,255,255,.16)}
+dialog.fe-app.fe-picker{width:420px;max-width:calc(100vw - 24px);max-height:80vh;padding:20px;border:1px solid var(--fe-line);border-radius:4px;box-shadow:0 16px 48px rgba(10,20,30,.3);overflow:hidden}
+dialog.fe-app.fe-picker[open]{display:flex;flex-direction:column;gap:12px}
+dialog.fe-app.fe-picker::backdrop{background:rgba(20,30,40,.45)}
+.fe-app.fe-picker h2{font-family:inherit;font-size:18px;font-weight:700;margin:0;color:var(--fe-ink)}
+.fe-app.fe-picker .fe-search{min-width:0}
+.fe-app.fe-picker ul{list-style:none;margin:0;padding:0}
+.fe-app.fe-picker>ul{overflow:auto;flex:1;min-height:80px;border-top:1px solid var(--fe-line);border-bottom:1px solid var(--fe-line)}
+/* nested galleries sit under their parent, with a guide line */
+.fe-app.fe-picker ul ul{margin-left:14px;padding-left:6px;border-left:1px solid var(--fe-line)}
+.fe-app.fe-picker li a,.fe-app.fe-picker li .here{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:var(--fe-radius);font-size:14px}
+.fe-app.fe-picker li .here{color:var(--fe-muted)}
+.fe-app.fe-picker li a:hover,.fe-app.fe-picker li a:focus-visible{background:var(--fe-mat)}
+.fe-app.fe-picker li a .fa{color:var(--fe-muted)}
+.fe-app.fe-picker li.none{padding:16px 8px;color:var(--fe-muted);font-size:14px}
+.fe-app .fe-picker-foot{margin:0;text-align:right}
+.fe-app .fe-picker-new{display:flex;gap:8px;align-items:center}
+.fe-app .fe-picker-new .fe-input{flex:1;height:36px}
+.fe-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:80px;z-index:2147483000;max-width:calc(100vw - 24px);padding:10px 16px;border-radius:4px;background:#1d2a33;color:#fff;font-size:14px;line-height:1.4;box-shadow:0 8px 24px rgba(10,20,30,.28)}
+.fe-toast.is-error{background:#a12622}
+.fe-app .fe-rename{font-size:14px;color:var(--fe-muted);margin-left:6px}
+.fe-app .fe-rename:hover{color:var(--fe-ink)}
+.fe-app .fe-info h1 input{width:100%;font:inherit;color:var(--fe-ink);background:var(--fe-mat);border:1px solid var(--fe-select);border-radius:var(--fe-radius);padding:4px 6px}
+.fe-app .fe-view[aria-busy] .fe-view-img img{opacity:.4}
+/* showcase: rows at true aspect ratio; --r is width / height */
+.fe-app .fe-just{display:flex;flex-wrap:wrap;gap:6px}
+.fe-app .fe-just a{height:300px;flex-grow:var(--r);flex-basis:calc(var(--r)*300px);position:relative;display:block;overflow:hidden;background:var(--fe-mat)}
+.fe-app .fe-just img{width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block}
+.fe-app .fe-just:after{content:"";flex-grow:100}
+/* columns */
+.fe-app .fe-mason{columns:4 300px;column-gap:10px}
+.fe-app .fe-mason a{display:block;margin:0 0 10px;break-inside:avoid;background:var(--fe-mat)}
+.fe-app .fe-mason img{width:100%;height:auto;display:block}
+/* details */
+.fe-app .fe-rows-wrap{overflow-x:auto}
+.fe-app .fe-rows{width:100%;border-collapse:collapse;font-size:14px}
+.fe-app .fe-rows th{text-align:left;font-size:12px;font-weight:700;color:var(--fe-muted);padding:8px 12px;border-bottom:1px solid var(--fe-line);white-space:nowrap}
+.fe-app .fe-rows th a:hover{color:var(--fe-ink);text-decoration:underline}
+.fe-app .fe-rows td{padding:6px 12px;border-bottom:1px solid var(--fe-line);vertical-align:middle;white-space:nowrap}
+.fe-app .fe-rows td.t{font-weight:600;white-space:normal;overflow-wrap:anywhere}
+.fe-app .fe-rows td.m{color:var(--fe-muted)}
+.fe-app .fe-rows img{width:96px;height:72px;object-fit:cover;object-position:50% 25%;display:block;background:var(--fe-mat)}
+.fe-app .fe-more{text-align:center;margin:28px 0;color:var(--fe-muted);font-size:13px}
+.fe-app .fe-empty{text-align:center;padding:64px 16px;background:var(--fe-mat);color:var(--fe-muted)}
+.fe-app .fe-empty p{font-size:17px;margin:0 0 16px}
+.fe-app .fe-comments{margin-top:40px;padding-top:20px;border-top:1px solid var(--fe-line)}
+/* shared comment markup: theme rules give posts a fixed light ground, so set ground and ink together */
+.fe-app .fe-comments h2,.fe-app .fe-comments h3{font-family:inherit;color:var(--fe-ink)}
+.fe-app .fe-comments .post h3{margin:0 0 4px;font-size:18px}
+.fe-app .fe-comments .post,.fe-app .fe-comments .threaded{max-width:110ch}
+.fe-app .fe-comments .post{background:var(--fe-raise);color:var(--fe-ink);border:1px solid var(--fe-line);margin:0 0 12px}
+.fe-app .fe-comments .post .date,.fe-app .fe-comments .paginator{color:var(--fe-muted)}
+.fe-app .fe-comments .post a{color:var(--fe-select)}
+/* upload: drop zone, per-file rows, options */
+.fe-app .fe-change{margin-left:10px;font-size:13px}
+.fe-app .fe-drop{border:2px dashed var(--fe-line);background:var(--fe-mat);padding:44px 20px;text-align:center;margin-bottom:24px;border-radius:var(--fe-radius);transition:border-color .12s,background .12s}
+.fe-app .fe-drop.is-over{border-color:var(--fe-select);background:color-mix(in srgb,var(--fe-select) 8%,var(--fe-mat))}
+.fe-app .fe-drop>.fa{font-size:34px;color:var(--fe-muted);margin-bottom:10px}
+.fe-app .fe-drop p{margin:0;font-size:17px}
+.fe-app .fe-drop p.fe-sub{font-size:14px;margin-top:4px}
+.fe-app .fe-drop label.lnk{cursor:pointer;font-weight:400;margin:0}
+.fe-app .fe-filesinput{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.fe-app .fe-filesinput:focus-visible+*{outline:2px solid var(--fe-select)}
+.fe-app .fe-nojs{margin:0 0 24px}
+.fe-app .fe-uploadlist{margin-bottom:24px}
+.fe-app .fe-listhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:36px;margin-bottom:8px;font-size:15px}
+.fe-app .fe-files{list-style:none;margin:0;padding:0;border-top:1px solid var(--fe-line)}
+.fe-app .fe-files li{display:grid;grid-template-columns:20px minmax(0,1fr) 80px 160px 150px;gap:12px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--fe-line);font-size:14px}
+.fe-app .fe-files .fa{color:var(--fe-muted);text-align:center}
+.fe-app .fe-files .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fe-app .fe-files .m{color:var(--fe-muted);font-size:13px;text-align:right}
+.fe-app .fe-files .p{height:4px;background:var(--fe-line);border-radius:2px;overflow:hidden}
+.fe-app .fe-files .p i{display:block;height:100%;width:0;background:var(--fe-select);transition:width .15s}
+.fe-app .fe-files .s{color:var(--fe-muted);font-size:13px;overflow-wrap:anywhere}
+.fe-app .fe-files li.ok .fa{color:#2e7d4f}
+.fe-app .fe-files li.ok .p i{background:#2e7d4f}
+.fe-app .fe-files li.bad .fa,.fe-app .fe-files li.bad .s{color:#a12622}
+.fe-app .fe-files li.bad .p{visibility:hidden}
+.fe-app .fe-options{border-top:1px solid var(--fe-line);padding-top:14px}
+.fe-app .fe-options summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--fe-muted);width:max-content}
+.fe-app .fe-options[open] summary{color:var(--fe-ink);margin-bottom:14px}
+.fe-app .fe-optgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px 28px;max-width:960px;margin-bottom:18px}
+.fe-app .fe-check{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px;margin:0;cursor:pointer}
+.fe-app .fe-check input{width:16px;height:16px;margin:2px 0 0;flex:0 0 auto;accent-color:var(--fe-select)}
+.fe-app .fe-check small{display:block;color:var(--fe-muted);font-size:12px}
+.fe-app .fe-resize{flex-direction:column;align-items:flex-start;gap:6px;color:var(--fe-ink);font-size:14px;font-weight:400}
+.fe-app .fe-services{max-width:960px;font-size:14px}
+/* image order: one form with a typed position per photo */
+.fe-app .fe-input{height:34px;padding:0 8px;border:1px solid var(--fe-line);border-radius:var(--fe-radius);background:var(--fe-raise);color:var(--fe-ink);font-size:14px;width:100%;min-width:0;box-shadow:none}
+.fe-app .fe-input:focus{outline:0;border-color:var(--fe-select)}
+.fe-app textarea.fe-input{height:auto;min-height:96px;padding:8px;line-height:1.45;resize:vertical;display:block}
+.fe-app .fe-input-lg{height:42px;font-size:17px;font-weight:600;padding:0 10px}
+.fe-app .fe-input.is-changed{border-color:var(--fe-select);background:color-mix(in srgb,var(--fe-select) 8%,var(--fe-raise))}
+.fe-app .fe-orderbar{position:sticky;top:0;z-index:5;background:var(--fe-bg)}
+.fe-app .fe-orderbar .fe-field,.fe-app .fe-orderfoot .fe-field{gap:6px}
+.fe-app .fe-orderdirty{font-size:13px;font-weight:600;color:var(--fe-select)}
+.fe-app input.fe-btn{font-family:inherit}
+.fe-app .fe-ordertable td.t{min-width:220px;width:36%;font-weight:400}
+.fe-app .fe-ordertable td.m{white-space:normal;overflow-wrap:anywhere}
+.fe-app .fe-ordertable td small{display:block;font-size:12px;margin-top:2px}
+.fe-app .fe-ordertable td.n,.fe-app .fe-ordertable th.n{text-align:right;width:110px}
+.fe-app .fe-ordertable .fe-pos{width:90px;text-align:right;font-variant-numeric:tabular-nums}
+.fe-app .fe-ordertable input[type=checkbox],.fe-app .fe-ordertable input[type=radio],.fe-app .fe-orderfoot input[type=radio]{width:16px;height:16px;margin:0;vertical-align:middle;accent-color:var(--fe-select)}
+.fe-app .fe-ordertable img{width:72px;height:54px}
+.fe-app .fe-ordertable td.g{width:36px;padding-right:0}
+.fe-app .fe-grip{width:28px;height:40px;display:flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--fe-muted);border-radius:var(--fe-radius);cursor:grab;touch-action:none;font-size:16px;padding:0}
+.fe-app .fe-grip:hover,.fe-app .fe-grip:focus-visible{background:var(--fe-mat);color:var(--fe-ink);outline:0}
+.fe-app .fe-ordertable tr.is-moving td{background:color-mix(in srgb,var(--fe-select) 10%,var(--fe-bg))}
+.fe-app .fe-ordertable tr.is-moving .fe-grip{cursor:grabbing;color:var(--fe-ink)}
+.fe-app .fe-ordertable.is-sorting{user-select:none;-webkit-user-select:none;cursor:grabbing}
+.fe-app .fe-pagebreak th{background:var(--fe-mat);color:var(--fe-ink);font-size:12px;padding:6px 12px}
+.fe-app .fe-orderfoot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 0}
+/* photo view: the photo page, and the same markup inside the lightbox dialog */
+.fe-app.fe-photo{padding:0 0 48px}
+.fe-app .fe-view{display:flex;flex-direction:column;height:calc(100vh - var(--fe-chrome,120px));min-height:480px;background:var(--fe-bg);color:var(--fe-ink)}
+.fe-app .fe-view-top{display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--fe-line);min-height:46px}
+.fe-app .fe-view-back{display:inline-flex;align-items:center;gap:10px;min-width:0;font-size:14px;font-weight:600;height:30px;padding:0 8px;margin-left:-8px;border-radius:var(--fe-radius)}
+.fe-app .fe-view-back:hover{background:var(--fe-mat)}
+.fe-app .fe-view-back .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fe-app .fe-view-top .n{color:var(--fe-muted);font-size:13px;white-space:nowrap}
+.fe-app .fe-view-top .fe-tools a{font-size:15px}
+.fe-app .fe-view-top .fe-tools a[aria-pressed=true]{color:var(--fe-ink)}
+.fe-app .fe-view-top .fe-tools a.is-on{color:var(--fe-select)}
+.fe-app .fe-view-body{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 320px}
+.fe-app .fe-view.is-info-closed .fe-view-body{grid-template-columns:minmax(0,1fr)}
+.fe-app .fe-view.is-info-closed .fe-info{display:none}
+.fe-app .fe-view-img{position:relative;display:flex;align-items:center;justify-content:center;padding:20px 72px;background:var(--fe-mat);min-height:0;min-width:0}
+.fe-app .fe-view-img img{max-width:100%;max-height:100%;width:auto;height:auto;display:block;box-shadow:0 10px 40px rgba(0,0,0,.45)}
+.fe-app .fe-view-img .nav{position:absolute;top:50%;margin-top:-24px;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;background:var(--fe-raise);color:var(--fe-ink);opacity:.75}
+.fe-app .fe-view-img .nav:hover,.fe-app .fe-view-img .nav:focus-visible{opacity:1}
+.fe-app .fe-view-img .prev{left:14px}
+.fe-app .fe-view-img .next{right:14px}
+.fe-app .fe-view-none{color:var(--fe-muted)}
+.fe-app .fe-info{border-left:1px solid var(--fe-line);padding:20px;overflow:auto;font-size:14px}
+.fe-app .fe-info h1{font-size:20px;overflow-wrap:anywhere}
+.fe-app .fe-info .fe-desc{font-size:14px;white-space:normal}
+.fe-app .fe-info dl{margin:18px 0 0}
+.fe-app .fe-info .r{display:grid;grid-template-columns:88px minmax(0,1fr);gap:10px;padding:9px 0;border-top:1px solid var(--fe-line)}
+.fe-app .fe-info dt{color:var(--fe-muted);font-weight:400}
+.fe-app .fe-info dd{margin:0;overflow-wrap:anywhere}
+.fe-app .fe-info small{display:block;color:var(--fe-muted);font-size:12px;margin-top:2px}
+.fe-app .fe-info dd a{text-decoration:underline}
+.fe-app .fe-info .link{color:inherit}
+.fe-app .fe-info .chip{display:inline-flex;text-decoration:none;border:1px solid var(--fe-line);border-radius:var(--fe-radius);padding:2px 8px;margin:0 6px 6px 0;font-size:13px}
+.fe-app .fe-view-page{display:none;margin:16px 0 0;font-size:13px}
+.fe-app .fe-view-page a{color:var(--fe-select);text-decoration:underline}
+.fe-app .fe-strip{position:relative;display:flex;gap:4px;justify-content:safe center;padding:8px 16px;border-top:1px solid var(--fe-line);overflow-x:auto}
+.fe-app .fe-strip a{flex:0 0 auto;height:56px;opacity:.55;outline-offset:-2px}
+.fe-app .fe-strip a:hover{opacity:1}
+.fe-app .fe-strip a[aria-current]{opacity:1;outline:2px solid var(--fe-select)}
+.fe-app .fe-strip img{height:56px;width:auto;max-width:112px;object-fit:cover;object-position:50% 25%;display:block}
+.fe-app .fe-photo-below{padding:0 24px}
+.fe-app .fe-view:fullscreen{height:100vh}
+.fe-app .fe-view:fullscreen .fe-view-img{padding:0 60px}
+dialog.fe-app.fe-lightbox{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;border:0;padding:0;min-height:0;overflow:hidden}
+dialog.fe-app.fe-lightbox::backdrop{background:var(--fe-stage-bg,#25282c)}
+dialog.fe-app.fe-lightbox .fe-view{height:100%;min-height:0}
+dialog.fe-app.fe-lightbox .fe-view-page{display:block}
+dialog.fe-app.fe-lightbox[aria-busy] .fe-view-img img{opacity:.4}
+@media (max-width:700px){
+	.fe-app,.fe-app.fe-stage{padding:12px 12px 48px}
+	.fe-app h1{font-size:24px}
+	.fe-app .fe-shell,.fe-app .fe-shell.is-rail-closed{grid-template-columns:minmax(0,1fr);gap:0}
+	.fe-app .fe-rail,.fe-app .fe-shell .fe-railopen{display:none!important}
+	.fe-app .fe-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 8px}
+	.fe-app .fe-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 12px}
+	.fe-app .fe-search{flex:1 1 100%}
+	.fe-app .fe-frame{padding:6px}
+	.fe-app .fe-seg a span:not(.fa),.fe-app .fe-btn span.l,.fe-app .fe-tools span.l,.fe-app .fe-field label{display:none}
+	.fe-app .fe-just a{height:150px;flex-basis:calc(var(--r)*150px)}
+	.fe-app .fe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+	.fe-app .fe-rows img{width:64px;height:48px}
+	.fe-app .fe-mason{columns:2;column-gap:6px}
+	.fe-app .fe-files li{grid-template-columns:20px minmax(0,1fr) 70px}
+	.fe-app .fe-files .p,.fe-app .fe-files .s{grid-column:2 / -1}
+	.fe-app .fe-drop{padding:28px 12px}
+	.fe-app .fe-bulk{bottom:10px;gap:0}
+	.fe-app .fe-bulk b{margin-right:4px}
+	.fe-app .fe-view,dialog.fe-app.fe-lightbox .fe-view{height:auto}
+	.fe-app .fe-view-body{grid-template-columns:minmax(0,1fr)}
+	.fe-app .fe-view-img{padding:0;min-height:240px}
+	.fe-app .fe-view-img img{max-height:70vh}
+	.fe-app .fe-view-img .nav{width:40px;height:40px;margin-top:-20px;font-size:22px}
+	.fe-app .fe-view-img .prev{left:6px}
+	.fe-app .fe-view-img .next{right:6px}
+	.fe-app .fe-info{border-left:0;border-top:1px solid var(--fe-line)}
+	.fe-app .fe-strip{justify-content:flex-start}
+	.fe-app .fe-photo-below{padding:0 12px}
+	dialog.fe-app.fe-lightbox{overflow:auto}
+	.fe-app .fe-mason a{margin-bottom:6px}
+	.fe-app .fe-rows th:nth-child(n+5),.fe-app .fe-rows td:nth-child(n+5),.fe-app .fe-rows th:nth-child(3),.fe-app .fe-rows td:nth-child(3){display:none}
+}
+
+/* Gallery list page, predates the fe- interface */
 .square	{position: relative;width: 95%;padding-bottom: 95%;margin:2.5%;background-position:center center;background-repeat:no-repeat;background-size:cover;border-radius: 5px;}
 .square img	{height:100%;width:100%;position:absolute; opacity: 0;filter: alpha(opacity=0);}
 .gallery-description	{line-height: 1.25em; min-height: 2.5em;}
@@ -7,4 +378,62 @@ h3.gallery-title a	{color:#fff;text-shadow: 0px 0px 4px #000}
 .galleries>div:nth-child(even)	{padding-left: 5px;}
 .galleries>div:nth-child(odd)	{padding-right: 5px;}
 h3.gallery-title	{font-size: 1.1em;padding: 10px;}
+}
+
+/* settings form: a label column and a field column per section */
+.fe-app .fe-form{max-width:860px;margin:0}
+.fe-app .fe-fs{display:grid;grid-template-columns:150px minmax(0,1fr);gap:24px;padding:22px 0;border-top:1px solid var(--fe-line)}
+.fe-app .fe-fs>h2{font-family:inherit;font-size:14px;font-weight:700;line-height:1.3;margin:6px 0 0;color:var(--fe-ink);letter-spacing:0}
+.fe-app .fe-fs p{margin:0 0 10px;font-size:14px}
+.fe-app .fe-fs .fe-input+.fe-input{margin-top:10px}
+.fe-app .fe-vcards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.fe-app .fe-vcard{display:block;position:relative;border:1px solid var(--fe-line);border-radius:var(--fe-radius);padding:12px;margin:0;font-size:12px;font-weight:400;color:var(--fe-muted);background:var(--fe-raise);cursor:pointer}
+.fe-app .fe-vcard input{position:absolute;opacity:0;width:1px;height:1px}
+.fe-app .fe-vcard .fa{display:block;font-size:20px;margin:0 0 8px;color:var(--fe-ink)}
+.fe-app .fe-vcard b{display:block;font-size:14px;color:var(--fe-ink)}
+.fe-app .fe-vcard:hover{border-color:var(--fe-muted)}
+.fe-app .fe-vcard:has(input:checked){border-color:var(--fe-select);box-shadow:inset 0 0 0 2px var(--fe-select)}
+.fe-app .fe-vcard:has(input:focus-visible){outline:2px solid var(--fe-select);outline-offset:2px}
+.fe-app .fe-coverpick{display:flex;gap:16px;align-items:center}
+.fe-app .fe-coverpick img{width:150px;height:100px;object-fit:cover;object-position:50% 25%;flex:0 0 auto;background:var(--fe-mat)}
+.fe-app .fe-parents{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:8px}
+.fe-app .fe-parents:empty{display:none}
+.fe-app .fe-parents .fa{color:var(--fe-muted);margin-right:4px}
+.fe-app .fe-checks{display:flex;flex-direction:column;gap:12px}
+.fe-app .fe-checks .fe-services{margin-top:8px}
+/* an install with no tabbed services leaves an empty tab strip behind */
+.fe-app .fe-services .nav-tabs:empty,.fe-app .fe-services .nav-tabs:empty+.tab-content{display:none}
+.fe-app .fe-vcards+.fe-sub{margin-top:12px}
+/* photo details */
+.fe-app .fe-photoframe{background:var(--fe-mat);display:flex;align-items:center;justify-content:center;padding:14px;min-height:160px;margin-bottom:10px}
+.fe-app .fe-photoframe img{max-width:100%;max-height:360px;display:block;box-shadow:0 1px 2px rgba(20,30,40,.25);transition:opacity .15s}
+.fe-app .fe-photoedit[aria-busy] .fe-photoframe img{opacity:.35}
+.fe-app .fe-photoedit[aria-busy] .fe-phototools{pointer-events:none;opacity:.6}
+.fe-app .fe-phototools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.fe-app .fe-phototools label.fe-btn{margin:0}
+.fe-app .fe-photoedit.has-script input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.fe-app .fe-replace{border:1px solid var(--fe-select);border-radius:var(--fe-radius);padding:12px 14px;margin:10px 0;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.fe-app .fe-replace p{margin:0;flex:1 1 100%}
+.fe-app .fe-reduce{margin-top:14px}
+.fe-app .fe-reducerow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.fe-app .fe-fs input[type=file]{font-size:14px;max-width:100%}
+.fe-app .fe-fs.danger>h2{color:#b3261e}
+/* a question before something that cannot be undone */
+dialog.fe-app.fe-confirm{width:420px;max-width:calc(100vw - 24px);padding:22px;border:1px solid var(--fe-line);border-radius:4px;box-shadow:0 16px 48px rgba(10,20,30,.3)}
+dialog.fe-app.fe-confirm::backdrop{background:rgba(20,30,40,.45)}
+.fe-app.fe-confirm p{margin:0 0 18px;font-size:15px;line-height:1.45}
+.fe-app .fe-confirm-foot{display:flex;justify-content:flex-end;gap:10px}
+.fe-app .fe-confirmpage{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;max-width:860px;margin-top:10px}
+.fe-app .fe-confirmpage img{width:280px;max-width:100%;height:auto;background:var(--fe-mat)}
+.fe-app .fe-confirmpage h1{margin-bottom:12px}
+.fe-app .fe-confirmpage p{font-size:15px;margin:0 0 8px;max-width:50ch}
+.fe-app .fe-confirmpage .fe-formfoot{position:static;border-top:0;padding:14px 0 0}
+.fe-app .fe-fs.danger p{max-width:60ch}
+.fe-app .fe-formfoot{display:flex;gap:10px;align-items:center;padding:18px 0 26px;border-top:1px solid var(--fe-line);position:sticky;bottom:0;background:var(--fe-bg);z-index:5}
+@media (max-width:700px){
+	.fe-app .fe-fs{grid-template-columns:minmax(0,1fr);gap:10px;padding:18px 0}
+	.fe-app .fe-fs>h2{margin:0}
+	.fe-app .fe-vcards{grid-template-columns:repeat(2,minmax(0,1fr))}
+	.fe-app .fe-coverpick{align-items:flex-start}
+	.fe-app .fe-coverpick img{width:110px;height:74px}
 }
