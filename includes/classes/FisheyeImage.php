@@ -565,7 +565,8 @@ class FisheyeImage extends FisheyeBase {
 
 		foreach( $checkFiles as $cf ) {
 			if ($cf && file_exists( $cf ) && filesize( $cf ) ) {
-				if( $imageSize = getimagesize( rtrim( $cf ) ) ) {
+				// Corrupt JPEGs still return dimensions; libjpeg warns about extra bytes.
+				if( $imageSize = @getimagesize( rtrim( $cf ) ) ) {
 					$info = $imageSize;
 					$info['width'] = $info[0];
 					$info['height'] = $info[1];
