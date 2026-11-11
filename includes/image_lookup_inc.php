@@ -29,8 +29,19 @@ if( empty( $_REQUEST['gallery_id'] ) ) {
 		$_REQUEST['gallery_id'] = $gal['gallery_id'];
 	}
 }
+// A photo opened from a timeline keeps that timeline as its gallery, so previous and next follow it
+$metaGallery = NULL;
+if( !empty( $_REQUEST['meta'] ) && $gContent->isValid() ) {
+	require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeMetaGallery.php' );
+	if( ( $metaGallery = FisheyeMetaGallery::lookupMeta( $_REQUEST['meta'], $gContent->getField( 'user_id' ) ) ) && !$metaGallery->canView() ) {
+		$metaGallery = NULL;
+	}
+}
 // the image is considered the primary content, however the gallery is useful
-if( BitBase::verifyIdParameter( $_REQUEST, 'gallery_id' ) ) {
+if( $metaGallery ) {
+	$gGallery = $metaGallery;
+	$gBitSmarty->assignByRef('gGallery', $gGallery);
+} elseif( BitBase::verifyIdParameter( $_REQUEST, 'gallery_id' ) ) {
 	$gGallery = FisheyeGallery::lookup( $_REQUEST );
 	$gBitSmarty->assignByRef('gGallery', $gGallery);
 	$gBitSmarty->assignByRef('galleryId', $_REQUEST['gallery_id']);

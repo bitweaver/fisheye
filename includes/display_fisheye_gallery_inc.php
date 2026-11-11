@@ -50,18 +50,16 @@ if( $listHash['sort'] != 'position' ) {
 	}
 }
 
-// Links that carry parameters use the plain script URL so they do not depend on rewrite rules
-$feBaseUrl = FISHEYE_PKG_URL.'view.php?gallery_id='.$gContent->mGalleryId;
-if( $gContent->getField( 'gallery_path' ) ) {
-	$feBaseUrl .= '&gallery_path='.urlencode( $gContent->getField( 'gallery_path' ) );
-}
+// The gallery's address, ending ready for parameters to be appended
+$feBaseUrl = fisheye_gallery_url( $gContent->mGalleryId, array( 'gallery_path' => $gContent->getField( 'gallery_path' ) ) );
+$feBaseUrl .= ( strpos( $feBaseUrl, '?' ) === FALSE ) ? '?' : '&';
 
 // Showcase and Columns open on the dark stage, the working views on the light ground, unless the viewer has chosen
 $feWide = ( $feMode == FISHEYE_LAYOUT_JUSTIFIED || $feMode == FISHEYE_LAYOUT_MASONRY );
 $feTheme = FisheyeBase::getViewerTheme();
 $gBitSmarty->assign( 'feWide', $feWide );
 $gBitSmarty->assign( 'feDark', $feTheme ? ( $feTheme == 'dark' ) : $feWide );
-$gBitSmarty->assign( 'feThemeUrls', FisheyeBase::getThemeUrls( $feBaseUrl.'&mode='.$feMode.( $listHash['sort'] != 'position' ? '&sort='.urlencode( $listHash['sort'] ) : '' ) ) );
+$gBitSmarty->assign( 'feThemeUrls', FisheyeBase::getThemeUrls( $feBaseUrl.'mode='.$feMode.( $listHash['sort'] != 'position' ? '&sort='.urlencode( $listHash['sort'] ) : '' ) ) );
 
 $gBitSmarty->assign( 'feModes', $feModes );
 $gBitSmarty->assign( 'feMode', $feMode );

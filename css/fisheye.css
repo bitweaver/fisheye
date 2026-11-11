@@ -204,6 +204,18 @@ dialog.fe-app.fe-picker::backdrop{background:rgba(20,30,40,.45)}
 .fe-app .fe-just a{height:300px;flex-grow:var(--r);flex-basis:calc(var(--r)*300px);position:relative;display:block;overflow:hidden;background:var(--fe-mat)}
 .fe-app .fe-just img{width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block}
 .fe-app .fe-just:after{content:"";flex-grow:100}
+/* timeline: small showcase rows under date headings, with a year list at the side */
+.fe-app .fe-time{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:24px}
+.fe-app .fe-time>div:only-child{grid-column:1 / -1}
+.fe-app .fe-month{font-family:inherit;font-size:18px;font-weight:700;margin:26px 0 10px;display:flex;gap:14px;align-items:baseline;line-height:1.2}
+.fe-app .fe-month:first-child{margin-top:0}
+.fe-app .fe-month a:hover{text-decoration:underline}
+.fe-app .fe-month span{font-size:13px;font-weight:400;color:var(--fe-muted)}
+.fe-app .fe-just.sm{gap:4px;margin-bottom:4px}
+.fe-app .fe-just.sm a{height:128px;flex-basis:calc(var(--r)*128px)}
+.fe-app .fe-years{display:flex;flex-direction:column;gap:6px;font-size:12px;text-align:right;color:var(--fe-muted);position:sticky;top:20px;align-self:start}
+.fe-app .fe-years a:hover,.fe-app .fe-years a[aria-current]{color:var(--fe-ink)}
+.fe-app .fe-years a[aria-current]{font-weight:700}
 /* columns */
 .fe-app .fe-mason{columns:4 300px;column-gap:10px}
 .fe-app .fe-mason a{display:block;margin:0 0 10px;break-inside:avoid;background:var(--fe-mat)}
@@ -345,6 +357,9 @@ dialog.fe-app.fe-lightbox[aria-busy] .fe-view-img img{opacity:.4}
 	.fe-app .fe-frame{padding:6px}
 	.fe-app .fe-seg a span:not(.fa),.fe-app .fe-btn span.l,.fe-app .fe-tools span.l,.fe-app .fe-field label{display:none}
 	.fe-app .fe-just a{height:150px;flex-basis:calc(var(--r)*150px)}
+	.fe-app .fe-just.sm a{height:90px;flex-basis:calc(var(--r)*90px)}
+	.fe-app .fe-time{grid-template-columns:minmax(0,1fr)}
+	.fe-app .fe-years{position:static;flex-direction:row;flex-wrap:wrap;gap:6px 14px;text-align:left;font-size:13px;grid-row:1}
 	.fe-app .fe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 	.fe-app .fe-rows img{width:64px;height:48px}
 	.fe-app .fe-mason{columns:2;column-gap:6px}

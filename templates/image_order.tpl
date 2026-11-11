@@ -3,13 +3,13 @@
 <div class="fe-app fe-order">
 	<div class="fe-top">
 		<ol class="fe-crumb">
-			<li><a href="{$smarty.const.FISHEYE_PKG_URL}?user_id={$gContent->mInfo.user_id}">{tr}Galleries{/tr}</a></li>
-			<li><a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}">{$gContent->getTitle()|escape}</a></li>
+			<li><a href="{$gContent->getLibraryUrl()|escape}">{tr}Galleries{/tr}</a></li>
+			<li><a href="{feurl gallery=$gContent->mGalleryId}">{$gContent->getTitle()|escape}</a></li>
 			<li aria-current="page">{tr}Image order{/tr}</li>
 		</ol>
 		<div class="fe-tools">
-			<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}&amp;mode=organize" title="{tr}Select, move, rotate and drag photos{/tr}">{booticon iname="fa-th"}<span class="l">{tr}Organize{/tr}</span></a>
-			<a href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}" title="{tr}Settings{/tr}">{booticon iname="fa-cog"}<span class="l">{tr}Settings{/tr}</span></a>
+			<a href="{feurl gallery=$gContent->mGalleryId mode="organize"}" title="{tr}Select, move, rotate and drag photos{/tr}">{booticon iname="fa-th"}<span class="l">{tr}Organize{/tr}</span></a>
+			<a href="{feurl page="edit"}?gallery_id={$gContent->mGalleryId}" title="{tr}Settings{/tr}">{booticon iname="fa-cog"}<span class="l">{tr}Settings{/tr}</span></a>
 		</div>
 	</div>
 
@@ -28,7 +28,8 @@
 	{/if}
 
 	{if $feItems}
-	{form id="batch_order" class="fe-orderform"}
+	{feurl page="image_order" assign="feAction"}
+		{form id="batch_order" class="fe-orderform" action=$feAction}
 		<input type="hidden" name="gallery_id" value="{$gContent->mGalleryId}" />
 
 		<div class="fe-bar fe-orderbar">
@@ -76,7 +77,7 @@
 								{$item.file_name|escape}
 								<small>
 									{if $item.taken_text}{tr}Taken{/tr} {$item.taken_text} &middot; {/if}{tr}Uploaded{/tr} {$item.uploaded_text}
-									 &middot; <a class="lnk" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?content_id={$contentId}&amp;gallery_id={$gContent->mGalleryId}">{tr}Edit details{/tr}</a>
+									 &middot; <a class="lnk" href="{feurl page="edit_image"}?content_id={$contentId}&amp;gallery_id={$gContent->mGalleryId}">{tr}Edit details{/tr}</a>
 								</small>
 							</td>
 							<td><label class="fe-favbox" title="{tr}Favorite{/tr}"><input type="checkbox" name="is_favorite[]" value="{$contentId}" {if $item.is_favorite}checked="checked"{/if} aria-label="{tr}Favorite{/tr}" />{booticon iname="fa-heart"}</label></td>

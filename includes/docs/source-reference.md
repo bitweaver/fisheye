@@ -22,6 +22,7 @@
 
 - `includes/classes/FisheyeBase.php:14` — `abstract class FisheyeBase extends LibertyMime`
 - `includes/classes/FisheyeGallery.php:25` — `class FisheyeGallery extends FisheyeBase {`
+- `includes/classes/FisheyeMetaGallery.php:23` — `class FisheyeMetaGallery extends FisheyeGallery {`
 - `includes/classes/FisheyeImage.php:18` — `class FisheyeImage extends FisheyeBase {`
 - `includes/classes/FisheyeRemote.php:50` — `class FisheyeRemote {`
 
@@ -42,6 +43,7 @@
 - `modules/mod_images.php`
 - `modules/mod_specials.php`
 - `thumbnailer.php`
+- `timeline.php`
 - `upload.php`
 - `view.php`
 - `view_image.php`

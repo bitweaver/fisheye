@@ -3,9 +3,9 @@
 <div class="fe-app fe-settings">
 	<div class="fe-top">
 		<ol class="fe-crumb">
-			<li><a href="{$smarty.const.FISHEYE_PKG_URL}?user_id={if $gContent->isValid()}{$gContent->mInfo.user_id}{else}{$gBitUser->mUserId}{/if}">{tr}Galleries{/tr}</a></li>
+			<li><a href="{$gContent->getLibraryUrl()|escape}">{tr}Galleries{/tr}</a></li>
 			{if $gContent->isValid()}
-				<li><a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}">{$gContent->getTitle()|escape}</a></li>
+				<li><a href="{feurl gallery=$gContent->mGalleryId}">{$gContent->getTitle()|escape}</a></li>
 				<li aria-current="page">{tr}Settings{/tr}</li>
 			{else}
 				<li aria-current="page">{tr}New gallery{/tr}</li>
@@ -13,8 +13,8 @@
 		</ol>
 		{if $gContent->isValid()}
 			<div class="fe-tools">
-				<a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}&amp;mode=organize" title="{tr}Select, move, rotate and drag photos{/tr}">{booticon iname="fa-th"}<span class="l">{tr}Organize{/tr}</span></a>
-				<a href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$gContent->mGalleryId}" title="{tr}Exact positions and titles{/tr}">{booticon iname="fa-sort"}<span class="l">{tr}Image order{/tr}</span></a>
+				<a href="{feurl gallery=$gContent->mGalleryId mode="organize"}" title="{tr}Select, move, rotate and drag photos{/tr}">{booticon iname="fa-th"}<span class="l">{tr}Organize{/tr}</span></a>
+				<a href="{feurl page="image_order"}?gallery_id={$gContent->mGalleryId}" title="{tr}Exact positions and titles{/tr}">{booticon iname="fa-sort"}<span class="l">{tr}Image order{/tr}</span></a>
 			</div>
 		{/if}
 	</div>
@@ -27,7 +27,8 @@
 
 	{formfeedback error=$errors warning=$feWarnings}
 
-	{form id="editGalleryForm" class="fe-form" ipackage="fisheye" ifile="edit.php"}
+	{feurl page="edit" assign="feAction"}
+	{form id="editGalleryForm" class="fe-form" action=$feAction}
 		<input type="hidden" name="gallery_id" value="{$galleryId|escape}" />
 
 		<div class="fe-fs">
@@ -66,7 +67,7 @@
 					<div>
 						<p>{if !$feCover}{tr}This gallery has no photos yet.{/tr}{elseif $gContent->mInfo.preview_content_id}{tr}A photo you chose.{/tr}{else}{tr}Picked automatically, until you choose one.{/tr}{/if}</p>
 						{if $feCover}
-							<a class="fe-btn" href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}&amp;mode=organize">{booticon iname="fa-image"}{tr}Choose in Organize{/tr}</a>
+							<a class="fe-btn" href="{feurl gallery=$gContent->mGalleryId mode="organize"}">{booticon iname="fa-image"}{tr}Choose in Organize{/tr}</a>
 							<p class="fe-sub">{tr}Point at a photo there and click its star.{/tr}</p>
 						{/if}
 					</div>
@@ -119,14 +120,14 @@
 				<h2>{tr}Delete{/tr}</h2>
 				<div>
 					<p>{tr}The next step asks whether to keep photos that also appear in other galleries. Nothing is deleted until you confirm there.{/tr}</p>
-					<a class="fe-btn" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}&amp;delete=1">{booticon iname="fa-trash-alt"}{tr}Delete gallery{/tr}</a>
+					<a class="fe-btn" href="{feurl page="edit"}?gallery_id={$gContent->mGalleryId}&amp;delete=1">{booticon iname="fa-trash-alt"}{tr}Delete gallery{/tr}</a>
 				</div>
 			</div>
 		</div>
 	{/if}
 
 	{* parent dialog, filled by the page script from the signed-in user's galleries *}
-	<dialog class="fe-app fe-picker" data-fe-picker data-fe-url="{$smarty.const.FISHEYE_PKG_URL}organize.php" data-fe-tk="{$gBitUser->mTicket}" aria-label="{tr}Choose a gallery{/tr}">
+	<dialog class="fe-app fe-picker" data-fe-picker data-fe-url="{feurl page="organize"}" data-fe-tk="{$gBitUser->mTicket}" aria-label="{tr}Choose a gallery{/tr}">
 		<h2>{tr}Put inside{/tr}</h2>
 		<label class="fe-search">{booticon iname="fa-search"}<input type="search" data-fe-picker-find placeholder="{tr}Find a gallery{/tr}" autocomplete="off" /></label>
 		<ul data-fe-picker-list data-fe-none="{tr}No galleries match.{/tr}"></ul>

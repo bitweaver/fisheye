@@ -50,7 +50,7 @@ if( is_object( $gGallery ) && $gGallery->isValid() ) {
 	$feView['position'] = !empty( $listHash['position'] ) ? $listHash['position'] : 0;
 	$feView['cant'] = $listHash['cant'];
 	$feView['gallery_title'] = $gGallery->getTitle();
-	$feView['gallery_url'] = $sorted ? FISHEYE_PKG_URL.'view.php?gallery_id='.$gGallery->mGalleryId.'&sort='.urlencode( $listHash['sort'] ) : $gGallery->getDisplayUrl();
+	$feView['gallery_url'] = $sorted ? fisheye_gallery_url( $gGallery->mGalleryId, array( 'sort' => $listHash['sort'] ) ) : $gGallery->getDisplayUrl();
 }
 // the photo is drawn from the largest thumbnail; the file links list what exists
 $feView['image_url'] = NULL;

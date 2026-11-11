@@ -105,13 +105,13 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 		$recurseDelete = (!empty( $_REQUEST['recurse'] ) && ($_REQUEST['recurse'] == 'all') );
 
 		if( $gContent->expunge( $recurseDelete ) ) {
-			header( "Location: ".FISHEYE_PKG_URL.'?user_id='.$userId );
+			header( "Location: ".$gContent->getLibraryUrl( $userId ) );
 			die();
 		}
 	}
 
 } elseif( !empty($_REQUEST['cancelgallery'] ) ) {
-	header( 'Location: '.( $gContent->isValid() ? $gContent->getDisplayUrl() : FISHEYE_PKG_URL.'?user_id='.$gBitUser->mUserId ) );
+	header( 'Location: '.( $gContent->isValid() ? $gContent->getDisplayUrl() : FISHEYE_PKG_URL ) );
 	die();
 }
 

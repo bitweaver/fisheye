@@ -17,7 +17,7 @@ $gBitSystem->verifyPermission( 'p_fisheye_list_galleries' );
 
 $gFisheyeGallery = new FisheyeGallery();
 
-/* Get a page of root galleries which matches the input parameters (default is to list every gallery in the system) */
+/* Get a page of root galleries. A signed-in visitor gets their own library; user_id names another owner, and all=1 lists every owner's galleries. */
 $listHash = array(
 	'root_only' => TRUE,
 	'lead_thumbnail_size' => 'medium',
@@ -25,14 +25,32 @@ $listHash = array(
 	'sort'      => ( !empty( $_REQUEST['sort'] ) && is_string( $_REQUEST['sort'] ) ) ? $_REQUEST['sort'] : NULL,
 	'find'      => ( !empty( $_REQUEST['find'] ) && is_string( $_REQUEST['find'] ) ) ? trim( $_REQUEST['find'] ) : NULL,
 );
-$feBaseUrl = FISHEYE_PKG_URL.'list_galleries.php?';
+$feBaseUrl = FISHEYE_PKG_URL.'?';
+if( !BitBase::verifyIdParameter( $_REQUEST, 'user_id' ) && empty( $_REQUEST['all'] ) ) {
+	if( !$gBitUser->isRegistered() ) {
+		// the front page is the visitor's own library, so it needs a visitor
+		$gBitSystem->fatalPermission( 'p_fisheye_list_galleries' );
+	}
+	$_REQUEST['user_id'] = $gBitUser->mUserId;
+}
+$feOwn = FALSE;
 if( BitBase::verifyIdParameter( $_REQUEST, 'user_id' ) ) {
 	$listHash['user_id'] = (int)$_REQUEST['user_id'];
+	$feOwn = ( $listHash['user_id'] == $gBitUser->mUserId );
 	// owners see their empty galleries so they can fill them
 	$listHash['show_empty'] = ( $listHash['user_id'] == $gBitUser->mUserId );
 	$gBitSmarty->assign( 'gQueryUserId', $listHash['user_id'] );
-	$feBaseUrl .= 'user_id='.$listHash['user_id'].'&';
+	if( !$feOwn ) {
+		$feBaseUrl .= 'user_id='.$listHash['user_id'].'&';
+	}
+} elseif( !empty( $_REQUEST['all'] ) ) {
+	$feBaseUrl .= 'all=1&';
 }
+$gBitSmarty->assign( 'feOwn', $feOwn );
+// the same library without a search or sort
+$gBitSmarty->assign( 'feLibraryUrl', rtrim( $feBaseUrl, '?&' ) );
+// what the search and sort forms must send to stay in this library
+$gBitSmarty->assign( 'feLibraryFields', $feOwn ? array() : ( !empty( $listHash['user_id'] ) ? array( 'user_id' => $listHash['user_id'] ) : ( !empty( $_REQUEST['all'] ) ? array( 'all' => 1 ) : array() ) ) );
 
 $galleryList = $gFisheyeGallery->getLibraryList( $listHash );
 $feBaseUrl .= 'sort='.$listHash['sort'];

@@ -28,8 +28,8 @@ global $gHideModules;
 $gHideModules = $gBitSystem->isFeatureActive( 'fisheye_gallery_hide_modules' );
 
 if ( !$gContent->isValid() ) {
-	// No gallery was indicated so we will redirect to the browse galleries page
-	bit_redirect( FISHEYE_PKG_URL."list_galleries.php", '404' );
+	// No gallery was indicated so we will redirect to the library
+	bit_redirect( FISHEYE_PKG_URL, '404' );
 	die;
 }
 
@@ -38,7 +38,7 @@ if( $gContent->isCommentable() ) {
 	$comments_vars = Array('fisheyegallery');
 	$comments_prefix_var='fisheyegallery:';
 	$comments_object_var='fisheyegallery';
-	$comments_return_url = $_SERVER['SCRIPT_NAME']."?gallery_id=".$gContent->mGalleryId;
+	$comments_return_url = fisheye_gallery_url( $gContent->mGalleryId );
 	include_once( LIBERTY_PKG_INCLUDE_PATH.'comments_inc.php' );
 }
 

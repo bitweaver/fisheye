@@ -61,7 +61,14 @@ The view folds the list after 24 entries.
 
 ## Library
 
-`list_galleries.php` (also `index.php`) lists root galleries as cards with a
+The package front page (`index.php`, which includes `list_galleries.php`) is
+the signed-in visitor's own library. `user_id=N` shows another owner's
+galleries and `all=1` lists every owner's. An anonymous visitor with neither
+is asked to sign in. Every "Galleries" link comes from
+`FisheyeBase::getLibraryUrl()`, which gives the bare front page for the
+viewer's own content and adds `user_id` for anyone else's.
+
+It lists root galleries as cards with a
 cover mosaic, rendered by `templates/library.tpl` and, for the paging
 fragment, `templates/library_items_inc.tpl`. Parameters: `user_id`, `find`
 (title search), `sort` (a key of `getLibrarySortOptions()`), `page`.
@@ -120,8 +127,7 @@ The page shows page 1 and a "More photos" link to `&page=N`. `js/fisheye.js`
 turns the link into in-place loading: it requests the same URL with
 `&fragment=1`, which returns only `templates/gallery_items_inc.tpl` for that
 page, and appends it. Without script the link opens that page on its own.
-Links that carry parameters use `view.php?gallery_id=` so they do not depend
-on rewrite rules.
+Links are built by the address helpers, see Addresses below.
 
 ## Styling
 
@@ -494,3 +500,100 @@ the gallery settings.
 - The `ajax` and `ajax_edit` request branches and
   `templates/edit_image_inc.tpl` are left as they were; nothing in this
   package calls them any more.
+
+## Timelines (meta galleries)
+
+A meta gallery is a query, not stored rows: every photo one user owns,
+newest first, whichever galleries the photos are in. Nothing is stored for
+it. The class is `FisheyeMetaGallery` (extends `FisheyeGallery`), the page is
+`timeline.php`, the templates are `timeline.tpl` and
+`timeline_items_inc.tpl`.
+
+| Type | Column of `liberty_content` | Address |
+|---|---|---|
+| Date taken | `event_time` | `timeline.php?by=taken` |
+| Date uploaded | `created` | `timeline.php?by=uploaded` |
+
+- **Ids.** A meta gallery has a string id: `meta-taken`, `meta-taken-2026`,
+  `meta-taken-2026-06`, `meta-taken-2026-06-14`, `meta-taken-none`, and the
+  same under `meta-uploaded`. `parseId()` and `lookupMeta()` read them.
+  On the page the part after the type is the `in` parameter.
+- **No date taken.** Photos whose `event_time` is empty or zero are left
+  out of the Date taken timeline. They are listed by `in=none`, in upload
+  order, and the page links to them with a count.
+- **Who sees it.** Only the owner of the photos and holders of
+  `p_fisheye_admin` (`canView()`). A timeline crosses every gallery, so
+  gallery permissions cannot answer for it. Administrators pass `user_id`.
+- **Headings.** Year, month or day (`group`), whichever are finer than the
+  scope; month is the default. Days and months follow the server time zone
+  and are counted in PHP from one query of the owner's dates
+  (`getBuckets()`), so no database date function is needed. A heading links
+  to that scope. The year list at the side links to each year.
+- **Paging.** Pages are counted in photos, not headings. The "more"
+  fragment leaves out the first heading when the page before ended in the
+  same one (`getBucketBefore()`).
+- **Photo view.** Item links carry `meta=<id without the prefix>`.
+  `image_lookup_inc.php` then makes the meta gallery the photo's gallery, so
+  previous, next, the count and the back link follow the timeline. A meta
+  gallery reports no update permission, no comments and no preferences.
+- **Entry points.** "Browse by" in the library rail, and two buttons on the
+  owner's own Library page.
+
+### How it shares the item list
+
+`FisheyeGallery::getItemList()` builds its query from four protected
+methods, which `FisheyeMetaGallery` overrides:
+
+| Method | Stored gallery | Meta gallery |
+|---|---|---|
+| `getItemListParts()` | map rows of the gallery | the owner's photo content rows |
+| `getItemPosition()` | `ROW_NUMBER()` over the gallery | a count of the photos ahead of the item |
+| `decorateItemRow()` | gallery path and photo address | photo address with `meta=`, and `sort_time` |
+| `markItemFavorites()` | join on the gallery map | the page's ids |
+
+When the parts set `plain_set`, the page's ids are read from
+`liberty_content` alone and the image and file joins run only for those
+ids. Without that a 40,000 photo owner joins every row before the limit.
+
+### Cost, measured on a 58,000 photo owner
+
+No index was added. Each query reads the owner's rows through the existing
+user index and takes 20 to 40 ms: the count, the page of ids, the dates for
+the headings, and the position of one photo.
+
+Two plans went wrong on large owners and are held in place in the SQL:
+
+- The timeline order is written `column + 0`. With the bare column the
+  database walked the site-wide `created` index backwards and discarded
+  every other user's rows (0.3 to 1.8 s).
+- `getRailList()` tests `LOWER( content_type_guid )`. Without the test the
+  rail query read every gallery on the site for such an owner (1.9 s, now
+  45 ms). The bare column would bring in the type index, which is worse.
+
+## Addresses
+
+With the `pretty_urls` feature on, no link, redirect, form action or script
+endpoint of the package carries `.php`. The package `.htaccess` maps a name
+to its script, `gallery/<path>/<id>` to `view.php` and `image/<id>/<path>`
+to `view_image.php`. With the feature off the same helpers give the plain
+script addresses, so templates never choose.
+
+| Helper (`includes/bit_setup_inc.php`) | Pretty | Plain |
+|---|---|---|
+| `fisheye_page_url( 'upload', array( 'gallery_id' => 5 ) )` | `upload?gallery_id=5` | `upload.php?gallery_id=5` |
+| `fisheye_gallery_url( 5, array( 'mode' => 'organize' ) )` | `gallery/5?mode=organize` | `view.php?gallery_id=5&mode=organize` |
+| `fisheye_gallery_url( '' )` | `gallery/` | `view.php?gallery_id=` |
+
+- Templates use `{feurl page="upload"}` and
+  `{feurl gallery=$id mode="organize"}`. The result is escaped. A query
+  written after `{feurl page="x"}` in the template is kept as is.
+  `{feurl page="edit" assign="feAction"}` hands the address to `{form
+  action=$feAction}`, so a form posts back to the address the page was
+  opened by.
+- `$feBaseUrl` on the gallery page ends in `?` or `&`, ready for a
+  parameter to be appended.
+- A `gallery_path` parameter becomes part of a pretty gallery address.
+- The gallery sort form sends `gallery_id` only for plain addresses, because
+  a get form drops the query of its action.
+- The old script addresses still answer. Nothing redirects them.
+

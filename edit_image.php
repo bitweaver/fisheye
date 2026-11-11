@@ -22,7 +22,7 @@ include_once( FISHEYE_PKG_INCLUDE_PATH.'image_lookup_inc.php' );
 if( $gContent->isValid() ) {
 	$gContent->verifyUpdatePermission();
 } else {
-	bit_redirect( FISHEYE_PKG_URL.'?user_id='.$gBitUser->mUserId );
+	bit_redirect( FISHEYE_PKG_URL );
 }
 
 //Utility function, maybe should be moved for use elsewhere. Seems like it has a multitude of possible hook points
@@ -87,7 +87,7 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		}
 		if( !empty( $_REQUEST['ajax'] ) ) {
 			// we need to refresh the images in the page after saving - not working yet - xing
-			header( 'Location: '.FISHEYE_PKG_URL."image_order.php?refresh=1&gallery_id=".$_REQUEST['gallery_id'] );
+			header( 'Location: '.fisheye_page_url( 'image_order', array( 'refresh' => 1, 'gallery_id' => $_REQUEST['gallery_id'] ) ) );
 			die;
 		}
 		// with nothing ticked the photo stays where it is; a photo is never left in no gallery from this form

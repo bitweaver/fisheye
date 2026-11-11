@@ -1,19 +1,19 @@
 {strip}
-{assign var=feUrl value="`$feBaseUrl`&mode=`$feMode`"}
+{assign var=feUrl value="`$feBaseUrl`mode=`$feMode`"}
 {if $feList.sort ne 'position'}{assign var=feUrl value="`$feUrl`&sort=`$feList.sort`"}{/if}
 <div class="fe-app{if $feDark} fe-stage{/if}" data-fe-themed>
 <div class="fe-shell{if $feWide} is-rail-closed{/if}" data-fe-shell="{if $feWide}stage{else}light{/if}">
 	{include file="bitpackage:fisheye/library_rail_inc.tpl"}
 	<div class="fe-main">
-	<a class="fe-btn fe-btn-quiet fe-railopen" href="{$smarty.const.FISHEYE_PKG_URL}list_galleries.php?user_id={$gContent->mInfo.user_id}" data-fe-rail-toggle aria-expanded="false">{booticon iname="fa-columns"}{tr}Library{/tr}</a>
+	<a class="fe-btn fe-btn-quiet fe-railopen" href="{$gContent->getLibraryUrl()|escape}" data-fe-rail-toggle aria-expanded="false">{booticon iname="fa-columns"}{tr}Library{/tr}</a>
 	<div class="fe-top">
 		<ol class="fe-crumb">
-			<li><a href="{$smarty.const.FISHEYE_PKG_URL}?user_id={$gContent->mInfo.user_id}">{tr}Galleries{/tr}</a></li>
+			<li><a href="{$gContent->getLibraryUrl()|escape}">{tr}Galleries{/tr}</a></li>
 			{foreach from=$gContent->getBreadcrumbLinks(1) item=breadTitle key=breadId}
 				{if $breadId eq $gContent->mGalleryId}
 					<li aria-current="page">{$breadTitle|escape}</li>
 				{else}
-					<li><a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$breadId}">{$breadTitle|escape}</a></li>
+					<li><a href="{feurl gallery=$breadId}">{$breadTitle|escape}</a></li>
 				{/if}
 			{/foreach}
 		</ol>
@@ -21,14 +21,14 @@
 		<div class="fe-tools">
 			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon' serviceHash=$gContent->mInfo}
 			{if $gContent->hasUserPermission( 'p_fisheye_download_gallery_arc' )}
-				<a title="{tr}Download Gallery{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gContent->mGalleryId}&amp;download=1">{booticon iname="fa-download"}<span class="l">{tr}Download{/tr}</span></a>
+				<a title="{tr}Download Gallery{/tr}" href="{feurl gallery=$gContent->mGalleryId download="1"}">{booticon iname="fa-download"}<span class="l">{tr}Download{/tr}</span></a>
 			{/if}
 			{if $gContent->hasUpdatePermission()}
-				<a title="{tr}Image Order{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}image_order.php?gallery_id={$gContent->mGalleryId}">{booticon iname="fa-sort"}<span class="l">{tr}Image Order{/tr}</span></a>
-				<a title="{tr}Settings{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}edit.php?gallery_id={$gContent->mGalleryId}">{booticon iname="fa-cog"}<span class="l">{tr}Settings{/tr}</span></a>
+				<a title="{tr}Image Order{/tr}" href="{feurl page="image_order"}?gallery_id={$gContent->mGalleryId}">{booticon iname="fa-sort"}<span class="l">{tr}Image Order{/tr}</span></a>
+				<a title="{tr}Settings{/tr}" href="{feurl page="edit"}?gallery_id={$gContent->mGalleryId}">{booticon iname="fa-cog"}<span class="l">{tr}Settings{/tr}</span></a>
 			{/if}
 			{if $gContent->hasUpdatePermission() || $gContent->getPreference('is_public')}
-				<a title="{tr}Upload{/tr}" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">{booticon iname="fa-upload"}<span class="l">{tr}Upload{/tr}</span></a>
+				<a title="{tr}Upload{/tr}" href="{feurl page="upload"}?gallery_id={$gContent->mGalleryId}">{booticon iname="fa-upload"}<span class="l">{tr}Upload{/tr}</span></a>
 			{/if}
 		</div>
 	</div>
@@ -51,7 +51,7 @@
 	<div class="fe-bar">
 		<nav class="fe-seg" aria-label="{tr}View{/tr}">
 			{foreach from=$feModes item=modeName key=modeKey}
-				<a href="{$feBaseUrl|escape}&amp;mode={$modeKey}{if $feList.sort ne 'position'}&amp;sort={$feList.sort}{/if}" {if $modeKey eq $feMode}aria-current="true"{/if} title="{tr}{$modeName}{/tr}">
+				<a href="{$feBaseUrl|escape}mode={$modeKey}{if $feList.sort ne 'position'}&amp;sort={$feList.sort}{/if}" {if $modeKey eq $feMode}aria-current="true"{/if} title="{tr}{$modeName}{/tr}">
 					{if $modeKey eq 'organize'}{booticon iname="fa-th"}
 					{elseif $modeKey eq 'justified'}{booticon iname="fa-images"}
 					{elseif $modeKey eq 'masonry'}{booticon iname="fa-th-large"}
@@ -63,8 +63,11 @@
 		{include file="bitpackage:fisheye/theme_toggle_inc.tpl"}
 		<span class="fe-bar-sp"></span>
 		{if $feList.cant > 1}
-			<form class="fe-field" method="get" action="{$smarty.const.FISHEYE_PKG_URL}view.php">
-				<input type="hidden" name="gallery_id" value="{$gContent->mGalleryId}" />
+			{* assigned first: a form tag is scanned for its closing bracket, so it must not hold an arrow *}
+			{feurl gallery=$gContent->mGalleryId assign="feSortAction"}
+			<form class="fe-field" method="get" action="{$feSortAction|escape}">
+				{* a plain script address carries the gallery in its query, which a get form would drop *}
+				{if !$gBitSystem->isFeatureActive( 'pretty_urls' )}<input type="hidden" name="gallery_id" value="{$gContent->mGalleryId}" />{/if}
 				<input type="hidden" name="mode" value="{$feMode}" />
 				<label for="fe-sort">{tr}Sort{/tr}</label>
 				<select id="fe-sort" name="sort" class="fe-select" data-fe-submit>
@@ -105,7 +108,7 @@
 			<div class="fe-empty">
 				<p>{tr}This gallery is empty{/tr}</p>
 				{if $gContent->hasUpdatePermission() || $gContent->getPreference('is_public')}
-					<a class="fe-btn fe-btn-primary" href="{$smarty.const.FISHEYE_PKG_URL}upload.php?gallery_id={$gContent->mGalleryId}">{booticon iname="fa-upload"}{tr}Upload photos{/tr}</a>
+					<a class="fe-btn fe-btn-primary" href="{feurl page="upload"}?gallery_id={$gContent->mGalleryId}">{booticon iname="fa-upload"}{tr}Upload photos{/tr}</a>
 				{/if}
 			</div>
 		{/if}
@@ -115,12 +118,12 @@
 				<thead>
 					<tr>
 						<th></th>
-						<th><a href="{$feBaseUrl|escape}&amp;mode=details&amp;sort={if $feList.sort eq 'title_asc'}title_desc{else}title_asc{/if}">{tr}Title{/tr}</a></th>
+						<th><a href="{$feBaseUrl|escape}mode=details&amp;sort={if $feList.sort eq 'title_asc'}title_desc{else}title_asc{/if}">{tr}Title{/tr}</a></th>
 						<th>{tr}File{/tr}</th>
-						<th><a href="{$feBaseUrl|escape}&amp;mode=details&amp;sort={if $feList.sort eq 'taken_desc'}taken_asc{else}taken_desc{/if}">{tr}Taken{/tr}</a></th>
-						<th><a href="{$feBaseUrl|escape}&amp;mode=details&amp;sort={if $feList.sort eq 'uploaded_desc'}uploaded_asc{else}uploaded_desc{/if}">{tr}Uploaded{/tr}</a></th>
+						<th><a href="{$feBaseUrl|escape}mode=details&amp;sort={if $feList.sort eq 'taken_desc'}taken_asc{else}taken_desc{/if}">{tr}Taken{/tr}</a></th>
+						<th><a href="{$feBaseUrl|escape}mode=details&amp;sort={if $feList.sort eq 'uploaded_desc'}uploaded_asc{else}uploaded_desc{/if}">{tr}Uploaded{/tr}</a></th>
 						<th>{tr}Dimensions{/tr}</th>
-						<th><a href="{$feBaseUrl|escape}&amp;mode=details&amp;sort={if $feList.sort eq 'size_desc'}size_asc{else}size_desc{/if}">{tr}Size{/tr}</a></th>
+						<th><a href="{$feBaseUrl|escape}mode=details&amp;sort={if $feList.sort eq 'size_desc'}size_asc{else}size_desc{/if}">{tr}Size{/tr}</a></th>
 					</tr>
 				</thead>
 				<tbody data-fe-items>
@@ -129,7 +132,7 @@
 			</table>
 		</div>
 	{else}
-		<div class="{if $feMode eq 'organize'}fe-grid{elseif $feMode eq 'masonry'}fe-mason{else}fe-just{/if}" data-fe-items {if $feMode ne 'organize'}data-fe-lightbox{elseif $feCanEdit}data-fe-organize data-fe-url="{$smarty.const.FISHEYE_PKG_URL}organize.php" data-fe-gallery="{$gContent->mGalleryId}" data-fe-tk="{$gBitUser->mTicket}" {if $feList.sort eq 'position'}data-fe-sortable{/if}{/if}>
+		<div class="{if $feMode eq 'organize'}fe-grid{elseif $feMode eq 'masonry'}fe-mason{else}fe-just{/if}" data-fe-items {if $feMode ne 'organize'}data-fe-lightbox{elseif $feCanEdit}data-fe-organize data-fe-url="{feurl page="organize"}" data-fe-gallery="{$gContent->mGalleryId}" data-fe-tk="{$gBitUser->mTicket}" {if $feList.sort eq 'position'}data-fe-sortable{/if}{/if}>
 			{include file="bitpackage:fisheye/gallery_items_inc.tpl"}
 		</div>
 	{/if}
@@ -155,7 +158,7 @@
 			<span class="sp"></span>
 			<a href="#" data-fe-labels aria-pressed="false" title="{tr}Show or hide the button names{/tr}">{booticon iname="fa-question-circle"}</a>
 		</div>
-		<dialog class="fe-app fe-picker" data-fe-picker data-fe-url="{$smarty.const.FISHEYE_PKG_URL}organize.php" data-fe-tk="{$gBitUser->mTicket}" aria-label="{tr}Choose a gallery{/tr}">
+		<dialog class="fe-app fe-picker" data-fe-picker data-fe-url="{feurl page="organize"}" data-fe-tk="{$gBitUser->mTicket}" aria-label="{tr}Choose a gallery{/tr}">
 			<h2 data-fe-picker-title data-fe-move="{tr}Move to{/tr}" data-fe-copy="{tr}Copy to{/tr}">{tr}Move to{/tr}</h2>
 			<label class="fe-search">{booticon iname="fa-search"}<input type="search" data-fe-picker-find placeholder="{tr}Find a gallery{/tr}" autocomplete="off" /></label>
 			<ul data-fe-picker-list data-fe-none="{tr}No galleries match.{/tr}"></ul>

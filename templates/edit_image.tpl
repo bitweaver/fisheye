@@ -4,8 +4,8 @@
 <div class="fe-app fe-settings fe-editphoto">
 	<div class="fe-top">
 		<ol class="fe-crumb">
-			<li><a href="{$smarty.const.FISHEYE_PKG_URL}?user_id={$gContent->mInfo.user_id}">{tr}Galleries{/tr}</a></li>
-			{if $gGallery && $gGallery->isValid()}<li><a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gGallery->mGalleryId}">{$gGallery->getTitle()|escape}</a></li>{/if}
+			<li><a href="{$gContent->getLibraryUrl()|escape}">{tr}Galleries{/tr}</a></li>
+			{if $gGallery && $gGallery->isValid()}<li><a href="{feurl gallery=$gGallery->mGalleryId}">{$gGallery->getTitle()|escape}</a></li>{/if}
 			<li><a href="{$gContent->getDisplayUrl()|escape}">{$feLabel|escape}</a></li>
 			<li aria-current="page">{tr}Edit{/tr}</li>
 		</ol>
@@ -19,7 +19,8 @@
 
 	{formfeedback error=$errors}
 
-	{form enctype="multipart/form-data" class="fe-form"}
+	{feurl page="edit_image" assign="feAction"}
+	{form enctype="multipart/form-data" class="fe-form" action=$feAction}
 		<input type="hidden" name="gallery_id" value="{$galleryId|escape}" />
 		<input type="hidden" name="image_id" value="{$imageId}" />
 		<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
@@ -35,7 +36,7 @@
 		<div class="fe-fs">
 			<h2>{tr}Photo{/tr}</h2>
 			{* the buttons here act at once through organize.php; only replacing the file goes through the form *}
-			<div class="fe-photoedit" data-fe-photo data-fe-url="{$smarty.const.FISHEYE_PKG_URL}organize.php" data-fe-tk="{$gBitUser->mTicket}" data-fe-id="{$gContent->mContentId}">
+			<div class="fe-photoedit" data-fe-photo data-fe-url="{feurl page="organize"}" data-fe-tk="{$gBitUser->mTicket}" data-fe-id="{$gContent->mContentId}">
 				<div class="fe-photoframe">
 					{if $gContent->mInfo.thumbnail_url.medium}
 						<img src="{$gContent->mInfo.thumbnail_url.medium|escape}?{math equation="1 + rand(1,9999)"}" alt="" data-fe-photo-img />
@@ -111,12 +112,12 @@
 			<input type="submit" class="fe-btn fe-btn-primary" name="saveImage" value="{tr}Save changes{/tr}" />
 			<a class="fe-btn" href="{$gContent->getDisplayUrl()|escape}">{tr}Cancel{/tr}</a>
 			<span class="fe-bar-sp"></span>
-			<a class="fe-btn fe-btn-danger" rel="nofollow" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}{if $gGallery && $gGallery->isValid()}&amp;gallery_id={$gGallery->mGalleryId}{/if}&amp;delete=1" data-fe-delete-photo="{$gContent->mContentId}" data-fe-url="{$smarty.const.FISHEYE_PKG_URL}organize.php" data-fe-tk="{$gBitUser->mTicket}" data-fe-after="{if $gGallery && $gGallery->isValid()}{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gGallery->mGalleryId}{else}{$smarty.const.FISHEYE_PKG_URL}?user_id={$gContent->mInfo.user_id}{/if}" data-fe-confirm="{tr}Delete this photo? It is removed from every gallery it is in. This cannot be undone.{/tr}" data-fe-confirm-ok="{tr}Delete{/tr}" data-fe-confirm-cancel="{tr}Cancel{/tr}">{booticon iname="fa-trash-alt"}{tr}Delete{/tr}</a>
+			<a class="fe-btn fe-btn-danger" rel="nofollow" href="{feurl page="edit_image"}?image_id={$gContent->mImageId}{if $gGallery && $gGallery->isValid()}&amp;gallery_id={$gGallery->mGalleryId}{/if}&amp;delete=1" data-fe-delete-photo="{$gContent->mContentId}" data-fe-url="{feurl page="organize"}" data-fe-tk="{$gBitUser->mTicket}" data-fe-after="{if $gGallery && $gGallery->isValid()}{feurl gallery=$gGallery->mGalleryId}{else}{$gContent->getLibraryUrl()|escape}{/if}" data-fe-confirm="{tr}Delete this photo? It is removed from every gallery it is in. This cannot be undone.{/tr}" data-fe-confirm-ok="{tr}Delete{/tr}" data-fe-confirm-cancel="{tr}Cancel{/tr}">{booticon iname="fa-trash-alt"}{tr}Delete{/tr}</a>
 		</div>
 	{/form}
 
 	{* gallery dialog, filled by the page script from the signed-in user's galleries *}
-	<dialog class="fe-app fe-picker" data-fe-picker data-fe-url="{$smarty.const.FISHEYE_PKG_URL}organize.php" data-fe-tk="{$gBitUser->mTicket}" aria-label="{tr}Choose a gallery{/tr}">
+	<dialog class="fe-app fe-picker" data-fe-picker data-fe-url="{feurl page="organize"}" data-fe-tk="{$gBitUser->mTicket}" aria-label="{tr}Choose a gallery{/tr}">
 		<h2>{tr}Add to{/tr}</h2>
 		<label class="fe-search">{booticon iname="fa-search"}<input type="search" data-fe-picker-find placeholder="{tr}Find a gallery{/tr}" autocomplete="off" /></label>
 		<ul data-fe-picker-list data-fe-none="{tr}No galleries match.{/tr}"></ul>
