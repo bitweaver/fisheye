@@ -494,6 +494,12 @@ class FisheyeImage extends FisheyeBase {
 	function generateThumbnails( $pResizeOriginal=NULL, $pImmediateRender=FALSE ) {
 		global $gBitSystem;
 		$ret = FALSE;
+		// the previews keep their file names, so the modified time is what tells a browser they changed; see versionUrl()
+		if( $this->verifyId( $this->mContentId ) ) {
+			$this->mInfo['last_modified'] = $gBitSystem->getUTCTime();
+			$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."liberty_content` SET `last_modified`=? WHERE `content_id`=?", array( $this->mInfo['last_modified'], $this->mContentId ) );
+			$this->clearFromCache();
+		}
 		// LibertyMime will take care of thumbnail generation of the offline thumbnailer is not active
 		if( $gBitSystem->isFeatureActive( 'liberty_offline_thumbnailer' ) && !$pImmediateRender ) {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."liberty_process_queue`
@@ -508,6 +514,20 @@ class FisheyeImage extends FisheyeBase {
 		return $ret;
 	}
 
+
+	/**
+	 * Mark a preview address with the photo's modified time. Previews are redrawn under the same file name
+	 * when a photo is rotated, replaced or reduced, and a browser or a caching proxy would go on showing the old one.
+	 * @param string $pUrl address of a preview
+	 * @param int $pVersion the photo's last_modified
+	 * @return string the address, with the version as its query string
+	 */
+	public static function versionUrl( $pUrl, $pVersion ) {
+		if( $pUrl && is_numeric( $pVersion ) && strpos( $pUrl, '?' ) === FALSE ) {
+			$pUrl .= '?v='.(int)$pVersion;
+		}
+		return $pUrl;
+	}
 
 	function renderThumbnails( $pThumbSizes=NULL ) {
 		global $gBitSystem;

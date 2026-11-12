@@ -27,6 +27,9 @@
 			{if $feOwn}
 				<a class="fe-btn fe-btn-quiet" href="{feurl page="timeline"}?by=taken" title="{tr}All your photos by the date they were taken{/tr}">{booticon iname="fa-calendar-alt"}<span class="l">{tr}By date{/tr}</span></a>
 				<a class="fe-btn fe-btn-quiet" href="{feurl page="timeline"}?by=uploaded" title="{tr}All your photos, newest uploads first{/tr}">{booticon iname="fa-clock"}<span class="l">{tr}Recent uploads{/tr}</span></a>
+				{if $feUnfiled}
+					<a class="fe-btn fe-btn-quiet" href="{feurl page="timeline"}?by=unfiled" title="{tr}Your photos that are in no gallery{/tr}">{booticon iname="fa-folder-open"}<span class="l">{$feUnfiled} {tr}not in a gallery{/tr}</span></a>
+				{/if}
 			{/if}
 			{if $gBitUser->hasPermission('p_fisheye_create')}
 				<a class="fe-btn" href="{feurl page="edit"}">{booticon iname="fa-folder-plus"}<span class="l">{tr}New gallery{/tr}</span></a>

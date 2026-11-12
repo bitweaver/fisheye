@@ -47,6 +47,14 @@ if( BitBase::verifyIdParameter( $_REQUEST, 'user_id' ) ) {
 	$feBaseUrl .= 'all=1&';
 }
 $gBitSmarty->assign( 'feOwn', $feOwn );
+// photos of the visitor's that are in no gallery are offered on their library only while there are some
+$feUnfiled = 0;
+if( $feOwn ) {
+	require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeMetaGallery.php' );
+	$feUnfiledGallery = new FisheyeMetaGallery( 'unfiled', '', $gBitUser->mUserId );
+	$feUnfiled = $feUnfiledGallery->countItems();
+}
+$gBitSmarty->assign( 'feUnfiled', $feUnfiled );
 // the same library without a search or sort
 $gBitSmarty->assign( 'feLibraryUrl', rtrim( $feBaseUrl, '?&' ) );
 // what the search and sort forms must send to stay in this library

@@ -9,11 +9,12 @@ require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeImage.php' );
 /**
  * A gallery that is a query, not stored rows: every photo a user owns, by
  * the date it was taken or the date it was uploaded, whichever galleries the
- * photos are in. Nothing is stored for it.
+ * photos are in; or the photos a user owns that are in no gallery at all.
+ * Nothing is stored for it.
  *
  * It is addressed by a string id: meta-taken, meta-taken-2026,
  * meta-taken-2026-06, meta-taken-2026-06-14, meta-taken-none (photos with no
- * date taken), and the same under meta-uploaded.
+ * date taken), and the same under meta-uploaded and meta-unfiled.
  *
  * getItemList() returns the same row hashes as a stored gallery, so the item
  * templates and the photo view work on either.
@@ -28,12 +29,16 @@ class FisheyeMetaGallery extends FisheyeGallery {
 
 	/**
 	 * The kinds of meta gallery
-	 * @return array keyed by type; each has title, column (of liberty_content) and icon
+	 * @return array keyed by type; each has title, column (of liberty_content) and icon, and optionally
+	 * where, a further condition on lc
 	 */
 	public static function getTypes() {
 		return array(
 			'taken'    => array( 'title' => 'Date taken', 'column' => 'event_time', 'icon' => 'fa-calendar-alt' ),
 			'uploaded' => array( 'title' => 'Date uploaded', 'column' => 'created', 'icon' => 'fa-clock' ),
+			// photos left without a gallery, for instance when a gallery was deleted by someone who does not own them
+			'unfiled'  => array( 'title' => 'Not in a gallery', 'column' => 'created', 'icon' => 'fa-folder-open',
+				'where' => "NOT EXISTS ( SELECT 1 FROM `".BIT_DB_PREFIX."fisheye_gallery_image_map` fgim WHERE fgim.`item_content_id` = lc.`content_id` )" ),
 		);
 	}
 
@@ -200,6 +205,9 @@ class FisheyeMetaGallery extends FisheyeGallery {
 		$column = $types[$this->mBy]['column'];
 		$pBindVars = array( $this->mUserId, FISHEYEIMAGE_CONTENT_TYPE_GUID );
 		$ret = "lc.`user_id` = ? AND lc.`content_type_guid` = ?";
+		if( !empty( $types[$this->mBy]['where'] ) ) {
+			$ret .= " AND ".$types[$this->mBy]['where'];
+		}
 		if( $pScoped && $this->mScope == 'none' ) {
 			$ret .= " AND ( lc.`$column` IS NULL OR lc.`$column` <= 0 )";
 		} else {
@@ -324,6 +332,13 @@ class FisheyeMetaGallery extends FisheyeGallery {
 			}
 		}
 		return $ret;
+	}
+
+	/** @return int how many photos this meta gallery holds */
+	public function countItems() {
+		$bindVars = array();
+		$whereSql = $this->getSetSql( $bindVars );
+		return (int)$this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."liberty_content` lc WHERE $whereSql", $bindVars );
 	}
 
 	/** @return int how many of the owner's photos have no date taken */
