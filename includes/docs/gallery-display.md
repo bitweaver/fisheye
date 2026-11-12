@@ -570,6 +570,24 @@ Two plans went wrong on large owners and are held in place in the SQL:
   rail query read every gallery on the site for such an owner (1.9 s, now
   45 ms). The bare column would bring in the type index, which is worse.
 
+## Service locations
+
+Places where other packages can add markup to the gallery and photo pages.
+How locations work: `liberty/includes/docs/services-and-plugins.md`.
+
+| Page | Location | Where it lands |
+|---|---|---|
+| Gallery (`view_gallery.tpl`) | `icon` | First in `.fe-tools`, the quiet tools on the breadcrumb line. A provider prints one `<a>` holding a `{booticon}` and a `<span class="l">` label, like its neighbours |
+| Gallery | `action` | Beside the title, in `.fe-actions` of the `.fe-head` row. A provider prints one `<a class="fe-btn fe-btn-primary">` (or `fe-btn`). The `.fe-actions` element is only drawn when a provider printed something |
+| Gallery | `nav`, `body` | Under the title and description, above the photos |
+| Gallery | `view` | After the photos, before the comments |
+| Photo (`view_image.tpl`) | `icon` | In the tools of the top line; not in the lightbox fragment |
+| Photo | `nav`, `body`, `view` | Below the photo, before the comments; not in the lightbox fragment |
+
+The library's gallery cards and the timeline pages offer no location.
+`.fe-tools a` and `.fe-btn` are styled by `fisheye.css`, so a provider's link
+in `icon` or `action` needs no styles of its own.
+
 ## Addresses
 
 With the `pretty_urls` feature on, no link, redirect, form action or script

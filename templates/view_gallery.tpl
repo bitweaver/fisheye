@@ -42,6 +42,9 @@
 			</p>
 			{if $gContent->mInfo.data}<p class="fe-desc">{$gContent->mInfo.data|escape}</p>{/if}
 		</div>
+		{* main actions other packages offer for this gallery; each prints an fe-btn link, or nothing *}
+		{capture assign=feActions}{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='action' serviceHash=$gContent->mInfo}{/capture}
+		{if $feActions ne ''}<div class="fe-actions">{$feActions}</div>{/if}
 	</div>
 
 	{formfeedback success=$fisheyeSuccess error=$fisheyeErrors warning=$fisheyeWarnings}
