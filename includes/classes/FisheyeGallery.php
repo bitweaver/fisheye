@@ -451,7 +451,7 @@ class FisheyeGallery extends FisheyeBase {
 			$queryOffset = 0;
 		}
 
-		$query = "SELECT lc.`content_id`, lc.`content_type_guid`, lc.`user_id`, lc.`title`, lc.`data`, lc.`created`, lc.`event_time`,
+		$query = "SELECT lc.`content_id`, lc.`content_type_guid`, lc.`user_id`, lc.`title`, lc.`data`, lc.`created`, lc.`event_time`, lc.`last_modified`,
 						".$parts['select']." fi.`image_id`, fi.`width`, fi.`height`,
 						la.`attachment_id`, lf.`file_name`, lf.`mime_type`, lf.`file_size` $selectSql
 					$fromSql
@@ -494,7 +494,7 @@ class FisheyeGallery extends FisheyeBase {
 					$row['thumbnail_uri'] = FISHEYE_PKG_URL.'image/generating_thumbnails.png?v=2';
 				} else {
 					$row['thumbnail_url'] = array( $thumbSize => $thumbUrl );
-					$row['thumbnail_uri'] = FisheyeImage::getThumbnailUriFromHash( $row, $thumbSize );
+					$row['thumbnail_uri'] = FisheyeImage::versionUrl( FisheyeImage::getThumbnailUriFromHash( $row, $thumbSize ), $row['last_modified'] );
 				}
 				$ret[$row['content_id']] = $row;
 			}
@@ -1022,6 +1022,11 @@ class FisheyeGallery extends FisheyeBase {
 
 			if( $this->loadImages() ) {
 				foreach( array_keys( $this->mItems ) as $key ) {
+					// Only what the gallery's owner owns is deleted with it. Anything another user put here is
+					// only taken out of the gallery, and its owner finds it under "Not in a gallery".
+					if( $this->mItems[$key]->getField( 'user_id' ) != $this->getField( 'user_id' ) ) {
+						continue;
+					}
 					if( $pRecursiveDelete ) {
 						$this->mItems[$key]->expunge( $pRecursiveDelete );
 					} elseif( is_a( $this->mItems[$key], 'FisheyeImage' ) ) {

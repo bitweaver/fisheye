@@ -24,6 +24,7 @@
 		<ul>
 			<li><a href="{feurl page="timeline"}?by=taken{$feRailOwner}" {if $feRailMeta eq 'taken'}aria-current="page"{/if}>{booticon iname="fa-calendar-alt"}{tr}Date taken{/tr}</a></li>
 			<li><a href="{feurl page="timeline"}?by=uploaded{$feRailOwner}" {if $feRailMeta eq 'uploaded'}aria-current="page"{/if}>{booticon iname="fa-clock"}{tr}Date uploaded{/tr}</a></li>
+			<li><a href="{feurl page="timeline"}?by=unfiled{$feRailOwner}" {if $feRailMeta eq 'unfiled'}aria-current="page"{/if}>{booticon iname="fa-folder-open"}{tr}Not in a gallery{/tr}</a></li>
 		</ul>
 	{/if}
 </nav>

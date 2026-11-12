@@ -111,20 +111,12 @@
 		<div class="fe-formfoot">
 			<input type="submit" class="fe-btn fe-btn-primary" name="savegallery" value="{if $gContent->isValid()}{tr}Save changes{/tr}{else}{tr}Create gallery{/tr}{/if}" />
 			<input type="submit" class="fe-btn" name="cancelgallery" value="{tr}Cancel{/tr}" formnovalidate="formnovalidate" />
+			{if $feCanDelete}
+				<span class="fe-bar-sp"></span>
+				<a class="fe-btn fe-btn-danger" rel="nofollow" href="{feurl page="edit"}?gallery_id={$gContent->mGalleryId}&amp;delete=1">{booticon iname="fa-trash-alt"}{tr}Delete{/tr}</a>
+			{/if}
 		</div>
 	{/form}
-
-	{if $feCanDelete}
-		<div class="fe-form">
-			<div class="fe-fs danger">
-				<h2>{tr}Delete{/tr}</h2>
-				<div>
-					<p>{tr}The next step asks whether to keep photos that also appear in other galleries. Nothing is deleted until you confirm there.{/tr}</p>
-					<a class="fe-btn" href="{feurl page="edit"}?gallery_id={$gContent->mGalleryId}&amp;delete=1">{booticon iname="fa-trash-alt"}{tr}Delete gallery{/tr}</a>
-				</div>
-			</div>
-		</div>
-	{/if}
 
 	{* parent dialog, filled by the page script from the signed-in user's galleries *}
 	<dialog class="fe-app fe-picker" data-fe-picker data-fe-url="{feurl page="organize"}" data-fe-tk="{$gBitUser->mTicket}" aria-label="{tr}Choose a gallery{/tr}">

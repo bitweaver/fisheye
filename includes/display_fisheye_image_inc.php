@@ -56,7 +56,7 @@ if( is_object( $gGallery ) && $gGallery->isValid() ) {
 $feView['image_url'] = NULL;
 $feView['sizes'] = array();
 foreach( array( 'small', 'medium', 'large' ) as $size ) {
-	if( $url = $gContent->getThumbnailUrl( $size ) ) {
+	if( $url = FisheyeImage::versionUrl( $gContent->getThumbnailUrl( $size ), $gContent->getField( 'last_modified' ) ) ) {
 		$feView['sizes'][$size] = $url;
 		$feView['image_url'] = $url;
 	}

@@ -26,7 +26,7 @@
 			<p class="fe-sub">
 				{$feList.cant} {if $feList.cant eq 1}{tr}photo{/tr}{else}{tr}photos{/tr}{/if}
 				{if $gContent->mScope eq '' && $feYearSpan} {if $feYearSpan.first eq $feYearSpan.last}{tr}from{/tr} {$feYearSpan.first}{else}{tr}from{/tr} {$feYearSpan.first} {tr}to{/tr} {$feYearSpan.last}{/if}{/if}
-				, {tr}across every gallery.{/tr}
+				{if $gContent->mBy eq 'unfiled'} {tr}that are in no gallery.{/tr}{if $feList.cant} {tr}Open a photo and choose Edit to put it in one.{/tr}{/if}{else}, {tr}across every gallery.{/tr}{/if}
 				{if $gContent->mScope eq 'none'} {tr}Shown by the date they were uploaded.{/tr}{/if}
 				{if $feUndated} <a class="lnk" href="{$feUndatedUrl|escape}">{$feUndated} {if $feUndated eq 1}{tr}photo has no date taken{/tr}{else}{tr}photos have no date taken{/tr}{/if}</a>.{/if}
 			</p>
@@ -61,8 +61,8 @@
 		</div>
 	{else}
 		<div class="fe-empty">
-			<p>{if $gContent->mScope eq ''}{tr}No photos yet{/tr}{else}{tr}No photos from this date{/tr}{/if}</p>
-			{if $gContent->mScope eq '' && $gBitUser->hasPermission('p_fisheye_upload')}
+			<p>{if $gContent->mBy eq 'unfiled' && $gContent->mScope eq ''}{tr}Every photo is in a gallery.{/tr}{elseif $gContent->mScope eq ''}{tr}No photos yet{/tr}{else}{tr}No photos from this date{/tr}{/if}</p>
+			{if $gContent->mBy ne 'unfiled' && $gContent->mScope eq '' && $gBitUser->hasPermission('p_fisheye_upload')}
 				<a class="fe-btn fe-btn-primary" href="{feurl page="upload"}">{booticon iname="fa-upload"}{tr}Upload photos{/tr}</a>
 			{/if}
 		</div>

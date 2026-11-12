@@ -432,7 +432,6 @@ h3.gallery-title	{font-size: 1.1em;padding: 10px;}
 .fe-app .fe-reduce{margin-top:14px}
 .fe-app .fe-reducerow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
 .fe-app .fe-fs input[type=file]{font-size:14px;max-width:100%}
-.fe-app .fe-fs.danger>h2{color:#b3261e}
 /* a question before something that cannot be undone */
 dialog.fe-app.fe-confirm{width:420px;max-width:calc(100vw - 24px);padding:22px;border:1px solid var(--fe-line);border-radius:4px;box-shadow:0 16px 48px rgba(10,20,30,.3)}
 dialog.fe-app.fe-confirm::backdrop{background:rgba(20,30,40,.45)}
@@ -443,7 +442,8 @@ dialog.fe-app.fe-confirm::backdrop{background:rgba(20,30,40,.45)}
 .fe-app .fe-confirmpage h1{margin-bottom:12px}
 .fe-app .fe-confirmpage p{font-size:15px;margin:0 0 8px;max-width:50ch}
 .fe-app .fe-confirmpage .fe-formfoot{position:static;border-top:0;padding:14px 0 0}
-.fe-app .fe-fs.danger p{max-width:60ch}
+.fe-app .fe-confirmpage .fe-checks{margin:16px 0 6px;max-width:54ch}
+.fe-app .fe-confirmpage .fe-check input{accent-color:#b3261e}
 .fe-app .fe-formfoot{display:flex;gap:10px;align-items:center;padding:18px 0 26px;border-top:1px solid var(--fe-line);position:sticky;bottom:0;background:var(--fe-bg);z-index:5}
 @media (max-width:700px){
 	.fe-app .fe-fs{grid-template-columns:minmax(0,1fr);gap:10px;padding:18px 0}

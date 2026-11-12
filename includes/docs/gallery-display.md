@@ -385,7 +385,7 @@ on Upload, Put inside a gallery on the settings form) is filled by the
 gallery.
 
 - Sections: Name, Opens in (the four display modes as radio cards), Cover,
-  Inside, Sharing, and Delete outside the form.
+  Inside, Sharing.
 - **Opens in** stores `gallery_pagination` only when the choice differs from
   what the gallery already resolves to. A gallery that still holds a legacy
   value keeps it until its owner picks another view.
@@ -401,6 +401,19 @@ gallery.
 - `load()` used to read the site defaults for those columns from the
   gallery's own preferences, which never hold them. It now reads the site
   settings.
+- **Delete** is a red-text button at the right end of the form's foot,
+  opposite Cancel, shown to those with `p_fisheye_admin` on the gallery. It
+  links to `edit?gallery_id=N&delete=1`, which shows
+  `templates/delete_gallery.tpl`: the cover, what the gallery holds, and,
+  only when it holds galleries or photos that are also elsewhere, the choice
+  between keeping those (`recurse` empty, the default) and deleting
+  everything inside (`recurse=all`). The counts come from three queries on
+  the map table in `edit.php`. A gallery needs this page rather than a
+  dialog because of that choice.
+- `FisheyeGallery::expunge()` deletes only what the gallery's owner owns.
+  An item another user owns is skipped under either choice and only loses
+  its place in the gallery; the page counts these as `others`. Its owner
+  finds it under "Not in a gallery" (below).
 - Save and the confirmed delete check the session ticket.
 - Service fields from other packages are included at the end of Sharing.
   When no package adds a tab, the empty tab strip is hidden by CSS.
@@ -569,6 +582,40 @@ Two plans went wrong on large owners and are held in place in the SQL:
 - `getRailList()` tests `LOWER( content_type_guid )`. Without the test the
   rail query read every gallery on the site for such an owner (1.9 s, now
   45 ms). The bare column would bring in the type index, which is worse.
+
+## Preview addresses carry a version
+
+Previews are redrawn under the same file name when a photo is rotated,
+replaced, reduced or has its previews refreshed, and storage files are served
+with a week-long `Expires`. So every preview address this package draws ends
+in `?v=<last_modified>`:
+
+- `FisheyeImage::versionUrl()` adds it. `getItemList()` applies it to
+  `thumbnail_uri`, and the photo view applies it to its sizes.
+- `FisheyeImage::generateThumbnails()` sets `liberty_content.last_modified`
+  and clears the object cache, so every redraw changes the address.
+- The version comes from the database row, not from `filemtime()`: a list
+  page would otherwise stat every preview on network storage.
+- `getThumbnailUrl()` and `getThumbnailUri()` themselves are unchanged, so
+  callers outside this package get the plain address. Gallery covers in the
+  library and the rail are also plain.
+
+### Not in a gallery
+
+The third meta gallery type, `unfiled`, is the owner's photos with no row in
+`fisheye_gallery_image_map`: `timeline?by=unfiled`. A type may carry a
+`where` condition in `FisheyeMetaGallery::getTypes()`, and this one's is the
+`NOT EXISTS` on the map. It is ordered and grouped by upload date, so the
+year, month and day scopes work as for `uploaded`. Photos get there when a
+gallery is deleted by someone who does not own them, or through older code
+paths that left a photo unmapped.
+
+- The rail's "Browse by" list always links to it and runs no count.
+- The visitor's own library counts it (`countItems()`, 30 to 100 ms for the
+  largest owners measured) and shows an "N not in a gallery" button only
+  when there are some.
+- A photo is put back by its edit page's In galleries section. There is no
+  bulk move from a timeline yet.
 
 ## Addresses
 

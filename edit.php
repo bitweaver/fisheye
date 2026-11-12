@@ -86,18 +86,24 @@ if( !empty( $_REQUEST['savegallery'] ) ) {
 	if( !empty( $_REQUEST['cancel'] ) ) {
 		// user cancelled - just continue on, doing nothing
 	} elseif( empty( $_REQUEST['confirm'] ) ) {
-		$formHash['delete'] = TRUE;
-		$formHash['gallery_id'] = $gContent->mGalleryId;
-		$formHash['input'] = array(
-			'<label><input name="recurse" value="" type="radio" checked="checked" /> '.tra( 'Delete only images in this gallery. Sub-galleries will not be removed.' ).'</label>',
-			'<label><input name="recurse" value="all" type="radio" /> '.tra( 'Permanently delete all contents, even if they appear in other galleries.' ).'</label>',
-		);
-		$gBitSystem->confirmDialog( $formHash,
-			array(
-				'warning' => tra('Are you sure you want to delete this gallery?') . ' ' . $gContent->getTitle(),
-				'error' => tra('This cannot be undone!'),
-			)
-		);
+		// the package's own confirmation page, with what the gallery holds, so the choice is an informed one
+		$mapTable = "`".BIT_DB_PREFIX."fisheye_gallery_image_map`";
+		$ownerId = $gContent->getField( 'user_id' );
+		// others: items another user owns, which are never deleted with the gallery. shared: the owner's photos that are also in another gallery.
+		$feDelete = $gContent->mDb->getRow( "SELECT COUNT(*) AS `items`, COUNT( fg.`content_id` ) AS `galleries`,
+				SUM( CASE WHEN lc.`user_id` != ? THEN 1 ELSE 0 END ) AS `others`,
+				SUM( CASE WHEN lc.`user_id` = ? AND fg.`content_id` IS NULL AND EXISTS ( SELECT 1 FROM $mapTable other WHERE other.`item_content_id`=fgim.`item_content_id` AND other.`gallery_content_id`!=fgim.`gallery_content_id` ) THEN 1 ELSE 0 END ) AS `shared`
+			FROM $mapTable fgim
+				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( lc.`content_id`=fgim.`item_content_id` )
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."fisheye_gallery` fg ON( fg.`content_id`=fgim.`item_content_id` )
+			WHERE fgim.`gallery_content_id`=?", array( $ownerId, $ownerId, $gContent->mContentId ) );
+		$feDelete = array_map( 'intval', (array)$feDelete ) + array( 'items' => 0, 'galleries' => 0, 'others' => 0, 'shared' => 0 );
+		$feDelete['photos'] = $feDelete['items'] - $feDelete['galleries'];
+		$gBitSmarty->assign( 'feDelete', $feDelete );
+		$gBitSmarty->assign( 'feCover', $feDelete['items'] ? $gContent->getThumbnailUri( 'medium' ) : NULL );
+		$gBitThemes->loadCss( FISHEYE_PKG_PATH.'css/fisheye.css', TRUE, 300, TRUE, FALSE, FALSE );
+		$gBitSystem->display( 'bitpackage:fisheye/delete_gallery.tpl', tra( 'Delete' ).': '.$gContent->getTitle(), array( 'display_mode' => 'edit' ) );
+		die;
 	} else {
 		$gBitUser->verifyTicket();
 		$userId = $gContent->getField( 'user_id' );
