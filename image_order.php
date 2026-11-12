@@ -188,7 +188,7 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 	$_SESSION['image_order_feedback'] = $feedback;
 
 	// Redirect so reload does not cause double-batch processing
-	bit_redirect( FISHEYE_PKG_URL.'image_order.php?gallery_id='.$gContent->getField( 'gallery_id' ) );
+	bit_redirect( fisheye_page_url( 'image_order', array( 'gallery_id' => $gContent->getField( 'gallery_id' ) ) ) );
 }
 
 $feedback = NULL;

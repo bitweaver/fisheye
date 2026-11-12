@@ -3,13 +3,14 @@
 <div class="fe-app fe-uploadpage">
 	<div class="fe-top">
 		<ol class="fe-crumb">
-			<li><a href="{$smarty.const.FISHEYE_PKG_URL}?user_id={$gBitUser->mUserId}">{tr}Galleries{/tr}</a></li>
+			<li><a href="{$smarty.const.FISHEYE_PKG_URL}">{tr}Galleries{/tr}</a></li>
 			{if $feTarget}<li><a href="{$feTarget.display_url|escape}" data-fe-target-link>{$feTarget.title|escape}</a></li>{/if}
 			<li aria-current="page">{tr}Upload{/tr}</li>
 		</ol>
 	</div>
 
-	{form enctype="multipart/form-data" id="photoupload" class="fe-upload" action="`$smarty.const.FISHEYE_PKG_URL`upload.php"}
+	{feurl page="upload" assign="feAction"}
+	{form enctype="multipart/form-data" id="photoupload" class="fe-upload" action=$feAction}
 		<input type="hidden" name="gallery_id" value="{$feTarget.gallery_id}" data-fe-target-id />
 		<input type="hidden" name="gallery_additions[]" value="{$feTarget.gallery_id}" data-fe-target-id />
 		<input type="hidden" name="save_image" value="save" />
@@ -52,7 +53,7 @@
 			<div class="fe-listhead">
 				<b data-fe-uploadsummary></b>
 				<span class="fe-bar-sp"></span>
-				<a class="fe-btn fe-btn-primary" href="{if $feTarget}{$feTarget.display_url|escape}{else}{$smarty.const.FISHEYE_PKG_URL}?user_id={$gBitUser->mUserId}{/if}" data-fe-uploaddone {if $onComplete}data-fe-oncomplete="{$onComplete|escape}"{/if} hidden>{booticon iname="fa-images"}{tr}View gallery{/tr}</a>
+				<a class="fe-btn fe-btn-primary" href="{if $feTarget}{$feTarget.display_url|escape}{else}{$smarty.const.FISHEYE_PKG_URL}{/if}" data-fe-uploaddone {if $onComplete}data-fe-oncomplete="{$onComplete|escape}"{/if} hidden>{booticon iname="fa-images"}{tr}View gallery{/tr}</a>
 			</div>
 			<ul class="fe-files" data-fe-filelist></ul>
 		</div>
@@ -92,7 +93,7 @@
 	{/form}
 
 	{* destination dialog, filled by the page script from the signed-in user's galleries *}
-	<dialog class="fe-app fe-picker" data-fe-picker data-fe-url="{$smarty.const.FISHEYE_PKG_URL}organize.php" data-fe-tk="{$gBitUser->mTicket}" data-fe-gallery-url="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id=" aria-label="{tr}Choose a gallery{/tr}">
+	<dialog class="fe-app fe-picker" data-fe-picker data-fe-url="{feurl page="organize"}" data-fe-tk="{$gBitUser->mTicket}" data-fe-gallery-url="{feurl gallery=""}" aria-label="{tr}Choose a gallery{/tr}">
 		<h2>{tr}Add photos to{/tr}</h2>
 		<label class="fe-search">{booticon iname="fa-search"}<input type="search" data-fe-picker-find placeholder="{tr}Find a gallery{/tr}" autocomplete="off" /></label>
 		<ul data-fe-picker-list data-fe-none="{tr}No galleries match.{/tr}"></ul>

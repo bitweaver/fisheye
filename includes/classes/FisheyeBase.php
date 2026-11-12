@@ -259,6 +259,17 @@ not ready for primetime
 		return $ret;
 	}
 
+	/**
+	 * The library a visitor returns to from this content: the package front page, which lists the signed-in
+	 * user's own galleries, or another owner's galleries when the content is not the viewer's.
+	 * @param int $pUserId owner of the library; default is the owner of this content, or the viewer when it has none
+	 */
+	public function getLibraryUrl( $pUserId = NULL ) {
+		global $gBitUser;
+		$userId = BitBase::verifyId( $pUserId ) ? $pUserId : $this->getField( 'user_id' );
+		return FISHEYE_PKG_URL.( ( BitBase::verifyId( $userId ) && $userId != $gBitUser->mUserId ) ? '?user_id='.(int)$userId : '' );
+	}
+
 	/** The two links of the light and dark toggle for a page URL */
 	public static function getThemeUrls( $pUrl ) {
 		$join = ( strpos( $pUrl, '?' ) === FALSE ) ? '?' : '&';

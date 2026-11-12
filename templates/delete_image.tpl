@@ -4,14 +4,15 @@
 <div class="fe-app fe-settings">
 	<div class="fe-top">
 		<ol class="fe-crumb">
-			<li><a href="{$smarty.const.FISHEYE_PKG_URL}?user_id={$gContent->mInfo.user_id}">{tr}Galleries{/tr}</a></li>
-			{if $gGallery && $gGallery->isValid()}<li><a href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gGallery->mGalleryId}">{$gGallery->getTitle()|escape}</a></li>{/if}
+			<li><a href="{$gContent->getLibraryUrl()|escape}">{tr}Galleries{/tr}</a></li>
+			{if $gGallery && $gGallery->isValid()}<li><a href="{feurl gallery=$gGallery->mGalleryId}">{$gGallery->getTitle()|escape}</a></li>{/if}
 			<li><a href="{$gContent->getDisplayUrl()|escape}">{$feLabel|escape}</a></li>
 			<li aria-current="page">{tr}Delete{/tr}</li>
 		</ol>
 	</div>
 
-	{form class="fe-confirmpage"}
+	{feurl page="edit_image" assign="feAction"}
+	{form class="fe-confirmpage" action=$feAction}
 		<input type="hidden" name="image_id" value="{$gContent->mImageId}" />
 		{if $gGallery && $gGallery->isValid()}<input type="hidden" name="gallery_id" value="{$gGallery->mGalleryId}" />{/if}
 		<input type="hidden" name="delete" value="1" />

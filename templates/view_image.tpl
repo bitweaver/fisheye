@@ -3,13 +3,13 @@
 {if $gContent->getTitle()}{assign var=feLabel value=$gContent->getTitle()}{else}{assign var=feLabel value=$gContent->mInfo.image_file.file_name}{/if}
 {if !$feFragment}<div class="fe-app{if $feDark} fe-stage{/if} fe-photo" data-fe-themed>{/if}
 
-<div class="fe-view" data-fe-view data-fe-page="{$feView.page_url|escape}" {if $gContent->hasUpdatePermission() && !$liberty_preview}data-fe-url="{$smarty.const.FISHEYE_PKG_URL}organize.php" data-fe-tk="{$gBitUser->mTicket}" data-fe-id="{$gContent->mContentId}" {if $gGallery}data-fe-gallery="{$gGallery->mGalleryId}"{/if}{/if} {if $feView.prev_url}data-fe-prev="{$feView.prev_url|escape}"{/if} {if $feView.next_url}data-fe-next="{$feView.next_url|escape}"{/if}>
+<div class="fe-view" data-fe-view data-fe-page="{$feView.page_url|escape}" {if $gContent->hasUpdatePermission() && !$liberty_preview}data-fe-url="{feurl page="organize"}" data-fe-tk="{$gBitUser->mTicket}" data-fe-id="{$gContent->mContentId}" {if $gGallery && $gGallery->mContentId}data-fe-gallery="{$gGallery->mGalleryId}"{/if}{/if} {if $feView.prev_url}data-fe-prev="{$feView.prev_url|escape}"{/if} {if $feView.next_url}data-fe-next="{$feView.next_url|escape}"{/if}>
 	<div class="fe-view-top">
 		{if $feView.gallery_url}
 			<a class="fe-view-back" href="{$feView.gallery_url|escape}" data-fe-close title="{tr}Back to gallery{/tr}">{booticon iname="fa-arrow-left"}<span class="t">{$feView.gallery_title|escape}</span></a>
 			{if $feView.position}<span class="n">{$feView.position} {tr}of{/tr} {$feView.cant}</span>{/if}
 		{else}
-			<a class="fe-view-back" href="{$smarty.const.FISHEYE_PKG_URL}?user_id={$gContent->mInfo.user_id}" title="{tr}Galleries{/tr}">{booticon iname="fa-arrow-left"}<span class="t">{tr}Galleries{/tr}</span></a>
+			<a class="fe-view-back" href="{$gContent->getLibraryUrl()|escape}" title="{tr}Galleries{/tr}">{booticon iname="fa-arrow-left"}<span class="t">{tr}Galleries{/tr}</span></a>
 		{/if}
 		{if !$liberty_preview}
 			{include file="bitpackage:fisheye/theme_toggle_inc.tpl"}
@@ -27,9 +27,9 @@
 					{if $gGallery && $gGallery->hasUpdatePermission() && $feView.position}
 						<a href="#" data-fe-act="cover" title="{tr}Use as the gallery cover{/tr}" {if $gGallery->mInfo.preview_content_id eq $gContent->mContentId}class="is-on"{/if}>{booticon iname="fa-star"}</a>
 					{/if}
-					<a rel="nofollow" href="{$smarty.const.FISHEYE_PKG_URL}view_image.php?image_id={$gContent->mImageId}&amp;rethumb=1" title="{tr}Regenerate thumbnails{/tr}">{booticon iname="fa-sync-alt"}</a>
-					<a href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}" title="{tr}Edit{/tr}">{booticon iname="fa-edit"}</a>
-					<a rel="nofollow" href="{$smarty.const.FISHEYE_PKG_URL}edit_image.php?image_id={$gContent->mImageId}{if $gGallery && $gGallery->isValid()}&amp;gallery_id={$gGallery->mGalleryId}{/if}&amp;delete=1" title="{tr}Delete{/tr}" data-fe-delete-photo="{$gContent->mContentId}" data-fe-url="{$smarty.const.FISHEYE_PKG_URL}organize.php" data-fe-tk="{$gBitUser->mTicket}" data-fe-after="{if $gGallery && $gGallery->isValid()}{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$gGallery->mGalleryId}{else}{$smarty.const.FISHEYE_PKG_URL}?user_id={$gContent->mInfo.user_id}{/if}" data-fe-confirm="{tr}Delete this photo? It is removed from every gallery it is in. This cannot be undone.{/tr}" data-fe-confirm-ok="{tr}Delete{/tr}" data-fe-confirm-cancel="{tr}Cancel{/tr}">{booticon iname="fa-trash-alt"}</a>
+					<a rel="nofollow" href="{feurl page="view_image"}?image_id={$gContent->mImageId}&amp;rethumb=1" title="{tr}Regenerate thumbnails{/tr}">{booticon iname="fa-sync-alt"}</a>
+					<a href="{feurl page="edit_image"}?image_id={$gContent->mImageId}" title="{tr}Edit{/tr}">{booticon iname="fa-edit"}</a>
+					<a rel="nofollow" href="{feurl page="edit_image"}?image_id={$gContent->mImageId}{if $gGallery && $gGallery->mContentId}&amp;gallery_id={$gGallery->mGalleryId}{/if}&amp;delete=1" title="{tr}Delete{/tr}" data-fe-delete-photo="{$gContent->mContentId}" data-fe-url="{feurl page="organize"}" data-fe-tk="{$gBitUser->mTicket}" data-fe-after="{if $gGallery && $gGallery->isValid()}{$gGallery->getDisplayUrl()|escape}{else}{$gContent->getLibraryUrl()|escape}{/if}" data-fe-confirm="{tr}Delete this photo? It is removed from every gallery it is in. This cannot be undone.{/tr}" data-fe-confirm-ok="{tr}Delete{/tr}" data-fe-confirm-cancel="{tr}Cancel{/tr}">{booticon iname="fa-trash-alt"}</a>
 				{/if}
 				<a href="#" data-fe-full title="{tr}Full screen{/tr}">{booticon iname="fa-expand"}</a>
 				<a href="#" data-fe-info-toggle aria-pressed="true" title="{tr}Details{/tr}">{booticon iname="fa-info-circle"}<span class="l">{tr}Details{/tr}</span></a>
@@ -70,7 +70,7 @@
 				{if $gContent->mInfo.parent_galleries}
 					<div class="r"><dt>{tr}In galleries{/tr}</dt><dd>
 						{foreach from=$gContent->mInfo.parent_galleries item=parentGallery key=parentId}
-							<a class="chip" href="{$smarty.const.FISHEYE_PKG_URL}view.php?gallery_id={$parentId}">{$parentGallery.title|escape}</a>
+							<a class="chip" href="{feurl gallery=$parentId}">{$parentGallery.title|escape}</a>
 						{/foreach}
 					</dd></div>
 				{/if}
