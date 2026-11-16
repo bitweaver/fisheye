@@ -40,6 +40,13 @@ it proves that the server executed a directly requested implementation file.
 - Secrets and credentials must remain in protected configuration, never in
   templates, responses, logs, or these documents.
 - File operations must use validated storage helpers and must prevent traversal.
+- `_files_override`, `upload_store`, `no_perm_check`, and `skip_content_store`
+  are internal store keys. A controller that passes `$_REQUEST` to `store()`
+  would otherwise let a POST name a server file for Liberty to `rename()` into
+  the poster's storage, or skip the attachment permission. Kernel
+  `setup_inc.php` strips them from every request; `edit_image.php` also unsets
+  them before filling `_files_override` from a real upload. Set them only in
+  code, after bootstrap.
 
 ## Package boundary
 

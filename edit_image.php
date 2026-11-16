@@ -57,7 +57,9 @@ if( !empty($_REQUEST['saveImage']) || !empty($_REQUEST['regenerateThumbnails'] )
 		die;
 	}
 
-	// Store/Update the image
+	// Store/Update the image. Only a real upload may fill _files_override;
+	// a posted one would name a server file for Liberty to move.
+	unset( $_REQUEST['_files_override'], $_REQUEST['upload_store'], $_REQUEST['no_perm_check'] );
 	if (isset($_FILES['imageFile']) && is_uploaded_file($_FILES['imageFile']['tmp_name'])) {
 		$_REQUEST['_files_override'] = array( $_FILES['imageFile'] );
 		$_REQUEST['_files_override']['process_storage'] = STORAGE_IMAGE;
