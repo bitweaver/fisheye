@@ -40,9 +40,7 @@
 	<div class="fe-view-body">
 		<div class="fe-view-img">
 			{if $feView.prev_url}<a class="nav prev" href="{$feView.prev_url|escape}" data-fe-nav title="{tr}Previous{/tr}">{booticon iname="fa-angle-left"}</a>{/if}
-			{if $gContent->mInfo.image_file.thumbnail_url.panorama}
-				{include file=$gLibertySystem->getMimeTemplate('view',$gContent->mInfo.attachment_plugin_guid) attachment=$gContent->mInfo.image_file}
-			{elseif $feView.image_url}
+			{if $feView.image_url}
 				<img src="{$feView.image_url|escape}" alt="{$feLabel|escape}" />
 			{else}
 				<p class="fe-view-none">{tr}This photo is still being prepared.{/tr}</p>
