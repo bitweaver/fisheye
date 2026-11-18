@@ -13,8 +13,6 @@ require_once( '../kernel/includes/setup_inc.php' );
 require_once( FISHEYE_PKG_CLASS_PATH.'FisheyeGallery.php');
 global $gBitSystem, $gBitSmarty, $gBitThemes, $gBitUser, $gFisheyeGallery;
 
-$gBitSystem->verifyPermission( 'p_fisheye_list_galleries' );
-
 $gFisheyeGallery = new FisheyeGallery();
 
 /* Get a page of root galleries. A signed-in visitor gets their own library; user_id names another owner, and all=1 lists every owner's galleries. */
@@ -27,10 +25,8 @@ $listHash = array(
 );
 $feBaseUrl = FISHEYE_PKG_URL.'?';
 if( !BitBase::verifyIdParameter( $_REQUEST, 'user_id' ) && empty( $_REQUEST['all'] ) ) {
-	if( !$gBitUser->isRegistered() ) {
-		// the front page is the visitor's own library, so it needs a visitor
-		$gBitSystem->fatalPermission( 'p_fisheye_list_galleries' );
-	}
+	// the front page is the visitor's own library
+	$gBitUser->verifyRegistered();
 	$_REQUEST['user_id'] = $gBitUser->mUserId;
 }
 $feOwn = FALSE;
@@ -45,6 +41,14 @@ if( BitBase::verifyIdParameter( $_REQUEST, 'user_id' ) ) {
 	}
 } elseif( !empty( $_REQUEST['all'] ) ) {
 	$feBaseUrl .= 'all=1&';
+}
+// p_fisheye_list_galleries is the site-wide catalog. A signed-in owner always sees their own library.
+// Another owner's library with no gatekeeper map follows the user-info "public" default; that is not a public catalog.
+if( !empty( $_REQUEST['all'] ) ) {
+	$gBitSystem->verifyPermission( 'p_fisheye_list_galleries' );
+} elseif( !$feOwn ) {
+	$gBitUser->verifyRegistered();
+	$gBitSystem->verifyPermission( 'p_fisheye_view' );
 }
 $gBitSmarty->assign( 'feOwn', $feOwn );
 // photos of the visitor's that are in no gallery are offered on their library only while there are some

@@ -35,6 +35,11 @@ it proves that the server executed a directly requested implementation file.
 - Request, cookie, header, upload, webhook, and API data are untrusted.
 - Authentication does not imply authorization.
 - Content-level access can be stricter than a global package permission.
+- A signed-in owner always lists their own galleries. `p_fisheye_list_galleries`
+  is the site-wide catalog (`list_galleries.php?all=1`), not a gate on that
+  owner's library. Another owner's library (`?user_id=` of someone else)
+  requires a signed-in viewer when galleries have no gatekeeper map (the
+  User Information "public" default).
 - Identifiers must be validated before use in SQL, paths, redirects, or object
   construction.
 - Secrets and credentials must remain in protected configuration, never in

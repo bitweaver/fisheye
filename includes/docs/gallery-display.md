@@ -68,6 +68,19 @@ is asked to sign in. Every "Galleries" link comes from
 `FisheyeBase::getLibraryUrl()`, which gives the bare front page for the
 viewer's own content and adds `user_id` for anyone else's.
 
+Permissions on that page:
+
+- Own library (no `user_id`, or `user_id` of the signed-in visitor): a
+  registered user always sees their own galleries.
+  `p_fisheye_list_galleries` is not required.
+- Another owner's library (`user_id` of someone else): a signed-in user
+  with `p_fisheye_view`. Galleries with no gatekeeper map use the owner's
+  User Information "public" default; that is not a public catalog, so
+  anonymous visitors are asked to sign in.
+- Site-wide catalog (`all=1`): `p_fisheye_list_galleries`. That permission
+  is the global listing, not a lock on a member's own content. The Photos
+  menu "List Galleries" item uses the same permission.
+
 It lists root galleries as cards with a
 cover mosaic, rendered by `templates/library.tpl` and, for the paging
 fragment, `templates/library_items_inc.tpl`. Parameters: `user_id`, `find`

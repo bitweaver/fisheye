@@ -1,11 +1,13 @@
 {strip}
 {if $packageMenuTitle}<a class="dropdown-toggle" data-toggle="dropdown" href="#"> {tr}{$packageMenuTitle}{/tr} <b class="caret"></b></a>{/if}
 <ul class="{$packageMenuClass}">
-	{if $gBitUser->hasPermission('p_fisheye_view')}
+	{if $gBitUser->hasPermission('p_fisheye_list_galleries')}
 		<li><a class="item" href="{feurl page="list_galleries"}?all=1">{booticon iname="fa-list-ul" iexplain="List Galleries" ilocation=menu}</a></li>
 	{/if}
-	{if $gBitUser->hasPermission('p_fisheye_create')}
+	{if $gBitUser->isRegistered()}
 		<li><a class="item" href="{$smarty.const.FISHEYE_PKG_URL}">{booticon iname="fa-image-landscape" iexplain="My Galleries" ilocation=menu}</a></li>
+	{/if}
+	{if $gBitUser->hasPermission('p_fisheye_create')}
 		<li><a class="item" href="{feurl page="edit"}">{booticon iname="fa-camera" iexplain="Create a Gallery" ilocation=menu}</a></li>
 	{/if}
 	{if $gBitUser->hasPermission('p_fisheye_upload')}
