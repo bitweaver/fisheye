@@ -862,6 +862,16 @@
 	// upload page: every dropped or chosen file is sent on its own, one after another, with a progress row
 	var upForm = document.querySelector( 'form.fe-upload' );
 	var upInput = upForm && upForm.querySelector( '[data-fe-files]' );
+	// files picked in a service tab go with the form itself; a second click would add them twice
+	var upServiceSubmit = upForm && upForm.querySelector( '[data-fe-services-submit]' );
+	if( upServiceSubmit ) {
+		upForm.addEventListener( 'submit', function() {
+			window.setTimeout( function() {
+				upServiceSubmit.disabled = true;
+				upServiceSubmit.setAttribute( 'aria-busy', 'true' );
+			}, 0 );
+		} );
+	}
 	if( upInput && window.FormData && window.XMLHttpRequest ) {
 		var upBox = upForm.querySelector( '[data-fe-uploadlist]' );
 		var upList = upForm.querySelector( '[data-fe-filelist]' );

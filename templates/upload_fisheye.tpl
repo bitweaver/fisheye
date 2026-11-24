@@ -32,14 +32,27 @@
 		{formfeedback note=$quotaMessage}
 		{formfeedback error=$errors}
 
-		<div class="fe-drop" data-fe-drop>
-			{booticon iname="fa-upload"}
-			<p><b>{tr}Drop photos or zip files here{/tr}</b></p>
-			<p class="fe-sub">
-				{tr}or{/tr} <label class="lnk" for="fe-files">{tr}choose files{/tr}</label> {tr}from this device.{/tr} {tr}The largest file accepted is{/tr} {$uploadMax} MB.
+		{* where the files come from: this device, or a service that holds them on the server (an FTP folder, for one).
+			A service tab posts its picks with the form itself, so it gets a submit; the device tab sends each file from the script. *}
+		<div class="fe-sources">
+			{jstabs id="fe-sources"}
+				{jstab title="This Device" id="fe-src-device"}
+					<div class="fe-drop" data-fe-drop>
+						{booticon iname="fa-upload"}
+						<p><b>{tr}Drop photos or zip files here{/tr}</b></p>
+						<p class="fe-sub">
+							{tr}or{/tr} <label class="lnk" for="fe-files">{tr}choose files{/tr}</label> {tr}from this device.{/tr} {tr}The largest file accepted is{/tr} {$uploadMax} MB.
+						</p>
+						{* no name: the script sends each chosen file itself, so the form must not carry them again *}
+						<input type="file" id="fe-files" class="fe-filesinput" multiple data-fe-files data-fe-max="{$feUploadMaxBytes}" />
+					</div>
+				{/jstab}
+				{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_tab_tpl"}
+			{/jstabs}
+			<p class="fe-services-submit">
+				<button type="submit" class="fe-btn fe-btn-primary" data-fe-services-submit>{booticon iname="fa-upload"}{tr}Add Selected Files{/tr}</button>
+				<span class="fe-sub">{tr}Large folders can take a few minutes. The gallery opens when they are added.{/tr}</span>
 			</p>
-			{* no name: the script sends each chosen file itself, so the form must not carry them again *}
-			<input type="file" id="fe-files" class="fe-filesinput" multiple data-fe-files data-fe-max="{$feUploadMaxBytes}" />
 		</div>
 
 		<noscript>
@@ -86,7 +99,6 @@
 				{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_mini_tpl"}
 				{jstabs}
 					{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_tab_tpl"}
-					{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_upload_tab_tpl"}
 				{/jstabs}
 			</div>
 		</details>

@@ -38,6 +38,16 @@ File bytes and attachment metadata remain under Liberty storage/MIME handling.
 Never use the client filename as a storage path and never trust MIME headers
 alone.
 
+`upload.php` takes files two ways. The page script sends each dropped or
+chosen file on its own as an AJAX post. Services that add a
+`content_upload_tab_tpl` tab (for example, server-side folder pickers) put
+their selections in the form itself, and those reach `$_FILES` only through
+a normal submit. Those tabs sit beside the device drop zone, as alternative
+sources in a segmented switch (`.fe-sources`). `Add Selected Files`
+(`data-fe-services-submit`) shows whenever a service source is active. If
+that button is removed, the sources still show but nothing can be sent from
+them. With no such service, the switch hides and only the drop zone shows.
+
 ## Gallery membership
 
 `FisheyeGallery::addItem()` and `removeItem()` manage mapping and ordering.

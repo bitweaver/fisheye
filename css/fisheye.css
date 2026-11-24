@@ -418,6 +418,23 @@ h3.gallery-title	{font-size: 1.1em;padding: 10px;}
 .fe-app .fe-checks .fe-services{margin-top:8px}
 /* an install with no tabbed services leaves an empty tab strip behind */
 .fe-app .fe-services .nav-tabs:empty,.fe-app .fe-services .nav-tabs:empty+.tab-content{display:none}
+/* upload sources: a segmented switch over one panel, the device drop zone or a service that holds files on the server */
+.fe-app .fe-sources{margin-bottom:24px}
+.fe-app .fe-sources>.nav-tabs{display:inline-flex;margin:0 0 12px;padding:0;border:1px solid var(--fe-line);border-radius:var(--fe-radius);overflow:hidden}
+.fe-app .fe-sources>.nav-tabs>li{float:none;margin:0;list-style:none}
+.fe-app .fe-sources>.nav-tabs>li>a{display:inline-flex;align-items:center;height:34px;margin:0;padding:0 14px;border:0;border-left:1px solid var(--fe-line);border-radius:0;background:none;color:var(--fe-muted);font-size:13px;font-weight:600}
+.fe-app .fe-sources>.nav-tabs>li:first-child>a{border-left:0}
+.fe-app .fe-sources>.nav-tabs>li>a:hover{background:none;color:var(--fe-ink)}
+.fe-app .fe-sources>.nav-tabs>li.active>a,.fe-app .fe-sources>.nav-tabs>li>a.active{background:var(--fe-ink);color:var(--fe-bg)}
+.fe-app .fe-sources>.nav-tabs>li>a:focus-visible{outline:2px solid var(--fe-select);outline-offset:-2px}
+/* with no services there is only the device, so no switch */
+.fe-app .fe-sources>.nav-tabs:has(>li:only-child){display:none}
+.fe-app .fe-sources .fe-drop{margin-bottom:0}
+.fe-app .fe-sources>.tab-content>.tab-pane:not(#fe-src-device){padding:20px 22px;border:1px solid var(--fe-line);border-radius:var(--fe-radius);background:var(--fe-mat)}
+.fe-app .fe-services-submit{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:14px 0 0}
+.fe-app .fe-services-submit .fe-sub{margin:0}
+/* the device sends each file from the script; only a service pick needs the form submitted */
+.fe-app .fe-sources:has(#fe-src-device.active) .fe-services-submit{display:none}
 .fe-app .fe-vcards+.fe-sub{margin-top:12px}
 /* photo details */
 .fe-app .fe-photoframe{background:var(--fe-mat);display:flex;align-items:center;justify-content:center;padding:14px;min-height:160px;margin-bottom:10px}
