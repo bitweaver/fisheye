@@ -30,6 +30,8 @@
 - `FisheyeImage::getImageDetails()` must not call `dirname()` until
   `getSourceFile()` returns a non-empty path. PHP 8.1+ deprecates
   `dirname(null)` when the image has no stored original.
+- `fisheye_handle_upload()` skips a `$_FILES` row when `tmp_name` is not a
+  non-empty string (nested/malformed uploads).
 
 ## Schema changes
 

@@ -42,7 +42,11 @@ function fisheye_handle_upload( &$pFiles, &$pRequest ) {
 
 
 	foreach( array_keys( $pFiles ) as $key ) {
-		$pFiles[$key]['type'] = $gBitSystem->verifyMimeType( $pFiles[$key]['tmp_name'] );
+		$tmpName = $pFiles[$key]['tmp_name'] ?? NULL;
+		if( !is_string( $tmpName ) || $tmpName === '' ) {
+			continue;
+		}
+		$pFiles[$key]['type'] = $gBitSystem->verifyMimeType( $tmpName );
 		if( preg_match( '/(^image|pdf|vnd)/i', $pFiles[$key]['type'] ) ) {
 			$upImages[$key] = $pFiles[$key];
 			// clone the request data so edit service values are passed into store process
